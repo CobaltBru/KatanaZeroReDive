@@ -8,10 +8,6 @@ HRESULT LoadingScene::Init()
 	return S_OK;
 }
 
-void LoadingScene::Release()
-{
-}
-
 void LoadingScene::Update()
 {
 }
@@ -20,4 +16,8 @@ void LoadingScene::Render(HDC hdc)
 {
 	if (bg)
 		bg->Render(hdc);
+}
+
+void LoadingScene::Release()
+{
 }

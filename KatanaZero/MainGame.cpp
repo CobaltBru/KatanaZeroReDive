@@ -16,7 +16,7 @@ HRESULT MainGame::Init()
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Stage1");
+	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 
@@ -72,24 +72,6 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 {
 	switch (iMessage)
 	{
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-		case 'a': case 'A':
-			SceneManager::GetInstance()->ChangeScene("전투씬_1");
-			break;
-		case 'd': case 'D':
-			SceneManager::GetInstance()->ChangeScene("타일맵툴");
-			break;
-		}
-		break;
-	case WM_LBUTTONDOWN:
-		g_ptMouse.x = LOWORD(lParam);
-		g_ptMouse.y = HIWORD(lParam);
-
-		break;
-	case WM_LBUTTONUP:
-		break;
 	case WM_MOUSEMOVE:
 		g_ptMouse.x = LOWORD(lParam);
 		g_ptMouse.y = HIWORD(lParam);

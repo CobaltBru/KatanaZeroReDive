@@ -55,6 +55,9 @@
     <Filter Include="2D Framework\Render">
       <UniqueIdentifier>{f21ffb61-77e7-4f9c-b9ca-ced2877b8dd4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\TaeKyung">
+      <UniqueIdentifier>{fd09d738-4cb6-47b1-b1df-55c4e6aa7882}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,6 +104,12 @@
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
       <Filter>2D Framework\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="TaeKyungObject.cpp">
+      <Filter>MainGame\TaeKyung</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>MainGame\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="RenderManager.h">
       <Filter>2D Framework\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="TaeKyungObject.h">
+      <Filter>MainGame\TaeKyung</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>MainGame\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
