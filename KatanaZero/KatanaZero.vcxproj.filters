@@ -19,12 +19,6 @@
     <Filter Include="2D Framework">
       <UniqueIdentifier>{18f2c5ba-c6f2-4ac2-a4b6-7d870f746713}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MainGame\Enemy">
-      <UniqueIdentifier>{c4133e5e-cf55-4621-9d31-d82d707d7d16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MainGame\Missile">
-      <UniqueIdentifier>{70574d2a-5972-4b7e-bc94-9460b7ad3888}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2D Framework\Timer">
       <UniqueIdentifier>{30f93bd0-8426-46a5-8a65-4d84027ae64f}</UniqueIdentifier>
     </Filter>
@@ -37,46 +31,37 @@
     <Filter Include="2D Framework\UI\Button">
       <UniqueIdentifier>{57de70b7-daba-4081-817d-3bfdbbe06bf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MainGame\Missile\KOF_Character">
-      <UniqueIdentifier>{1ad804d6-38d1-4cbd-a326-7d9dbb62c05b}</UniqueIdentifier>
+    <Filter Include="MainGame\Scene\Stage">
+      <UniqueIdentifier>{00f3f47f-8a77-41ce-8423-36a01932917f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Scene\Loading">
+      <UniqueIdentifier>{5c725023-6250-4166-9fed-4d117f5c0ba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Scene\MapTool">
+      <UniqueIdentifier>{bf9b394b-8117-4385-a5ba-b41b63472dc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\GameObject">
+      <UniqueIdentifier>{28a1538a-eb93-42d8-918f-a2f2f0cc4fba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Image">
+      <UniqueIdentifier>{1dff67e1-9f0d-4f8c-afed-f8aa16ce777a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Key">
+      <UniqueIdentifier>{1644e0b4-e8aa-437b-ab35-9fc602d05b49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Scene">
+      <UniqueIdentifier>{a14788bf-69ab-407e-9e86-02121340789c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Render">
+      <UniqueIdentifier>{f21ffb61-77e7-4f9c-b9ca-ced2877b8dd4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>2D Framework</Filter>
-    </ClCompile>
     <ClCompile Include="MainGame.cpp">
       <Filter>MainGame</Filter>
-    </ClCompile>
-    <ClCompile Include="Tank.cpp">
-      <Filter>MainGame</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>2D Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="KOF_Iori.cpp">
-      <Filter>MainGame\Missile\KOF_Character</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyManager.cpp">
-      <Filter>2D Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>MainGame\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyManager.cpp">
-      <Filter>MainGame\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="MissileManager.cpp">
-      <Filter>MainGame\Missile</Filter>
-    </ClCompile>
-    <ClCompile Include="Missile.cpp">
-      <Filter>MainGame\Missile</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageManager.cpp">
-      <Filter>2D Framework</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>2D Framework\Timer</Filter>
@@ -84,26 +69,38 @@
     <ClCompile Include="TimerManager.cpp">
       <Filter>2D Framework\Timer</Filter>
     </ClCompile>
-    <ClCompile Include="BattleScene.cpp">
-      <Filter>MainGame\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="TilemapTool.cpp">
-      <Filter>MainGame\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>2D Framework</Filter>
-    </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>2D Framework\UI\Button</Filter>
     </ClCompile>
-    <ClCompile Include="AstarScene.cpp">
-      <Filter>MainGame\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarScene2.cpp">
-      <Filter>MainGame\Scene</Filter>
+    <ClCompile Include="Stage1Scene.cpp">
+      <Filter>MainGame\Scene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
-      <Filter>MainGame\Scene</Filter>
+      <Filter>MainGame\Scene\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="TilemapTool.cpp">
+      <Filter>MainGame\Scene\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>2D Framework\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>2D Framework\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>2D Framework\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,40 +110,10 @@
     <ClInclude Include="CommonFunction.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>2D Framework</Filter>
-    </ClInclude>
     <ClInclude Include="MainGame.h">
       <Filter>MainGame</Filter>
     </ClInclude>
-    <ClInclude Include="Tank.h">
-      <Filter>MainGame</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>2D Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="KOF_Iori.h">
-      <Filter>MainGame\Missile\KOF_Character</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyManager.h">
-      <Filter>2D Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Singleton.h">
-      <Filter>2D Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>MainGame\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyManager.h">
-      <Filter>MainGame\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="MissileManager.h">
-      <Filter>MainGame\Missile</Filter>
-    </ClInclude>
-    <ClInclude Include="Missile.h">
-      <Filter>MainGame\Missile</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageManager.h">
       <Filter>2D Framework</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
@@ -155,23 +122,38 @@
     <ClInclude Include="TimerManager.h">
       <Filter>2D Framework\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="BattleScene.h">
-      <Filter>MainGame\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="TilemapTool.h">
-      <Filter>MainGame\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>2D Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Button.h">
       <Filter>2D Framework\UI\Button</Filter>
     </ClInclude>
-    <ClInclude Include="AstarScene.h">
-      <Filter>MainGame\Scene</Filter>
+    <ClInclude Include="Stage1Scene.h">
+      <Filter>MainGame\Scene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
-      <Filter>MainGame\Scene</Filter>
+      <Filter>MainGame\Scene\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="TilemapTool.h">
+      <Filter>MainGame\Scene\MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>2D Framework\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>2D Framework\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>2D Framework\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>2D Framework\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>2D Framework\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

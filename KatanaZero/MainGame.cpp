@@ -2,9 +2,9 @@
 #include "CommonFunction.h"
 #include "Image.h"
 #include "Timer.h"
-#include "BattleScene.h"
 #include "TilemapTool.h"
-#include "AstarScene.h"
+#include "Stage1Scene.h"
+
 #include "LoadingScene.h"
 
 HRESULT MainGame::Init()
@@ -13,11 +13,10 @@ HRESULT MainGame::Init()
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
 
-	SceneManager::GetInstance()->AddScene("A*알고리즘", new AstarScene());
-	SceneManager::GetInstance()->AddScene("전투씬_1", new BattleScene());
-	SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
+	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
+	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("A*알고리즘");
+	SceneManager::GetInstance()->ChangeScene("Stage1");
 
 	hdc = GetDC(g_hWnd);
 
