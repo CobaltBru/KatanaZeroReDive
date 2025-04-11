@@ -9,8 +9,11 @@
 #include <bitset>
 #include <map>
 #include <vector>
+#include <GdiPlus.h>
+#pragma comment(lib,"gdiplus")
 
 using namespace std;
+//using namespace Gdiplus;
 
 #include "KeyManager.h"
 #include "ImageManager.h"
