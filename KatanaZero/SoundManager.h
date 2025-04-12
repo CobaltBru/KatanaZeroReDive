@@ -1,6 +1,6 @@
 #pragma once
-#include "fmod\fmod.h"
-#pragma comment(lib, "fmod_vc")
+#include "Reference\Headers\fmod\fmod.h"
+#pragma comment(lib, "Reference/Librarys/fmod_vc")
 
 #include "Singleton.h"
 #include "config.h"
