@@ -5,7 +5,7 @@ class Image;
 class TaeKyungObject : public GameObject
 {
 public:
-	TaeKyungObject() = default;
+	TaeKyungObject();
 	virtual ~TaeKyungObject() = default;
 
 	virtual HRESULT Init();		
@@ -14,6 +14,10 @@ public:
 	virtual void Render(HDC hdc);	
 
 private:
+	void Move();
+private:
 	Image* Image;
+	FPOINT Pos;
+	float Speed;
 };
 
