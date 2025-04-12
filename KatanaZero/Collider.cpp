@@ -1,12 +1,13 @@
 #include "Collider.h"
 #include "GameObject.h"
+#include "ScrollManager.h"
 
-Collider::Collider(GameObject* owner, COLLIDERTYPE colliderType, FPOINT pivot, FPOINT size, bool debugDraw, float hitDelayTime)
+Collider::Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, FPOINT size, bool debugDraw, float hitDelayTime)
 	:Owner(owner), ColliderType(colliderType), PivotPos(pivot), Size(size), bDebugDraw(debugDraw), HitDelayTime(hitDelayTime), Pos(), bHit(false), bCanHit(true), bDead(false), CurrentDelayTime(0.f)
 {
 }
 
-Collider::Collider(GameObject* owner, COLLIDERTYPE colliderType, FPOINT pivot, float size, bool debugDraw, float hitDelayTime)
+Collider::Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, float size, bool debugDraw, float hitDelayTime)
 	: Owner(owner), ColliderType(colliderType), PivotPos(pivot), Size({ size,size }), bDebugDraw(debugDraw), HitDelayTime(hitDelayTime), Pos(), bHit(false), bCanHit(true), bDead(false), CurrentDelayTime(0.f)
 {
 }
@@ -19,7 +20,7 @@ void Collider::Update()
 {
 	if (Owner)
 	{
-		/*Pos.x = Owner->GetPos().x + PivotPos.x;
+		Pos.x = Owner->GetPos().x + PivotPos.x;
 		Pos.y = Owner->GetPos().y + PivotPos.y;
 
 		if (!bCanHit)
@@ -32,7 +33,7 @@ void Collider::Update()
 				bCanHit = true;
 				bHit = false;
 			}
-		}*/
+		}
 	}
 }
 
@@ -51,12 +52,14 @@ void Collider::Render(HDC hdc)
 
 	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // 현재 DC에 펜을 설정
 
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
 	switch (ColliderType)
 	{
-	case COLLIDERTYPE::Sphere:
-		Ellipse(hdc, (int)(Pos.x - HalfSize.x), (int)(Pos.y - HalfSize.y), (int)(Pos.x + HalfSize.x), (int)(Pos.y + HalfSize.y));
+	case EColliderType::Sphere:
+		Ellipse(hdc, (int)(Pos.x - HalfSize.x) + Scroll.x, (int)(Pos.y - HalfSize.y) + Scroll.y, (int)(Pos.x + HalfSize.x) + Scroll.x, (int)(Pos.y + HalfSize.y) + Scroll.y);
 		break;
-	case COLLIDERTYPE::Rect:
+	case EColliderType::Rect:
 		DrawRectLine(hdc, HalfSize);
 		break;
 	}
@@ -75,9 +78,11 @@ void Collider::Release()
 
 void Collider::DrawRectLine(HDC hdc, FPOINT HalfSize)
 {
-	MoveToEx(hdc, int(Pos.x - HalfSize.x), int(Pos.y - HalfSize.y), NULL);
-	LineTo(hdc, int(Pos.x + HalfSize.x), int(Pos.y - HalfSize.y));
-	LineTo(hdc, int(Pos.x + HalfSize.x), int(Pos.y + HalfSize.y));
-	LineTo(hdc, int(Pos.x - HalfSize.x), int(Pos.y + HalfSize.y));
-	LineTo(hdc, int(Pos.x - HalfSize.x), int(Pos.y - HalfSize.y));
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+	MoveToEx(hdc, int(Pos.x - HalfSize.x) + Scroll.x, int(Pos.y - HalfSize.y) + Scroll.y, NULL);
+	LineTo(hdc, int(Pos.x + HalfSize.x) + Scroll.x, int(Pos.y - HalfSize.y) + Scroll.y);
+	LineTo(hdc, int(Pos.x + HalfSize.x) + Scroll.x, int(Pos.y + HalfSize.y) + Scroll.y);
+	LineTo(hdc, int(Pos.x - HalfSize.x) + Scroll.x, int(Pos.y + HalfSize.y) + Scroll.y);
+	LineTo(hdc, int(Pos.x - HalfSize.x) + Scroll.x, int(Pos.y - HalfSize.y) + Scroll.y);
 }

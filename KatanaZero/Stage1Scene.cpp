@@ -4,13 +4,30 @@
 #include "ObjectManager.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
+#include "CollisionManager.h"
+#include "ScrollManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
+#include "TestObject.h"
+
+Stage1Scene::Stage1Scene()
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
+{
+}
 
 HRESULT Stage1Scene::Init()
 {
 	SetClientRect(g_hWnd, WINSIZE_X, WINSIZE_Y);
+
+	ObjectManager = ObjectManager::GetInstance();
+	ObjectManager->Init();
+	RenderManager = RenderManager::GetInstance();
+	RenderManager->Init();
+	CollisionManager = CollisionManager::GetInstance();
+	CollisionManager->Init();
+
+	ScrollManager::GetInstance()->ZeroScroll();
 
 	if (FAILED(ImageInit()))
 	{
@@ -30,8 +47,7 @@ HRESULT Stage1Scene::Init()
 HRESULT Stage1Scene::ImageInit()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
-	ImageManager::GetInstance()->AddImage("BackGround", L"Image/BackGround.bmp", 1080, 500, 1, 1, true, RGB(255, 0, 255));
-
+	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64,1,1, true, RGB(255, 0, 255));
 
 	return S_OK;
@@ -44,12 +60,17 @@ HRESULT Stage1Scene::ObjectInit()
 	// 테스트 코드 태경
 	{
 		Background* background = new Background();
-		background->Init("BackGround");
-		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, background);
+		background->Init("TestBg");
+		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init();
-		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, taekyung);
+		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+
+		TestObject* testObject = new TestObject();
+		testObject->Init("rocket", { 1000.f,300.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
+
 	}
 
 	return S_OK;
@@ -57,16 +78,19 @@ HRESULT Stage1Scene::ObjectInit()
 
 void Stage1Scene::Update()
 {
-	ObjectManager::GetInstance()->Update();
+	ObjectManager->Update();
+	CollisionManager->Update();
 }
 
 void Stage1Scene::Render(HDC hdc)
 {
-	RenderManager::GetInstance()->Render(hdc);
+	RenderManager->Render(hdc);
+	CollisionManager->Render(hdc);
 }
 
 void Stage1Scene::Release()
 {
-	ObjectManager::GetInstance()->Release();
-	RenderManager::GetInstance()->Release();
+	ObjectManager->Release();
+	CollisionManager->Release();
+	RenderManager->Release();	
 }

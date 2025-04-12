@@ -2,6 +2,7 @@
 #include "Image.h"
 #include "ImageManager.h"
 #include "RenderManager.h"
+#include "ScrollManager.h"
 
 Background::Background()
 	:Image(nullptr)
@@ -22,7 +23,11 @@ void Background::Update()
 void Background::Render(HDC hdc)
 {
 	if (Image != nullptr)
-		Image->Render(hdc);
+	{
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+		Image->Render(hdc, Scroll.x, Scroll.y);
+	}
+		
 }
 
 void Background::Release()

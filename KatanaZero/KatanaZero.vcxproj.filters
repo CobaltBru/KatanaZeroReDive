@@ -64,6 +64,9 @@
     <Filter Include="2D Framework\Collision">
       <UniqueIdentifier>{50ce7b2f-f572-4103-8a24-b89239e17a19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Scroll">
+      <UniqueIdentifier>{5f66ebc6-4ec4-46aa-a47b-4cde0040c072}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,6 +131,12 @@
     </ClCompile>
     <ClCompile Include="CollisionManager.cpp">
       <Filter>2D Framework\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollManager.cpp">
+      <Filter>2D Framework\Scroll</Filter>
+    </ClCompile>
+    <ClCompile Include="TestObject.cpp">
+      <Filter>MainGame\TaeKyung</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +208,12 @@
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
       <Filter>2D Framework\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrollManager.h">
+      <Filter>2D Framework\Scroll</Filter>
+    </ClInclude>
+    <ClInclude Include="TestObject.h">
+      <Filter>MainGame\TaeKyung</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

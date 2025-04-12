@@ -1,7 +1,7 @@
 #pragma once
 #include "config.h"
 
-enum class COLLIDERTYPE
+enum class EColliderType
 {
 	Sphere,
 	Rect,
@@ -12,8 +12,8 @@ class GameObject;
 class Collider
 {
 public:
-	Collider(GameObject* owner, COLLIDERTYPE colliderType, FPOINT pivot, FPOINT size, bool debugDraw, float hitDelayTime = 1.f);
-	Collider(GameObject* owner, COLLIDERTYPE colliderType, FPOINT pivot, float size, bool debugDraw, float hitDelayTime = 1.f);
+	Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, FPOINT size, bool debugDraw, float hitDelayTime = 1.f);
+	Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, float size, bool debugDraw, float hitDelayTime = 1.f);
 	~Collider() = default;
 
 	void Init();
@@ -24,7 +24,7 @@ public:
 	GameObject* GetOwner() const { return Owner; }
 	FPOINT GetPos() const { return Pos; }
 	FPOINT GetSize() const { return Size; }
-	COLLIDERTYPE GetColliderType() const { return ColliderType; }
+	EColliderType GetColliderType() const { return ColliderType; }
 	bool IsDead() const { return bDead; }
 
 	bool CanDebugDraw() const { return bDebugDraw; }
@@ -42,7 +42,7 @@ private:
 	void DrawRectLine(HDC hdc, FPOINT HalfSize);
 private:
 	GameObject* Owner;
-	COLLIDERTYPE ColliderType;
+	EColliderType ColliderType;
 
 	FPOINT Pos;
 	FPOINT PivotPos;

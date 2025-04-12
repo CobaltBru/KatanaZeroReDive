@@ -18,6 +18,7 @@ void GameObject::Render(HDC hdc)
 }
 
 GameObject::GameObject()
+	:Pos({})
 {
 }
 
