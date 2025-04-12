@@ -16,6 +16,8 @@ public:
 
 private:
 	void Move();
+
+	void Offset();
 private:
 	Image* Image;
 	Collider* ObjectCollider;

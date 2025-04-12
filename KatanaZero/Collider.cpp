@@ -1,5 +1,6 @@
 #include "Collider.h"
 #include "GameObject.h"
+#include "ScrollManager.h"
 
 Collider::Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, FPOINT size, bool debugDraw, float hitDelayTime)
 	:Owner(owner), ColliderType(colliderType), PivotPos(pivot), Size(size), bDebugDraw(debugDraw), HitDelayTime(hitDelayTime), Pos(), bHit(false), bCanHit(true), bDead(false), CurrentDelayTime(0.f)
@@ -51,10 +52,12 @@ void Collider::Render(HDC hdc)
 
 	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // 현재 DC에 펜을 설정
 
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
 	switch (ColliderType)
 	{
 	case EColliderType::Sphere:
-		Ellipse(hdc, (int)(Pos.x - HalfSize.x), (int)(Pos.y - HalfSize.y), (int)(Pos.x + HalfSize.x), (int)(Pos.y + HalfSize.y));
+		Ellipse(hdc, (int)(Pos.x - HalfSize.x) + Scroll.x, (int)(Pos.y - HalfSize.y) + Scroll.y, (int)(Pos.x + HalfSize.x) + Scroll.x, (int)(Pos.y + HalfSize.y) + Scroll.y);
 		break;
 	case EColliderType::Rect:
 		DrawRectLine(hdc, HalfSize);
@@ -75,9 +78,11 @@ void Collider::Release()
 
 void Collider::DrawRectLine(HDC hdc, FPOINT HalfSize)
 {
-	MoveToEx(hdc, int(Pos.x - HalfSize.x), int(Pos.y - HalfSize.y), NULL);
-	LineTo(hdc, int(Pos.x + HalfSize.x), int(Pos.y - HalfSize.y));
-	LineTo(hdc, int(Pos.x + HalfSize.x), int(Pos.y + HalfSize.y));
-	LineTo(hdc, int(Pos.x - HalfSize.x), int(Pos.y + HalfSize.y));
-	LineTo(hdc, int(Pos.x - HalfSize.x), int(Pos.y - HalfSize.y));
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+	MoveToEx(hdc, int(Pos.x - HalfSize.x) + Scroll.x, int(Pos.y - HalfSize.y) + Scroll.y, NULL);
+	LineTo(hdc, int(Pos.x + HalfSize.x) + Scroll.x, int(Pos.y - HalfSize.y) + Scroll.y);
+	LineTo(hdc, int(Pos.x + HalfSize.x) + Scroll.x, int(Pos.y + HalfSize.y) + Scroll.y);
+	LineTo(hdc, int(Pos.x - HalfSize.x) + Scroll.x, int(Pos.y + HalfSize.y) + Scroll.y);
+	LineTo(hdc, int(Pos.x - HalfSize.x) + Scroll.x, int(Pos.y - HalfSize.y) + Scroll.y);
 }

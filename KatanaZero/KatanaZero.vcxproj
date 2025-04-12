@@ -142,8 +142,10 @@
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScrollManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
+    <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TilemapTool.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
@@ -165,9 +167,11 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScrollManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="TaeKyungObject.h" />
+    <ClInclude Include="TestObject.h" />
     <ClInclude Include="TilemapTool.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
