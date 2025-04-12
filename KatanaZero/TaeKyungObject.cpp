@@ -3,9 +3,11 @@
 #include "ImageManager.h"
 #include "Image.h"
 #include "KeyManager.h"
+#include "CollisionManager.h"
+#include "Collider.h"
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), Pos({}), Speed(0.f)
+	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
 {
 }
 
@@ -13,13 +15,13 @@ TaeKyungObject::TaeKyungObject()
 HRESULT TaeKyungObject::Init()
 {
 	Image = ImageManager::GetInstance()->FindImage("rocket");
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
 	Speed = 100.f;
 
 	return S_OK;
 }
-
-
 
 void TaeKyungObject::Update()
 {

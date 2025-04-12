@@ -1,10 +1,13 @@
 #pragma once
 #include "Scene.h"
 
+class ObjectManager;
+class RenderManager;
+class CollisionManager;
 class Stage1Scene : public Scene
 {
 public:
-	Stage1Scene() = default;
+	Stage1Scene();
 	virtual ~Stage1Scene() = default;
 
 	virtual HRESULT Init() override;
@@ -15,5 +18,10 @@ public:
 protected:
 	virtual HRESULT ImageInit();
 	virtual HRESULT ObjectInit();
+
+private:
+	ObjectManager* ObjectManager;
+	RenderManager* RenderManager;
+	CollisionManager* CollisionManager;
 };
 

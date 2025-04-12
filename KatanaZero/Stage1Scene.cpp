@@ -4,13 +4,26 @@
 #include "ObjectManager.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
+#include "CollisionManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
 
+Stage1Scene::Stage1Scene()
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
+{
+}
+
 HRESULT Stage1Scene::Init()
 {
 	SetClientRect(g_hWnd, WINSIZE_X, WINSIZE_Y);
+
+	ObjectManager = ObjectManager::GetInstance();
+	ObjectManager->Init();
+	RenderManager = RenderManager::GetInstance();
+	RenderManager->Init();
+	CollisionManager = CollisionManager::GetInstance();
+	CollisionManager->Init();
 
 	if (FAILED(ImageInit()))
 	{
@@ -31,7 +44,6 @@ HRESULT Stage1Scene::ImageInit()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("BackGround", L"Image/BackGround.bmp", 1080, 500, 1, 1, true, RGB(255, 0, 255));
-
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64,1,1, true, RGB(255, 0, 255));
 
 	return S_OK;
@@ -45,11 +57,11 @@ HRESULT Stage1Scene::ObjectInit()
 	{
 		Background* background = new Background();
 		background->Init("BackGround");
-		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, background);
+		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init();
-		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, taekyung);
+		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 	}
 
 	return S_OK;
@@ -57,16 +69,19 @@ HRESULT Stage1Scene::ObjectInit()
 
 void Stage1Scene::Update()
 {
-	ObjectManager::GetInstance()->Update();
+	ObjectManager->Update();
+	CollisionManager->Update();
 }
 
 void Stage1Scene::Render(HDC hdc)
 {
-	RenderManager::GetInstance()->Render(hdc);
+	RenderManager->Render(hdc);
+	CollisionManager->Render(hdc);
 }
 
 void Stage1Scene::Release()
 {
-	ObjectManager::GetInstance()->Release();
-	RenderManager::GetInstance()->Release();
+	ObjectManager->Release();
+	CollisionManager->Release();
+	RenderManager->Release();	
 }
