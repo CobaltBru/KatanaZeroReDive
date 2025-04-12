@@ -2,12 +2,13 @@
 
 #include "config.h"
 #include "MainGame.h"
+#include "GPImage.h"
 
-HINSTANCE g_hInstance;	// í”„ë¡œê·¸ëž¨ ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤
+HINSTANCE g_hInstance;	// ÇÁ·Î±×·¥ ÀÎ½ºÅÏ½º ÇÚµé
 HWND g_hWnd;
-LPCWSTR g_lpszClassName = (LPCWSTR)TEXT("ìœˆë„ìš° API ì‚¬ìš©í•˜ê¸°");
+LPCWSTR g_lpszClassName = (LPCWSTR)TEXT("À©µµ¿ì API »ç¿ëÇÏ±â");
 MainGame g_mainGame;
-POINT g_ptMouse;	// ë§ˆìš°ìŠ¤ ì¢Œí‘œ
+POINT g_ptMouse;	// ¸¶¿ì½º ÁÂÇ¥
 
 // Init
 
@@ -53,8 +54,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ULONG_PTR           gdiplusToken;
 	// Initialize GDI+.
 	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-	//// ìœˆë„ìš°ë¥¼ ìƒì„±í•˜ê¸° ìœ„í•œ ë°ì´í„° ì…‹íŒ…
+	GPImage::Init();
+	//// À©µµ¿ì¸¦ »ý¼ºÇÏ±â À§ÇÑ µ¥ÀÌÅÍ ¼ÂÆÃ
 	//WNDCLASS wndClass;
 	//wndClass.cbClsExtra = 0;
 	//wndClass.cbWndExtra = 0;
@@ -62,10 +63,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//wndClass.hCursor = LoadCursor(g_hInstance, IDC_ARROW);
 	//wndClass.hIcon = LoadIcon(g_hInstance, IDI_APPLICATION);
 	//wndClass.hInstance = g_hInstance;
-	//wndClass.lpfnWndProc = WndProc;		// í•¨ìˆ˜ì˜ ì´ë¦„ì€ ë©”ëª¨ë¦¬ì£¼ì†Œì´ë‹¤.
+	//wndClass.lpfnWndProc = WndProc;		// ÇÔ¼öÀÇ ÀÌ¸§Àº ¸Þ¸ð¸®ÁÖ¼ÒÀÌ´Ù.
 	//wndClass.lpszClassName = g_lpszClassName;
 	//wndClass.lpszMenuName = NULL;
-	//wndClass.style = CS_HREDRAW | CS_VREDRAW;	// | : ë¹„íŠ¸ì—°ì‚°ìž
+	//wndClass.style = CS_HREDRAW | CS_VREDRAW;	// | : ºñÆ®¿¬»êÀÚ
 
 	//RegisterClass(&wndClass);
 	RegisterClassEx(&wndClass);
@@ -120,6 +121,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	TimerManager::GetInstance()->Release();
 
 	//GDI+ Release
+	GPImage::ReleaseLast();
 	Gdiplus::GdiplusShutdown(gdiplusToken);
 	return message.wParam;
 }

@@ -108,7 +108,7 @@
     <ClCompile Include="RenderManager.cpp">
       <Filter>2D Framework\Render</Filter>
     </ClCompile>
-    <ClCompile Include="TestClass.cpp">
+    <ClCompile Include="GPImage.cpp">
       <Filter>2D Framework\Image</Filter>
     </ClCompile>
     <ClCompile Include="MainGame.cpp">
@@ -182,7 +182,7 @@
     <ClInclude Include="RenderManager.h">
       <Filter>2D Framework\Render</Filter>
     </ClInclude>
-    <ClInclude Include="TestClass.h">
+    <ClInclude Include="GPImage.h">
       <Filter>2D Framework\Image</Filter>
     </ClInclude>
     <ClInclude Include="TaeKyungObject.h">
