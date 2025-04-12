@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="Background.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CommonFunction.h" />

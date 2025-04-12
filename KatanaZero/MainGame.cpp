@@ -19,7 +19,6 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->ChangeScene("Stage1","·Îµù_1");
 
 	hdc = GetDC(g_hWnd);
-
 	backBuffer = new Image();
 	testDraw.AddImage(L"Image/dragon_idle.png", 12, 1);
 	tmpTimer = 0;
@@ -68,7 +67,7 @@ void MainGame::Render()
 	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
 	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
 	testDraw.RenderRect(pGraphics , { 100.f,100.f } , 200 , 200 , GPImage::Pcolor::RED);
-	testDraw.Middle_RenderFrame(pGraphics, { 100.f,100.f }, tmpTimer, false, 0.5f);
+	testDraw.Middle_RenderFrame(pGraphics, { 180.f,200.f }, tmpTimer, false, 0.5f);
 	/*testDraw.Render(pGraphics, { 120,100 }, 0.3f);
 	testDraw.Render(pGraphics, { 140,100 }, 0.5f);
 	testDraw.Render(pGraphics, { 160,100 }, 0.7f);

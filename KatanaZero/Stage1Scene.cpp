@@ -11,6 +11,8 @@
 #include "Background.h"
 #include "TestObject.h"
 
+#include "ChatManager.h"
+
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
 {
@@ -71,6 +73,24 @@ HRESULT Stage1Scene::ObjectInit()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
+	}
+	// 테스트 코드 지운
+	{
+		Token* token1 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::WHITE);
+		token1->setPos({ 200.f,200.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token1);
+		Token* token2 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::RED);
+		token2->setPos({ 200.f,220.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token2);
+		Token* token3 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::ORANGE);
+		token3->setPos({ 200.f,240.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token3);
+		Token* token4 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::PURPLE);
+		token4->setPos({ 200.f,260.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token4);
+		Token* token5 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::YELLOW);
+		token5->setPos({ 200.f,280.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token5);
 	}
 
 	return S_OK;

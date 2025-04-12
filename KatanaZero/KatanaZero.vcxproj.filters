@@ -138,6 +138,9 @@
     <ClCompile Include="TestObject.cpp">
       <Filter>MainGame\TaeKyung</Filter>
     </ClCompile>
+    <ClCompile Include="ChatManager.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="TestObject.h">
       <Filter>MainGame\TaeKyung</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatManager.h">
+      <Filter>2D Framework\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
