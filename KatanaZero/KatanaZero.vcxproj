@@ -143,10 +143,12 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
+    <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TilemapTool.cpp" />
+    <ClCompile Include="TimeLineBuffer.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
   </ItemGroup>
@@ -169,10 +171,12 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScrollManager.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SnapShotManager.h" />
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TilemapTool.h" />
+    <ClInclude Include="TimeLineBuffer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
   </ItemGroup>

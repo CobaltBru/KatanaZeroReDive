@@ -67,6 +67,9 @@
     <Filter Include="2D Framework\Scroll">
       <UniqueIdentifier>{5f66ebc6-4ec4-46aa-a47b-4cde0040c072}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\TimeLine">
+      <UniqueIdentifier>{1bbfb6bb-a331-4e57-b1bf-1a646d9f8592}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -134,6 +137,12 @@
     </ClCompile>
     <ClCompile Include="TestObject.cpp">
       <Filter>MainGame\TaeKyung</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeLineBuffer.cpp">
+      <Filter>2D Framework\TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="SnapShotManager.cpp">
+      <Filter>2D Framework\TimeLine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +217,12 @@
     </ClInclude>
     <ClInclude Include="TestObject.h">
       <Filter>MainGame\TaeKyung</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeLineBuffer.h">
+      <Filter>2D Framework\TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="SnapShotManager.h">
+      <Filter>2D Framework\TimeLine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
