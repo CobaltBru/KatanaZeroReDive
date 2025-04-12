@@ -67,6 +67,9 @@
     <Filter Include="2D Framework\Scroll">
       <UniqueIdentifier>{5f66ebc6-4ec4-46aa-a47b-4cde0040c072}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Sound">
+      <UniqueIdentifier>{0e234c14-df1c-4e3b-bb83-56165c15969d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="ChatManager.cpp">
       <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>2D Framework\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="ChatManager.h">
       <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>2D Framework\Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

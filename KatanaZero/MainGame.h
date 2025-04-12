@@ -8,6 +8,20 @@ class EnemyManager;
 class TilemapTool;
 class MainGame : public GameObject
 {
+public:
+	MainGame();
+	~MainGame();
+
+	virtual HRESULT Init() override;
+	virtual void Release() override;
+	virtual void Update() override;
+	void Render();
+
+	LRESULT MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
+
+private:
+	HRESULT InitSound();
+
 private:
 	HDC hdc;
 	PAINTSTRUCT ps;
@@ -21,15 +35,5 @@ private:
 
 	GPImage testDraw;
 	int tmpTimer;
-public:
-	virtual HRESULT Init() override;
-	virtual void Release() override;
-	virtual void Update() override;
-	void Render();
-
-	LRESULT MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
-
-	MainGame();
-	~MainGame();
 };
 

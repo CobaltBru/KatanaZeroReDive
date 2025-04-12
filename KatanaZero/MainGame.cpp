@@ -6,12 +6,21 @@
 #include "Stage1Scene.h"
 
 #include "LoadingScene.h"
+#include "SoundManager.h"
 
 HRESULT MainGame::Init()
 {
 	ImageManager::GetInstance()->Init();
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
+	SoundManager::GetInstance()->Init();
+
+	if (FAILED(InitSound()))
+	{
+		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
+		return E_FAIL;
+	}
+	
 
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
@@ -45,11 +54,14 @@ void MainGame::Release()
 	SceneManager::GetInstance()->Release();
 	KeyManager::GetInstance()->Release();
 	ImageManager::GetInstance()->Release();
+	SoundManager::GetInstance()->Release();
 }
 
 void MainGame::Update()
 {
 	SceneManager::GetInstance()->Update();
+	SoundManager::GetInstance()->Update();
+
 	InvalidateRect(g_hWnd, NULL, false);
 	tmpTimer++;
 	if (tmpTimer >= 12) tmpTimer = 0;
@@ -93,6 +105,17 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 	}
 
 	return DefWindowProc(hWnd, iMessage, wParam, lParam);
+}
+
+HRESULT MainGame::InitSound()
+{
+	// 모든 음악은 여기에 등록
+	if (FAILED(SoundManager::GetInstance()->AddSound("Katana ZeroTest", "Sound/Katana ZeroTest.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("EffectTest", "Sound/EffectTest.wav")))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 MainGame::MainGame()

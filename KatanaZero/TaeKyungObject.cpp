@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "Collider.h"
 #include "ScrollManager.h"
+#include "SoundManager.h"
 
 TaeKyungObject::TaeKyungObject()
 	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
@@ -16,20 +17,32 @@ TaeKyungObject::TaeKyungObject()
 HRESULT TaeKyungObject::Init()
 {
 	Image = ImageManager::GetInstance()->FindImage("rocket");
+
+	//콜라이더 추가
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
 	Speed = 300.f;
 
+	InitOffset();
+
 	return S_OK;
-}
+} 
 
 void TaeKyungObject::Update()
 {
 	Move();
 
+	Collision();
 
 	Offset();
+
+	//테스트 이펙트 사운드 재생
+	if (KeyManager::GetInstance()->IsOnceKeyDown('E'))
+		SoundManager::GetInstance()->PlaySounds("EffectTest",EChannelType::Effect);
+	// 모든 음악 끄기
+	if (KeyManager::GetInstance()->IsOnceKeyDown('P'))
+		SoundManager::GetInstance()->StopAll();
 
 	//렌더그룹 추가 (해당에서 조건을 달아서  Render를 호출할지 안할지도 설정 가능)
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
@@ -56,6 +69,40 @@ void TaeKyungObject::Move()
 		Pos.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
 	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
 		Pos.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
+}
+
+void TaeKyungObject::Collision()
+{
+	// 충돌 정보
+	FHitResult HitResult;
+
+	// 내 콜라이더와 ECollisionGroup::Enemy에 있는 콜라이더들과 충돌처리
+	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy))
+	{
+		// 충돌했다.
+
+		ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
+		HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
+		
+		HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
+	}
+}
+
+void TaeKyungObject::InitOffset()
+{
+	FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+	while (true)
+	{
+		Offset();
+
+		const FPOINT NewScroll = ScrollManager::GetInstance()->GetScroll();
+
+		if (Scroll.x != NewScroll.x || Scroll.y != NewScroll.y)
+			Scroll = NewScroll;
+		else
+			break;
+	}
 }
 
 void TaeKyungObject::Offset()
