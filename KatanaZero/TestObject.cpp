@@ -3,15 +3,21 @@
 #include "ImageManager.h"
 #include "ScrollManager.h"
 #include "RenderManager.h"
+#include "Collider.h"
+#include "CollisionManager.h"
 
 TestObject::TestObject()
-	:Image(nullptr)
+	:Image(nullptr), ObjectCollider(nullptr)
 {
 }
 
 void TestObject::Init(string InImageKey, FPOINT InPos)
 {
 	Image = ImageManager::GetInstance()->FindImage(InImageKey);
+
+	ObjectCollider = new Collider(this,EColliderType::Rect,{},30.f,true,1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+
 	Pos = InPos;	
 }
 
