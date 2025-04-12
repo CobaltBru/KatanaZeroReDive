@@ -1,7 +1,7 @@
 #pragma once
-#include "GameObject.h"
+#include "Scene.h"
 
-class Stage1Scene : public GameObject
+class Stage1Scene : public Scene
 {
 public:
 	Stage1Scene() = default;
@@ -11,5 +11,9 @@ public:
 	virtual void Release() override;
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
+
+protected:
+	virtual HRESULT ImageInit();
+	virtual HRESULT ObjectInit();
 };
 

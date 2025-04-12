@@ -149,3 +149,13 @@ void TilemapTool::Load()
 	}
 	CloseHandle(hFile);
 }
+
+HRESULT TilemapTool::ImageInit()
+{
+	return E_NOTIMPL;
+}
+
+HRESULT TilemapTool::ObjectInit()
+{
+	return E_NOTIMPL;
+}

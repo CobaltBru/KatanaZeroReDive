@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Scene.h"
 
 // 샘플 타일 정보
 // 640 * 288
@@ -20,7 +20,7 @@ typedef struct tagTile
 
 class Image;
 class Button;
-class TilemapTool : public GameObject
+class TilemapTool : public Scene
 {
 private:
 	Image* sampleTile;
@@ -44,5 +44,9 @@ public:
 
 	TilemapTool() {};
 	virtual ~TilemapTool() {};
+
+protected:
+	virtual HRESULT ImageInit();
+	virtual HRESULT ObjectInit();
 };
 
