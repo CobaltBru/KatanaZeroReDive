@@ -150,12 +150,12 @@ void TilemapTool::Load()
 	CloseHandle(hFile);
 }
 
-HRESULT TilemapTool::ImageInit()
+HRESULT TilemapTool::InitImage()
 {
 	return E_NOTIMPL;
 }
 
-HRESULT TilemapTool::ObjectInit()
+HRESULT TilemapTool::InitObject()
 {
 	return E_NOTIMPL;
 }

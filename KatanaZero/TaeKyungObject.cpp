@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "Collider.h"
 #include "ScrollManager.h"
+#include "SoundManager.h"
 
 TaeKyungObject::TaeKyungObject()
 	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
@@ -35,6 +36,13 @@ void TaeKyungObject::Update()
 	Collision();
 
 	Offset();
+
+	//테스트 이펙트 사운드 재생
+	if (KeyManager::GetInstance()->IsOnceKeyDown('E'))
+		SoundManager::GetInstance()->PlaySounds("EffectTest",EChannelType::Effect);
+	// 모든 음악 끄기
+	if (KeyManager::GetInstance()->IsOnceKeyDown('P'))
+		SoundManager::GetInstance()->StopAll();
 
 	//렌더그룹 추가 (해당에서 조건을 달아서  Render를 호출할지 안할지도 설정 가능)
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
