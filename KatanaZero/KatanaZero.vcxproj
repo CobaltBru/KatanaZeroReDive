@@ -153,6 +153,7 @@
     <ClCompile Include="ScrollManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
+    <ClCompile Include="GPImage.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TilemapTool.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Stage1Scene.h" />
+    <ClInclude Include="GPImage.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TilemapTool.h" />

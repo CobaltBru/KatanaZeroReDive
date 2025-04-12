@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "GPImage.h"
 
 class Timer;
 class Image;
@@ -32,6 +33,7 @@ private:
 
 	Timer* timer;
 
-
+	GPImage testDraw;
+	int tmpTimer;
 };
 

@@ -75,9 +75,6 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MainGame.cpp">
-      <Filter>MainGame</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>2D Framework\Timer</Filter>
     </ClCompile>
@@ -116,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
       <Filter>2D Framework\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="GPImage.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>MainGame</Filter>
     </ClCompile>
     <ClCompile Include="TaeKyungObject.cpp">
       <Filter>MainGame\TaeKyung</Filter>
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="RenderManager.h">
       <Filter>2D Framework\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GPImage.h">
+      <Filter>2D Framework\Image</Filter>
     </ClInclude>
     <ClInclude Include="TaeKyungObject.h">
       <Filter>MainGame\TaeKyung</Filter>
