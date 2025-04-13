@@ -1,9 +1,11 @@
 #include "ChatManager.h"
 #include "RenderManager.h"
 
-Token::Token(const wchar_t* text, APPEAR appear, OPTION option, COLORS color)
+Token::Token(const wchar_t* text, FPOINT pos, APPEAR appear, OPTION option, COLORS color)
 {
-	pos = { 0.f,0.f };
+    globalPos = { 0.f,0.f };
+	this->pos = pos;
+    
 	this->text = text;
     this->appear = appear;
 	this->option = option;
@@ -24,12 +26,13 @@ Token::Token(const wchar_t* text, APPEAR appear, OPTION option, COLORS color)
         savedColor = RGB(127, 255, 0);
     else if (color == COLORS::SKY)
         savedColor = RGB(0, 255, 255);
+
+    complete = false;
 }
 
 void Token::Update()
 {
 	timer += TimerManager::GetInstance()->GetDeltaTime();
-    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
 
 void Token::Render(HDC hdc)
@@ -52,7 +55,7 @@ void Token::Render(HDC hdc)
     switch (option)
     {
     case OPTION::STOP:
-        TextOut(hdc, pos.x, pos.y, text, len);
+        TextOut(hdc, pos.x + globalPos.x, pos.y + globalPos.y, text, len);
         break;
     case OPTION::SHAKE:
         ShakeEffect(hdc);
@@ -66,31 +69,28 @@ void Token::Render(HDC hdc)
 
 void Token::NormalAppear(HDC hdc)
 {
-    int x = pos.x;
+    int x = pos.x + globalPos.x;
 
-    // 효과 파라미터
-    float appearDelay =0.05f;  // 각 글자 간 지연 시간 (밀리초)
-    float upTime = 0.05f; // 각 글자의 애니메이션 지속 시간 (밀리초)
-    float pixel = 5;  // 글자가 시작할 때 final 위치보다 아래에 위치하는 픽셀 수
+    float appearDelay =0.1f; 
+    float upTime = 0.05f;
+    float pixel = 3;
 
     for (int i = 0; i < len; i++)
     {
-        // 각 글자는 i * letterDelay 후에 애니메이션을 시작한다.
         float appearTime = i * appearDelay;
         float elapsed = timer - appearTime;
-        int y = pos.y + pixel;
+        int y = pos.y + globalPos.y + pixel;
 
-        // 한 글자씩 출력
         if (timer>= appearTime)
         {
             if (elapsed >= upTime)
             {
-                y = pos.y;
+                y = pos.y + globalPos.y;
             }
             else
             {
                 float percent = elapsed / upTime;
-                y = pos.y + (int)(pixel * (1.0 - percent));
+                y = pos.y + globalPos.y + (int)(pixel * (1.0 - percent));
             }
             wchar_t letter[2] = { text[i], L'\0' };
             TextOut(hdc, x, y, letter, 1);
@@ -100,6 +100,7 @@ void Token::NormalAppear(HDC hdc)
             x += size.cx;
             if (i == len - 1)
             {
+                complete = true;
                 appear = APPEAR::END;
             }
         }
@@ -109,25 +110,22 @@ void Token::NormalAppear(HDC hdc)
 
 void Token::DoomAppear(HDC hdc)
 {
-    int x = pos.x;
-    // 각 글자가 등장하는 지연 시간 (밀리초 단위)
-    float appearDelay = 0.03f;
+    int x = pos.x + globalPos.x;
+    float appearDelay = 0.1f;
 
     for (int i = 0; i < len; i++)
     {
-        // i번째 글자의 등장 시작 시점
         float upTime = i * appearDelay;
 
-        // 아직 아직 나타날 시간이 아니면 해당 글자는 그리지 않음
         if (timer >= upTime)
         {
             wchar_t letter[2] = { text[i], L'\0' };
-            TextOut(hdc, x, pos.y, letter, 1);
+            TextOut(hdc, x, pos.y + globalPos.y, letter, 1);
             if (i == len - 1)
             {
+                complete = true;
                 appear = APPEAR::END;
             }
-            // 현재 글자의 폭을 측정하여 다음 글자의 위치 계산
             SIZE size;
             GetTextExtentPoint32W(hdc, &text[i], 1, &size);
             x += size.cx;
@@ -139,7 +137,7 @@ void Token::DoomAppear(HDC hdc)
 void Token::WaveEffect(HDC hdc)
 {
     
-    float x = pos.x;
+    float x = pos.x + globalPos.x;
 
     float amplitude = 4;
     float delay = 0.5f;
@@ -150,7 +148,7 @@ void Token::WaveEffect(HDC hdc)
 
         wchar_t letter[2] = { text[i], L'\0' };
 
-        TextOut(hdc, x, pos.y + offsetY, letter, 1);
+        TextOut(hdc, x, pos.y + globalPos.y + offsetY, letter, 1);
 
         SIZE size;
         GetTextExtentPoint32W(hdc, letter, 1, &size);
@@ -160,9 +158,9 @@ void Token::WaveEffect(HDC hdc)
 
 void Token::ShakeEffect(HDC hdc)
 {
-    float x = pos.x;
+    float x = pos.x + globalPos.x;
 
-    int range = 5;
+    int range = 3;
 
     for (int i = 0; i < len; i++)
     {
@@ -170,10 +168,86 @@ void Token::ShakeEffect(HDC hdc)
         float offsetY = ((rand() % (2 * range + 1)) - range)/10.0f;
 
         wchar_t letter[2] = { text[i], L'\0' };
-        TextOut(hdc, x + offsetX, pos.y + offsetY, letter, 1);
+        TextOut(hdc, x + offsetX, pos.y + globalPos.y + offsetY, letter, 1);
 
         SIZE size;
         GetTextExtentPoint32W(hdc, letter, 1, &size);
         x += size.cx;
+    }
+}
+
+void Chat::Init(string Key, vector<pair<float, Token>> tokens, float width, float height)
+{
+    tokenIdx = 0;
+    this->key = key;
+    this->tokens = tokens;
+    this->width = width;
+    this->height = height;
+    boxTime = 0.5f;
+}
+
+void Chat::Update()
+{
+    timer += TimerManager::GetInstance()->GetDeltaTime();
+    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+    
+    float appearTime = boxTime + 0.5f;
+    for (int i = 0; i <= tokenIdx; i++)
+    {
+        appearTime += tokens[i].first;
+        if(timer> appearTime) tokens[i].second.Update();
+    }
+}
+
+void Chat::Render(HDC hdc)
+{
+    DrawBox(hdc);
+    DrawTokens(hdc);
+}
+
+void Chat::DrawBox(HDC hdc)
+{
+    
+    float percent = timer / boxTime;
+    float currentHeight = height * percent;
+    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+
+    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+    if(percent<1.0f)
+        RoundRect(hdc, pos.x - width / 2, pos.y, pos.x + width / 2, pos.y + currentHeight, 5.f, 5.f);
+    else
+        RoundRect(hdc, pos.x - width / 2, pos.y, pos.x + width / 2, pos.y + height, 5.f, 5.f);
+
+    SelectObject(hdc, hOldPen);
+    SelectObject(hdc, hOldBrush);
+
+    DeleteObject(hPen);
+    DeleteObject(hBrush);
+}
+
+void Chat::DrawTokens(HDC hdc)
+{
+    float appearTime = boxTime + 0.5f;
+    FPOINT gPos = { pos.x - width / 2 + 5.f,pos.y  + 5.f };
+    for (int i = 0; i < tokens.size(); i++)
+    {
+        appearTime += tokens[i].first;
+        if (timer >= appearTime)
+        {
+            tokens[i].second.setGlobalPos(gPos);
+            tokens[i].second.Render(hdc);
+
+            if (tokens[i].second.isComplete())
+            {
+                if(tokenIdx<tokens.size()-1)tokenIdx = i + 1;
+            }
+        }
+        else
+        {
+            break;
+        }
     }
 }

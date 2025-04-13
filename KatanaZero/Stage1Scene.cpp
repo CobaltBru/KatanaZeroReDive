@@ -79,21 +79,33 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// 테스트 코드 지운
 	{
-		Token* token1 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::GREEN);
-		token1->setPos({ 200.f,200.f });
+		/*Token* token1 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 0.f,0.f }, Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::GREEN);
+		token1->setGlobalPos({ 200.f, 200.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token1);
-		Token* token2 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::SKY);
-		token2->setPos({ 200.f,220.f });
+		Token* token2 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 50.f,0.f }, Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::SKY);
+		token2->setGlobalPos({ 200.f,220.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token2);
-		Token* token3 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::ORANGE);
-		token3->setPos({ 200.f,240.f });
+		Token* token3 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 100.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::ORANGE);
+		token3->setGlobalPos({ 200.f,240.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token3);
-		Token* token4 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::PURPLE);
-		token4->setPos({ 200.f,260.f });
+		Token* token4 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 150.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::PURPLE);
+		token4->setGlobalPos({ 200.f,260.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token4);
-		Token* token5 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::YELLOW);
-		token5->setPos({ 200.f,280.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token5);
+		Token* token5 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 200.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::YELLOW);
+		token5->setGlobalPos({ 200.f,280.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token5);*/
+		vector <pair<float, Token >> tokens;
+		tokens.push_back(make_pair(0, Token(L"안녕하세요!", { 0.f,0.f },
+			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
+		tokens.push_back(make_pair(1.f, Token(L"이것들은", { 100.f,0.f },
+			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
+		tokens.push_back(make_pair(1.f, Token(L"출력테스트", { 170.f,0.f },
+			Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::YELLOW)));
+
+		Chat* chat1 = new Chat();
+		chat1->Init("test", tokens, 400.f, 50.f);
+		chat1->setPos({ 700, 100 });
+		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);
 	}
 
 	return S_OK;
