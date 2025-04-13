@@ -34,6 +34,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpszCmdParam, int nCmdShow)
 {
+	// 누수 난 메모리 블럭 추적
+	//_CrtSetBreakAlloc(228);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	g_hInstance = hInstance;
 
 	WNDCLASSEX wndClass;

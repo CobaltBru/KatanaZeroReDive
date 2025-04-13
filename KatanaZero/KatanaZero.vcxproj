@@ -143,6 +143,8 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LineManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
@@ -171,6 +173,8 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="LineManager.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="ObjectManager.h" />

@@ -1,6 +1,10 @@
 #include "GPImage.h"
 using namespace Gdiplus;
 
+#ifdef new
+#undef new
+#endif
+
 Gdiplus::Pen* GPImage::pens[5];
 
 void GPImage::Init()
@@ -194,3 +198,7 @@ void GPImage::ReleaseLast()
 		delete pens[i];
 	}
 }
+
+#ifdef _DEBUG
+#define new DBG_NEW
+#endif

@@ -63,7 +63,7 @@ void MainGame::Update()
 	SceneManager::GetInstance()->Update();
 	SoundManager::GetInstance()->Update();
 
-	InvalidateRect(g_hWnd, NULL, false);
+	InvalidateRect(g_hWnd, NULL, false); 
 	tmpTimer++;
 	if (tmpTimer >= 12) tmpTimer = 0;
 }

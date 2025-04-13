@@ -6,6 +6,7 @@ class ScrollManager : public  Singleton<ScrollManager>
 {
 public:
 	void Init();
+	void Release();
 
 	FPOINT GetScroll() const { return Scroll; }
 	void SetScroll(FPOINT InScroll) {

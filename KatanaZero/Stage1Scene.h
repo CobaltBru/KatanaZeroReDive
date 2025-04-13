@@ -4,6 +4,7 @@
 class ObjectManager;
 class RenderManager;
 class CollisionManager;
+class ScrollManager;
 class Stage1Scene : public Scene
 {
 public:
@@ -23,5 +24,6 @@ private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;
 	CollisionManager* CollisionManager;
+	ScrollManager* ScrollManager;
 };
 

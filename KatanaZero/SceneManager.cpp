@@ -35,6 +35,14 @@ void SceneManager::Release()
 		}
 	}
 	mapScenes.clear();
+
+	for (auto& iter : mapLoadingScenes)
+	{
+		iter.second->Release();
+		delete iter.second;
+	}
+	mapLoadingScenes.clear();
+
 	ReleaseInstance();
 }
 

@@ -11,9 +11,10 @@
 #include "Background.h"
 #include "TestObject.h"
 #include "SoundManager.h"
+#include "LineManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr),ScrollManager(nullptr)
 {
 }
 
@@ -28,7 +29,11 @@ HRESULT Stage1Scene::Init()
 	CollisionManager = CollisionManager::GetInstance();
 	CollisionManager->Init();
 
-	ScrollManager::GetInstance()->ZeroScroll();
+	ScrollManager = ScrollManager::GetInstance();
+	ScrollManager->Init();
+	ScrollManager->ZeroScroll();
+
+	LineManager::GetInstance()->Init();
 
 	if (FAILED(InitImage()))
 	{
@@ -83,12 +88,25 @@ void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
+
+	// 테스트 코드
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+	{
+		const FPOINT Scroll = ScrollManager->GetScroll();
+		LineManager::GetInstance()->AddLine(g_ptMouse.x - Scroll.x, g_ptMouse.y - Scroll.y);
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
+	{
+		LineManager::GetInstance()->ResetLinePoint();
+	}
 }
 
 void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
+
+	LineManager::GetInstance()->Render(hdc);
 }
 
 void Stage1Scene::Release()
@@ -96,4 +114,6 @@ void Stage1Scene::Release()
 	ObjectManager->Release();
 	CollisionManager->Release();
 	RenderManager->Release();	
+	ScrollManager->Release();
+	LineManager::GetInstance()->Release();
 }
