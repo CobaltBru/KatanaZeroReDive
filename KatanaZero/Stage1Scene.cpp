@@ -79,19 +79,19 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// 테스트 코드 지운
 	{
-		Token* token1 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::WHITE);
+		Token* token1 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::GREEN);
 		token1->setPos({ 200.f,200.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token1);
-		Token* token2 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::RED);
+		Token* token2 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::SKY);
 		token2->setPos({ 200.f,220.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token2);
-		Token* token3 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::ORANGE);
+		Token* token3 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::ORANGE);
 		token3->setPos({ 200.f,240.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token3);
-		Token* token4 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::PURPLE);
+		Token* token4 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::PURPLE);
 		token4->setPos({ 200.f,260.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token4);
-		Token* token5 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::YELLOW);
+		Token* token5 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::YELLOW);
 		token5->setPos({ 200.f,280.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token5);
 	}
