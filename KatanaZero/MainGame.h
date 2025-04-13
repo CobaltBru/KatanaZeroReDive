@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "GPImage.h"
 
 class Timer;
 class Image;
@@ -7,6 +8,20 @@ class EnemyManager;
 class TilemapTool;
 class MainGame : public GameObject
 {
+public:
+	MainGame();
+	~MainGame();
+
+	virtual HRESULT Init() override;
+	virtual void Release() override;
+	virtual void Update() override;
+	void Render();
+
+	LRESULT MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
+
+private:
+	HRESULT InitSound();
+
 private:
 	HDC hdc;
 	PAINTSTRUCT ps;
@@ -18,15 +33,7 @@ private:
 
 	Timer* timer;
 
-public:
-	virtual HRESULT Init() override;
-	virtual void Release() override;
-	virtual void Update() override;
-	void Render();
-
-	LRESULT MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
-
-	MainGame();
-	~MainGame();
+	GPImage testDraw;
+	int tmpTimer;
 };
 

@@ -70,6 +70,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>Reference\Librarys;$(LibraryPath)</LibraryPath>
+    <IncludePath>Reference\Headers;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>Reference\Librarys;$(LibraryPath)</LibraryPath>
+    <IncludePath>Reference\Headers;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -129,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -144,7 +153,9 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
     <ClCompile Include="SnapShotManager.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
+    <ClCompile Include="GPImage.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TilemapTool.cpp" />
@@ -155,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="Background.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CommonFunction.h" />
@@ -172,7 +184,9 @@
     <ClInclude Include="ScrollManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SnapShotManager.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Stage1Scene.h" />
+    <ClInclude Include="GPImage.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TilemapTool.h" />

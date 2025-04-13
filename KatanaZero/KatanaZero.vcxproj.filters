@@ -69,14 +69,13 @@
     </Filter>
     <Filter Include="2D Framework\TimeLine">
       <UniqueIdentifier>{1bbfb6bb-a331-4e57-b1bf-1a646d9f8592}</UniqueIdentifier>
+    <Filter Include="2D Framework\Sound">
+      <UniqueIdentifier>{0e234c14-df1c-4e3b-bb83-56165c15969d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MainGame.cpp">
-      <Filter>MainGame</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>2D Framework\Timer</Filter>
@@ -117,6 +116,12 @@
     <ClCompile Include="RenderManager.cpp">
       <Filter>2D Framework\Render</Filter>
     </ClCompile>
+    <ClCompile Include="GPImage.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>MainGame</Filter>
+    </ClCompile>
     <ClCompile Include="TaeKyungObject.cpp">
       <Filter>MainGame\TaeKyung</Filter>
     </ClCompile>
@@ -143,6 +148,11 @@
     </ClCompile>
     <ClCompile Include="SnapShotManager.cpp">
       <Filter>2D Framework\TimeLine</Filter>
+    <ClCompile Include="ChatManager.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>2D Framework\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +207,9 @@
     <ClInclude Include="RenderManager.h">
       <Filter>2D Framework\Render</Filter>
     </ClInclude>
+    <ClInclude Include="GPImage.h">
+      <Filter>2D Framework\Image</Filter>
+    </ClInclude>
     <ClInclude Include="TaeKyungObject.h">
       <Filter>MainGame\TaeKyung</Filter>
     </ClInclude>
@@ -223,6 +236,11 @@
     </ClInclude>
     <ClInclude Include="SnapShotManager.h">
       <Filter>2D Framework\TimeLine</Filter>
+    <ClInclude Include="ChatManager.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>2D Framework\Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

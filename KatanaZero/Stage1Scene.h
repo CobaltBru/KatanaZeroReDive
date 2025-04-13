@@ -16,8 +16,8 @@ public:
 	virtual void Render(HDC hdc) override;
 
 protected:
-	virtual HRESULT ImageInit();
-	virtual HRESULT ObjectInit();
+	virtual HRESULT InitImage();
+	virtual HRESULT InitObject();
 
 private:
 	ObjectManager* ObjectManager;

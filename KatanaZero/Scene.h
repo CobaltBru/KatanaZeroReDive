@@ -13,7 +13,7 @@ public:
 	virtual void Render(HDC hdc) {};
 
 protected:
-	virtual HRESULT ImageInit() = 0;
-	virtual HRESULT ObjectInit() = 0;
+	virtual HRESULT InitImage() = 0;
+	virtual HRESULT InitObject() = 0;
 };
 

@@ -16,8 +16,8 @@ public:
 	virtual ~LoadingScene() {};
 
 protected:
-	virtual HRESULT ImageInit() { return S_OK; };
-	virtual HRESULT ObjectInit() { return S_OK; };
+	virtual HRESULT InitImage() { return S_OK; };
+	virtual HRESULT InitObject() { return S_OK; };
 
 };
 

@@ -62,9 +62,12 @@ void CollisionManager::Release()
 
 bool CollisionManager::CollisionAABB(Collider* InSour, FHitResult& OutHitResult, ECollisionGroup InCollisionGroup)
 {
+	if (!InSour->CanHit())
+		return false;
+
 	for (auto& DestCollider : CollisionList[(int)InCollisionGroup])
 	{
-		if (!InSour->CanHit() || !DestCollider->CanHit())
+		if (!DestCollider->CanHit())
 			continue;
 
 		FPOINT collider1Pos = InSour->GetPos();
@@ -97,9 +100,12 @@ bool CollisionManager::CollisionAABB(Collider* InSour, FHitResult& OutHitResult,
 
 bool CollisionManager::CollisionSphere(Collider* InSour, FHitResult& OutHitResult, ECollisionGroup InCollisionGroup)
 {
+	if (!InSour->CanHit())
+		return false;
+
 	for (auto& DestCollider : CollisionList[(int)InCollisionGroup])
 	{
-		if (!InSour->CanHit() || !DestCollider->CanHit())
+		if (!DestCollider->CanHit())
 			continue;
 
 		float radius = (InSour->GetSize().x + DestCollider->GetSize().x) * 0.5f;

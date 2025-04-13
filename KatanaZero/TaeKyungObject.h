@@ -16,7 +16,9 @@ public:
 
 private:
 	void Move();
+	void Collision();
 
+	void InitOffset();
 	void Offset();
 private:
 	Image* Image;

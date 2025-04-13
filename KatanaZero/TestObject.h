@@ -1,5 +1,7 @@
 #pragma once
 #include "GameObject.h"
+
+class Collider;
 class TestObject : public GameObject
 {
 public:
@@ -13,5 +15,6 @@ public:
 
 private:
 	Image* Image;
+	Collider* ObjectCollider;
 };
 

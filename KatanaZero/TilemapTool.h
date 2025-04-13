@@ -46,7 +46,7 @@ public:
 	virtual ~TilemapTool() {};
 
 protected:
-	virtual HRESULT ImageInit();
-	virtual HRESULT ObjectInit();
+	virtual HRESULT InitImage();
+	virtual HRESULT InitObject();
 };
 

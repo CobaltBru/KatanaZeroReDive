@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "MainGame.h"
+#include "GPImage.h"
 
 HINSTANCE g_hInstance;	// 프로그램 인스턴스 핸들
 HWND g_hWnd;
@@ -49,8 +50,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHIELD));
 
-
-
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR           gdiplusToken;
+	// Initialize GDI+.
+	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+	GPImage::Init();
 	//// 윈도우를 생성하기 위한 데이터 셋팅
 	//WNDCLASS wndClass;
 	//wndClass.cbClsExtra = 0;
@@ -81,6 +85,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		NULL, NULL, g_hInstance, NULL);
 
 	ShowWindow(g_hWnd, nCmdShow);
+
+	
 
 	TimerManager::GetInstance()->Init();
 	g_mainGame.Init();
@@ -114,6 +120,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	g_mainGame.Release();
 	TimerManager::GetInstance()->Release();
 
+	//GDI+ Release
+	GPImage::ReleaseLast();
+	Gdiplus::GdiplusShutdown(gdiplusToken);
 	return message.wParam;
 }
 
