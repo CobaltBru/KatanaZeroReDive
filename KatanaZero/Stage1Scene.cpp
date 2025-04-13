@@ -8,6 +8,7 @@
 
 #include "TaeKyungObject.h"
 #include "Background.h"
+#include "Boss.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
@@ -62,6 +63,10 @@ HRESULT Stage1Scene::ObjectInit()
 		TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+
+		Boss* boss = new Boss();
+		boss->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, boss);
 	}
 
 	return S_OK;

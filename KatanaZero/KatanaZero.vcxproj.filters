@@ -126,6 +126,12 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>2D Framework\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Lazer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -193,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
       <Filter>2D Framework\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Lazer.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
