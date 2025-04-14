@@ -16,6 +16,7 @@ public:
 	void AddLine(float InX, float InY, ELineType InLineType = ELineType::Normal);
 	void ResetLinePoint();
 
+	bool CollisionLine(FPOINT InPos, FPOINT& OutPos, float tolerance = 3.f);
 
 private:
 	list<Line*> LineList;

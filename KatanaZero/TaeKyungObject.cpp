@@ -7,6 +7,7 @@
 #include "Collider.h"
 #include "ScrollManager.h"
 #include "SoundManager.h"
+#include "LineManager.h"
 
 TaeKyungObject::TaeKyungObject()
 	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
@@ -69,6 +70,13 @@ void TaeKyungObject::Move()
 		Pos.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
 	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
 		Pos.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
+
+	FPOINT ResultPos;
+	if (LineManager::GetInstance()->CollisionLine(Pos, ResultPos))
+	{
+		Pos.y = ResultPos.y;
+	}
+	
 }
 
 void TaeKyungObject::Collision()

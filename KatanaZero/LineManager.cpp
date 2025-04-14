@@ -36,6 +36,56 @@ void LineManager::ResetLinePoint()
 	LinePoint[RIGHT].y = 0.f;
 }
 
+bool LineManager::CollisionLine(FPOINT InPos, FPOINT& OutPos, float tolerance)
+{
+	if (LineList.empty())
+		return false;
+	
+	// 직선의 방정식으로 라인을 태우자.
+	// 캐릭터의 X 값으로 높이를 알 수 있다.
+	// 두점을 사용해 직선의 방정식을 구하자.
+	
+	Line* Target = nullptr;
+	
+	for (auto& iter : LineList)
+	{
+		// X Offset
+		// 해당 라인 안에 있다면
+		if (InPos.x >= iter->GetLine().LeftPoint.x && InPos.x < iter->GetLine().RightPoint.x)
+		{
+			float x1 = iter->GetLine().LeftPoint.x;
+			float y1 = iter->GetLine().LeftPoint.y;
+
+			float x2 = iter->GetLine().RightPoint.x;
+			float y2 = iter->GetLine().RightPoint.y;
+
+			float y = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
+
+			float dy = abs(InPos.y - y);
+			if (dy <= tolerance)
+			{
+				 OutPos.y = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
+
+				 Target = iter;
+			}
+		}
+	}
+
+	if (Target == nullptr)
+		return false;
+
+	/*
+	float x1 = Target->GetLine().LeftPoint.x;
+	float y1 = Target->GetLine().LeftPoint.y;
+
+	float x2 = Target->GetLine().RightPoint.x;
+	float y2 = Target->GetLine().RightPoint.y;
+
+	float y = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;*/
+	
+	return true;
+}
+
 void LineManager::Render(HDC hdc)
 {
 	if (LinePoint[LEFT].x && LinePoint[LEFT].y)
