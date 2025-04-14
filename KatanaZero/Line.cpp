@@ -22,7 +22,14 @@ void Line::Render(HDC hdc)
 	case ELineType::Wall:
 		hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0)); // »¡°­
 		break;
+	case ELineType::DownLine:
+		hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 255)); // ºí·ç
+		break;
+	case ELineType::Ceiling:
+		hPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 0)); // ³ë¶û
+		break;
 	}
+
 	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // ÇöÀç DC¿¡ ÆæÀ» ¼³Á¤
 		
 	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();

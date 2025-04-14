@@ -99,6 +99,24 @@ void Stage1Scene::Update()
 	{
 		LineManager::GetInstance()->ResetLinePoint();
 	}
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
+	{
+		LineManager::GetInstance()->SetLineType(ELineType::Normal);
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
+	{
+		LineManager::GetInstance()->SetLineType(ELineType::Wall);
+
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD3))
+	{
+		LineManager::GetInstance()->SetLineType(ELineType::DownLine);
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
+	{
+		LineManager::GetInstance()->SetLineType(ELineType::Ceiling);
+	}
 }
 
 void Stage1Scene::Render(HDC hdc)

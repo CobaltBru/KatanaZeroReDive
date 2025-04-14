@@ -16,6 +16,7 @@ public:
 
 private:
 	void Move();
+	void Jump();
 	void Collision();
 
 	void InitOffset();
@@ -24,5 +25,11 @@ private:
 	Image* Image;
 	Collider* ObjectCollider;
 	float Speed;
+
+	//Jump
+	float gravity;
+	float dy;
+	bool bJump;
+	bool bFalling;
 };
 

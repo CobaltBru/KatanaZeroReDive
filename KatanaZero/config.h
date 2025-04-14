@@ -58,6 +58,8 @@ enum class ELineType
 {
 	Normal,
 	Wall,
+	DownLine,
+	Ceiling,
 	End
 };
 

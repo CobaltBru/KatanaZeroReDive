@@ -10,7 +10,7 @@
 #include "LineManager.h"
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
+	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dy(-10.f),gravity(0.1f), bFalling(true)
 {
 }
 
@@ -66,17 +66,52 @@ void TaeKyungObject::Move()
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
 	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_RIGHT))
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_UP))
-		Pos.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
-	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
-		Pos.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
+	//if (KeyManager::GetInstance()->IsStayKeyDown(VK_UP))
+	//	Pos.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
+	//else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
+	//	Pos.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
 
-	FPOINT ResultPos;
-	if (LineManager::GetInstance()->CollisionLine(Pos, ResultPos))
+	Jump();
+
+	FLineResult Result;
+	if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result))
 	{
-		Pos.y = ResultPos.y;
-	}
+		switch (Result.LineType)
+		{
+		case ELineType::Normal:
+			Pos.y = Result.OutPos.y;
+			break;
+		case ELineType::Wall:
+			break;
+		case ELineType::DownLine:
+			Pos.y = Result.OutPos.y;
+			break;
+		case ELineType::Ceiling:
+			break;
+		}
+		
+		
+		bJump = false;
+		dy = -10.f;
+	}	
+}
+
+void TaeKyungObject::Jump()
+{
+	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown(VK_RETURN))
+		bJump = true;
 	
+	if (bJump)
+	{
+		// 그냥 조잡한 점프 공식..
+		// 리지드 바디 구현하는게 좋을 듯.. ㅠ
+		dy += gravity;
+		Pos.y += dy * Speed * TimerManager::GetInstance()->GetDeltaTime();
+  		if (dy >= 0.f)
+			bFalling = true;
+		else
+			bFalling = false;
+	}
 }
 
 void TaeKyungObject::Collision()
