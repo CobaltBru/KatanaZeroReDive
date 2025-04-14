@@ -8,6 +8,7 @@ class SnapShotManager;
 class Stage1Scene : public Scene
 {
 public:
+
 	Stage1Scene();
 	virtual ~Stage1Scene() = default;
 

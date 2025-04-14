@@ -15,6 +15,8 @@
 #include "ChatManager.h"
 #include "SnapShotManager.h"
 
+
+
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), elapsedTime(0.0f)
 {
@@ -89,21 +91,46 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// Å×½ºÆ® ÄÚµå Áö¿î
 	{
-		Token* token1 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::WHITE);
-		token1->setPos({ 200.f,200.f });
+		/*Token* token1 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 0.f,0.f }, Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::GREEN);
+		token1->setGlobalPos({ 200.f, 200.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token1);
-		Token* token2 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::RED);
-		token2->setPos({ 200.f,220.f });
+		Token* token2 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 50.f,0.f }, Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::SKY);
+		token2->setGlobalPos({ 200.f,220.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token2);
-		Token* token3 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::ORANGE);
-		token3->setPos({ 200.f,240.f });
+		Token* token3 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 100.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::ORANGE);
+		token3->setGlobalPos({ 200.f,240.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token3);
-		Token* token4 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::PURPLE);
-		token4->setPos({ 200.f,260.f });
+		Token* token4 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 150.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::PURPLE);
+		token4->setGlobalPos({ 200.f,260.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token4);
-		Token* token5 = new Token(L"HelloWorld!", Token::OPTION::WAVE, Token::COLORS::YELLOW);
-		token5->setPos({ 200.f,280.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token5);
+		Token* token5 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 200.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::YELLOW);
+		token5->setGlobalPos({ 200.f,280.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, token5);*/
+		vector <pair<float, Token >> tokens;
+		tokens.push_back(make_pair(0.f, Token(L"¿À´ÃÀº", { 0.f,0.f },
+			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
+		tokens.push_back(make_pair(0.7f, Token(L"Á¡½ÉÀ¸·Î", { 55,0.f },
+			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
+		tokens.push_back(make_pair(0.7f, Token(L"¹¹¸Ô¾î¿ä", { 122.f,0.f },
+			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
+
+		Chat* chat1 = new Chat();
+		chat1->Init("test", tokens, 400.f, 50.f);
+		chat1->setPos({ 700, 100 });
+		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);
+
+		vector <pair<string, Token >> selects;
+		selects.push_back(make_pair("test1", Token(L"* ±¸³»½Ä´ç* ", {0.f,0.f},
+			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::RED)));
+		selects.push_back(make_pair("test2", Token(L"À°È¸¹Ù¸¥¿¬¾î", { 0,0.f },
+			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
+		selects.push_back(make_pair("test3", Token(L"±è¹äÃµ±¹", { 0,0.f },
+			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
+
+
+		OptionChat* oc = new OptionChat();
+		oc->Init(3.f, 10.f, selects);
+		ObjectManager->AddGameObject(EObjectType::GameObject, oc);
 	}
 	return S_OK;
 }
@@ -128,6 +155,7 @@ void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
+	
 }
 
 void Stage1Scene::Release()
