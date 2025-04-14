@@ -4,6 +4,7 @@
 class ObjectManager;
 class RenderManager;
 class CollisionManager;
+class SnapShotManager;
 class Stage1Scene : public Scene
 {
 public:
@@ -23,5 +24,7 @@ private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;
 	CollisionManager* CollisionManager;
+	SnapShotManager* snapShotManager;
+	float elapsedTime;
 };
 

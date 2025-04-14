@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 class Collider;
+class EnemySnapShot;
 class TestObject : public GameObject
 {
 public:
@@ -12,6 +13,8 @@ public:
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
+	virtual void MakeSnapShot(void* out) override;
+	void ApplySnapShot(const EnemySnapShot& eSnapShot);
 
 private:
 	Image* Image;

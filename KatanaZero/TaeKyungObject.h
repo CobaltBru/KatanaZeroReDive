@@ -3,6 +3,7 @@
 
 class Image;
 class Collider;
+class PlayerSnapShot;
 class TaeKyungObject : public GameObject
 {
 public:
@@ -13,6 +14,8 @@ public:
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
+	virtual void MakeSnapShot(void* out) override;
+	void ApplySnapShot(const PlayerSnapShot& snapShot);
 
 private:
 	void Move();

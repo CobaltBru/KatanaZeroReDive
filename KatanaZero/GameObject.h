@@ -11,6 +11,7 @@ public:
 	virtual void Release();		
 	virtual void Update();		
 	virtual void Render(HDC hdc);
+	virtual void MakeSnapShot(void* out);
 
 	FPOINT GetPos() const { return Pos; }
 

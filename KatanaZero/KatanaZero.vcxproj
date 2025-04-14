@@ -183,6 +183,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScrollManager.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SnapShot.h" />
     <ClInclude Include="SnapShotManager.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Stage1Scene.h" />

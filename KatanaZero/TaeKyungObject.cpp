@@ -7,6 +7,7 @@
 #include "Collider.h"
 #include "ScrollManager.h"
 #include "SoundManager.h"
+#include "SnapShotManager.h"
 
 TaeKyungObject::TaeKyungObject()
 	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
@@ -21,7 +22,12 @@ HRESULT TaeKyungObject::Init()
 	//콜라이더 추가
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
-
+	
+	//스냅샷 매니저에 등록, 해영 테스트
+	{
+		SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Player, this);
+	}
+	
 	Speed = 300.f;
 
 	InitOffset();
@@ -58,6 +64,21 @@ void TaeKyungObject::Render(HDC hdc)
 		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
 	}
 }
+
+void TaeKyungObject::MakeSnapShot(void* out)
+{
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->pos = this->GetPos();
+	pSnapShot->animFrame = 0;
+}
+
+void TaeKyungObject::ApplySnapShot(const PlayerSnapShot& snapShot)
+{
+	this->Pos = snapShot.pos;
+	//추후 애니메이션 생기면 프레임도 수정
+	//this->animFrame = snapShot.animFrame;
+}
+
 
 void TaeKyungObject::Move()
 {

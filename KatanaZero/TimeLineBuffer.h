@@ -1,39 +1,7 @@
 #pragma once
 #include "config.h"
 #include <deque>
-
-struct PlayerSnapShot
-{
-	FPOINT pos;
-	//State state; -> 현재 애니메이션 정보
-	int animFrame;
-};
-
-struct EnemySnapShot
-{
-	FPOINT pos;
-	//State state;
-	int animFrame;
-	int ID;
-	bool isDead;
-};
-
-struct EffectSnapShot
-{
-	FPOINT pos;
-	//State state;
-	int animFrame;
-	float alpha;
-	int ID;
-	bool isActive;
-};
-
-struct SnapShot
-{
-	PlayerSnapShot player;
-	vector<EnemySnapShot> enemies;
-	vector<EffectSnapShot> effects;
-};
+#include "SnapShot.h"
 
 class TimeLineBuffer
 {
@@ -48,8 +16,9 @@ public:
 		const PlayerSnapShot& player,
 		const vector<EnemySnapShot>& enemies,
 		const vector<EffectSnapShot>& effects);
+	inline int GetBufferSize() { return (int)frameBuffer.size(); }
+	inline SnapShot GetFrame(int idx) { return frameBuffer[idx]; }
 
-	void Replay();
 private:
 	const size_t MAX_SNAPSHOTS = 300;
 	deque<SnapShot> frameBuffer;

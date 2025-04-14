@@ -21,9 +21,5 @@ void TimeLineBuffer::SaveSnapShot(const PlayerSnapShot& player, const vector<Ene
 	{
 		frameBuffer.pop_front();
 	}
-}
-
-void TimeLineBuffer::Replay()
-{
-
+	
 }

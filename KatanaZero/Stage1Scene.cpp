@@ -13,9 +13,10 @@
 #include "SoundManager.h"
 
 #include "ChatManager.h"
+#include "SnapShotManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -29,6 +30,10 @@ HRESULT Stage1Scene::Init()
 	RenderManager->Init();
 	CollisionManager = CollisionManager::GetInstance();
 	CollisionManager->Init();
+
+	snapShotManager = SnapShotManager::GetInstance();
+	snapShotManager->Init();
+	
 
 	ScrollManager::GetInstance()->ZeroScroll();
 
@@ -76,6 +81,11 @@ HRESULT Stage1Scene::InitObject()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
+		//해영 테스트
+		{
+			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
+			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
+		}
 	}
 	// 테스트 코드 지운
 	{
@@ -95,7 +105,6 @@ HRESULT Stage1Scene::InitObject()
 		token5->setPos({ 200.f,280.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token5);
 	}
-
 	return S_OK;
 }
 
@@ -103,6 +112,15 @@ void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
+	elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+	if (elapsedTime >= 5.0f)
+	{
+		snapShotManager->Update(true);
+	}
+	else
+	{
+		snapShotManager->Update(false);
+	}
 }
 
 void Stage1Scene::Render(HDC hdc)
