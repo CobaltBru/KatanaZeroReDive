@@ -18,6 +18,7 @@ public:
 		const vector<EffectSnapShot>& effects);
 	inline int GetBufferSize() { return (int)frameBuffer.size(); }
 	inline SnapShot GetFrame(int idx) { return frameBuffer[idx]; }
+	inline void Clear() { frameBuffer.clear(); }
 
 private:
 	const size_t MAX_SNAPSHOTS = 300;

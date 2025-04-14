@@ -5,7 +5,6 @@
 #include "RenderManager.h"
 #include "Collider.h"
 #include "CollisionManager.h"
-#include "SnapShotManager.h"
 
 TestObject::TestObject()
 	:Image(nullptr), ObjectCollider(nullptr)
@@ -18,11 +17,6 @@ void TestObject::Init(string InImageKey, FPOINT InPos)
 
 	ObjectCollider = new Collider(this,EColliderType::Rect,{},30.f,true,1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
-
-	//테스트 해영
-	{
-		SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Enemy, this);
-	}
 
 	Pos = InPos;	
 }
@@ -59,5 +53,6 @@ void TestObject::ApplySnapShot(const EnemySnapShot& eSnapShot)
 
 
 void TestObject::Release()
+
 {
 }

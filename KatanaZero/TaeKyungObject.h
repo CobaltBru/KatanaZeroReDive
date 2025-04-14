@@ -1,9 +1,9 @@
 #pragma once
 #include "GameObject.h"
+#include "SnapShotManager.h"
 
 class Image;
 class Collider;
-class PlayerSnapShot;
 class TaeKyungObject : public GameObject
 {
 public:

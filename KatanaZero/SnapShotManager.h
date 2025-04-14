@@ -24,6 +24,8 @@ public:
 	void Replay();
 private:
 	float elapsedTime{0.f};
+	bool isReplaying{ false };
+	int replayIndex{ -1 };
 	TimeLineBuffer snapShots;
 	list<GameObject*> GameObjectList[(int)EObjectClassType::End];
 };

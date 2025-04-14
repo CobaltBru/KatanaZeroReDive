@@ -25,6 +25,11 @@ void SnapShotManager::Update(bool isDead)
 	}
 	else
 	{
+		if (!isReplaying)
+		{
+			isReplaying = true;
+			replayIndex = snapShots.GetBufferSize() - 1;
+		}
 		Replay();
 	}
 }
@@ -60,25 +65,30 @@ void SnapShotManager::Save()
 
 void SnapShotManager::Replay()
 {
-	for (int i = snapShots.GetBufferSize() - 1; i >= 0; i++)
+	if (replayIndex < 0)
 	{
-		const SnapShot& frame = snapShots.GetFrame(i);
-
-		for (auto obj : GameObjectList[(int)EObjectClassType::Player])
-		{
-			TaeKyungObject* p = static_cast<TaeKyungObject*>(obj);
-			p->ApplySnapShot(frame.player);
-		}
-		for (const EnemySnapShot& eSnapShots : frame.enemies)
-		{
-			for (auto obj : GameObjectList[(int)EObjectClassType::Player])
-			{
-				TestObject* e = static_cast<TestObject*>(obj);
-				
-				e->ApplySnapShot(eSnapShots);
-			}
-		}
-		
+		isReplaying = false;
+		snapShots.Clear();
+		return;
 	}
-	Sleep(16);
+	const SnapShot& frame = snapShots.GetFrame(replayIndex);
+
+	// Player 되감기
+	for (auto obj : GameObjectList[(int)EObjectClassType::Player])
+	{
+		TaeKyungObject* p = static_cast<TaeKyungObject*>(obj);
+		p->ApplySnapShot(frame.player);
+	}
+
+	// Enemy 되감기
+	auto enemyIter = GameObjectList[(int)EObjectClassType::Enemy].begin();
+	for (const EnemySnapShot& eSnap : frame.enemies)
+	{
+		if (enemyIter == GameObjectList[(int)EObjectClassType::Enemy].end()) break;
+		TestObject* e = static_cast<TestObject*>(*enemyIter);
+		e->ApplySnapShot(eSnap);
+		++enemyIter;
+	}
+
+	--replayIndex;
 }

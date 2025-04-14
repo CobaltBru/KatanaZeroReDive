@@ -1,8 +1,8 @@
 #pragma once
 #include "GameObject.h"
+#include "SnapShotManager.h"
 
 class Collider;
-class EnemySnapShot;
 class TestObject : public GameObject
 {
 public:
