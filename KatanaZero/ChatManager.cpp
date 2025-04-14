@@ -262,7 +262,7 @@ void Chat::Update()
         if(timer> appearTime) tokens[i].second.Update();
     }
 
-    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RETURN))
+    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
     {
         makeExplode();
     }
