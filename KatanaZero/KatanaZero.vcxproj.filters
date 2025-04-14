@@ -67,9 +67,6 @@
     <Filter Include="2D Framework\Scroll">
       <UniqueIdentifier>{5f66ebc6-4ec4-46aa-a47b-4cde0040c072}</UniqueIdentifier>
     </Filter>
-    <Filter Include="2D Framework\TimeLine">
-      <UniqueIdentifier>{1bbfb6bb-a331-4e57-b1bf-1a646d9f8592}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2D Framework\Sound">
       <UniqueIdentifier>{0e234c14-df1c-4e3b-bb83-56165c15969d}</UniqueIdentifier>
     </Filter>
@@ -78,6 +75,9 @@
     </Filter>
     <Filter Include="2D Framework\Effect\ScreenEffect">
       <UniqueIdentifier>{c7ece43c-ca1e-4ca8-afe3-80261e73f95d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\SnapShot">
+      <UniqueIdentifier>{1bbfb6bb-a331-4e57-b1bf-1a646d9f8592}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -151,10 +151,10 @@
       <Filter>MainGame\TaeKyung</Filter>
     </ClCompile>
     <ClCompile Include="TimeLineBuffer.cpp">
-      <Filter>2D Framework\TimeLine</Filter>
+      <Filter>2D Framework\SnapShot</Filter>
     </ClCompile>
     <ClCompile Include="SnapShotManager.cpp">
-      <Filter>2D Framework\TimeLine</Filter>
+      <Filter>2D Framework\SnapShot</Filter>
     </ClCompile>
     <ClCompile Include="ChatManager.cpp">
       <Filter>2D Framework\UI</Filter>
@@ -246,10 +246,10 @@
       <Filter>MainGame\TaeKyung</Filter>
     </ClInclude>
     <ClInclude Include="TimeLineBuffer.h">
-      <Filter>2D Framework\TimeLine</Filter>
+      <Filter>2D Framework\SnapShot</Filter>
     </ClInclude>
     <ClInclude Include="SnapShotManager.h">
-      <Filter>2D Framework\TimeLine</Filter>
+      <Filter>2D Framework\SnapShot</Filter>
     </ClInclude>
     <ClInclude Include="ChatManager.h">
       <Filter>2D Framework\UI</Filter>
@@ -258,7 +258,7 @@
       <Filter>2D Framework\Sound</Filter>
     </ClInclude>
     <ClInclude Include="SnapShot.h">
-      <Filter>2D Framework\TimeLine</Filter>
+      <Filter>2D Framework\SnapShot</Filter>
     </ClInclude>
     <ClInclude Include="EffectManager.h">
       <Filter>2D Framework\Effect</Filter>
