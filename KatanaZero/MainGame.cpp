@@ -8,22 +8,22 @@
 #include "LoadingScene.h"
 #include "SoundManager.h"
 
-static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
-{
-	int width = rect.right - rect.left;
-	int height = rect.bottom - rect.top;
-
-	int amplitude = 40;
-	float cycle = 10.0f;
-	float speed = 10.0f;
-
-	for (int y = 0; y < height; y++)
-	{
-		int offset = (int)(amplitude * sin((y / cycle) + time * speed));
-		BitBlt(hdcDest, rect.left + offset, rect.top + y, width, 1,
-			hdcSource, rect.left, rect.top + y, SRCCOPY);
-	}
-}
+//static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
+//{
+//	int width = rect.right - rect.left;
+//	int height = rect.bottom - rect.top;
+//
+//	int amplitude = 40;
+//	float cycle = 10.0f;
+//	float speed = 10.0f;
+//
+//	for (int y = 0; y < height; y++)
+//	{
+//		int offset = (int)(amplitude * sin((y / cycle) + time * speed));
+//		BitBlt(hdcDest, rect.left + offset, rect.top + y, width, 1,
+//			hdcSource, rect.left, rect.top + y, SRCCOPY);
+//	}
+//}
 HRESULT MainGame::Init()
 {
 	ImageManager::GetInstance()->Init();
