@@ -1,6 +1,7 @@
 #include "ChatManager.h"
 #include "RenderManager.h"
 #include "GPImage.h"
+#include "ScrollManager.h"
 using namespace Gdiplus;
 
 static void DrawRoundRect(Graphics* graphics,FPOINT pos, float width, float height,Color fillColor)
@@ -276,7 +277,8 @@ void Chat::Render(HDC hdc)
 
 void Chat::DrawBox(HDC hdc)
 {
-    
+    const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
     float percent = timer / boxTime;
     float currentHeight = height * percent;
     HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
@@ -286,9 +288,9 @@ void Chat::DrawBox(HDC hdc)
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
     if(percent<1.0f)
-        RoundRect(hdc, pos.x - width / 2, pos.y, pos.x + width / 2, pos.y + currentHeight, 5.f, 5.f);
+        RoundRect(hdc, (pos.x - width / 2) + Scroll.x, pos.y + Scroll.y, (pos.x + width / 2) + Scroll.x, (pos.y + currentHeight) + Scroll.y, 5.f, 5.f);
     else
-        RoundRect(hdc, pos.x - width / 2, pos.y, pos.x + width / 2, pos.y + height, 5.f, 5.f);
+        RoundRect(hdc, (pos.x - width / 2) + Scroll.x, pos.y + Scroll.y, (pos.x + width / 2) + Scroll.x, (pos.y + height) + Scroll.y, 5.f, 5.f);
 
     SelectObject(hdc, hOldPen);
     SelectObject(hdc, hOldBrush);
