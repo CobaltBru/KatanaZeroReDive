@@ -22,6 +22,7 @@ public:
 	void AddGameObject(EObjectClassType  InClassType, GameObject* InGameObject) { GameObjectList[(int)InClassType].push_back(InGameObject); }
 	void Save();
 	void Replay();
+	inline bool IsReplaying() { return isReplaying; }
 private:
 	float elapsedTime{0.f};
 	bool isReplaying{ false };

@@ -27,9 +27,15 @@ struct EffectSnapShot
 	bool isActive;
 };
 
+struct ScrollSnapShot
+{
+	FPOINT scroll;
+};
+
 struct SnapShot
 {
 	PlayerSnapShot player;
 	vector<EnemySnapShot> enemies;
 	vector<EffectSnapShot> effects;
+	ScrollSnapShot scroll;
 };

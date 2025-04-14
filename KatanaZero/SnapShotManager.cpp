@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "TaeKyungObject.h"
 #include "TestObject.h"
+#include "ScrollManager.h"
 
 
 void SnapShotManager::Init()
@@ -60,7 +61,10 @@ void SnapShotManager::Save()
 		++iter;
 	}
 
-	snapShots.SaveSnapShot(pSnapShot, eSnapShots, fxSnapShots);
+	ScrollSnapShot sSnapShot;
+	sSnapShot.scroll = ScrollManager::GetInstance()->GetScroll();
+
+	snapShots.SaveSnapShot(pSnapShot, eSnapShots, fxSnapShots, sSnapShot);
 }
 
 void SnapShotManager::Replay()
@@ -89,6 +93,8 @@ void SnapShotManager::Replay()
 		e->ApplySnapShot(eSnap);
 		++enemyIter;
 	}
+
+	ScrollManager::GetInstance()->ReplayScroll(frame.scroll.scroll);
 
 	--replayIndex;
 }

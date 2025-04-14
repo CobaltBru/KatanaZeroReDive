@@ -123,6 +123,11 @@ void TaeKyungObject::InitOffset()
 
 void TaeKyungObject::Offset()
 {
+	// 역재생시 스크롤 업데이트 따로
+	if (SnapShotManager::GetInstance()->IsReplaying())
+	{
+		return;
+	}
 	// 스크롤 업데이트 (플레이어)
 
 	const float OffsetMinX = 200.f;
