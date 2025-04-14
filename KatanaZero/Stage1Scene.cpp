@@ -95,17 +95,30 @@ HRESULT Stage1Scene::InitObject()
 		token5->setGlobalPos({ 200.f,280.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token5);*/
 		vector <pair<float, Token >> tokens;
-		tokens.push_back(make_pair(0, Token(L"안녕하세요!", { 0.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		tokens.push_back(make_pair(1.f, Token(L"이것들은", { 100.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"오늘은", { 0.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
-		tokens.push_back(make_pair(1.f, Token(L"출력테스트", { 170.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::YELLOW)));
+		tokens.push_back(make_pair(0.7f, Token(L"점심으로", { 55,0.f },
+			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
+		tokens.push_back(make_pair(0.7f, Token(L"뭐먹어요", { 122.f,0.f },
+			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 
 		Chat* chat1 = new Chat();
 		chat1->Init("test", tokens, 400.f, 50.f);
 		chat1->setPos({ 700, 100 });
 		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);
+
+		vector <pair<string, Token >> selects;
+		selects.push_back(make_pair("test1", Token(L"* 구내식당* ", {0.f,0.f},
+			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::RED)));
+		selects.push_back(make_pair("test2", Token(L"육회바른연어", { 0,0.f },
+			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
+		selects.push_back(make_pair("test3", Token(L"김밥천국", { 0,0.f },
+			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
+
+
+		OptionChat* oc = new OptionChat();
+		oc->Init(3.f, 10.f, selects);
+		ObjectManager->AddGameObject(EObjectType::GameObject, oc);
 	}
 
 	return S_OK;
