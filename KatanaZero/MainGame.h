@@ -34,6 +34,6 @@ private:
 	Timer* timer;
 
 	GPImage testDraw;
-	int tmpTimer;
+	float tmpTimer;
 };
 

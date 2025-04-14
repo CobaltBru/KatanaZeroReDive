@@ -3,7 +3,6 @@
 #include "GPImage.h"
 #include "ScrollManager.h"
 using namespace Gdiplus;
-
 static void DrawRoundRect(Graphics* graphics,FPOINT pos, float width, float height,Color fillColor)
 {
     int cornerRadius = 4;

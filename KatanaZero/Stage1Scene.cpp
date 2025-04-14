@@ -14,6 +14,8 @@
 
 #include "ChatManager.h"
 
+
+
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr)
 {
@@ -134,6 +136,7 @@ void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
+	
 }
 
 void Stage1Scene::Release()
