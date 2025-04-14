@@ -140,6 +140,7 @@
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="TimeLineBuffer.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
+    <ClCompile Include="ScreenEffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CommonFunction.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
@@ -194,6 +197,7 @@
     <ClInclude Include="TimeLineBuffer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="ScreenEffectManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

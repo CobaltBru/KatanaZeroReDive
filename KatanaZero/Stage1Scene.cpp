@@ -120,6 +120,7 @@ void Stage1Scene::Update()
 	else
 	{
 		snapShotManager->Update(false);
+		
 	}
 }
 

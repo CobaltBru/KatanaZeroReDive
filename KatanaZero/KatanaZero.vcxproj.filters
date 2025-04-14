@@ -73,6 +73,12 @@
     <Filter Include="2D Framework\Sound">
       <UniqueIdentifier>{0e234c14-df1c-4e3b-bb83-56165c15969d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Effect">
+      <UniqueIdentifier>{2b625007-47e7-4e24-9fc3-1f9c0787904b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Effect\ScreenEffect">
+      <UniqueIdentifier>{c7ece43c-ca1e-4ca8-afe3-80261e73f95d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,6 +161,12 @@
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>2D Framework\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>2D Framework\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenEffectManager.cpp">
+      <Filter>2D Framework\Effect\ScreenEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +259,12 @@
     </ClInclude>
     <ClInclude Include="SnapShot.h">
       <Filter>2D Framework\TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>2D Framework\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenEffectManager.h">
+      <Filter>2D Framework\Effect\ScreenEffect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
