@@ -14,6 +14,7 @@
 
 #include "ChatManager.h"
 #include "SnapShotManager.h"
+#include "ScreenEffectManager.h"
 
 
 
@@ -155,7 +156,7 @@ void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
-	
+	ScreenEffectManager::GetInstance()->RenderDistortion(hdc);
 }
 
 void Stage1Scene::Release()

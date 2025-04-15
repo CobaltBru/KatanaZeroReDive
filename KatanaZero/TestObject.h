@@ -2,6 +2,16 @@
 #include "GameObject.h"
 #include "SnapShotManager.h"
 
+enum class EnemyState
+{
+	IDLE,
+	Patrol,
+	Attack,
+	Chasing,
+	Dead,
+	End
+};
+
 class Collider;
 class TestObject : public GameObject
 {
@@ -19,5 +29,7 @@ public:
 private:
 	Image* Image;
 	Collider* ObjectCollider;
+	EnemyState eState{ EnemyState::IDLE };
+
 };
 

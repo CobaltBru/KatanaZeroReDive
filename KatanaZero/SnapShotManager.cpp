@@ -3,6 +3,7 @@
 #include "TaeKyungObject.h"
 #include "TestObject.h"
 #include "ScrollManager.h"
+#include "ScreenEffectManager.h"
 
 
 void SnapShotManager::Init()
@@ -18,7 +19,7 @@ void SnapShotManager::Update(bool isDead)
 	if (!isDead)
 	{
 		elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-		if (elapsedTime >= 0.0167f)
+		if (elapsedTime >= 0.01666666667f)
 		{
 			Save();
 			elapsedTime = 0.0f;
@@ -31,7 +32,12 @@ void SnapShotManager::Update(bool isDead)
 			isReplaying = true;
 			replayIndex = snapShots.GetBufferSize() - 1;
 		}
-		Replay();
+		elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+		if (elapsedTime >= 0.01666666667f / 3.0f)
+		{
+			Replay();
+			elapsedTime = 0.0f;
+		}
 	}
 }
 
@@ -72,9 +78,11 @@ void SnapShotManager::Replay()
 	if (replayIndex < 0)
 	{
 		isReplaying = false;
+		ScreenEffectManager::GetInstance()->StopDistortion();
 		snapShots.Clear();
 		return;
 	}
+	ScreenEffectManager::GetInstance()->StartDistortion();
 	const SnapShot& frame = snapShots.GetFrame(replayIndex);
 
 	// Player µÇ°¨±â
@@ -95,6 +103,5 @@ void SnapShotManager::Replay()
 	}
 
 	ScrollManager::GetInstance()->ReplayScroll(frame.scroll.scroll);
-
 	--replayIndex;
 }

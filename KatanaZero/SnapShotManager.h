@@ -23,6 +23,8 @@ public:
 	void Save();
 	void Replay();
 	inline bool IsReplaying() { return isReplaying; }
+	inline int GetReplayIndex() { return replayIndex; }
+	inline list<GameObject*> GetPlayer() { return GameObjectList[(int)EObjectClassType::Player]; }
 private:
 	float elapsedTime{0.f};
 	bool isReplaying{ false };

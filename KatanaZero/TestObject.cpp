@@ -5,6 +5,7 @@
 #include "RenderManager.h"
 #include "Collider.h"
 #include "CollisionManager.h"
+#include "SnapShotManager.h"
 
 TestObject::TestObject()
 	:Image(nullptr), ObjectCollider(nullptr)
