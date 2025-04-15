@@ -114,10 +114,10 @@ HRESULT Stage1Scene::InitObject()
 		tokens.push_back(make_pair(0.7f, Token(L"¹¹¸Ô¾î¿ä", { 122.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 
-		Chat* chat1 = new Chat();
+		/*Chat* chat1 = new Chat();
 		chat1->Init("test", tokens, 400.f, 50.f);
 		chat1->setPos({ 700, 100 });
-		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);
+		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);*/
 
 		vector <pair<string, Token >> selects;
 		selects.push_back(make_pair("test1", Token(L"* ±¸³»½Ä´ç * ", {0.f,0.f},
@@ -129,7 +129,8 @@ HRESULT Stage1Scene::InitObject()
 
 
 		OptionChat* oc = new OptionChat();
-		oc->Init(3.f, 10.f, selects);
+		oc->Init(tokens, 400.f, 50.f, 3.f, 10.f, selects);
+		oc->setPos({ 600, 100 });
 		ObjectManager->AddGameObject(EObjectType::GameObject, oc);
 	}
 	return S_OK;

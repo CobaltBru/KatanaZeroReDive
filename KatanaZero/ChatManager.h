@@ -49,8 +49,6 @@ public:
 class Chat : public GameObject
 {
 protected:
-	//해당 채팅의 고유키
-	string key;
 	FPOINT pos;
 	vector <pair<float, Token >> tokens;
 	int tokenIdx;
@@ -60,14 +58,18 @@ protected:
 	float timer;
 	//말풍선 켜지는데 걸리는 시간
 	float boxTime;
+
+	int statusFlag = 0;
 public:
-	void Init(string Key, vector <pair<float, Token >> tokens, float width, float height);
+	void Init(vector <pair<float, Token >> tokens, float width, float height);
 	inline void setPos(FPOINT pos) { this->pos = pos; }
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 	void DrawBox(HDC hdc);
 	void DrawTokens(HDC hdc);
 	void makeExplode();
+	inline int getStatus() { return statusFlag; }
+	virtual inline string getNext() { return "NULL"; }
 };
 
 class OptionChat : public Chat
@@ -93,15 +95,25 @@ private:
 	//선택지간 간격 (1번 아래로 자동 배치)
 	float selectGap;
 public:
-	void Init(float redTime, float totalTime, vector<pair<string, Token>> selects);
+	void Init(vector <pair<float, Token >> tokens, float width, float height, 
+		float redTime, float totalTime, vector<pair<string, Token>> selects);
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 	void DrawTimeBar(HDC hdc);
 	void DrawSelects(HDC hdc);
+	virtual inline string getNext() override { return selects[cursor].first; }
 };
 class ChatManager : public GameObject
 {
-
-
+private:
+	map<string, pair<Chat*,string>> chatMap;
+	Chat* currentChat = nullptr;
+	string nextChat;
+public:
+	void Init(string key, string next,FPOINT pos, Chat* chat);
+	void startChat(string key);
+	virtual void Update() override;
+	virtual void Render(HDC hdc) override;
+	virtual void Release() override;
 };
 

@@ -241,10 +241,9 @@ void Token::ShakeEffect(HDC hdc)
 
 
 
-void Chat::Init(string Key, vector<pair<float, Token>> tokens, float width, float height)
+void Chat::Init(vector<pair<float, Token>> tokens, float width, float height)
 {
     tokenIdx = 0;
-    this->key = key;
     this->tokens = tokens;
     this->width = width;
     this->height = height;
@@ -300,6 +299,8 @@ void Chat::DrawBox(HDC hdc)
 
 void Chat::DrawTokens(HDC hdc)
 {
+    const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
     float appearTime = boxTime + 0.5f;
     FPOINT gPos = { pos.x - width / 2 + 5.f,pos.y  + 5.f };
     for (int i = 0; i < tokens.size(); i++)
@@ -307,12 +308,13 @@ void Chat::DrawTokens(HDC hdc)
         appearTime += tokens[i].first;
         if (timer >= appearTime)
         {
-            tokens[i].second.setGlobalPos(gPos);
+            tokens[i].second.setGlobalPos({ gPos.x + Scroll.x,gPos.y + Scroll.y });
             tokens[i].second.Render(hdc);
 
             if (tokens[i].second.isComplete())
             {
-                if(tokenIdx<tokens.size()-1)tokenIdx = i + 1;
+                if (tokenIdx < tokens.size() - 1)tokenIdx = i + 1;
+                else statusFlag = 2;
             }
         }
         else
@@ -330,8 +332,10 @@ void Chat::makeExplode()
     }
 }
 
-void OptionChat::Init(float redTime, float totalTime, vector<pair<string, Token>> selects)
+void OptionChat::Init(vector <pair<float, Token >> tokens, float width, float height, 
+    float redTime, float totalTime, vector<pair<string, Token>> selects)
 {
+    __super::Init(tokens, width, height);
     this->redTime = redTime;
     this->totalTime = totalTime;
     this->selects = selects;
@@ -346,6 +350,7 @@ void OptionChat::Init(float redTime, float totalTime, vector<pair<string, Token>
 
 void OptionChat::Update()
 {
+    __super::Update();
     timer += TimerManager::GetInstance()->GetDeltaTime();
     RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
     if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
@@ -362,6 +367,7 @@ void OptionChat::Update()
 
 void OptionChat::Render(HDC hdc)
 {
+    __super::Render(hdc);
     DrawTimeBar(hdc);
     DrawSelects(hdc);
 }
@@ -371,17 +377,24 @@ void OptionChat::DrawTimeBar(HDC hdc)
     Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
     float appearTime = 0.3f;
     float height = 12.f;
+    //¹è°æ
     {
         float percent = timer / appearTime;
         if (percent > 1.0f)percent = 1.0f;
         DrawRoundRect(pGraphics, timeBarPos, timeBarWidth * percent, height, Gdiplus::Color(128, 255, 255, 255));
     }
+    //»¡°£ ¹Ù
     {
         float redWidth = redTime / totalTime * timeBarWidth -2.f;
         float percent = timer / appearTime;
-        if (percent > 1.0f)percent = 1.0f;
+        if (percent > 1.0f)
+        {
+            percent = 1.0f;
+            statusFlag = 1;
+        }
         DrawRoundRect(pGraphics, {timeBarPos.x+2.f,timeBarPos .y+2.f}, redWidth * percent, height-4.f, Gdiplus::Color(255, 255, 0, 0));
     }
+    //ÇÏ¾á ¹Ù
     {
         if (timer > appearTime)
         {
@@ -440,4 +453,69 @@ void OptionChat::DrawSelects(HDC hdc)
     DeleteObject(normalhPen);
     DeleteObject(bluehPen);
     DeleteObject(hBrush);
+}
+
+void ChatManager::Init(string key, string next, FPOINT pos, Chat* chat)
+{
+    chat->setPos(pos);
+    chatMap.insert(make_pair(key, make_pair(chat, next)));
+}
+
+void ChatManager::startChat(string key)
+{
+    auto iter = chatMap.find("key");
+    if (iter != chatMap.end())
+    {
+        currentChat = (*iter).second.first;
+        nextChat = (*iter).second.second;
+    }
+    else
+    {
+        currentChat = nullptr;
+        nextChat = "END";
+    }
+}
+
+
+
+void ChatManager::Update()
+{
+    if (currentChat)
+    {
+        currentChat->Update();
+    }
+    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+    {
+        if (currentChat->getStatus() == 2)
+        {
+            string next = currentChat->getNext();
+            if (next == "NULL")
+            {
+                if (nextChat != "END")
+                {
+                    startChat(nextChat);
+                }
+                    
+            }
+            startChat(currentChat->getNext());
+        }
+    }
+}
+
+void ChatManager::Render(HDC hdc)
+{
+    if (currentChat)
+    {
+        currentChat->Render(hdc);
+    }
+}
+
+void ChatManager::Release()
+{
+    for (auto mp : chatMap)
+    {
+        delete mp.second.first;
+        mp.second.first = nullptr;
+    }
+    chatMap.clear();
 }
