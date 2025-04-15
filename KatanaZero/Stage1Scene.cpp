@@ -78,17 +78,13 @@ HRESULT Stage1Scene::InitObject()
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
-
 	}
 
 	return S_OK;
 }
 
-void Stage1Scene::Update()
+void Stage1Scene::TestCode()
 {
-	ObjectManager->Update();
-	CollisionManager->Update();
-
 	// 테스트 코드
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
 	{
@@ -117,6 +113,24 @@ void Stage1Scene::Update()
 	{
 		LineManager::GetInstance()->SetLineType(ELineType::Ceiling);
 	}
+	//저장
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
+	{
+		LineManager::GetInstance()->SaveFile();
+	}
+
+
+	// 플레이어 포커스 toggle
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
+		ScrollManager::GetInstance()->SetFocus(!ScrollManager::GetInstance()->IsFocus());
+}
+
+void Stage1Scene::Update()
+{
+	ObjectManager->Update();
+	CollisionManager->Update();
+
+	TestCode();
 }
 
 void Stage1Scene::Render(HDC hdc)

@@ -20,6 +20,9 @@ protected:
 	virtual HRESULT InitImage();
 	virtual HRESULT InitObject();
 
+
+private:
+	void TestCode();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;

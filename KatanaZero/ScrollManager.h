@@ -22,8 +22,13 @@ public:
 	void ZeroScrollX() { Scroll.x = 0.f; }
 	void ZeroScrollY() { Scroll.y = 0.f; }
 
+	// 쉐이크 기능
+	// 확대 기능
+	void SetFocus(bool InbFocus) { bFocus; }
+	bool IsFocus() const { return bFocus; }
 private:
 	FPOINT Scroll;
+	bool bFocus;
 
 };
 

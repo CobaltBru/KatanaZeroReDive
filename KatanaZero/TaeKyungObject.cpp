@@ -10,7 +10,7 @@
 #include "LineManager.h"
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dy(-10.f),gravity(0.1f), bFalling(true)
+	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dY(-10.f),Gravity(0.1f), bFalling(true), bDown(false)
 {
 }
 
@@ -36,6 +36,7 @@ void TaeKyungObject::Update()
 
 	Collision();
 
+	// 위치에 관한 모든 로직이 끝난 뒤 마지막에 호출 권장
 	Offset();
 
 	//테스트 이펙트 사운드 재생
@@ -68,46 +69,56 @@ void TaeKyungObject::Move()
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
 	//if (KeyManager::GetInstance()->IsStayKeyDown(VK_UP))
 	//	Pos.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
-	//else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
-	//	Pos.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
+	{
+		if (!bDown)
+			dY = 0.f;
+		
+		bDown = true;
+	}
 
 	Jump();
 
+	// 라인충돌 한번에 처리할 수 있게 만들면 좋을 것 같은데
+	//=========================================================================================================================
+	// 수직 벽
 	FLineResult Result;
-	if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result))
+	if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
+		Pos.x = Result.OutPos.x;
+		
+	// 땅
+	if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result,30.f, bDown))
 	{
-		switch (Result.LineType)
-		{
-		case ELineType::Normal:
-			Pos.y = Result.OutPos.y;
-			break;
-		case ELineType::Wall:
-			break;
-		case ELineType::DownLine:
-			Pos.y = Result.OutPos.y;
-			break;
-		case ELineType::Ceiling:
-			break;
-		}
-		
-		
+		Pos.y = Result.OutPos.y;	
+
 		bJump = false;
-		dy = -10.f;
-	}	
+		bDown = false;
+		dY = -10.f;
+	}
+	//  천장
+	else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().x))
+	{
+		Pos.y = Result.OutPos.y;
+		dY = 0.f;
+	}
+	//=========================================================================================================================
 }
 
 void TaeKyungObject::Jump()
 {
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown(VK_RETURN))
+	{
 		bJump = true;
+		dY = -10.f;
+	}
 	
-	if (bJump)
+	if (bJump || bDown)
 	{
 		// 그냥 조잡한 점프 공식..
 		// 리지드 바디 구현하는게 좋을 듯.. ㅠ
-		dy += gravity;
-		Pos.y += dy * Speed * TimerManager::GetInstance()->GetDeltaTime();
-  		if (dy >= 0.f)
+		dY += Gravity;
+		Pos.y += dY * Speed * TimerManager::GetInstance()->GetDeltaTime();
+  		if (dY >= 0.f)
 			bFalling = true;
 		else
 			bFalling = false;
@@ -133,6 +144,9 @@ void TaeKyungObject::Collision()
 
 void TaeKyungObject::InitOffset()
 {
+	//포커스해야 오프셋할 수 있듬.
+	ScrollManager::GetInstance()->SetFocus(true);
+
 	FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 
 	while (true)
@@ -150,6 +164,8 @@ void TaeKyungObject::InitOffset()
 
 void TaeKyungObject::Offset()
 {
+	if (!ScrollManager::GetInstance()->IsFocus())
+		return;
 	// 스크롤 업데이트 (플레이어)
 
 	const float OffsetMinX = 200.f;

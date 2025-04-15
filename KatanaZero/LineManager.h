@@ -23,12 +23,18 @@ public:
 	void AddLine(float InX, float InY);
 	void ResetLinePoint();
 
-	bool CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
+	bool CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f, bool IsDown = false);
+	bool CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT InSize);
+	bool CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
+	bool CollisionDownLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
 
-
+	HRESULT SaveFile();
+	HRESULT LoadFile();
+	
 private:
-	list<Line*> LineList;
+	list<Line*> LineList[(int)ELineType::End];
 	FPOINT LinePoint[END];
 	ELineType CurrentLineType;
+	bool bStraight;
 };
 

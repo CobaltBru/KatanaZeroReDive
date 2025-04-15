@@ -27,9 +27,10 @@ private:
 	float Speed;
 
 	//Jump
-	float gravity;
-	float dy;
+	float Gravity;
+	float dY;
 	bool bJump;
 	bool bFalling;
+	bool bDown;
 };
 

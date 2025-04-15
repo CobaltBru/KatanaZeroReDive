@@ -57,8 +57,8 @@ typedef struct tagLINE
 enum class ELineType
 {
 	Normal,
-	Wall,
 	DownLine,
+	Wall,	
 	Ceiling,
 	End
 };
