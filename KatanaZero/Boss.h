@@ -7,9 +7,12 @@ enum class State
 	Idle,
 	TakeOutRifle,
 	Jump,
+	JumpIdle,
 	JumpToCeil,
 	Lazer,
-	Sword,
+	ReadyToDash,
+	Dash,
+	DashEnd,
 	Bullet,
 	Faint,
 	Teleport,
@@ -17,22 +20,32 @@ enum class State
 	Die
 };
 
+
 class Image;
 class Boss : public GameObject
 {
 private:
 	
 	FPOINT pos;
-	FPOINT wallPos;
 	FPOINT ceilPos;
+	FPOINT wallPos;
+	FPOINT landPos;
+
+	// 플레이어 바라보기 테스트용
+	FPOINT playerPos;
+
 	int health;
 	bool isFlip;
 	bool isAttacked;
 	bool isDead;
+	bool isLeft;
+	bool isRetreating;
+	float angle;
+	
 	//RECT hitbox;
 	State state;
 	Image* image;
-	int framecount;
+	int frameIndex;
 	float timer;
 	int LoopCount;
 public:
@@ -46,14 +59,19 @@ public:
 
 	void Idle();
 	void TakeOutRifleAttack();
+	void TakeOutWeapon(string key);
 	void Jump();
 	void JumpToCeil();
 	void LazerAttack();
-	void SwordAttack(GameObject* player);
+	void ReadyToDash();
+	void Dash();
+	void DashEnd();
 	void BulletAttack();
-	void FaintAttack();
+	void Faint();
 	void Teleport();
 	void Explode();
 	void Die();
+	void CheckLeft();
+	void CheckPlayerPos(); // 나중에 player위치 받아오기
 };
 
