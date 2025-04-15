@@ -1,6 +1,7 @@
 #pragma once
 #include "config.h"
 
+
 class GameObject
 {
 public:
@@ -15,7 +16,12 @@ public:
 
 	FPOINT GetPos() const { return Pos; }
 
+	FPOINT GetSpawnPos() { return spawnPos; }
+	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
+
 protected:
 	FPOINT Pos;
+
+	FPOINT spawnPos;
 };
 
