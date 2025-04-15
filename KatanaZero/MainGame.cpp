@@ -79,13 +79,13 @@ void MainGame::Update()
 	SoundManager::GetInstance()->Update();
 
 	InvalidateRect(g_hWnd, NULL, false);
-	tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
+	/*tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
 	if (tmpTimer > 0.1f)
 	{
 		frameIdx++;
 		tmpTimer -= 0.1f;
 		if (frameIdx >= 12) frameIdx = 0;
-	}
+	}*/
 }
 
 void MainGame::Render()
@@ -99,14 +99,14 @@ void MainGame::Render()
 	TimerManager::GetInstance()->Render(hBackBufferDC);
 	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
 	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
-	testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
+	//testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
 	/*testDraw.Render(pGraphics, {140,100}, 0.5f);
 	testDraw.Render(pGraphics, { 160,100 }, 0.7f);
 	testDraw.Render(pGraphics, { 180,100 }, 0.9f);
 	testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
-	testDraw.Middle_RenderFrameAngle(pGraphics, { 300,100 }, frameIdx, frameIdx * 30,false,0.5f);
-	testDraw.RenderFrameAngle(pGraphics, { 200,100 }, frameIdx, frameIdx * 30);
+	/*testDraw.Middle_RenderFrameAngle(pGraphics, { 300,100 }, frameIdx, frameIdx * 30,false,0.5f);
+	testDraw.RenderFrameAngle(pGraphics, { 200,100 }, frameIdx, frameIdx * 30);*/
 	//화면 왜곡
 	/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
 	RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/
