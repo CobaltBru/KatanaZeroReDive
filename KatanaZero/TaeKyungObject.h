@@ -9,7 +9,7 @@ public:
 	TaeKyungObject();
 	virtual ~TaeKyungObject() = default;
 
-	virtual HRESULT Init();
+	HRESULT Init(FPOINT InPos);
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);

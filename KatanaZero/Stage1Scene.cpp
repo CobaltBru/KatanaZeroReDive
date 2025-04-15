@@ -72,7 +72,7 @@ HRESULT Stage1Scene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
-		taekyung->Init();
+		taekyung->Init({500.f,500.f});
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 		TestObject* testObject = new TestObject();
@@ -85,50 +85,18 @@ HRESULT Stage1Scene::InitObject()
 
 void Stage1Scene::TestCode()
 {
-	// 테스트 코드
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
-	{
-		const FPOINT Scroll = ScrollManager->GetScroll();
-		LineManager::GetInstance()->AddLine(g_ptMouse.x - Scroll.x, g_ptMouse.y - Scroll.y);
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
-	{
-		LineManager::GetInstance()->ResetLinePoint();
-	}
-
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
-	{
-		LineManager::GetInstance()->SetLineType(ELineType::Normal);
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
-	{
-		LineManager::GetInstance()->SetLineType(ELineType::Wall);
-
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD3))
-	{
-		LineManager::GetInstance()->SetLineType(ELineType::DownLine);
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
-	{
-		LineManager::GetInstance()->SetLineType(ELineType::Ceiling);
-	}
-	//저장
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
-	{
-		LineManager::GetInstance()->SaveFile();
-	}
-
-
 	// 플레이어 포커스 toggle
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
-		ScrollManager::GetInstance()->SetFocus(!ScrollManager::GetInstance()->IsFocus());
+		ScrollManager->SetFocus(!ScrollManager::GetInstance()->IsFocus());
 }
 
 void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
+	ScrollManager->Update();
+
+	LineManager::GetInstance()->Update();
 
 	TestCode();
 }
