@@ -35,5 +35,6 @@ private:
 
 	GPImage testDraw;
 	float tmpTimer;
+	int frameIdx = 0;
 };
 

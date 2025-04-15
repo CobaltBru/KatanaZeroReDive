@@ -181,9 +181,9 @@ void Token::ExplodeAppear(HDC hdc)
         tmp = ((float)(rand() % 1000) / 1000.f);
         float speedX = (tmp * 2 - 1.0f) * 100.f;
 
-        srand(i * 7890);
+        srand(i * 789);
         tmp = ((float)(rand() % 1000) / 1000.f);
-        float speedY = (tmp - 1.0f) * 100.f;
+        float speedY = (tmp - 1.0f) * 200.f - 50.f;
 
         float offsetX = speedX * explodeTimer;
         float offsetY = speedY * explodeTimer + 0.5f * gravity * explodeTimer * explodeTimer;

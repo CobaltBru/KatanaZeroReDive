@@ -120,7 +120,7 @@ HRESULT Stage1Scene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);
 
 		vector <pair<string, Token >> selects;
-		selects.push_back(make_pair("test1", Token(L"* 구내식당* ", {0.f,0.f},
+		selects.push_back(make_pair("test1", Token(L"* 구내식당 * ", {0.f,0.f},
 			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::RED)));
 		selects.push_back(make_pair("test2", Token(L"육회바른연어", { 0,0.f },
 			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
