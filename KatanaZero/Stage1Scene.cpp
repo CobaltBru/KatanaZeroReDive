@@ -144,6 +144,8 @@ void Stage1Scene::Update()
 	if (elapsedTime >= 5.0f)
 	{
 		snapShotManager->Update(true);
+		if (!snapShotManager->IsReplaying())
+			elapsedTime = 0.0f;
 	}
 	else
 	{
