@@ -91,6 +91,9 @@
     <Filter Include="2D Framework\ImGui">
       <UniqueIdentifier>{3c3ae8f6-0f64-4e0b-8e44-277c99651ee5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\ImGui\Default">
+      <UniqueIdentifier>{08774835-78b2-490b-94db-bf5b0378d6a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -200,6 +203,27 @@
     </ClCompile>
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>2D Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_draw.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_win32.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_tables.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx9.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +343,30 @@
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>2D Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imconfig.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_win32.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_internal.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx9.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imstb_rectpack.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imstb_textedit.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

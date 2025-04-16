@@ -13,7 +13,10 @@
 #include <GdiPlus.h>
 #pragma comment(lib,"gdiplus")
 
-#include <d3d11.h>
+#include <d3d9.h>
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 
 using namespace std;
 //using namespace Gdiplus;
@@ -84,6 +87,8 @@ enum class ELineType
 	사실을 알리는 키워드.
 */
 extern HWND g_hWnd;
+extern HWND g_hWndDX;
+extern HWND g_hWndParent;
 extern HINSTANCE g_hInstance;
 extern POINT g_ptMouse;
 
@@ -91,3 +96,9 @@ extern POINT g_ptMouse;
 extern random_device rd;
 extern default_random_engine dre;
 extern uniform_int_distribution<int> uid;
+
+extern LPDIRECT3D9              g_pD3D;
+extern LPDIRECT3DDEVICE9        g_pd3dDevice;
+extern bool                     g_DeviceLost;
+extern UINT                     g_ResizeWidth, g_ResizeHeight;
+extern D3DPRESENT_PARAMETERS    g_d3dpp;

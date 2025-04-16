@@ -37,7 +37,6 @@ HRESULT Stage1Scene::Init()
 	snapShotManager = SnapShotManager::GetInstance();
 	snapShotManager->Init();
 
-
 	ScrollManager = ScrollManager::GetInstance();
 	ScrollManager->Init();
 	ScrollManager->ZeroScroll();
