@@ -2,10 +2,14 @@
 #include "TimerManager.h"
 #include <math.h>
 #include "SnapShotManager.h"
+#include "Image.h"
+#include "GPImage.h"
+#include "ImageManager.h"
 
 
 void ScreenEffectManager::Init()
 {
+	noise->AddImage(L"Image/noise1.bmp");
 }
 
 void ScreenEffectManager::Release()
@@ -48,17 +52,10 @@ void ScreenEffectManager::RenderDistortion(HDC hdc)
 	//distortionSpeed -= 0.01f;
 }
 
-void ScreenEffectManager::RenderGlitch(HDC hdc)
+void ScreenEffectManager::RenderNoise(HDC hdc)
 {
-	glitchOffset += 20;
-	for (int x = 0; x < WINSIZE_X; x += 2)
-	{
-		BitBlt(hdc,
-			x, glitchOffset, 2, WINSIZE_Y,
-			hdc,
-			x, 0,
-			SRCCOPY);
-	}
+	Gdiplus::Graphics graphics(hdc);
+	noise->Render(&graphics, { 0, 0 }, false, 0.5f);
 }
 
 void ScreenEffectManager::StopDistortion()

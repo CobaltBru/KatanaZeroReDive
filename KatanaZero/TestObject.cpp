@@ -131,6 +131,11 @@ void TestObject::ApplySnapShot(const EnemySnapShot& eSnapShot)
 	this->Pos = eSnapShot.pos;
 }
 
+void TestObject::Patrol()
+{
+
+}
+
 
 
 void TestObject::Release()
