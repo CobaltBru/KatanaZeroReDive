@@ -88,6 +88,9 @@
     <Filter Include="2D Framework\Line">
       <UniqueIdentifier>{f39efb4f-a4e9-4627-814f-b3e10cf12fe6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\ImGui">
+      <UniqueIdentifier>{3c3ae8f6-0f64-4e0b-8e44-277c99651ee5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="MapTool.cpp">
       <Filter>MainGame\Scene\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>2D Framework\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="MapTool.h">
       <Filter>MainGame\Scene\MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>2D Framework\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -13,6 +13,8 @@
 #include <GdiPlus.h>
 #pragma comment(lib,"gdiplus")
 
+#include <d3d11.h>
+
 using namespace std;
 //using namespace Gdiplus;
 
