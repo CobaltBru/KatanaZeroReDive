@@ -122,7 +122,7 @@ HRESULT Stage1Scene::InitObject()
 
 		chatManager->Push("Launch", "SELECT",0, oc);
 
-		tokens.clear();
+		/*tokens.clear();
 		redSelects.clear();
 		selects.clear();
 
@@ -156,7 +156,7 @@ HRESULT Stage1Scene::InitObject()
 		Chat* ch3 = new Chat();
 		ch3->Init(tokens, 100, 25);
 		chatManager->Push("normal3", "END", 0, ch3);
-		tokens.clear();
+		tokens.clear();*/
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		chatManager->startChat("Launch");
 	}
