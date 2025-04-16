@@ -16,9 +16,10 @@
 #include "SnapShotManager.h"
 
 
+#include "LineManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -35,9 +36,20 @@ HRESULT Stage1Scene::Init()
 
 	snapShotManager = SnapShotManager::GetInstance();
 	snapShotManager->Init();
-	
 
-	ScrollManager::GetInstance()->ZeroScroll();
+
+	ScrollManager = ScrollManager::GetInstance();
+	ScrollManager->Init();
+	ScrollManager->ZeroScroll();
+
+	LineManager = LineManager::GetInstance();
+	LineManager->Init();
+	if (FAILED(LineManager->LoadFile()))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+
 
 	if (FAILED(InitImage()))
 	{
@@ -50,17 +62,17 @@ HRESULT Stage1Scene::Init()
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-		
+
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
- 	return S_OK;
+	return S_OK;
 }
 
 HRESULT Stage1Scene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64,1,1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
 }
@@ -76,13 +88,12 @@ HRESULT Stage1Scene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
-		taekyung->Init();
+		taekyung->Init({ 500.f,550.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
-
 		//해영 테스트
 		{
 			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
@@ -163,6 +174,22 @@ HRESULT Stage1Scene::InitObject()
 	return S_OK;
 }
 
+void Stage1Scene::TestCode()
+{
+	// 플레이어 포커스 toggle
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
+		ScrollManager->SetFocus(!ScrollManager::GetInstance()->IsFocus());
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
+	{
+		// 인자 : 쉐이크 강도, 지속시간
+		ScrollManager->CameraShake(5.f, 1.f);
+	}
+}
+
 void Stage1Scene::Update()
 {
 	ObjectManager->Update();
@@ -175,20 +202,40 @@ void Stage1Scene::Update()
 	else
 	{
 		snapShotManager->Update(false);
-		
+
 	}
+	ScrollManager->Update();
+
+	TestCode();
 }
 
 void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
-	
+
+	LineManager->Render(hdc);
 }
 
 void Stage1Scene::Release()
 {
-	ObjectManager->Release();
-	CollisionManager->Release();
-	RenderManager->Release();	
+	if (ObjectManager != nullptr)
+		ObjectManager->Release();
+	if (CollisionManager != nullptr)
+		CollisionManager->Release();
+	if (RenderManager != nullptr)
+		RenderManager->Release();
+	if (ScrollManager != nullptr)
+		ScrollManager->Release();
+	if (LineManager != nullptr)
+		LineManager->Release();
+	if (snapShotManager != nullptr)
+		snapShotManager->Release();
+
+	ObjectManager = nullptr;
+	CollisionManager = nullptr;
+	RenderManager = nullptr;
+	ScrollManager = nullptr;
+	LineManager = nullptr;
+	snapShotManager = nullptr;
 }

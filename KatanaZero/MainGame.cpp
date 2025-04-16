@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include "TilemapTool.h"
 #include "Stage1Scene.h"
+#include "MapTool.h"
 
 #include "LoadingScene.h"
 #include "SoundManager.h"
@@ -36,10 +37,10 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-	
 
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
+	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
@@ -99,7 +100,7 @@ void MainGame::Update()
 	SceneManager::GetInstance()->Update();
 	SoundManager::GetInstance()->Update();
 
-	InvalidateRect(g_hWnd, NULL, false);
+	InvalidateRect(g_hWnd, NULL, false); 
 	/*tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
 	if (tmpTimer > 0.1f)
 	{

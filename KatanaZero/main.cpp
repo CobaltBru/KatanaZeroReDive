@@ -10,6 +10,10 @@ LPCWSTR g_lpszClassName = (LPCWSTR)TEXT("윈도우 API 사용하기");
 MainGame g_mainGame;
 POINT g_ptMouse;	// 마우스 좌표
 
+random_device rd;
+default_random_engine dre;
+uniform_int_distribution<int> uid;
+
 // Init
 
 RECT GetRect(int left, int top, int width, int height);
@@ -34,6 +38,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpszCmdParam, int nCmdShow)
 {
+	
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	// 누수 난 메모리 블럭 추적
+	//_CrtSetBreakAlloc(347);
+#endif
+
+	
 	g_hInstance = hInstance;
 
 	WNDCLASSEX wndClass;
@@ -123,6 +135,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//GDI+ Release
 	GPImage::ReleaseLast();
 	Gdiplus::GdiplusShutdown(gdiplusToken);
+
 	return message.wParam;
 }
 
