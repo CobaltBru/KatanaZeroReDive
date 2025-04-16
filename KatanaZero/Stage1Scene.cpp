@@ -64,13 +64,9 @@ HRESULT Stage1Scene::Init()
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	Player* player = new Player();
+	player = new Player();
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
-	//
-	TaeKyungObject* taekyung = new TaeKyungObject();
-	taekyung->Init({ 500.f,550.f });
-	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 	/*if (FAILED(InitObject()))
 	{
@@ -222,7 +218,9 @@ void Stage1Scene::Update()
 		snapShotManager->Update(false);
 
 	}
-	ScrollManager->Update();
+	FPOINT playerPos = player->GetPos();
+	if (playerPos.x < 50 || playerPos.x >WINSIZE_X - 50 || playerPos.y < 50 || playerPos.y >WINSIZE_Y - 50)
+		ScrollManager->Update();
 
 	TestCode();
 }

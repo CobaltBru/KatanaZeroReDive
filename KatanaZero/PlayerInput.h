@@ -3,6 +3,8 @@
 #include "config.h"
 #include <functional>
 #include <cstddef>
+#include <vector>
+
 
 enum class InputAction
 {
@@ -31,12 +33,14 @@ namespace std {
 class PlayerInput
 {
 private:
-	std::unordered_map<UINT, InputAction> keyActionMap;
+	std::unordered_map<UINT, InputAction> keyActionMap;	
 
 public:
 	void Init();
 	
 	std::unordered_map<UINT, InputAction>& GetkeyActionMap() { return keyActionMap; };
+
+	std::vector<InputAction> GetActions();
 
 	void BindKeyAction();
 };

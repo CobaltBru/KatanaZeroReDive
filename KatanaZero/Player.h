@@ -16,7 +16,6 @@ private:
 	ZeroState* state;
 
 	PlayerInput* playerInput;
-	std::unordered_map<UINT, InputAction> keyActionMap;
 
 	float speed;
 

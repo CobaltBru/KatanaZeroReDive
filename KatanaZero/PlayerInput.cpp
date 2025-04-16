@@ -11,6 +11,17 @@ void PlayerInput::Init()
 	
 }
 
+std::vector<InputAction> PlayerInput::GetActions()
+{
+	std::vector<InputAction> actions;
+	for (const auto& keyAction : keyActionMap)
+	{
+		if (KeyManager::GetInstance()->IsStayKeyDown(keyAction.first))
+			actions.push_back(keyAction.second);
+	}
+	return actions;
+}
+
 void PlayerInput::BindKeyAction()
 {
 	
