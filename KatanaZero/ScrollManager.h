@@ -17,6 +17,11 @@ public:
 		ScrollOffset.y += InScroll.y;
 	}
 
+	void ReplayScroll(FPOINT prevScroll)
+	{
+		Scroll = prevScroll;
+	}
+
 	void ZeroScroll() { 
 		ScrollOffset.x = 0.f;
 		ScrollOffset.y = 0.f;

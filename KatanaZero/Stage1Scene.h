@@ -4,11 +4,13 @@
 class ObjectManager;
 class RenderManager;
 class CollisionManager;
+class SnapShotManager;
 class ScrollManager;
 class LineManager;
 class Stage1Scene : public Scene
 {
 public:
+
 	Stage1Scene();
 	virtual ~Stage1Scene() = default;
 
@@ -28,6 +30,8 @@ private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;
 	CollisionManager* CollisionManager;
+	SnapShotManager* snapShotManager;
+	float elapsedTime;
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 };

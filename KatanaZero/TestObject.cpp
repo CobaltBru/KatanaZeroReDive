@@ -36,6 +36,23 @@ void TestObject::Render(HDC hdc)
 	}
 }
 
+void TestObject::MakeSnapShot(void* out)
+{
+	EnemySnapShot* eSnapShot = static_cast<EnemySnapShot*>(out);
+	eSnapShot->pos = this->GetPos();
+	eSnapShot->ID = 0;
+	eSnapShot->animFrame = 0;
+	eSnapShot->isDead = false;
+}
+
+void TestObject::ApplySnapShot(const EnemySnapShot& eSnapShot)
+{
+	this->Pos = eSnapShot.pos;
+}
+
+
+
 void TestObject::Release()
+
 {
 }

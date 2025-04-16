@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SnapShotManager.h"
 
 class Image;
 class Collider;
@@ -13,6 +14,8 @@ public:
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
+	virtual void MakeSnapShot(void* out) override;
+	void ApplySnapShot(const PlayerSnapShot& snapShot);
 
 private:
 	void Move();
