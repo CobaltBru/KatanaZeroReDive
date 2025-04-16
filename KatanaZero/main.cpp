@@ -10,6 +10,10 @@ LPCWSTR g_lpszClassName = (LPCWSTR)TEXT("윈도우 API 사용하기");
 MainGame g_mainGame;
 POINT g_ptMouse;	// 마우스 좌표
 
+random_device rd;
+default_random_engine dre;
+uniform_int_distribution<int> uid;
+
 // Init
 
 RECT GetRect(int left, int top, int width, int height);

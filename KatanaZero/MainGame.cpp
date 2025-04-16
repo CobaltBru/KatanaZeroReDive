@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include "TilemapTool.h"
 #include "Stage1Scene.h"
+#include "MapTool.h"
 
 #include "LoadingScene.h"
 #include "SoundManager.h"
@@ -24,6 +25,7 @@ HRESULT MainGame::Init()
 
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
+	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 

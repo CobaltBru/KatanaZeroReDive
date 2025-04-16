@@ -9,6 +9,7 @@
 #include <bitset>
 #include <map>
 #include <vector>
+#include <random>
 #include <GdiPlus.h>
 #pragma comment(lib,"gdiplus")
 
@@ -63,7 +64,6 @@ enum class ELineType
 	End
 };
 
-
 /*
 	extern 키워드 : 변수나 함수가 다른 파일에 정의되어 있다 라는
 	사실을 알리는 키워드.
@@ -86,3 +86,8 @@ extern POINT g_ptMouse;
 #endif
 
 #endif // _DEBUG
+
+// random
+extern random_device rd;
+extern default_random_engine dre;
+extern uniform_int_distribution<int> uid;

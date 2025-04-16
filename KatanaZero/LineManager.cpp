@@ -48,10 +48,10 @@ void LineManager::Update()
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
 		SetLineType(ELineType::Ceiling);
 	//저장
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F11))
 		SaveFile();
 	//불러오기
-	else if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
+	else if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F12))
 		LoadFile();
 }
 
@@ -413,6 +413,8 @@ HRESULT LineManager::LoadFile()
 
 		LineList[(int)SaveLineType].push_back(new Line(SaveLine.LeftPoint, SaveLine.RightPoint, SaveLineType));
 	}
+
+	CloseHandle(hFile);
 
 	return S_OK;
 }

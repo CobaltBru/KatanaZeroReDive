@@ -153,6 +153,9 @@
     <ClCompile Include="LineManager.cpp">
       <Filter>2D Framework\Line</Filter>
     </ClCompile>
+    <ClCompile Include="MapTool.cpp">
+      <Filter>MainGame\Scene\MapTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -238,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="LineManager.h">
       <Filter>2D Framework\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="MapTool.h">
+      <Filter>MainGame\Scene\MapTool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

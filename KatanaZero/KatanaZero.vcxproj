@@ -148,6 +148,7 @@
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="MapTool.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="LineManager.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MainGame.h" />
+    <ClInclude Include="MapTool.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />

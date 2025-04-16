@@ -14,7 +14,7 @@
 #include "LineManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr),ScrollManager(nullptr)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr),ScrollManager(nullptr), LineManager(nullptr)
 {
 }
 
@@ -33,7 +33,14 @@ HRESULT Stage1Scene::Init()
 	ScrollManager->Init();
 	ScrollManager->ZeroScroll();
 
-	LineManager::GetInstance()->Init();
+	LineManager = LineManager::GetInstance();
+	LineManager->Init();
+	if (FAILED(LineManager->LoadFile()))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+	
 
 	if (FAILED(InitImage()))
 	{
@@ -72,7 +79,7 @@ HRESULT Stage1Scene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
-		taekyung->Init({500.f,500.f});
+		taekyung->Init({500.f,550.f});
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 		TestObject* testObject = new TestObject();
@@ -88,6 +95,15 @@ void Stage1Scene::TestCode()
 	// 플레이어 포커스 toggle
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
 		ScrollManager->SetFocus(!ScrollManager::GetInstance()->IsFocus());
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
+	{
+		// 인자 : 쉐이크 강도, 지속시간
+		ScrollManager->CameraShake(5.f, 1.f);
+	}
 }
 
 void Stage1Scene::Update()
@@ -95,8 +111,6 @@ void Stage1Scene::Update()
 	ObjectManager->Update();
 	CollisionManager->Update();
 	ScrollManager->Update();
-
-	LineManager::GetInstance()->Update();
 
 	TestCode();
 }
@@ -106,14 +120,26 @@ void Stage1Scene::Render(HDC hdc)
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
 
-	LineManager::GetInstance()->Render(hdc);
+	LineManager->Render(hdc);
 }
 
 void Stage1Scene::Release()
 {
-	ObjectManager->Release();
-	CollisionManager->Release();
-	RenderManager->Release();	
-	ScrollManager->Release();
-	LineManager::GetInstance()->Release();
+	if (ObjectManager != nullptr)
+		ObjectManager->Release();
+	if (CollisionManager != nullptr)
+		CollisionManager->Release();
+	if (RenderManager != nullptr)
+		RenderManager->Release();
+	if (ScrollManager != nullptr)
+		ScrollManager->Release();
+	if (LineManager != nullptr)
+		LineManager->Release();
+
+	
+	ObjectManager = nullptr;
+CollisionManager = nullptr;
+RenderManager = nullptr;
+ScrollManager = nullptr;
+LineManager = nullptr;
 }
