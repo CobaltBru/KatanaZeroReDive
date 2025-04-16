@@ -18,6 +18,8 @@
 
 #include "LineManager.h"
 
+#include "Player.h"
+
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
 {
@@ -44,11 +46,11 @@ HRESULT Stage1Scene::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
-	if (FAILED(LineManager->LoadFile()))
+	/*if (FAILED(LineManager->LoadFile()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}
+	}*/
 
 
 	if (FAILED(InitImage()))
@@ -57,11 +59,24 @@ HRESULT Stage1Scene::Init()
 		return E_FAIL;
 	}
 
-	if (FAILED(InitObject()))
+	// 자은 테스트 코드
+	Background* background = new Background();
+	background->Init("TestBg");
+	ObjectManager->AddGameObject(EObjectType::GameObject, background);
+
+	Player* player = new Player();
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+	//
+	TaeKyungObject* taekyung = new TaeKyungObject();
+	taekyung->Init({ 500.f,550.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+
+	/*if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}
+	}*/
 
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
@@ -73,7 +88,7 @@ HRESULT Stage1Scene::InitImage()
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
-
+	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
 	return S_OK;
 }
 
@@ -81,6 +96,7 @@ HRESULT Stage1Scene::InitObject()
 {
 	// 씬 초기에 필요한 오브젝트 생성
 
+	/**/
 	// 테스트 코드 태경
 	{
 		Background* background = new Background();

@@ -7,6 +7,7 @@ class CollisionManager;
 class SnapShotManager;
 class ScrollManager;
 class LineManager;
+class Player;
 class Stage1Scene : public Scene
 {
 public:
@@ -34,5 +35,6 @@ private:
 	float elapsedTime;
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
+	Player* player;
 };
 

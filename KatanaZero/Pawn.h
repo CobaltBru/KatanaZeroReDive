@@ -6,11 +6,9 @@ class Image;
 class PlayerController;
 class Pawn: public GameObject
 {
-private:
+protected:
 	Image* image;
 	RECT rc;
-
-	PlayerController* Controller;
 
 public:
 	Pawn();

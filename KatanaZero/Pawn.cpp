@@ -5,8 +5,6 @@ Pawn::Pawn()
 {
 	image = nullptr;
 	rc = RECT{};
-
-	Controller = nullptr;
 }
 
 HRESULT Pawn::Init()
