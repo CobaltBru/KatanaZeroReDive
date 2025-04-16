@@ -5,10 +5,20 @@
 #include "CollisionManager.h"
 #include "RenderManager.h"
 
+Player::Player()
+{
+}
+
+Player::~Player()
+{
+}
+
 HRESULT Player::Init()
 {
 	image = ImageManager::GetInstance()->FindImage("zerowalk");
 	Pos = FPOINT{ 300.0f, 300.0f };
+
+	FrameIndexMax = 10;
 
 	PlayerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
 	CollisionManager::GetInstance()->AddCollider(PlayerCollider, ECollisionGroup::Player);
@@ -42,7 +52,9 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{
-		image->FrameRender(hdc, Pos.x, Pos.y, 0, 0);
+		image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);
+		FrameIndex++;
+		if (FrameIndex >= FrameIndexMax) FrameIndex %= FrameIndexMax;
 	}
 }
 

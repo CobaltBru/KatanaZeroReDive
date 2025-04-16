@@ -26,6 +26,9 @@ private:
 	std::unordered_map<InputAction, stateFunction> inputStateMap;
 
 public:
+	Player();
+	virtual ~Player();
+
 	HRESULT Init() override;
 	void Release() override;
 	void Update() override;

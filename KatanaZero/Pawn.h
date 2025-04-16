@@ -8,6 +8,9 @@ class Pawn: public GameObject
 {
 protected:
 	Image* image;
+	int FrameIndex;
+	int FrameIndexMax;
+
 	RECT rc;
 
 public:
