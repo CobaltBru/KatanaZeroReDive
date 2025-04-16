@@ -168,6 +168,9 @@
     <ClCompile Include="ScreenEffectManager.cpp">
       <Filter>2D Framework\Effect\ScreenEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>2D Framework\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -265,6 +268,9 @@
     </ClInclude>
     <ClInclude Include="ScreenEffectManager.h">
       <Filter>2D Framework\Effect\ScreenEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>2D Framework\Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
