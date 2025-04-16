@@ -91,7 +91,7 @@ void TestObject::Update()
 
 		// 플레이어 방향으로 이동
 		float angle = atan2f(0.0f, dx);
-		Pos.x += cosf(angle) * speed * dt;
+		Pos.x += cosf(angle) * chasingSpeed * dt;
 	}
 	break;
 	case EnemyState::Attack:

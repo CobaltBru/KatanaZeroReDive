@@ -29,12 +29,13 @@ private:
 	Image* Image;
 	Collider* ObjectCollider;
 	EnemyState eState{ EnemyState::IDLE };
-	float detectionRange{ 500.0f };
+	float detectionRange{ 600.0f };
 	float verticalRange{ 20.0f };
 	float elapsedTime{ 0.0f };
 	float patrolDuration{ 3.0f };
-	float idleDuration{ 1.0f };
+	float idleDuration{ 0.6f };
 	float speed{ 100.0f };
+	float chasingSpeed{ 200.0f };
 	int dir{ 1 };
 
 };

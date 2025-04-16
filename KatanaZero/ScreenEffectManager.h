@@ -12,7 +12,7 @@ private:
 	bool isDistortion{ false };
 	float elapsedTime{ 0.0f };
 	float distortionForce{ 7.0f };
-	float distortionSpeed{ 20.0f };
+	float distortionSpeed{ 200.0f };
 	int glitchOffset{ 0 };
 };
 
