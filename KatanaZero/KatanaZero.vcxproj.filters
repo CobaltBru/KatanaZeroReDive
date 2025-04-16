@@ -79,6 +79,15 @@
     <Filter Include="2D Framework\SnapShot">
       <UniqueIdentifier>{1bbfb6bb-a331-4e57-b1bf-1a646d9f8592}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Controller">
+      <UniqueIdentifier>{a62a437a-180b-43db-b884-1bde5bf2c255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Input">
+      <UniqueIdentifier>{7d420ba9-92ba-4b2f-add5-2bd55b1b51ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Line">
+      <UniqueIdentifier>{f39efb4f-a4e9-4627-814f-b3e10cf12fe6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -167,6 +176,24 @@
     </ClCompile>
     <ClCompile Include="ScreenEffectManager.cpp">
       <Filter>2D Framework\Effect\ScreenEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>2D Framework\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Pawn.cpp">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>2D Framework\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="LineManager.cpp">
+      <Filter>2D Framework\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="MapTool.cpp">
+      <Filter>MainGame\Scene\MapTool</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>2D Framework\Effect</Filter>
@@ -268,6 +295,24 @@
     </ClInclude>
     <ClInclude Include="ScreenEffectManager.h">
       <Filter>2D Framework\Effect\ScreenEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Pawn.h">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>2D Framework\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>2D Framework\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>2D Framework\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="LineManager.h">
+      <Filter>2D Framework\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="MapTool.h">
+      <Filter>MainGame\Scene\MapTool</Filter>
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>2D Framework\Effect</Filter>

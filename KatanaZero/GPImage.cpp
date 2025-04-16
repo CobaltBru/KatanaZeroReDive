@@ -1,6 +1,10 @@
 #include "GPImage.h"
 using namespace Gdiplus;
 
+#ifdef new
+#undef new
+#endif
+
 Gdiplus::Pen* GPImage::pens[5];
 
 void GPImage::Init()
@@ -177,6 +181,74 @@ void GPImage::Middle_RenderFrame(Gdiplus::Graphics* graphics, FPOINT pos, int fr
 	
 }
 
+void GPImage::RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame, float angle, bool flip, float alpha)
+{
+	ColorMatrix colorMatrix = {
+		1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, alpha, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
+	ImageAttributes imgAttr;
+	imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+
+	
+	int col = frame % maxFrameX;
+	int row = frame / maxFrameX;
+	float srcX = (float)(col * frameWidth);
+	float srcY = (float)(row * frameHeight);
+	Gdiplus::Matrix matrix;
+	matrix.RotateAt(angle, Gdiplus::PointF(pos.x + frameWidth / 2, pos.y + frameHeight / 2));
+	graphics->SetTransform(&matrix);
+	if (!flip)
+	{
+		Rect destRect(pos.x, pos.y, frameWidth, frameHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, frameHeight, UnitPixel, &imgAttr);
+	}
+	else
+	{
+		Rect destRect(pos.x + frameWidth, pos.y, -frameWidth, frameHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, frameHeight, UnitPixel, &imgAttr);
+	}
+}
+
+void GPImage::Middle_RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame, float angle, bool flip, float alpha)
+{
+	ColorMatrix colorMatrix = {
+		1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, alpha, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
+	ImageAttributes imgAttr;
+	imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+
+
+	int col = frame % maxFrameX;
+	int row = frame / maxFrameX;
+	float srcX = (float)(col * frameWidth);
+	float srcY = (float)(row * frameHeight);
+	Gdiplus::Matrix matrix;
+	matrix.RotateAt(angle, Gdiplus::PointF(pos.x, pos.y));
+	graphics->SetTransform(&matrix);
+	if (!flip)
+	{
+		Rect destRect(pos.x - frameWidth / 2, pos.y - frameHeight / 2, frameWidth, frameHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, frameHeight, UnitPixel, &imgAttr);
+	}
+	else
+	{
+		Rect destRect(pos.x + frameWidth / 2, pos.y - frameHeight / 2, -frameWidth, frameHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, frameHeight, UnitPixel, &imgAttr);
+	}
+}
+
 void GPImage::Release()
 {
 	if (pBitmap)
@@ -194,3 +266,7 @@ void GPImage::ReleaseLast()
 		delete pens[i];
 	}
 }
+
+#ifdef _DEBUG
+#define new DBG_NEW
+#endif

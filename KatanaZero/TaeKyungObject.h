@@ -10,7 +10,7 @@ public:
 	TaeKyungObject();
 	virtual ~TaeKyungObject() = default;
 
-	virtual HRESULT Init();
+	HRESULT Init(FPOINT InPos);
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
@@ -20,6 +20,7 @@ public:
 
 private:
 	void Move();
+	void Jump();
 	void Collision();
 
 	void InitOffset();
@@ -28,6 +29,13 @@ private:
 	Image* Image;
 	Collider* ObjectCollider;
 	float Speed;
+
+	//Jump
+	float Gravity;
+	float dY;
+	bool bJump;
+	bool bFalling;
+	bool bDown;
 	bool bDead{ false };
 };
 

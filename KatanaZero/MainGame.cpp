@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include "TilemapTool.h"
 #include "Stage1Scene.h"
+#include "MapTool.h"
 
 #include "LoadingScene.h"
 #include "SoundManager.h"
@@ -36,10 +37,10 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-	
 
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
+	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
@@ -64,7 +65,7 @@ void MainGame::Release()
 		delete backBuffer;
 		backBuffer = nullptr;
 	}
-
+	testDraw.Release();
 	ReleaseDC(g_hWnd, hdc);
 
 	SceneManager::GetInstance()->Release();
@@ -78,8 +79,14 @@ void MainGame::Update()
 	SceneManager::GetInstance()->Update();
 	SoundManager::GetInstance()->Update();
 
-	InvalidateRect(g_hWnd, NULL, false);
-	tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
+	InvalidateRect(g_hWnd, NULL, false); 
+	/*tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
+	if (tmpTimer > 0.1f)
+	{
+		frameIdx++;
+		tmpTimer -= 0.1f;
+		if (frameIdx >= 12) frameIdx = 0;
+	}*/
 }
 
 void MainGame::Render()
@@ -93,13 +100,14 @@ void MainGame::Render()
 	TimerManager::GetInstance()->Render(hBackBufferDC);
 	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
 	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
-	/*testDraw.Render(pGraphics, { 120,100 }, 0.3f);
-	testDraw.Render(pGraphics, { 140,100 }, 0.5f);
+	//testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
+	/*testDraw.Render(pGraphics, {140,100}, 0.5f);
 	testDraw.Render(pGraphics, { 160,100 }, 0.7f);
 	testDraw.Render(pGraphics, { 180,100 }, 0.9f);
 	testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
-
+	/*testDraw.Middle_RenderFrameAngle(pGraphics, { 300,100 }, frameIdx, frameIdx * 30,false,0.5f);
+	testDraw.RenderFrameAngle(pGraphics, { 200,100 }, frameIdx, frameIdx * 30);*/
 	//화면 왜곡
 	/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
 	RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/

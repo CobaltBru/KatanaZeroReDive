@@ -37,5 +37,6 @@ public:
 
 private:
 	list<Collider*> CollisionList[(int)ECollisionGroup::End];
+
 };
 
