@@ -4,6 +4,15 @@
 #include "SnapShotManager.h"
 
 
+void ScreenEffectManager::Init()
+{
+}
+
+void ScreenEffectManager::Release()
+{
+	ReleaseInstance();
+}
+
 void ScreenEffectManager::StartDistortion()
 {
 	if (isDistortion) return;
@@ -23,6 +32,16 @@ void ScreenEffectManager::RenderDistortion(HDC hdc)
 			x, offset, 2, WINSIZE_Y,
 			hdc,
 			x, 0,
+			SRCCOPY);
+	}
+	for (int y = 0; y < WINSIZE_Y; y += 2)
+	{
+		int offset = (int)(sinf(y * 0.05f + elapsedTime * distortionSpeed) * distortionForce * 1.5f);
+
+		BitBlt(hdc,
+			offset, y, WINSIZE_X, 2,
+			hdc,
+			0, y,
 			SRCCOPY);
 	}
 	

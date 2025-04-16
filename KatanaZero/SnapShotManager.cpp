@@ -17,27 +17,31 @@ void SnapShotManager::Release()
 
 void SnapShotManager::Update(bool isDead)
 {
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	if (!isDead)
 	{
-		elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-		if (elapsedTime >= 0.01666666667f)
+		if (!isReplaying)
 		{
-			Save();
-			elapsedTime = 0.0f;
+			elapsedTime += dt;
+			if (elapsedTime >= 0.01666666667f)
+			{
+				Save();
+				elapsedTime = 0.0f;
+			}
 		}
 	}
 	else
 	{
-		if (!isReplaying)
+		StartReplay();
+		if (isReplaying)
 		{
-			isReplaying = true;
-			replayIndex = snapShots.GetBufferSize() - 1;
-		}
-		elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-		if (elapsedTime >= 0.01666666667f / 3.0f)
-		{
-			Replay();
-			elapsedTime = 0.0f;
+			elapsedTime += dt;
+
+			if (elapsedTime >= 0.01666666667f / 3.0f)
+			{
+				Replay();
+				elapsedTime = 0.0f;
+			}
 		}
 	}
 }
@@ -74,6 +78,15 @@ void SnapShotManager::Save()
 	snapShots.SaveSnapShot(pSnapShot, eSnapShots, fxSnapShots, sSnapShot);
 }
 
+void SnapShotManager::StartReplay()
+{
+	if (isReplaying || snapShots.GetBufferSize() <= 0) return;
+	isReplaying = true;
+	replayIndex = snapShots.GetBufferSize() - 1;
+	elapsedTime = 0.0f;
+	ScreenEffectManager::GetInstance()->StartDistortion();
+}
+
 void SnapShotManager::Replay()
 {
 	if (replayIndex < 0)
@@ -83,7 +96,6 @@ void SnapShotManager::Replay()
 		snapShots.Clear();
 		return;
 	}
-	ScreenEffectManager::GetInstance()->StartDistortion();
 	const SnapShot& frame = snapShots.GetFrame(replayIndex);
 
 	// Player µÇ°¨±â

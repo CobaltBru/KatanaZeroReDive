@@ -16,11 +16,10 @@
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
 
-
 #include "LineManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -38,6 +37,8 @@ HRESULT Stage1Scene::Init()
 	snapShotManager = SnapShotManager::GetInstance();
 	snapShotManager->Init();
 
+	screenEffectManager = ScreenEffectManager::GetInstance();
+	screenEffectManager->Init();
 
 	ScrollManager = ScrollManager::GetInstance();
 	ScrollManager->Init();
@@ -196,18 +197,13 @@ void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
-	elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-	if (elapsedTime >= 30.0f)
+	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
 	{
-		snapShotManager->Update(true);
-		if (!snapShotManager->IsReplaying())
-			elapsedTime = 0.0f;
+		snapShotManager->StartReplay(); // 리플레이
 	}
-	else
-	{
-		snapShotManager->Update(false);
+	snapShotManager->Update(snapShotManager->IsReplaying());
 
-	}
 	ScrollManager->Update();
 
 	TestCode();
@@ -217,7 +213,7 @@ void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
-ScreenEffectManager::GetInstance()->RenderDistortion(hdc);
+	screenEffectManager->RenderDistortion(hdc);
 	LineManager->Render(hdc);
 }
 
@@ -233,6 +229,8 @@ void Stage1Scene::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
+	if (screenEffectManager != nullptr)
+		screenEffectManager->Release();
 	if (snapShotManager != nullptr)
 		snapShotManager->Release();
 	ObjectManager = nullptr;
@@ -240,5 +238,6 @@ void Stage1Scene::Release()
 	RenderManager = nullptr;
 	ScrollManager = nullptr;
 	LineManager = nullptr;
+	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 }

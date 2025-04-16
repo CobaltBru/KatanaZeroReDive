@@ -8,6 +8,8 @@
 
 #include "LoadingScene.h"
 #include "SoundManager.h"
+#include "ScreenEffectManager.h"
+#include "SnapShotManager.h"
 
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
 //{

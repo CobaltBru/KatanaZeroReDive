@@ -21,6 +21,7 @@ public:
 	void Update(bool isDead);
 	void AddGameObject(EObjectClassType  InClassType, GameObject* InGameObject) { GameObjectList[(int)InClassType].push_back(InGameObject); }
 	void Save();
+	void StartReplay();
 	void Replay();
 	inline bool IsReplaying() { return isReplaying; }
 	inline int GetReplayIndex() { return replayIndex; }

@@ -4,6 +4,8 @@
 class ScreenEffectManager : public Singleton<ScreenEffectManager>
 {
 public:
+	void Init();
+	void Release();
 	void StartDistortion();
 	void RenderDistortion(HDC hdc);
 	void RenderGlitch(HDC hdc);
