@@ -214,7 +214,7 @@ void Stage1Scene::Render(HDC hdc)
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
 	screenEffectManager->RenderDistortion(hdc);
-	if (snapShotManager->IsReplaying() && snapShotManager->GetReplayIndex() == 0)
+	if (snapShotManager->IsReplaying() && snapShotManager->GetReplayIndex() <= 30 && snapShotManager->GetReplayIndex() >= 0)
 	{
 		screenEffectManager->RenderNoise(hdc);
 	}

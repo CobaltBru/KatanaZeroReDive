@@ -9,11 +9,17 @@
 
 void ScreenEffectManager::Init()
 {
-	noise->AddImage(L"Image/noise1.bmp");
+	noise = new GPImage();
+	noise->AddImage(L"Image/noise2.bmp");
 }
 
 void ScreenEffectManager::Release()
 {
+	if (noise)
+	{
+		delete noise;
+		noise = nullptr;
+	}
 	ReleaseInstance();
 }
 
@@ -55,7 +61,7 @@ void ScreenEffectManager::RenderDistortion(HDC hdc)
 void ScreenEffectManager::RenderNoise(HDC hdc)
 {
 	Gdiplus::Graphics graphics(hdc);
-	noise->Render(&graphics, { 0, 0 }, false, 0.5f);
+	noise->Middle_Render(&graphics, { WINSIZE_X / 2, WINSIZE_Y / 2 }, false, 0.5f);
 }
 
 void ScreenEffectManager::StopDistortion()
