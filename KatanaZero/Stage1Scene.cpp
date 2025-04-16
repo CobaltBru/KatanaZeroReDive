@@ -102,11 +102,12 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// 테스트 코드 지운
 	{
-		ChatManager* chatManager = new ChatManager();
+		chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
 		vector <pair<float, Token >> tokens;
 		vector <pair<string, Token >> redSelects;
 		vector <pair<string, Token >> selects;
+
 		tokens.push_back(make_pair(0.f, Token(L"오늘은", { 0.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		tokens.push_back(make_pair(0.7f, Token(L"점심으로", { 55,0.f },
@@ -130,10 +131,8 @@ HRESULT Stage1Scene::InitObject()
 
 		OptionChat* oc = new OptionChat();
 		oc->Init(tokens, 400.f, 50.f, 3.f, 10.f, redSelects, selects);
-
 		chatManager->Push("Launch", "SELECT",0, oc);
-
-		/*tokens.clear();
+		tokens.clear();
 		redSelects.clear();
 		selects.clear();
 
@@ -167,9 +166,11 @@ HRESULT Stage1Scene::InitObject()
 		Chat* ch3 = new Chat();
 		ch3->Init(tokens, 100, 25);
 		chatManager->Push("normal3", "END", 0, ch3);
-		tokens.clear();*/
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		tokens.clear();
+
 		chatManager->startChat("Launch");
+		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		
 	}
 	return S_OK;
 }
@@ -231,7 +232,6 @@ void Stage1Scene::Release()
 		LineManager->Release();
 	if (snapShotManager != nullptr)
 		snapShotManager->Release();
-
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
