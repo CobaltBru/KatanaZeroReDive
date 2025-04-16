@@ -667,9 +667,9 @@ string OptionChat::selectCursor()
     return currentSelects[cursor].first;
 }
 
-void ChatManager::Push(string key, string next, FPOINT pos, Chat* chat)
+void ChatManager::Push(string key, string next, int pos, Chat* chat)
 {
-    chat->setPos(pos);
+    chat->setPos(poses[pos]);
     chatMap.insert(make_pair(key, make_pair(chat, next)));
 }
 

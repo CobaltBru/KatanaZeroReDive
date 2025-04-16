@@ -87,7 +87,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShowWindow(g_hWnd, nCmdShow);
 
 	
-
+	
 	TimerManager::GetInstance()->Init();
 	g_mainGame.Init();
 

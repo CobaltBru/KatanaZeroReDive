@@ -36,5 +36,8 @@ private:
 	GPImage testDraw;
 	float tmpTimer;
 	int frameIdx = 0;
+
+	HFONT hFont;
+	HFONT hOldFont;
 };
 

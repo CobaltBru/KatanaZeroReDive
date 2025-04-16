@@ -124,14 +124,18 @@ public:
 class ChatManager : public GameObject
 {
 private:
+	vector<FPOINT> poses;
 	map<string, pair<Chat*,string>> chatMap;
 	Chat* currentChat = nullptr;
 	string nextChat;
 	bool explodeFlag = false;
 	string tmpChat;
 	float timer = 0;
+
+
 public:
-	void Push(string key, string next,FPOINT pos, Chat* chat);
+	inline void pushPos(FPOINT pos) { poses.push_back(pos); }
+	void Push(string key, string next,int pos, Chat* chat);
 	void startChat(string key);
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
