@@ -159,7 +159,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_draw.cpp" />
-    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_tables.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
@@ -204,7 +204,7 @@
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui.h" />
-    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui_impl_win32.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui_internal.h" />
     <ClInclude Include="Reference\Headers\Imgui\imstb_rectpack.h" />

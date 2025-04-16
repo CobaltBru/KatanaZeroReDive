@@ -222,7 +222,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp">
       <Filter>2D Framework\ImGui\Default</Filter>
     </ClCompile>
-    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx9.cpp">
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx11.cpp">
       <Filter>2D Framework\ImGui\Default</Filter>
     </ClCompile>
   </ItemGroup>
@@ -356,9 +356,6 @@
     <ClInclude Include="Reference\Headers\Imgui\imgui_internal.h">
       <Filter>2D Framework\ImGui\Default</Filter>
     </ClInclude>
-    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx9.h">
-      <Filter>2D Framework\ImGui\Default</Filter>
-    </ClInclude>
     <ClInclude Include="Reference\Headers\Imgui\imstb_rectpack.h">
       <Filter>2D Framework\ImGui\Default</Filter>
     </ClInclude>
@@ -366,6 +363,9 @@
       <Filter>2D Framework\ImGui\Default</Filter>
     </ClInclude>
     <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h">
       <Filter>2D Framework\ImGui\Default</Filter>
     </ClInclude>
   </ItemGroup>

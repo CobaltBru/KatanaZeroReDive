@@ -13,8 +13,8 @@
 #include <GdiPlus.h>
 #pragma comment(lib,"gdiplus")
 
-#include <d3d9.h>
-#pragma comment(lib, "d3d9.lib")
+#include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -97,8 +97,9 @@ extern random_device rd;
 extern default_random_engine dre;
 extern uniform_int_distribution<int> uid;
 
-extern LPDIRECT3D9              g_pD3D;
-extern LPDIRECT3DDEVICE9        g_pd3dDevice;
-extern bool                     g_DeviceLost;
+extern ID3D11Device* g_pd3dDevice;
+extern ID3D11DeviceContext* g_pd3dDeviceContext;
+extern IDXGISwapChain* g_pSwapChain;
+extern bool                     g_SwapChainOccluded;
 extern UINT                     g_ResizeWidth, g_ResizeHeight;
-extern D3DPRESENT_PARAMETERS    g_d3dpp;
+extern ID3D11RenderTargetView* g_mainRenderTargetView;
