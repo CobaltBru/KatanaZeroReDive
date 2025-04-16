@@ -16,6 +16,19 @@
 using namespace std;
 //using namespace Gdiplus;
 
+#ifdef _DEBUG
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#ifndef DBG_NEW 
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
+#define new DBG_NEW 
+#endif
+
+#endif // _DEBUG
+
 #include "KeyManager.h"
 #include "ImageManager.h"
 #include "TimerManager.h"
@@ -71,21 +84,6 @@ enum class ELineType
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 extern POINT g_ptMouse;
-
-#ifdef _DEBUG
-
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#ifndef DBG_NEW 
-
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
-#define new DBG_NEW 
-
-#endif
-
-#endif // _DEBUG
 
 // random
 extern random_device rd;

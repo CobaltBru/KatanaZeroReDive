@@ -11,6 +11,7 @@ void SnapShotManager::Init()
 
 void SnapShotManager::Release()
 {
+	ReleaseInstance();
 }
 
 void SnapShotManager::Update(bool isDead)

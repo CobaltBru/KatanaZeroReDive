@@ -37,7 +37,6 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-	
 
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());

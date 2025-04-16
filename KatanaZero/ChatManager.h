@@ -4,7 +4,7 @@ class Token
 {
 public:
 	enum APPEAR { NORMAL, DOOM, EXPLODE, END };
-	enum OPTION { STOP, SHAKE, WAVE};
+	enum OPTION { STOP, SHAKE, WAVE };
 	enum COLORS { WHITE, RED, YELLOW, PURPLE, ORANGE, GREEN, SKY };
 private:
 	FPOINT globalPos;
@@ -21,7 +21,7 @@ private:
 	int currentAppear;
 	bool complete;
 public:
-	Token(const wchar_t* text,FPOINT pos, APPEAR appear, OPTION option, COLORS color);
+	Token(const wchar_t* text, FPOINT pos, APPEAR appear, OPTION option, COLORS color);
 	inline void setGlobalPos(FPOINT pos) { this->globalPos = pos; }
 	inline void setPos(FPOINT pos) { this->pos = pos; }
 	void Update();
@@ -37,7 +37,7 @@ public:
 	inline void setExplode() { appear = APPEAR::EXPLODE; }
 	inline bool isComplete() { return complete; }
 	inline int getLen() { return len; }
-	inline SIZE getSize(HDC hdc) 
+	inline SIZE getSize(HDC hdc)
 	{
 		SIZE size;
 		GetTextExtentPoint32W(hdc, text, len, &size);
@@ -106,8 +106,8 @@ private:
 	//선택지간 간격 (1번 아래로 자동 배치)
 	float selectGap;
 public:
-	void Init(vector <pair<float, Token >> tokens, float width, float height, 
-		float redTime, float totalTime, 
+	void Init(vector <pair<float, Token >> tokens, float width, float height,
+		float redTime, float totalTime,
 		vector<pair<string, Token>> redSelects,
 		vector<pair<string, Token>> normalSelects);
 	virtual void Update() override;
@@ -124,14 +124,14 @@ public:
 class ChatManager : public GameObject
 {
 private:
-	map<string, pair<Chat*,string>> chatMap;
+	map<string, pair<Chat*, string>> chatMap;
 	Chat* currentChat = nullptr;
 	string nextChat;
 	bool explodeFlag = false;
 	string tmpChat;
 	float timer = 0;
 public:
-	void Push(string key, string next,FPOINT pos, Chat* chat);
+	void Push(string key, string next, FPOINT pos, Chat* chat);
 	void startChat(string key);
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;

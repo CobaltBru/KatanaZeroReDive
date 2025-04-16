@@ -19,7 +19,7 @@
 #include "LineManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr),ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -36,7 +36,7 @@ HRESULT Stage1Scene::Init()
 
 	snapShotManager = SnapShotManager::GetInstance();
 	snapShotManager->Init();
-	
+
 
 	ScrollManager = ScrollManager::GetInstance();
 	ScrollManager->Init();
@@ -49,7 +49,7 @@ HRESULT Stage1Scene::Init()
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-	
+
 
 	if (FAILED(InitImage()))
 	{
@@ -62,17 +62,17 @@ HRESULT Stage1Scene::Init()
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-		
+
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
- 	return S_OK;
+	return S_OK;
 }
 
 HRESULT Stage1Scene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64,1,1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
 }
@@ -88,7 +88,7 @@ HRESULT Stage1Scene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
-		taekyung->Init({500.f,550.f});
+		taekyung->Init({ 500.f,550.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 		TestObject* testObject = new TestObject();
@@ -134,7 +134,7 @@ HRESULT Stage1Scene::InitObject()
 
 		chatManager->Push("Launch", "SELECT", { 600,100 }, oc);
 
-		tokens.clear();
+	/*	tokens.clear();
 		redSelects.clear();
 		selects.clear();
 
@@ -168,7 +168,8 @@ HRESULT Stage1Scene::InitObject()
 		Chat* ch3 = new Chat();
 		ch3->Init(tokens, 100, 25);
 		chatManager->Push("normal3", "END", { 600,100 }, ch3);
-		tokens.clear();
+		tokens.clear();*/
+
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		chatManager->startChat("Launch");
 	}
@@ -203,7 +204,7 @@ void Stage1Scene::Update()
 	else
 	{
 		snapShotManager->Update(false);
-		
+
 	}
 	ScrollManager->Update();
 
@@ -230,11 +231,13 @@ void Stage1Scene::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
+	if (snapShotManager != nullptr)
+		snapShotManager->Release();
 
-	
 	ObjectManager = nullptr;
-CollisionManager = nullptr;
-RenderManager = nullptr;
-ScrollManager = nullptr;
-LineManager = nullptr;
+	CollisionManager = nullptr;
+	RenderManager = nullptr;
+	ScrollManager = nullptr;
+	LineManager = nullptr;
+	snapShotManager = nullptr;
 }

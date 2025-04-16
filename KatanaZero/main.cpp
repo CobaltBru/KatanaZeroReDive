@@ -38,10 +38,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpszCmdParam, int nCmdShow)
 {
-	// 누수 난 메모리 블럭 추적
-	//_CrtSetBreakAlloc(228);
+	
+#ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	// 누수 난 메모리 블럭 추적
+	//_CrtSetBreakAlloc(347);
+#endif
 
+	
 	g_hInstance = hInstance;
 
 	WNDCLASSEX wndClass;
@@ -131,6 +135,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//GDI+ Release
 	GPImage::ReleaseLast();
 	Gdiplus::GdiplusShutdown(gdiplusToken);
+
 	return message.wParam;
 }
 
