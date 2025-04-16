@@ -141,7 +141,7 @@ void Stage1Scene::Update()
 	ObjectManager->Update();
 	CollisionManager->Update();
 	elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-	if (elapsedTime >= 5.0f)
+	if (elapsedTime >= 30.0f)
 	{
 		snapShotManager->Update(true);
 		if (!snapShotManager->IsReplaying())

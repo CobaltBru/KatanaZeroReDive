@@ -29,7 +29,7 @@ private:
 	Image* Image;
 	Collider* ObjectCollider;
 	EnemyState eState{ EnemyState::IDLE };
-	float detectionRange{ 300.0f };
+	float detectionRange{ 500.0f };
 	float verticalRange{ 20.0f };
 	float elapsedTime{ 0.0f };
 	float patrolDuration{ 3.0f };
