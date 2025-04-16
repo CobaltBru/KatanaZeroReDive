@@ -5,6 +5,7 @@ class ObjectManager;
 class RenderManager;
 class CollisionManager;
 class SnapShotManager;
+class HeadHunter;
 class Stage1Scene : public Scene
 {
 public:

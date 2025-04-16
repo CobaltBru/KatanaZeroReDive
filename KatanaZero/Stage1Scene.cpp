@@ -14,6 +14,7 @@
 
 #include "ChatManager.h"
 #include "SnapShotManager.h"
+#include "HeadHunter.h"
 
 
 
@@ -83,6 +84,13 @@ HRESULT Stage1Scene::InitObject()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
+		// 지수 테스트
+		{
+			HeadHunter* headhunter = new HeadHunter();
+			headhunter->Init();
+			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
+		}
+
 		//해영 테스트
 		{
 			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
@@ -106,7 +114,7 @@ HRESULT Stage1Scene::InitObject()
 		Token* token5 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 200.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::YELLOW);
 		token5->setGlobalPos({ 200.f,280.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, token5);*/
-		vector <pair<float, Token >> tokens;
+		/*vector <pair<float, Token >> tokens;
 		tokens.push_back(make_pair(0.f, Token(L"오늘은", { 0.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		tokens.push_back(make_pair(0.7f, Token(L"점심으로", { 55,0.f },
@@ -130,7 +138,7 @@ HRESULT Stage1Scene::InitObject()
 
 		OptionChat* oc = new OptionChat();
 		oc->Init(3.f, 10.f, selects);
-		ObjectManager->AddGameObject(EObjectType::GameObject, oc);
+		ObjectManager->AddGameObject(EObjectType::GameObject, oc);*/
 	}
 	return S_OK;
 }
