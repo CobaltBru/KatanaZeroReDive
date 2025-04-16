@@ -19,7 +19,7 @@
 #include "LineManager.h"
 
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr),ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f),
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr),ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
 {
 }
 
