@@ -10,7 +10,7 @@ Background::Background()
 }
 
 HRESULT Background::Init(string InImageKey)
-{
+{	
 	Image = ImageManager::GetInstance()->FindImage(InImageKey);
 	return S_OK;
 }

@@ -70,6 +70,8 @@ public:
 		int maxFrameX, int maxFrameY,
 		bool isTransparent = FALSE, COLORREF transColor = FALSE);
 
+	HRESULT Init(const wchar_t* filePath, bool isTransparent = FALSE, COLORREF transColor = FALSE);
+
 	// 화면에 출력
 	void Render(HDC hdc, int destX = 0, int destY = 0);
 	void Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip = false);

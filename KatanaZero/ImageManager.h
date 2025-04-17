@@ -31,6 +31,10 @@ public:
 		bool isTransparent = FALSE, 
 		COLORREF transColor = FALSE);
 
+	Image* AddImage(string key, const wchar_t* filePath,
+		bool isTransparent = FALSE,
+		COLORREF transColor = FALSE);
+
 	void DeleteImage(string key);
 	Image* FindImage(string key);
 };
