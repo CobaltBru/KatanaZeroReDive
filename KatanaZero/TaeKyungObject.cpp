@@ -90,7 +90,15 @@ void TaeKyungObject::ApplySnapShot(const PlayerSnapShot& snapShot)
 void TaeKyungObject::Move()
 {
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+	{
+		if (timer >= 0.05f)
+		{
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, { Pos.x + scroll.x, Pos.y + scroll.y }, 0);
+			timer = 0.0f;
+		}
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
+	}
+		
 	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 	{
 		if (timer >= 0.05f)

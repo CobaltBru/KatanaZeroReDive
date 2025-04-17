@@ -12,12 +12,24 @@ public:
 	void RenderDistortion(HDC hdc);
 	void RenderNoise(HDC hdc);
 	void StopDistortion();
+	void Distortion(HDC hdc, float frequency,float distortionSpeed, float distortionForce);
+	void ScrollDistortion(HDC hdc, float frequency, float distortionSpeed, float distortionForce);
 private:
 	bool isDistortion{ false };
+	bool isFinishReplay{ false };
+
+	//마지막 스크롤 효과
+	float scrollTimer{ 0.0f };
+	float scrollOffset{ 0.0f };
+	float scrollSpeed{ 1000.0f };
+	float scrollacceleration{ 1.1f };
+	float scrollDuration{ 1.0f };
+
+	//왜곡 강도
 	float elapsedTime{ 0.0f };
 	float distortionForce{ 7.0f };
-	float distortionSpeed{ 200.0f };
-	int glitchOffset{ 0 };
+	float distortionSpeed{ 100.0f };
+	float frequency{ 0.06f };
 	GPImage* noise;
 };
 
