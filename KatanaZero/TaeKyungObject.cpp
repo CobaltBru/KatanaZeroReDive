@@ -10,9 +10,11 @@
 #include "LineManager.h"
 #include "EffectManager.h"
 
+#include "GPImage.h"
+
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false), timer(0.0f)
 {
 }
 
@@ -29,11 +31,18 @@ HRESULT TaeKyungObject::Init(FPOINT InPos)
 
 	InitOffset();
 
+	gpImage = new GPImage();
+	gpImage->AddImage(L"Image/rocket.bmp", 1, 1);
+
 	return S_OK;
 }
 
 void TaeKyungObject::Update()
 {
+	//잔상 테스트 위한 타이머 추가
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	timer += dt;
+
 	Move();
 
 	Collision();
@@ -83,7 +92,15 @@ void TaeKyungObject::Move()
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
 	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+	{
+		if (timer >= 0.05f)
+		{
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, Pos, 0);
+			timer = 0.0f;
+		}
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
+	}
+		
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
@@ -213,4 +230,9 @@ void TaeKyungObject::Offset()
 
 void TaeKyungObject::Release()
 {
+	if (gpImage)
+	{
+		delete gpImage;
+		gpImage = nullptr;
+	}
 }

@@ -2,12 +2,14 @@
 #include "Singleton.h"
 #include "config.h"
 #include <map>
+#include "Effect.h"
 
-class Effect;
+class GPImage;
 class EffectManager : public Singleton<EffectManager>
 {
 private:
 	map<string, Effect*> mapFx;
+	vector<RemainEffect> remainFx;
 public:
 	void Init();
 	void Release();
@@ -17,5 +19,6 @@ public:
 	void RegisterEffect();
 	Effect* Findfx(string key);
 	void Activefx(string key, FPOINT pos, float angle, bool bFlip);
+	void CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip = false);
 };
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 #include "SnapShotManager.h"
+#include "Image.h"
+#include "ImageManager.h"
 
 class GPImage;
 class Effect : public GameObject
@@ -30,4 +32,16 @@ public:
 	Effect() {};
 	virtual ~Effect() {};
 };
+
+struct RemainEffect
+{
+	GPImage* image;
+	FPOINT pos;
+	float alpha;
+	float lifetime;
+	bool bFlip;
+	int frame;
+};
+
+
 
