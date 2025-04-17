@@ -1,8 +1,8 @@
 #include "ImGuiManager.h"
 
 #undef new
-#include "Imgui/imgui_impl_win32.h"
-#include "Imgui/imgui_impl_dx11.h"
+#include "Reference/Headers/Imgui/imgui_impl_win32.h"
+#include "Reference/Headers/Imgui/imgui_impl_dx11.h"
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #include <fstream>

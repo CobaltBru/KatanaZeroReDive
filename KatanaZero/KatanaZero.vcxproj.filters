@@ -94,6 +94,12 @@
     <Filter Include="2D Framework\ImGui\Default">
       <UniqueIdentifier>{08774835-78b2-490b-94db-bf5b0378d6a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy">
+      <UniqueIdentifier>{1792171b-278a-4efb-861c-0bdb1f260fe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\HeadHunter">
+      <UniqueIdentifier>{fe0577ca-7e7f-4548-9fdc-03206668c8de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -229,7 +235,7 @@
       <Filter>2D Framework\Effect</Filter>
     </ClCompile>
     <ClCompile Include="HeadHunter.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>MainGame\Enemy\HeadHunter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -378,7 +384,7 @@
       <Filter>2D Framework\Effect</Filter>
     </ClInclude>
     <ClInclude Include="HeadHunter.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>MainGame\Enemy\HeadHunter</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,9 +5,9 @@
 #include "GPImage.h"
 
 #undef new
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_win32.h"
-#include "Imgui/imgui_impl_dx11.h"
+#include "Reference/Headers/Imgui/imgui.h"
+#include "Reference/Headers/Imgui/imgui_impl_win32.h"
+#include "Reference/Headers/Imgui/imgui_impl_dx11.h"
 #include <tchar.h>
 #include "ImGuiManager.h"
 
