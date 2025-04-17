@@ -21,13 +21,20 @@ public:
 	void Update(bool isDead);
 	void AddGameObject(EObjectClassType  InClassType, GameObject* InGameObject) { GameObjectList[(int)InClassType].push_back(InGameObject); }
 	void Save();
+	void StartReplay();
 	void Replay();
+	
 	inline bool IsReplaying() { return isReplaying; }
+	inline int GetReplayIndex() { return replayIndex; }
+	inline list<GameObject*> GetPlayer() { 
+		return GameObjectList[(int)EObjectClassType::Player]; 
+	}
 private:
 	float elapsedTime{0.f};
 	bool isReplaying{ false };
 	int replayIndex{ -1 };
 	TimeLineBuffer snapShots;
 	list<GameObject*> GameObjectList[(int)EObjectClassType::End];
+	
 };
 

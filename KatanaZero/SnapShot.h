@@ -23,7 +23,7 @@ struct EffectSnapShot
 	//State state;
 	int animFrame;
 	//float alpha;
-	int ID;
+	//int ID;
 	bool isActive;
 };
 

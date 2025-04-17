@@ -91,8 +91,8 @@ void GPImage::Render(Gdiplus::Graphics* graphics, FPOINT pos, bool flip, float a
 void GPImage::Middle_Render(Gdiplus::Graphics* graphics, FPOINT pos, bool flip, float alpha)
 {
 	ColorMatrix colorMatrix = {
-		1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		1.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.5f, 0.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, alpha, 0.0f,
 		0.0f, 0.0f, 0.0f, 0.0f, 1.0f

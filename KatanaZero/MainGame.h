@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "GPImage.h"
 
+
 class Timer;
 class Image;
 class EnemyManager;
@@ -36,5 +37,8 @@ private:
 	GPImage testDraw;
 	float tmpTimer;
 	int frameIdx = 0;
+
+	HFONT hFont;
+	HFONT hOldFont;
 };
 

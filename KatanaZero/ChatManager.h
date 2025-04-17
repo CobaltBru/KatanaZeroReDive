@@ -61,7 +61,8 @@ protected:
 
 	int statusFlag = 0;
 public:
-	void Init(vector <pair<float, Token >> tokens, float width, float height);
+	virtual ~Chat() {};
+	void Init(vector <pair<float, Token >> &tokens, float width, float height);
 	inline void setPos(FPOINT pos) { this->pos = pos; }
 	virtual void Update();
 	virtual void Render(HDC hdc);
@@ -106,10 +107,11 @@ private:
 	//선택지간 간격 (1번 아래로 자동 배치)
 	float selectGap;
 public:
-	void Init(vector <pair<float, Token >> tokens, float width, float height,
+	virtual ~OptionChat() {};
+	void Init(vector <pair<float, Token >> &tokens, float width, float height,
 		float redTime, float totalTime,
-		vector<pair<string, Token>> redSelects,
-		vector<pair<string, Token>> normalSelects);
+		vector<pair<string, Token>> &redSelects,
+		vector<pair<string, Token>> &normalSelects);
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 	void DrawTimeBar(HDC hdc);
@@ -124,14 +126,18 @@ public:
 class ChatManager : public GameObject
 {
 private:
-	map<string, pair<Chat*, string>> chatMap;
+	vector<FPOINT> poses;
+	map<string, pair<Chat*,string>> chatMap;
 	Chat* currentChat = nullptr;
 	string nextChat;
 	bool explodeFlag = false;
 	string tmpChat;
 	float timer = 0;
+
+
 public:
-	void Push(string key, string next, FPOINT pos, Chat* chat);
+	inline void pushPos(FPOINT pos) { poses.push_back(pos); }
+	void Push(string key, string next,int pos, Chat* chat);
 	void startChat(string key);
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
