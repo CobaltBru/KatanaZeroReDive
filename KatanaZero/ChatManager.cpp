@@ -2,25 +2,9 @@
 #include "RenderManager.h"
 #include "GPImage.h"
 #include "ScrollManager.h"
+#include "CommonFunction.h"
 using namespace Gdiplus;
 
-
-static void DrawRoundRect(Graphics* graphics,FPOINT pos, float width, float height,Color fillColor)
-{
-    int cornerRadius = 4;
-    Gdiplus::Rect rect(pos.x, pos.y, width, height);
-
-    GraphicsPath path;
-
-    path.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
-    path.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y, cornerRadius * 2, cornerRadius * 2, 270, 90);
-    path.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y + rect.Height - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 0, 90);
-    path.AddArc(rect.X, rect.Y + rect.Height - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 90, 90);
-    path.CloseFigure();
-
-    SolidBrush brush(fillColor);
-    graphics->FillPath(&brush, &path);
-}
 
 Token::Token(const wchar_t* text, FPOINT pos, APPEAR appear, OPTION option, COLORS color)
 {
@@ -243,11 +227,11 @@ void Token::ShakeEffect(HDC hdc)
 
 
 
-void Chat::Init(vector<pair<float, Token>> tokens, float width, float height)
+void Chat::Init(vector<pair<float, Token>> &tokens, float width, float height)
 {
     tokenIdx = 0;
-    //this->tokens.assign(tokens.begin(), tokens.end());
-    this->tokens = tokens;
+    this->tokens.assign(tokens.begin(), tokens.end());
+    //this->tokens = tokens;
     this->width = width;
     this->height = height;
     boxTime = 0.5f;
@@ -374,17 +358,20 @@ void Chat::makeExplode()
     }
 }
 
-void OptionChat::Init(vector <pair<float, Token >> tokens, float width, float height, 
+void OptionChat::Init(vector <pair<float, Token >> &tokens, float width, float height, 
     float redTime, float totalTime, 
-    vector<pair<string, Token>> redSelects,
-    vector<pair<string, Token>> normalSelects)
+    vector<pair<string, Token>> &redSelects,
+    vector<pair<string, Token>> &normalSelects)
 {
     __super::Init(tokens, width, height);
     this->redTime = redTime;
     this->totalTime = totalTime;
 
-    this->redSelects = redSelects;
-    this->normalSelects = normalSelects;
+    /*this->redSelects = redSelects;
+    this->normalSelects = normalSelects;*/
+    this->redSelects.assign(redSelects.begin(), redSelects.end());
+    this->normalSelects.assign(normalSelects.begin(), normalSelects.end());
+
 
     state = OptionState::RED;
     animDuration = 0.3f; // 예를 들어 0.3초 동안 등장/퇴장 애니메이션 진행
@@ -669,9 +656,9 @@ string OptionChat::selectCursor()
     return currentSelects[cursor].first;
 }
 
-void ChatManager::Push(string key, string next, FPOINT pos, Chat* chat)
+void ChatManager::Push(string key, string next, int pos, Chat* chat)
 {
-    chat->setPos(pos);
+    chat->setPos(poses[pos]);
     chatMap.insert(make_pair(key, make_pair(chat, next)));
 }
 

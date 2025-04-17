@@ -12,6 +12,8 @@ public:
 	void Release();
 
 	FPOINT GetScroll() const { return Scroll; }
+	FPOINT GetScrollOffset() const { return ScrollOffset; }
+
 	void SetScroll(FPOINT InScroll) {
 		ScrollOffset.x += InScroll.x;
 		ScrollOffset.y += InScroll.y;
@@ -35,7 +37,8 @@ public:
 		Intensity = InIntensity;
 		ShakeSeconds = InSeconds;
 	};
-	// 확대 기능&
+	// TODO : 확대 기능 만들어야함
+
 	void SetFocus(bool InbFocus) { bFocus = InbFocus; }
 	bool IsFocus() const { return bFocus; }
 private:

@@ -18,6 +18,7 @@ public:
 	void Release();
 
 	void AddGameObject(EObjectType  InObjectType, GameObject* InGameObject) { GameObjectList[(int)InObjectType].push_back(InGameObject); }
+
 private:
 	list<GameObject*> GameObjectList[(int)EObjectType::End];
 };

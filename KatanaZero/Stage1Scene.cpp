@@ -14,14 +14,13 @@
 
 #include "ChatManager.h"
 #include "SnapShotManager.h"
-
+#include "ScreenEffectManager.h"
+#include "HeadHunter.h"
 
 #include "LineManager.h"
 
-#include "Player.h"
-
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -39,6 +38,8 @@ HRESULT Stage1Scene::Init()
 	snapShotManager = SnapShotManager::GetInstance();
 	snapShotManager->Init();
 
+	screenEffectManager = ScreenEffectManager::GetInstance();
+	screenEffectManager->Init();
 
 	ScrollManager = ScrollManager::GetInstance();
 	ScrollManager->Init();
@@ -46,7 +47,7 @@ HRESULT Stage1Scene::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
-	/*if (FAILED(LineManager->LoadFile()))
+	if (FAILED(LineManager->LoadFile()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -72,7 +73,7 @@ HRESULT Stage1Scene::Init()
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
@@ -106,19 +107,28 @@ HRESULT Stage1Scene::InitObject()
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
+		
+		{
+		HeadHunter* headhunter = new HeadHunter();
+		headhunter->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
+		}
+
 		//해영 테스트
 		{
 			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
 		}
+	
 	}
 	// 테스트 코드 지운
 	{
-		ChatManager* chatManager = new ChatManager();
-		
+		chatManager = new ChatManager();
+		chatManager->pushPos({ 600,100 });
 		vector <pair<float, Token >> tokens;
 		vector <pair<string, Token >> redSelects;
 		vector <pair<string, Token >> selects;
+
 		tokens.push_back(make_pair(0.f, Token(L"오늘은", { 0.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		tokens.push_back(make_pair(0.7f, Token(L"점심으로", { 55,0.f },
@@ -126,7 +136,6 @@ HRESULT Stage1Scene::InitObject()
 		tokens.push_back(make_pair(0.7f, Token(L"뭐먹어요", { 122.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		
-
 		/*Chat* chat1 = new Chat();
 		chat1->Init("test", tokens, 400.f, 50.f);
 		chat1->setPos({ 700, 100 });
@@ -143,10 +152,8 @@ HRESULT Stage1Scene::InitObject()
 
 		OptionChat* oc = new OptionChat();
 		oc->Init(tokens, 400.f, 50.f, 3.f, 10.f, redSelects, selects);
-
-		chatManager->Push("Launch", "SELECT", { 600,100 }, oc);
-
-	/*	tokens.clear();
+		chatManager->Push("Launch", "SELECT",0, oc);
+		tokens.clear();
 		redSelects.clear();
 		selects.clear();
 
@@ -154,7 +161,7 @@ HRESULT Stage1Scene::InitObject()
 			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
 		Chat* ch = new Chat();
 		ch->Init(tokens, 100, 25);
-		chatManager->Push("red1", "END", { 600,100 }, ch);
+		chatManager->Push("red1", "END", 0, ch);
 		tokens.clear();
 
 		tokens.push_back(make_pair(0.f, Token(L"점심특선이 ", { 0.f,0.f },
@@ -163,7 +170,7 @@ HRESULT Stage1Scene::InitObject()
 			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
 		Chat* ch1 = new Chat();
 		ch1->Init(tokens, 200, 25);
-		chatManager->Push("normal1", "END", { 600,100 }, ch1);
+		chatManager->Push("normal1", "END", 0, ch1);
 		tokens.clear();
 
 		tokens.push_back(make_pair(0.f, Token(L"버거킹은", { 0.f,0.f },
@@ -172,19 +179,32 @@ HRESULT Stage1Scene::InitObject()
 			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
 		Chat* ch2 = new Chat();
 		ch2->Init(tokens, 160, 25);
-		chatManager->Push("normal2", "END", { 600,100 }, ch2);
+		chatManager->Push("normal2", "END", 0, ch2);
 		tokens.clear();
 
 		tokens.push_back(make_pair(0.f, Token(L"흠..", { 0.f,0.f },
 			Token::APPEAR::NORMAL, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		Chat* ch3 = new Chat();
 		ch3->Init(tokens, 100, 25);
-		chatManager->Push("normal3", "END", { 600,100 }, ch3);
-		tokens.clear();*/
+		chatManager->Push("normal3", "END", 0, ch3);
+		tokens.clear();
 
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		chatManager->startChat("Launch");
+		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		
 	}
+	return S_OK;
+}
+
+HRESULT Stage1Scene::InitEffects()
+{
+	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
+	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
+	fxManager->Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
+	fxManager->Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
+	fxManager->Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
+	fxManager->Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
+	fxManager->RegisterEffect();
 	return S_OK;
 }
 
@@ -208,19 +228,24 @@ void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
-	elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-	if (elapsedTime >= 5.0f)
+	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+	fxManager->Update();
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
 	{
-		snapShotManager->Update(true);
+		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("hitslash", { 450.0f, 200.0f }, 0.0f, false);
 	}
-	else
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
 	{
-		snapShotManager->Update(false);
+		snapShotManager->StartReplay(); // 리플레이
+	}
+	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	}
-	FPOINT playerPos = player->GetPos();
-	if (playerPos.x < 50 || playerPos.x >WINSIZE_X - 50 || playerPos.y < 50 || playerPos.y >WINSIZE_Y - 50)
-		ScrollManager->Update();
+	ScrollManager->Update();
 
 	TestCode();
 }
@@ -229,7 +254,12 @@ void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
-
+	fxManager->Render(hdc);
+	screenEffectManager->RenderDistortion(hdc);
+	if (snapShotManager->IsReplaying() && snapShotManager->GetReplayIndex() <= 30 && snapShotManager->GetReplayIndex() >= 0)
+	{
+		screenEffectManager->RenderNoise(hdc);
+	}
 	LineManager->Render(hdc);
 }
 
@@ -245,13 +275,18 @@ void Stage1Scene::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
+	if (screenEffectManager != nullptr)
+		screenEffectManager->Release();
 	if (snapShotManager != nullptr)
 		snapShotManager->Release();
-
+	if (fxManager != nullptr)
+		fxManager->Release();
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
 	ScrollManager = nullptr;
 	LineManager = nullptr;
+	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
+	fxManager = nullptr;
 }

@@ -16,6 +16,7 @@ public:
 	virtual void Render(HDC hdc);
 	virtual void MakeSnapShot(void* out) override;
 	void ApplySnapShot(const PlayerSnapShot& snapShot);
+	inline bool IsDead() { return bDead; }
 
 private:
 	void Move();
@@ -35,5 +36,6 @@ private:
 	bool bJump;
 	bool bFalling;
 	bool bDown;
+	bool bDead{ false };
 };
 
