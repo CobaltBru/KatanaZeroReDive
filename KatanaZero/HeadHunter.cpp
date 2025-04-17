@@ -61,7 +61,7 @@ HRESULT HeadHunter::Init()
     image = ImageManager::GetInstance()->FindImage("Idle");
 
     // test 
-    playerPos = { 500 ,360 };
+    playerPos = { 500 , 360 };
 
     return S_OK;
 }
@@ -78,13 +78,16 @@ void HeadHunter::Update()
 
     CheckPlayerPos();
 
+
     switch (state) {
     case State::Idle:
         Idle();
         break;
+
     case State::GroundLazer:
         GroundLazer();
         break;
+
     case State::GroundGun:
         GroundGun();
         break;
@@ -99,7 +102,6 @@ void HeadHunter::Update()
 
     case State::VerticalLazer:
         VerticalLazer();
-
         break;
 
     case State::RoundLazer:
@@ -132,12 +134,41 @@ void HeadHunter::Render(HDC hdc)
 
 void HeadHunter::Idle()
 {
-    PlayAnimation("Idle");
+    image = ImageManager::GetInstance()->FindImage("Idle");
+    if (timer > 0.1f)
+    {
+        frameIndex++;
+        timer = 0;
+    }
+
+    if (frameIndex >= image->GetMaxFrameX() - 1)
+    {
+        frameIndex = 0;
+        if (loop == 0) {
+            ChangeState(State::GroundGun); // 또는 groundGun
+        }
+        if (loop == 1) {
+            ChangeState(State::Dash);
+        }
+        
+    }
 }
 
 void HeadHunter::GroundLazer()
 {
-    PlayAnimation("GroundLazer");
+    
+    image = ImageManager::GetInstance()->FindImage("GroundLazer");
+    if (timer > 0.1f)
+    {
+        frameIndex++;
+        timer = 0;
+    }
+
+    if (frameIndex >= image->GetMaxFrameX() - 1)
+    {
+        frameIndex = 0;
+        ChangeState(State::Teleport);
+    }
 }
 
 void HeadHunter::GroundGun()
@@ -183,7 +214,7 @@ void HeadHunter::GroundGun()
             {
                 frameIndex = image->GetMaxFrameX() - 1;
                 gunCount = 0;  // 초기화
-                NextWave();
+                ChangeState(State::Bullet);
             }
         }
         break;
@@ -198,9 +229,10 @@ void HeadHunter::Bullet()
         image = ImageManager::GetInstance()->FindImage("Jump");
         if (timer > 0.01f)
         {
-            pos.x += cosf(DEG_TO_RAD(0)) * 5; // 5 : 해당위치값이 작을 수록 프레임 더 많이 빼내서 부드럽게 보일듯 // 속도는 timer로 올리자
+            pos.x += cosf(DEG_TO_RAD(0)) * 5; 
             pos.y -= sinf(DEG_TO_RAD(angle + 90)) * 5;
             angle -= 5;
+
 
             timer = 0;
         }
@@ -240,6 +272,7 @@ void HeadHunter::Bullet()
         }
         if (pos.x <= 570)
         {
+
             pos.x = 570;
             bulletWave++;
         }
@@ -255,7 +288,7 @@ void HeadHunter::Bullet()
         if (timer > 0.01f)
         {
             pos.x -= cosf(DEG_TO_RAD(0)) * 5;
-            pos.y -= sinf(DEG_TO_RAD(angle + 90)) * 5;
+            pos.y += abs(sinf(DEG_TO_RAD(angle + 90))) * 5;
             angle -= 2;
 
             timer = 0;
@@ -269,7 +302,8 @@ void HeadHunter::Bullet()
                 pos.y = 360;
                 angle = 0;
                 frameIndex = 0;
-                NextWave();
+                loop = 1;
+                ChangeState(State::Idle);
             }
 
         }
@@ -438,7 +472,7 @@ void HeadHunter::Dash()
             if (frameIndex >= image->GetMaxFrameX())
             {
                 gunWave = 0;
-                NextWave();
+                ChangeState(State::GroundLazer);
             }
         }
         break;
@@ -507,6 +541,18 @@ void HeadHunter::Faint()
 
 }
 
+void HeadHunter::Run()
+{
+    if (pos.y == 360 && abs(pos.x - playerPos.x) <= 100)
+    {
+        if (timer > 0.05f)
+        {
+            pos.x -= 3;
+            timer = 0;
+        }
+    }
+}
+
 void HeadHunter::ChangeState(State newState) {
     state = newState;
     timer = 0;
@@ -543,16 +589,6 @@ void HeadHunter::CheckPlayerPos()
         {
             isFlip = true;
         }
-    }
-
-    if (pos.y == 360 && abs(pos.x - playerPos.x) <= 100)
-    {
-            if (timer > 0.05f)
-            {
-                pos.x -= 3;
-                timer = 0;
-            }
-
     }
 
 }
