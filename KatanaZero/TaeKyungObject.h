@@ -19,6 +19,8 @@ public:
 	void ApplySnapShot(const PlayerSnapShot& snapShot);
 	inline bool IsDead() { return bDead; }
 
+	Collider* GetCollider() const {return ObjectCollider;}
+
 private:
 	void Move();
 	void Jump();
@@ -28,6 +30,7 @@ private:
 	void Offset();
 
 	void RigidBodyTest();
+	
 private:
 	Image* Image;
 	Collider* ObjectCollider;

@@ -54,28 +54,48 @@ typedef struct tagFPOINT
 {
 	float x;
 	float y;
-	tagFPOINT& operator +=(const tagFPOINT fp2)
+	tagFPOINT& operator +=(const tagFPOINT& fp2)
 	{
 		x += fp2.x;
 		y += fp2.y;
-
 		return *this;
 	}
+	tagFPOINT& operator *=(const float& f)
+	{
+		x *= f;
+		y *= f;
+		return *this;
+	}
+	tagFPOINT& operator -=(const float& f)
+	{
+		x -= f;
+		y -= f;
+		return *this;
+	}
+	
 
 	tagFPOINT operator *(const float& f)
 	{
 		tagFPOINT fp;
 
-		fp.x *= f;
-		fp.y *= f;
+		fp.x = x * f;
+		fp.y = y * f;
 		return fp;
-	}
+	}	
 	tagFPOINT operator /(const float& f)
 	{
 		tagFPOINT fp;
 
-		fp.x /= f;
-		fp.y /= f;
+		fp.x = x / f;
+		fp.y = y / f;
+		return fp;
+	}
+
+	tagFPOINT operator -()
+	{
+		tagFPOINT fp;
+		fp.x = -x;
+		fp.y = -y;
 		return fp;
 	}
 

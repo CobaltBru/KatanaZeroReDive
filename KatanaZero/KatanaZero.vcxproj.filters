@@ -103,6 +103,9 @@
     <Filter Include="MainGame\Player">
       <UniqueIdentifier>{df2beb3a-5f89-47c4-b089-2d4e0b67311b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Physics">
+      <UniqueIdentifier>{a0d7a5c1-f88b-4dd7-8b76-6bf501ba20ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -245,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="PlayerInput.cpp">
       <Filter>MainGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>2D Framework\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="PlayerInput.h">
       <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>2D Framework\Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

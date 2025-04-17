@@ -1,14 +1,17 @@
 #include "RigidBody.h"
-#include "GameObject.h"
+//#include "GameObject.h"
 #include "CommonFunction.h"
+#include "LineManager.h"
+#include "TaeKyungObject.h"
+#include "Collider.h"
 
 RigidBody::RigidBody()
-	: Owner(nullptr), Mass(1.f), Velocity({0.f,0.f})
+	: Owner(nullptr), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxSpeed(100.f), bGravity(true), Gravity(9.8f), bGround(false)
 {
 }
 
 RigidBody::RigidBody(GameObject* InOwner)
-	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f })
+	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({0.f,0.f}), FrictionCoefficient(80.f), MaxSpeed(100.f), bGravity(true), Gravity(9.8f), bGround(false)
 {
 }
 
@@ -35,7 +38,24 @@ void RigidBody::Update()
 		Velocity += Acceleration * TimerManager::GetInstance()->GetDeltaTime();
 	}
 	
+	//¸¶Âû
+	FPOINT tempVelocity = Velocity;
+	Normalize(tempVelocity);
+	FPOINT friction = -tempVelocity * FrictionCoefficient * TimerManager::GetInstance()->GetDeltaTime();
+
+	if (GetLength(Velocity) <= GetLength(friction))
+		Velocity = { 0.f,0.f };
+	else
+		Velocity += friction;
+
+	if (MaxSpeed < GetLength(Velocity))
+	{
+		Normalize(Velocity);
+		Velocity *= MaxSpeed;
+	}
+
 	Move();
+	CollisionLine();
 
 	Force = { 0.f,0.f };
 }
@@ -49,12 +69,39 @@ void RigidBody::Move()
 		FPOINT Dir = Velocity;
 		Normalize(Dir);
 
-
-
 		FPOINT Pos = Owner->GetPos();
 
 		Pos += Velocity * TimerManager::GetInstance()->GetDeltaTime();
 
 		Owner->SetPos(Pos);
+	}
+}
+
+void RigidBody::CollisionLine()
+{
+	if (!bGravity)
+		return;
+
+	TaeKyungObject* OwnerObj = static_cast<TaeKyungObject*>(Owner);
+	FLineResult Result;
+	if (LineManager::GetInstance()->CollisionWallLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize()))
+	{
+		FPOINT ObjPos = OwnerObj->GetPos();
+		ObjPos.x = Result.OutPos.x;
+		OwnerObj->SetPos(ObjPos);
+	}
+	// ¶¥
+	if (LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	{
+		FPOINT ObjPos = OwnerObj->GetPos();
+		ObjPos.y = Result.OutPos.y;
+		OwnerObj->SetPos(ObjPos);
+	}
+	//  ÃµÀå
+	else if (LineManager::GetInstance()->CollisionCeilingLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	{
+		FPOINT ObjPos = OwnerObj->GetPos();
+		ObjPos.y = Result.OutPos.y;
+		OwnerObj->SetPos(ObjPos);
 	}
 }

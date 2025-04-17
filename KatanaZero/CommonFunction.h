@@ -158,6 +158,9 @@ inline float GetLength(const FPOINT& InPoint)
 inline void Normalize(FPOINT& InPoint)
 {
 	const float Length = GetLength(InPoint);
-	InPoint.x /= Length;
-	InPoint.y /= Length;
+	if(InPoint.x != 0.f)
+		InPoint.x /= Length;
+
+	if (InPoint.y != 0.f)
+		InPoint.y /= Length;
 }

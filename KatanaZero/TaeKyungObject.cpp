@@ -106,25 +106,25 @@ void TaeKyungObject::Move()
 	// 라인충돌 한번에 처리할 수 있게 만들면 좋을 것 같은데
 	//=========================================================================================================================
 	// 수직 벽
-	FLineResult Result;
-	if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
-		Pos.x = Result.OutPos.x;
+	//FLineResult Result;
+	//if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
+	//	Pos.x = Result.OutPos.x;
 
-	// 땅
-	if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result, ObjectCollider->GetSize().y, bDown))
-	{
-		Pos.y = Result.OutPos.y;
+	//// 땅
+	//if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result, ObjectCollider->GetSize().y, bDown))
+	//{
+	//	Pos.y = Result.OutPos.y;
 
-		bJump = false;
-		bDown = false;
-		dY = -10.f;
-	}
-	//  천장
-	else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().y))
-	{
-		Pos.y = Result.OutPos.y;
-		dY = 0.f;
-	}
+	//	bJump = false;
+	//	bDown = false;
+	//	dY = -10.f;
+	//}
+	////  천장
+	//else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().y))
+	//{
+	//	Pos.y = Result.OutPos.y;
+	//	dY = 0.f;
+	//}
 	//=========================================================================================================================
 }
 
@@ -216,22 +216,31 @@ void TaeKyungObject::Offset()
 
 void TaeKyungObject::RigidBodyTest()
 {
+	if (ObjectRigidBody == nullptr)
+		return;
+
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 		ObjectRigidBody->AddForce({ -200.f,0.f });
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 		ObjectRigidBody->AddForce({ 200.f,0.f });
+	
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
-		ObjectRigidBody->AddForce({ 0.f,-200.f });
-
-	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
-		ObjectRigidBody->AddForce({ 0.f,-0.f });
-
+	if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+		ObjectRigidBody->AddVelocity({ -100.f,0.f });
+	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+		ObjectRigidBody->AddVelocity({ 100.f,0.f });
 
 	ObjectRigidBody->Update();
 }
 
 
+
+
 void TaeKyungObject::Release()
 {
+	if (ObjectRigidBody != nullptr)
+	{
+		delete ObjectRigidBody;
+		ObjectRigidBody = nullptr;
+	}
 }

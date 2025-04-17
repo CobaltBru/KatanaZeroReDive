@@ -115,9 +115,9 @@ HRESULT Stage1Scene::InitObject()
 		//player->Init();
 		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-		TaeKyungObject* taekyung = new TaeKyungObject();
+		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
 
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
@@ -131,7 +131,7 @@ HRESULT Stage1Scene::InitObject()
 
 		//해영 테스트
 		{
-			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
+			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
 		}
 	

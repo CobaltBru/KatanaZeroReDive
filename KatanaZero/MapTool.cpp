@@ -10,6 +10,8 @@
 #include "Background.h"
 #include "SoundManager.h"
 #include "LineManager.h"
+#include "SnapShotManager.h"
+
 #include "TaeKyungObject.h"
 
 MapTool::MapTool()
@@ -103,6 +105,7 @@ void MapTool::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
+	SnapShotManager::GetInstance()->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
