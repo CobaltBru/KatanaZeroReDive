@@ -19,6 +19,7 @@ HRESULT Player::Init()
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 
 	Pos = FPOINT{ 300.0f, 300.0f };
+	switchTime = 0.1f;
 
 	PlayerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
 	CollisionManager::GetInstance()->AddCollider(PlayerCollider, ECollisionGroup::Player);
@@ -49,7 +50,11 @@ void Player::Release()
 
 void Player::Update()
 {
+	playerInput->UpdateKeystate();
+	frameTimer += TimerManager::GetInstance()->GetDeltaTime();	
+
 	// fsm으로 구현할 시 switch문이 일반적
+	
 	// get the pressed keys 
 	std::vector<InputAction> actions = playerInput->GetActions();
 	for (InputAction action : actions)
@@ -66,19 +71,20 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{		
+
 		int FrameIndexMax = image->GetMaxFrameX();
 		image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);
 
-		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-		//image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, FrameIndex, 0);
-
-		FrameIndex++;
+		if (frameTimer > switchTime)
+		{
+			FrameIndex++;
+			frameTimer = 0.0f;
+		}
 		
-		// attack인 경우
 		if (FrameIndex >= FrameIndexMax)
 		{
 			FrameIndex %= FrameIndexMax;
-			image = ImageManager::GetInstance()->FindImage("zeroidle");		
+			image = ImageManager::GetInstance()->FindImage("zeroidle");		// attack인 경우
 		}
 	}
 }
@@ -126,8 +132,8 @@ void Player::Attack()
 {
 	// frame 끝날때까지 pos 바꿔 줘야함
 	// deltaTime 고려 -> 1초에 걸쳐서 frame 한바퀴 돌 수 있도록
-	Pos.x += velocity.x;
-	Pos.y -= velocity.y;
+	Pos.x += velocity.x * 100.0f;
+	Pos.y -= velocity.y * 100.0f;
 
 	image = ImageManager::GetInstance()->FindImage("zeroattack");
 }

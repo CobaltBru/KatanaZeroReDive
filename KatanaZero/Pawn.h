@@ -10,6 +10,8 @@ protected:
 	Image* image;
 	int FrameIndex;
 
+	float frameTimer;
+
 	RECT rc;
 
 public:

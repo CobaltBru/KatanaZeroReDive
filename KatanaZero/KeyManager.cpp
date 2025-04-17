@@ -25,17 +25,14 @@ bool KeyManager::IsOnceKeyDown(int key)
     /*
         함수 호출 시점에 가상키 (VK_...)가 어떤 상태인지 확인
         1. 0x0000 -> 이전 프레임에 누른적이 없고 호출시점에도 눌려있지 않음
-        2. 0x0001 -> 이전 프레임에 누른적이 있고 호출시점에는 눌려있지 않음
-        3. 0x8000 -> 이전 프레임에 누른적이 없고 호출시점에는 눌려있는 상태
-        4. 0x8001 -> 이전 프레임에 누른적이 있고 호출시점에도 눌렸있는 상태
+        2. 0x0001 -> 이전 프레임에 누른적이 있고 호출시점에는 눌려있지 않음 // Released
+        3. 0x8000 -> 이전 프레임에 누른적이 없고 호출시점에는 눌려있는 상태 // Pressed
+        4. 0x8001 -> 이전 프레임에 누른적이 있고 호출시점에도 눌렸있는 상태 // Held
     */
-    if (GetAsyncKeyState(key) & 0x8000)
+    if (GetAsyncKeyState(key) & 0x8000 && keyDown[key] == false)
     {
-        if (keyDown[key] == false)
-        {
-            keyDown[key] = true;
-            return true;
-        }
+        keyDown[key] = true;
+        return true;       
     }
     else
     {

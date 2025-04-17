@@ -6,6 +6,8 @@ Pawn::Pawn()
 	image = nullptr;
 	FrameIndex = 0;
 
+	frameTimer = 0.0f;
+
 	rc = RECT{};
 }
 

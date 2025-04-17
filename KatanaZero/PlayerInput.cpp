@@ -8,8 +8,7 @@ void PlayerInput::Init()
 	keyActionMap['W'] = InputAction::Jump;
 	keyActionMap['S'] = InputAction::Down;
 
-	keyActionMap[VK_LBUTTON] = InputAction::Attack;
-	
+	keyActionMap[VK_LBUTTON] = InputAction::Attack;	
 }
 
 std::vector<InputAction> PlayerInput::GetActions()
@@ -17,13 +16,17 @@ std::vector<InputAction> PlayerInput::GetActions()
 	std::vector<InputAction> actions;
 	for (const auto& keyAction : keyActionMap)
 	{
-		if (KeyManager::GetInstance()->IsStayKeyDown(keyAction.first))
+		if (currKeyState[keyAction.first] && !prevKeyState[keyAction.first])
 			actions.push_back(keyAction.second);
 	}
 	return actions;
 }
 
-void PlayerInput::BindKeyAction()
+void PlayerInput::UpdateKeystate()
 {
-	
+	prevKeyState = currKeyState;
+	for (const auto& keyAction : keyActionMap)
+	{
+		currKeyState[keyAction.first] = KeyManager::GetInstance()->IsOnceKeyDown(keyAction.first);
+	}
 }

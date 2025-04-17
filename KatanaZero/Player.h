@@ -17,9 +17,13 @@ private:
 
 	PlayerInput* playerInput;
 
+	// movemnet physics
 	FPOINT velocity;
 	FPOINT accel;
 	FPOINT addaccel;
+
+	// switch frame
+	float switchTime;	
 
 	typedef std::function<void(Player&)> stateFunction;
 

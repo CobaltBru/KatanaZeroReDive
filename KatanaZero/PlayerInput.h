@@ -20,6 +20,14 @@ enum class InputAction
 	Dead,
 };
 
+struct KeyInfo {
+	UINT virtualKey;
+	Image* image;
+	int FrameIndex;
+	int MaxFrameIndex;
+	std::function<void()> func;
+};
+
 // unordered_map에서 사용하기 위해 hash function 제공
 namespace std {
 	template <>
@@ -35,6 +43,9 @@ class PlayerInput
 private:
 	std::unordered_map<UINT, InputAction> keyActionMap;	
 
+	bitset<MAX_KEY_COUNT> currKeyState;
+	bitset<MAX_KEY_COUNT> prevKeyState;
+
 public:
 	void Init();
 	
@@ -42,6 +53,6 @@ public:
 
 	std::vector<InputAction> GetActions();
 
-	void BindKeyAction();
+	void UpdateKeystate();
 };
 
