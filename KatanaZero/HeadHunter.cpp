@@ -28,6 +28,8 @@ HRESULT HeadHunter::Init()
     dashWave = 0;
     lazerWave = 0;
     gunWave = 0;
+
+    loop = 0;
     gunCount = 0;
     frameIndex = 0;
 
@@ -104,6 +106,10 @@ void HeadHunter::Update()
 
     case State::Dash:
         Dash();
+        break;
+
+    case State::DashDown:
+        DashDown();
         break;
 
     case State::Faint:
@@ -291,6 +297,7 @@ void HeadHunter::VerticalLazer()
     {
     case 0:
         pos.y=  200;
+        if (loop == 0) pos.x = 340;
         image = ImageManager::GetInstance()->FindImage("VerticalLazer");
         if (timer > 0.1f)
         {
@@ -319,8 +326,29 @@ void HeadHunter::VerticalLazer()
         if (frameIndex >= image->GetMaxFrameX() - 1)
         {
             frameIndex = -1;
-            pos.x += 80;
-            gunWave = 0;
+            if (loop < 4)
+            {
+                if(loop == 0) pos.x = 740;
+                if (loop == 1) pos.x = 440;
+                if (loop == 2) pos.x = 640;
+                if (loop == 3) pos.x = 540;
+                gunWave = 0;
+                loop++;
+            }
+            else
+            {   
+                loop = 0;
+                gunWave = 0;
+                if (rand() % 5 < 3) // rand() 값이 고정적인데 어떡하지 ㅅㅂ.. main, maingame 둘 다 넣어봄 아 왜 안 변하
+                {
+                   ChangeState(State::DashDown);
+                }
+                else
+                {
+                    ChangeState(State::RoundLazer);
+                }
+                    
+            }
         }
         break;
     }
@@ -328,13 +356,19 @@ void HeadHunter::VerticalLazer()
 
 void HeadHunter::RoundLazer()
 {
+    image = ImageManager::GetInstance()->FindImage("RoundLazer");
     
+  /*  if(timer > 0.1f)
+    {
+        frame 
+    }*/
+
 }
 
 
 void HeadHunter::Dash()
 {
-    switch (dashWave)
+    switch (gunWave)
     {
         case 0:
             image = ImageManager::GetInstance()->FindImage("Readytodash");
@@ -345,14 +379,13 @@ void HeadHunter::Dash()
                 if (frameIndex >= image->GetMaxFrameX())
                 {
                     frameIndex = 0;
-                    dashWave++;
+                    gunWave++;
                 }
             }
-
+            break;
         case 1:
             image = ImageManager::GetInstance()->FindImage("Dash");
-
-            if (timer > 0.005f)
+            if (timer > 0.002f)
             {
                 pos.x += 5;
                 timer = 0;
@@ -360,10 +393,10 @@ void HeadHunter::Dash()
                 if (pos.x > playerPos.x + 50)
                 {
                     pos.x = playerPos.x + 50;
-                    dashWave++;
+                    gunWave++;
                 }
             }
-
+            break;
         case 2:
             image = ImageManager::GetInstance()->FindImage("Dashend");
             if (timer > 0.1f)
@@ -374,12 +407,49 @@ void HeadHunter::Dash()
 
                 if (frameIndex >= image->GetMaxFrameX())
                 {
+                    gunWave = 0;
                     NextWave();
                 }
             }
-
+            break;
     }
 
+}
+
+void HeadHunter::DashDown()
+{
+    switch (gunWave)
+    {
+    case 0:
+        image = ImageManager::GetInstance()->FindImage("Dash");
+
+        if (timer > 0.005f)
+        {
+            pos.y += 5;
+            timer = 0;
+
+            if (pos.y > 360)
+            {
+                pos.y = 360;
+                gunWave++;
+            }
+        }
+        break;
+    case 1:
+        image = ImageManager::GetInstance()->FindImage("Dashend");
+        if (timer > 0.1f)
+        {
+            frameIndex++;
+            timer = 0;
+
+            if (frameIndex >= image->GetMaxFrameX())
+            {
+                gunWave = 0;
+                ChangeState(State::Bullet);
+            }
+        }
+        break;
+    }
 }
 
 void HeadHunter::Faint()

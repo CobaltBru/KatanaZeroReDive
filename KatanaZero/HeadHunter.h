@@ -11,6 +11,7 @@ enum class State
     VerticalLazer,
     RoundLazer,
     Dash,
+    DashDown,
     Faint
 };
 
@@ -34,6 +35,7 @@ private:
     int lazerWave;
     int gunWave;
     int gunCount;
+    int loop;
 
     int frameIndex;
     Image* image;
@@ -59,6 +61,7 @@ public:
     void VerticalLazer();
     void RoundLazer();
     void Dash();
+    void DashDown();
     void Faint();
 
 
