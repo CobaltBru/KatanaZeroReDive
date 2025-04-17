@@ -198,6 +198,9 @@
     <ClCompile Include="Effect.cpp">
       <Filter>2D Framework\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="HeadHunter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>2D Framework\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="HeadHunter.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
