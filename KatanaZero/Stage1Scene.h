@@ -11,7 +11,6 @@ class LineManager;
 class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
-class Player;
 class Stage1Scene : public Scene
 {
 public:
@@ -41,8 +40,6 @@ private:
 	LineManager* LineManager;
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
-
 	ChatManager* chatManager;
-	Player* player;
 };
 

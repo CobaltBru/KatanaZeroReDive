@@ -73,15 +73,13 @@ HRESULT Stage1Scene::Init()
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	player = new Player();
-	player->Init();
-	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-	/*if (FAILED(InitObject()))
+
+	if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 	if (FAILED(InitEffects()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
@@ -112,6 +110,10 @@ HRESULT Stage1Scene::InitObject()
 		Background* background = new Background();
 		background->Init("TestBg");
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
+
+		Player* player = new Player();
+		player->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
