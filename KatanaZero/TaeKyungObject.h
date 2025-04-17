@@ -34,6 +34,7 @@ private:
 	//잔상효과 테스트
 	GPImage* gpImage;
 	float timer;
+	FPOINT scroll;
 
 	//Jump
 	float Gravity;

@@ -67,7 +67,7 @@ void TaeKyungObject::Render(HDC hdc)
 	{
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-
+		scroll = Scroll;
 		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
 	}
 }
@@ -95,7 +95,7 @@ void TaeKyungObject::Move()
 	{
 		if (timer >= 0.05f)
 		{
-			EffectManager::GetInstance()->CreateRemainEffect(gpImage, Pos, 0);
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, {Pos.x + scroll.x, Pos.y + scroll.y}, 0);
 			timer = 0.0f;
 		}
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
@@ -104,7 +104,7 @@ void TaeKyungObject::Move()
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
-		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y }, 0.0f, false);
+		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x + scroll.x, this->Pos.y + scroll.y }, 0.0f, false);
 		dY = -10.f;
 	}
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
