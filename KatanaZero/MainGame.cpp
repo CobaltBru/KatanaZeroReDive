@@ -132,8 +132,10 @@ void MainGame::Render()
 	testDraw.Render(pGraphics, { 180,100 }, 0.9f);
 	testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
-	/*testDraw.Middle_RenderFrameAngle(pGraphics, { 300,100 }, frameIdx, frameIdx * 30,false,0.5f);
-	testDraw.RenderFrameAngle(pGraphics, { 200,100 }, frameIdx, frameIdx * 30);*/
+	/*testDraw.Middle_RenderAll(pGraphics, { 300,100 }, frameIdx, frameIdx * 30, true,
+		1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f);
+	testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
+		1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f);*/
 	//화면 왜곡
 	/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
 	RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/
