@@ -15,6 +15,7 @@
 #include "ChatManager.h"
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
+#include "HeadHunter.h"
 
 #include "LineManager.h"
 
@@ -52,7 +53,7 @@ HRESULT Stage1Scene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-	if (FAILED(LineManager->LoadFile()))
+	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -107,11 +108,19 @@ HRESULT Stage1Scene::InitObject()
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
+		
+		{
+		HeadHunter* headhunter = new HeadHunter();
+		headhunter->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
+		}
+
 		//해영 테스트
 		{
 			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
 		}
+	
 	}
 	// 테스트 코드 지운
 	{

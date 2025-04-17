@@ -193,7 +193,7 @@ void TaeKyungObject::Offset()
 	const float OffsetMinY = 100.f;
 	const float OffsetMaxY = WINSIZE_Y - 100.f;
 
-	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScrollOffset();
 
 	FPOINT newScroll{};
 

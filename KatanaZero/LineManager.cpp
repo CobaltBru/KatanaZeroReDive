@@ -47,12 +47,12 @@ void LineManager::Update()
 		SetLineType(ELineType::DownLine);
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
 		SetLineType(ELineType::Ceiling);
-	//저장
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F11))
-		SaveFile();
-	//불러오기
-	else if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F12))
-		LoadFile();
+	////저장
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F11))
+	//	SaveFile();
+	////불러오기
+	//else if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F12))
+	//	LoadFile();
 }
 
 void LineManager::AddLine(float InX, float InY)
@@ -121,6 +121,17 @@ void LineManager::DestroyLine()
 			}
 			++iter;
 		}
+	}
+}
+
+void LineManager::DestroyAllLine()
+{
+	for (int i = 0; i < (int)ELineType::End; ++i)
+	{
+		for (auto& iter : LineList[i])
+			delete iter;
+
+		LineList[i].clear();
 	}
 }
 
@@ -349,10 +360,10 @@ bool LineManager::CollisionDownLine(FPOINT InPos, FLineResult& OutResult, float 
 	return true;
 }
 
-HRESULT LineManager::SaveFile()
+HRESULT LineManager::SaveFile(LPCWSTR InSavePath)
 {
 	HANDLE hFile = CreateFile(
-		L"TestLineData.dat", GENERIC_WRITE, 0, NULL,
+		InSavePath, GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -379,7 +390,7 @@ HRESULT LineManager::SaveFile()
 	return S_OK;
 }
 
-HRESULT LineManager::LoadFile()
+HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 {
 	for (int i = 0; i < (int)ELineType::End; ++i)
 	{
@@ -388,9 +399,9 @@ HRESULT LineManager::LoadFile()
 
 		LineList[i].clear();
 	}
-
+	//LPCWSTR
 	HANDLE hFile = CreateFile(
-		L"TestLineData.dat", GENERIC_READ, 0, NULL,
+		InLoadPath, GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{

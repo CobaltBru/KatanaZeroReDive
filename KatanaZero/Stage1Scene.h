@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 
+class HeadHunter;
 class ObjectManager;
 class RenderManager;
 class CollisionManager;

@@ -4,8 +4,26 @@
 #include "MainGame.h"
 #include "GPImage.h"
 
+#undef new
+#include "Reference/Headers/Imgui/imgui.h"
+#include "Reference/Headers/Imgui/imgui_impl_win32.h"
+#include "Reference/Headers/Imgui/imgui_impl_dx11.h"
+#include <tchar.h>
+#include "ImGuiManager.h"
+
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+ID3D11Device* g_pd3dDevice = nullptr;
+ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
+IDXGISwapChain* g_pSwapChain = nullptr;
+bool                     g_SwapChainOccluded = false;
+UINT                     g_ResizeWidth = 0, g_ResizeHeight = 0;
+ID3D11RenderTargetView* g_mainRenderTargetView = nullptr;
+
 HINSTANCE g_hInstance;	// 프로그램 인스턴스 핸들
 HWND g_hWnd;
+HWND g_hWndDX;
+HWND g_hWndParent;
 LPCWSTR g_lpszClassName = (LPCWSTR)TEXT("윈도우 API 사용하기");
 MainGame g_mainGame;
 POINT g_ptMouse;	// 마우스 좌표
@@ -13,6 +31,9 @@ POINT g_ptMouse;	// 마우스 좌표
 random_device rd;
 default_random_engine dre;
 uniform_int_distribution<int> uid;
+
+//// DirectX
+// Forward declarations of helper functions
 
 // Init
 
@@ -44,7 +65,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// 누수 난 메모리 블럭 추적
 	//_CrtSetBreakAlloc(433);
 #endif
-
 	
 	g_hInstance = hInstance;
 
@@ -87,19 +107,28 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//	WS_OVERLAPPEDWINDOW, 50, 50, WINSIZE_X, WINSIZE_Y,
 	//	NULL, NULL, g_hInstance, NULL);
 
-	RECT rcWindowSize = { 0, 0, WINSIZE_X, WINSIZE_Y };
+	RECT rcWindowSize = { 0, 0, TILEMAPTOOL_X, WINSIZE_Y };
 	AdjustWindowRect(&rcWindowSize, WS_OVERLAPPEDWINDOW, FALSE);
 	int width = rcWindowSize.right - rcWindowSize.left;
 	int height = rcWindowSize.bottom - rcWindowSize.top;
 
-	g_hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, g_lpszClassName, g_lpszClassName,
+	g_hWndParent = CreateWindowEx(0, g_lpszClassName, g_lpszClassName,
 		WS_OVERLAPPEDWINDOW, 50, 50, width, height,
 		NULL, NULL, g_hInstance, NULL);
 
-	ShowWindow(g_hWnd, nCmdShow);
+	g_hWnd = CreateWindowEx(0, g_lpszClassName, g_lpszClassName,
+		WS_CHILD | WS_VISIBLE, 0, 0, WINSIZE_X, height,
+		g_hWndParent, NULL, g_hInstance, NULL);
 
-	
-	
+	g_hWndDX = CreateWindowEx(0, g_lpszClassName, g_lpszClassName,
+		WS_CHILD | WS_VISIBLE,
+		WINSIZE_X, 0, TILEMAPTOOL_X, WINSIZE_Y,
+		g_hWndParent, nullptr, hInstance, nullptr);
+
+	ImGuiManager::GetInstance()->Init();
+
+	ShowWindow(g_hWndParent, nCmdShow);
+
 	TimerManager::GetInstance()->Init();
 	g_mainGame.Init();
 
@@ -119,7 +148,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		{
 			TimerManager::GetInstance()->Update();
 			g_mainGame.Update();
-			g_mainGame.Render();
+			ImGuiManager::GetInstance()->Update();
+
+			ImGuiManager::GetInstance()->Render();
+			g_mainGame.Render();	
 		}
 	}
 
@@ -136,10 +168,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	GPImage::ReleaseLast();
 	Gdiplus::GdiplusShutdown(gdiplusToken);
 
+   // Cleanup
+	ImGuiManager::GetInstance()->Release();
+
 	return message.wParam;
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, iMessage, wParam, lParam))
+		return true;
+
 	return g_mainGame.MainProc(hWnd, iMessage, wParam, lParam);
 }

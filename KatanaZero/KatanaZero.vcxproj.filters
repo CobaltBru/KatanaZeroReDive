@@ -88,6 +88,18 @@
     <Filter Include="2D Framework\Line">
       <UniqueIdentifier>{f39efb4f-a4e9-4627-814f-b3e10cf12fe6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\ImGui">
+      <UniqueIdentifier>{3c3ae8f6-0f64-4e0b-8e44-277c99651ee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\ImGui\Default">
+      <UniqueIdentifier>{08774835-78b2-490b-94db-bf5b0378d6a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy">
+      <UniqueIdentifier>{1792171b-278a-4efb-861c-0bdb1f260fe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\HeadHunter">
+      <UniqueIdentifier>{fe0577ca-7e7f-4548-9fdc-03206668c8de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -195,8 +207,35 @@
     <ClCompile Include="MapTool.cpp">
       <Filter>MainGame\Scene\MapTool</Filter>
     </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>2D Framework\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_draw.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_win32.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_tables.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx11.cpp">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>2D Framework\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="HeadHunter.cpp">
+      <Filter>MainGame\Enemy\HeadHunter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,8 +353,38 @@
     <ClInclude Include="MapTool.h">
       <Filter>MainGame\Scene\MapTool</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>2D Framework\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imconfig.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_win32.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_internal.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imstb_rectpack.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imstb_textedit.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>2D Framework\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="HeadHunter.h">
+      <Filter>MainGame\Enemy\HeadHunter</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

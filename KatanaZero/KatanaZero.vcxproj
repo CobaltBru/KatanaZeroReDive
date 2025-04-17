@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>Reference\Librarys;$(LibraryPath)</LibraryPath>
-    <IncludePath>Reference\Headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>Reference\Librarys;$(LibraryPath)</LibraryPath>
-    <IncludePath>Reference\Headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,8 +144,10 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HeadHunter.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineManager.cpp" />
@@ -156,6 +158,13 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -184,8 +193,10 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HeadHunter.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="LineManager.h" />
@@ -195,6 +206,14 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_internal.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imstb_textedit.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
