@@ -33,6 +33,7 @@ HRESULT HeadHunter::Init()
     gunCount = 0;
     frameIndex = 0;
 
+    state = State::Idle;
 
     image = ImageManager::GetInstance()->AddImage("Idle", L"Image/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
 
