@@ -55,11 +55,11 @@ HRESULT Stage1Scene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-	/*if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
+	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 
 
 	if (FAILED(InitImage()))
