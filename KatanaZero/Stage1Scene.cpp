@@ -100,11 +100,9 @@ HRESULT Stage1Scene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
 		// ???? ????
-		{
-			HeadHunter* headhunter = new HeadHunter();
-			headhunter->Init();
-			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
+		HeadHunter* headhunter = new HeadHunter();
+		headhunter->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 
 		//??? ????
 		{
@@ -114,34 +112,17 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// ???? ??? ????
 	{
-
-		/*Token* token1 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 0.f,0.f }, Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::GREEN);
-		token1->setGlobalPos({ 200.f, 200.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token1);
-		Token* token2 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 50.f,0.f }, Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::SKY);
-		token2->setGlobalPos({ 200.f,220.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token2);
-		Token* token3 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 100.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::ORANGE);
-		token3->setGlobalPos({ 200.f,240.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token3);
-		Token* token4 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 150.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::PURPLE);
-		token4->setGlobalPos({ 200.f,260.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token4);
-		Token* token5 = new Token(L"HelloWorld!HelloWorld!HelloWorld!", { 200.f,0.f }, Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::YELLOW);
-		token5->setGlobalPos({ 200.f,280.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, token5);*/
-		/*vector <pair<float, Token >> tokens;
 		chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
 		vector <pair<float, Token >> tokens;
 		vector <pair<string, Token >> redSelects;
 		vector <pair<string, Token >> selects;
 
-		tokens.push_back(make_pair(0.f, Token(L"??????", { 0.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"오늘은", { 0.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
-		tokens.push_back(make_pair(0.7f, Token(L"????????", { 55,0.f },
+		tokens.push_back(make_pair(0.7f, Token(L"점심으로", { 55,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
-		tokens.push_back(make_pair(0.7f, Token(L"??????", { 122.f,0.f },
+		tokens.push_back(make_pair(0.7f, Token(L"뭐먹어요", { 122.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		
 		/*Chat* chat1 = new Chat();
@@ -149,13 +130,13 @@ HRESULT Stage1Scene::InitObject()
 		chat1->setPos({ 700, 100 });
 		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);*/
 		
-		redSelects.push_back(make_pair("red1", Token(L"* ??????? * ", {0.f,0.f},
+		redSelects.push_back(make_pair("red1", Token(L"* 구내식당 * ", {0.f,0.f},
 			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::RED)));
-		selects.push_back(make_pair("normal1", Token(L"??????????", { 0,0.f },
+		selects.push_back(make_pair("normal1", Token(L"버거킹", { 0,0.f },
 			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		selects.push_back(make_pair("normal2", Token(L"??????", { 0,0.f },
+		selects.push_back(make_pair("normal2", Token(L"김밥천국", { 0,0.f },
 			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		selects.push_back(make_pair("normal3", Token(L"???????", { 0,0.f },
+		selects.push_back(make_pair("normal3", Token(L"서브웨이", { 0,0.f },
 			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
 
 		OptionChat* oc = new OptionChat();
@@ -165,32 +146,32 @@ HRESULT Stage1Scene::InitObject()
 		redSelects.clear();
 		selects.clear();
 
-		tokens.push_back(make_pair(0.f, Token(L"?? ????", { 0.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"얼른 가죠", { 0.f,0.f },
 			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
 		Chat* ch = new Chat();
 		ch->Init(tokens, 100, 25);
 		chatManager->Push("red1", "END", 0, ch);
 		tokens.clear();
 
-		tokens.push_back(make_pair(0.f, Token(L"????????? ", { 0.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"점심특선이 ", { 0.f,0.f },
 			Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::GREEN)));
-		tokens.push_back(make_pair(0.f, Token(L"?????? ????? ", { 80.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"가성비가 좋아요 ", { 80.f,0.f },
 			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
 		Chat* ch1 = new Chat();
 		ch1->Init(tokens, 200, 25);
 		chatManager->Push("normal1", "END", 0, ch1);
 		tokens.clear();
 
-		tokens.push_back(make_pair(0.f, Token(L"???????", { 0.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"버거킹은", { 0.f,0.f },
 			Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::YELLOW)));
-		tokens.push_back(make_pair(0.f, Token(L"???????", { 70.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"어떠신가요", { 70.f,0.f },
 			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
 		Chat* ch2 = new Chat();
 		ch2->Init(tokens, 160, 25);
 		chatManager->Push("normal2", "END", 0, ch2);
 		tokens.clear();
 
-		tokens.push_back(make_pair(0.f, Token(L"??..", { 0.f,0.f },
+		tokens.push_back(make_pair(0.f, Token(L"흠..", { 0.f,0.f },
 			Token::APPEAR::NORMAL, Token::OPTION::SHAKE, Token::COLORS::RED)));
 		Chat* ch3 = new Chat();
 		ch3->Init(tokens, 100, 25);
@@ -210,7 +191,7 @@ void Stage1Scene::TestCode()
 		ScrollManager->SetFocus(!ScrollManager::GetInstance()->IsFocus());
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
-		SceneManager::GetInstance()->ChangeScene("MapTool", "?ε?_1");
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{

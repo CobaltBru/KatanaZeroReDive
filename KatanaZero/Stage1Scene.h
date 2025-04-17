@@ -38,6 +38,7 @@ private:
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 	ScreenEffectManager* screenEffectManager;
+	HeadHunter* headhunter;
 
 	ChatManager* chatManager;
 };
