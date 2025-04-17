@@ -225,10 +225,6 @@ HRESULT Stage1Scene::InitEffects()
 
 void Stage1Scene::TestCode()
 {
-	// 플레이어 포커스 toggle
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
-		ScrollManager->SetFocus(!ScrollManager::GetInstance()->IsFocus());
-
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 

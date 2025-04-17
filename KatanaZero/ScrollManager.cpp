@@ -38,6 +38,9 @@ void ScrollManager::Update()
 	Scroll.x = ScrollOffset.x + ShakeOffset.x;
 	Scroll.y = ScrollOffset.y + ShakeOffset.y;
 
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
+		bFocus = !bFocus;
+
 	if (bFocus)
 		return;
 
