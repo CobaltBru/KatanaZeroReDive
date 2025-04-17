@@ -24,7 +24,7 @@ public:
 protected:
 	virtual HRESULT InitImage();
 	virtual HRESULT InitObject();
-
+	virtual HRESULT InitEffects();
 
 private:
 	void TestCode();

@@ -177,6 +177,12 @@ HRESULT Stage1Scene::InitObject()
 	return S_OK;
 }
 
+HRESULT Stage1Scene::InitEffects()
+{
+
+	return E_NOTIMPL;
+}
+
 void Stage1Scene::TestCode()
 {
 	// 플레이어 포커스 toggle

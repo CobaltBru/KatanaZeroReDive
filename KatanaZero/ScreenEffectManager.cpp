@@ -61,7 +61,7 @@ void ScreenEffectManager::RenderDistortion(HDC hdc)
 void ScreenEffectManager::RenderNoise(HDC hdc)
 {
 	Gdiplus::Graphics graphics(hdc);
-	noise->Middle_Render(&graphics, { WINSIZE_X / 2, WINSIZE_Y / 2 }, false, 0.5f);
+	noise->Middle_Render(&graphics, { WINSIZE_X / 2, WINSIZE_Y / 2 }, false, 1.0f);
 }
 
 void ScreenEffectManager::StopDistortion()
