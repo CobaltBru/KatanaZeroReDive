@@ -8,6 +8,7 @@
 #include "ScrollManager.h"
 #include "SoundManager.h"
 #include "LineManager.h"
+#include "EffectManager.h"
 
 
 TaeKyungObject::TaeKyungObject()
@@ -86,6 +87,7 @@ void TaeKyungObject::Move()
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
+		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y }, 0.0f, false);
 		dY = -10.f;
 	}
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
@@ -128,6 +130,7 @@ void TaeKyungObject::Jump()
 	{
 		// 그냥 조잡한 점프 공식..
 		// 리지드 바디 구현하는게 좋을 듯.. ㅠ
+		
 		dY += Gravity;
 		Pos.y += dY * Speed * TimerManager::GetInstance()->GetDeltaTime();
 		if (dY >= 0.f)
@@ -190,7 +193,7 @@ void TaeKyungObject::Offset()
 	const float OffsetMinY = 100.f;
 	const float OffsetMaxY = WINSIZE_Y - 100.f;
 
-	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScrollOffset();
 
 	FPOINT newScroll{};
 

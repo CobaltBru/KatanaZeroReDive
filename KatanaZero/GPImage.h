@@ -38,6 +38,7 @@ public:
 
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
+	inline int getMaxFrame() { return maxFrameX; }
 	
 	void Release();
 	static void ReleaseLast();

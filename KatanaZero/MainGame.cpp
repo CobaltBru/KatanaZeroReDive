@@ -11,6 +11,7 @@
 #include "ScreenEffectManager.h"
 #include "SnapShotManager.h"
 
+#include "config.h"
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
 //{
 //	int width = rect.right - rect.left;
@@ -117,6 +118,7 @@ void MainGame::Render()
 	// 백버퍼에 먼저 복사
 	HDC hBackBufferDC = backBuffer->GetMemDC();
 	hOldFont = (HFONT)SelectObject(hBackBufferDC, hFont);
+
 	Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hBackBufferDC);
 
 	SceneManager::GetInstance()->Render(hBackBufferDC);

@@ -23,6 +23,7 @@ public:
 	void Save();
 	void StartReplay();
 	void Replay();
+	
 	inline bool IsReplaying() { return isReplaying; }
 	inline int GetReplayIndex() { return replayIndex; }
 	inline list<GameObject*> GetPlayer() { 
@@ -34,5 +35,6 @@ private:
 	int replayIndex{ -1 };
 	TimeLineBuffer snapShots;
 	list<GameObject*> GameObjectList[(int)EObjectClassType::End];
+	
 };
 
