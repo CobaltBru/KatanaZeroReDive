@@ -58,6 +58,8 @@ void CollisionManager::Release()
 		}
 		CollisionList[collGroup].clear();
 	}
+
+	ReleaseInstance();
 }
 
 bool CollisionManager::CollisionAABB(Collider* InSour, FHitResult& OutHitResult, ECollisionGroup InCollisionGroup)

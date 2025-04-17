@@ -7,18 +7,19 @@
 #include "Collider.h"
 #include "ScrollManager.h"
 #include "SoundManager.h"
+#include "LineManager.h"
 
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f)
+	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
 {
 }
 
 // 테스트 코드 
-HRESULT TaeKyungObject::Init()
+HRESULT TaeKyungObject::Init(FPOINT InPos)
 {
 	Image = ImageManager::GetInstance()->FindImage("rocket");
-
+	Pos = InPos;
 	//콜라이더 추가
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
@@ -28,7 +29,7 @@ HRESULT TaeKyungObject::Init()
 	InitOffset();
 
 	return S_OK;
-} 
+}
 
 void TaeKyungObject::Update()
 {
@@ -36,11 +37,12 @@ void TaeKyungObject::Update()
 
 	Collision();
 
+	// 위치에 관한 모든 로직이 끝난 뒤 마지막에 호출 권장
 	Offset();
 
 	//테스트 이펙트 사운드 재생
 	if (KeyManager::GetInstance()->IsOnceKeyDown('E'))
-		SoundManager::GetInstance()->PlaySounds("EffectTest",EChannelType::Effect);
+		SoundManager::GetInstance()->PlaySounds("EffectTest", EChannelType::Effect);
 	// 모든 음악 끄기
 	if (KeyManager::GetInstance()->IsOnceKeyDown('P'))
 		SoundManager::GetInstance()->StopAll();
@@ -77,14 +79,62 @@ void TaeKyungObject::ApplySnapShot(const PlayerSnapShot& snapShot)
 
 void TaeKyungObject::Move()
 {
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_LEFT))
+	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
-	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_RIGHT))
+	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_UP))
-		Pos.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
-	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
-		Pos.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
+	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+	{
+		bJump = true;
+		dY = -10.f;
+	}
+	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
+	{
+		if (!bDown)
+			dY = 0.f;
+		bDown = true;
+	}
+
+	Jump();
+
+	// 라인충돌 한번에 처리할 수 있게 만들면 좋을 것 같은데
+	//=========================================================================================================================
+	// 수직 벽
+	FLineResult Result;
+	if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
+		Pos.x = Result.OutPos.x;
+
+	// 땅
+	if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result, ObjectCollider->GetSize().y, bDown))
+	{
+		Pos.y = Result.OutPos.y;
+
+		bJump = false;
+		bDown = false;
+		dY = -10.f;
+	}
+	//  천장
+	else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().y))
+	{
+		Pos.y = Result.OutPos.y;
+		dY = 0.f;
+	}
+	//=========================================================================================================================
+}
+
+void TaeKyungObject::Jump()
+{
+	if (bJump || bDown)
+	{
+		// 그냥 조잡한 점프 공식..
+		// 리지드 바디 구현하는게 좋을 듯.. ㅠ
+		dY += Gravity;
+		Pos.y += dY * Speed * TimerManager::GetInstance()->GetDeltaTime();
+		if (dY >= 0.f)
+			bFalling = true;
+		else
+			bFalling = false;
+	}
 }
 
 void TaeKyungObject::Collision()
@@ -99,13 +149,16 @@ void TaeKyungObject::Collision()
 
 		ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
 		HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
-		
+
 		HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
 	}
 }
 
 void TaeKyungObject::InitOffset()
 {
+	//포커스해야 오프셋할 수 있듬.
+	ScrollManager::GetInstance()->SetFocus(true);
+
 	FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 
 	while (true)
@@ -123,6 +176,8 @@ void TaeKyungObject::InitOffset()
 
 void TaeKyungObject::Offset()
 {
+	if (!ScrollManager::GetInstance()->IsFocus())
+		return;
 	// 역재생시 스크롤 업데이트 따로
 	if (SnapShotManager::GetInstance()->IsReplaying())
 	{

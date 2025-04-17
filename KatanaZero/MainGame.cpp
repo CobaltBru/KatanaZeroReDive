@@ -4,9 +4,12 @@
 #include "Timer.h"
 #include "TilemapTool.h"
 #include "Stage1Scene.h"
+#include "MapTool.h"
 
 #include "LoadingScene.h"
 #include "SoundManager.h"
+#include "ScreenEffectManager.h"
+#include "SnapShotManager.h"
 
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
 //{
@@ -36,10 +39,10 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-	
 
 	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
+	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
@@ -47,6 +50,22 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	testDraw.AddImage(L"Image/dragon_idle.png", 12, 1);
 	tmpTimer = 0;
+
+	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
+	if (nFontsAdded == 0)
+	{
+		MessageBox(NULL, L"폰트 로드 실패", L"Error", MB_OK);
+	}
+	LOGFONT lf = { 0 };
+	lf.lfHeight = -MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+	wcscpy_s(lf.lfFaceName, L"DungGeunMo");
+
+	hFont = CreateFontIndirect(&lf);
+	if (!hFont)
+	{
+		MessageBox(NULL, L"폰트 생성 실패", L"Error", MB_OK);
+	}
+	
 	if (FAILED(backBuffer->Init(TILEMAPTOOL_X, TILEMAPTOOL_Y)))
 	{
 		MessageBox(g_hWnd, 
@@ -54,6 +73,8 @@ HRESULT MainGame::Init()
 		return E_FAIL;
 	}
 	return S_OK;
+
+	
 }
 
 void MainGame::Release()
@@ -71,6 +92,9 @@ void MainGame::Release()
 	KeyManager::GetInstance()->Release();
 	ImageManager::GetInstance()->Release();
 	SoundManager::GetInstance()->Release();
+	SelectObject(hdc, hOldFont);
+	DeleteObject(hFont);
+	RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
 }
 
 void MainGame::Update()
@@ -78,20 +102,21 @@ void MainGame::Update()
 	SceneManager::GetInstance()->Update();
 	SoundManager::GetInstance()->Update();
 
-	InvalidateRect(g_hWnd, NULL, false);
-	tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
+	InvalidateRect(g_hWnd, NULL, false); 
+	/*tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
 	if (tmpTimer > 0.1f)
 	{
 		frameIdx++;
 		tmpTimer -= 0.1f;
 		if (frameIdx >= 12) frameIdx = 0;
-	}
+	}*/
 }
 
 void MainGame::Render()
 {
 	// 백버퍼에 먼저 복사
 	HDC hBackBufferDC = backBuffer->GetMemDC();
+	hOldFont = (HFONT)SelectObject(hBackBufferDC, hFont);
 	Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hBackBufferDC);
 
 	SceneManager::GetInstance()->Render(hBackBufferDC);
@@ -99,14 +124,14 @@ void MainGame::Render()
 	TimerManager::GetInstance()->Render(hBackBufferDC);
 	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
 	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
-	testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
+	//testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
 	/*testDraw.Render(pGraphics, {140,100}, 0.5f);
 	testDraw.Render(pGraphics, { 160,100 }, 0.7f);
 	testDraw.Render(pGraphics, { 180,100 }, 0.9f);
 	testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
-	testDraw.Middle_RenderFrameAngle(pGraphics, { 300,100 }, frameIdx, frameIdx * 30);
-	testDraw.RenderFrameAngle(pGraphics, { 200,100 }, frameIdx, frameIdx * 30);
+	/*testDraw.Middle_RenderFrameAngle(pGraphics, { 300,100 }, frameIdx, frameIdx * 30,false,0.5f);
+	testDraw.RenderFrameAngle(pGraphics, { 200,100 }, frameIdx, frameIdx * 30);*/
 	//화면 왜곡
 	/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
 	RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/

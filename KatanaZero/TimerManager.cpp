@@ -12,6 +12,8 @@ void TimerManager::Release()
 	timer->Release();
 	delete timer;
 	timer = nullptr;
+
+	ReleaseInstance();
 }
 
 void TimerManager::Update()

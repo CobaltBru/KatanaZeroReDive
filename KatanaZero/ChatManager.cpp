@@ -2,23 +2,9 @@
 #include "RenderManager.h"
 #include "GPImage.h"
 #include "ScrollManager.h"
+#include "CommonFunction.h"
 using namespace Gdiplus;
-static void DrawRoundRect(Graphics* graphics,FPOINT pos, float width, float height,Color fillColor)
-{
-    int cornerRadius = 4;
-    Gdiplus::Rect rect(pos.x, pos.y, width, height);
 
-    GraphicsPath path;
-
-    path.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
-    path.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y, cornerRadius * 2, cornerRadius * 2, 270, 90);
-    path.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y + rect.Height - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 0, 90);
-    path.AddArc(rect.X, rect.Y + rect.Height - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 90, 90);
-    path.CloseFigure();
-
-    SolidBrush brush(fillColor);
-    graphics->FillPath(&brush, &path);
-}
 
 Token::Token(const wchar_t* text, FPOINT pos, APPEAR appear, OPTION option, COLORS color)
 {
@@ -241,20 +227,21 @@ void Token::ShakeEffect(HDC hdc)
 
 
 
-void Chat::Init(string Key, vector<pair<float, Token>> tokens, float width, float height)
+void Chat::Init(vector<pair<float, Token>> &tokens, float width, float height)
 {
     tokenIdx = 0;
-    this->key = key;
-    this->tokens = tokens;
+    this->tokens.assign(tokens.begin(), tokens.end());
+    //this->tokens = tokens;
     this->width = width;
     this->height = height;
     boxTime = 0.5f;
+    statusFlag = 0;
 }
 
 void Chat::Update()
 {
+    statusFlag = 0;
     timer += TimerManager::GetInstance()->GetDeltaTime();
-    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
     float appearTime = boxTime + 0.5f;
     for (int i = 0; i <= tokenIdx; i++)
     {
@@ -262,10 +249,6 @@ void Chat::Update()
         if(timer> appearTime) tokens[i].second.Update();
     }
 
-    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
-    {
-        makeExplode();
-    }
 }
 
 void Chat::Render(HDC hdc)
@@ -298,21 +281,66 @@ void Chat::DrawBox(HDC hdc)
     DeleteObject(hBrush);
 }
 
+//void Chat::DrawTokens(HDC hdc)
+//{
+//    const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+//
+//    float appearTime = boxTime + 0.5f;
+//    FPOINT gPos = { pos.x - width / 2 + 5.f,pos.y  + 5.f };
+//    for (int i = 0; i < tokens.size(); i++)
+//    {
+//        appearTime += tokens[i].first;
+//        if (timer >= appearTime)
+//        {
+//            tokens[i].second.setGlobalPos({ gPos.x + Scroll.x,gPos.y + Scroll.y });
+//            tokens[i].second.Render(hdc);
+//
+//            if (tokens[i].second.isComplete())
+//            {
+//                if (tokenIdx < tokens.size() - 1)tokenIdx = i + 1;
+//                else statusFlag = 2;
+//            }
+//        }
+//        else
+//        {
+//            break;
+//        }
+//    }
+//}
 void Chat::DrawTokens(HDC hdc)
 {
-    float appearTime = boxTime + 0.5f;
-    FPOINT gPos = { pos.x - width / 2 + 5.f,pos.y  + 5.f };
+    const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+    float baseAppearTime = boxTime + 0.5f;
+    float scheduledTime = baseAppearTime;
+
+    FPOINT gPos = { pos.x - width / 2 + 5.f, pos.y + 5.f };
+
     for (int i = 0; i < tokens.size(); i++)
     {
-        appearTime += tokens[i].first;
-        if (timer >= appearTime)
+        if (i > 0)
         {
-            tokens[i].second.setGlobalPos(gPos);
+            if (tokens[i - 1].second.isComplete())
+            {
+                scheduledTime += tokens[i].first;
+            }
+            else
+            {
+               break;
+            }
+        }
+
+        if (timer >= scheduledTime)
+        {
+            tokens[i].second.setGlobalPos({ gPos.x + Scroll.x, gPos.y + Scroll.y });
             tokens[i].second.Render(hdc);
 
             if (tokens[i].second.isComplete())
             {
-                if(tokenIdx<tokens.size()-1)tokenIdx = i + 1;
+                if (tokenIdx < tokens.size() - 1)
+                    tokenIdx = i + 1;
+                else
+                    statusFlag = 2;
             }
         }
         else
@@ -330,11 +358,26 @@ void Chat::makeExplode()
     }
 }
 
-void OptionChat::Init(float redTime, float totalTime, vector<pair<string, Token>> selects)
+void OptionChat::Init(vector <pair<float, Token >> &tokens, float width, float height, 
+    float redTime, float totalTime, 
+    vector<pair<string, Token>> &redSelects,
+    vector<pair<string, Token>> &normalSelects)
 {
+    __super::Init(tokens, width, height);
     this->redTime = redTime;
     this->totalTime = totalTime;
-    this->selects = selects;
+
+    /*this->redSelects = redSelects;
+    this->normalSelects = normalSelects;*/
+    this->redSelects.assign(redSelects.begin(), redSelects.end());
+    this->normalSelects.assign(normalSelects.begin(), normalSelects.end());
+
+
+    state = OptionState::RED;
+    animDuration = 0.3f; // 예를 들어 0.3초 동안 등장/퇴장 애니메이션 진행
+
+    cursor = 0;
+
     timeBarWidth = 500.f;
     selectWidth = 600.f;
     selectHeight = 30.f;
@@ -346,24 +389,60 @@ void OptionChat::Init(float redTime, float totalTime, vector<pair<string, Token>
 
 void OptionChat::Update()
 {
-    timer += TimerManager::GetInstance()->GetDeltaTime();
-    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
-    if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+    __super::Update();
+    float dt = TimerManager::GetInstance()->GetDeltaTime();
+    timer += dt;
+
+    if (state == OptionState::RED)
     {
-        --cursor;
-        if (cursor < 0)  cursor = selects.size() - 1;
+        statusFlag = 2;
+        if (animDuration >= timer)
+        {
+            float percent = timer / animDuration;
+            currentSelectBarX = selectBarPos.x * percent;
+        }
+        else if (redTime >= timer)
+        {
+            currentSelectBarX = selectBarPos.x;
+        }
+        else if (timer >= redTime + animDuration)
+        {
+            statusFlag = 0;
+            state = OptionState::NORMAL;
+            currentSelectBarX = 0;
+        }
+        else if (timer >= redTime)
+        {
+            float percent = (timer - redTime) / animDuration;
+            currentSelectBarX = selectBarPos.x + selectBarPos.x * percent;
+        }
+        
     }
-    if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
+    else if (state == OptionState::NORMAL)
     {
-        ++cursor;
-        if (cursor >= selects.size()) cursor = 0;
+        statusFlag = 1;
+        if (redTime + animDuration + animDuration >= timer)
+        {
+            float percent = (timer - redTime - animDuration) / animDuration;
+            currentSelectBarX = selectBarPos.x * percent;
+        }
+        else
+        {
+            currentSelectBarX = selectBarPos.x;
+        }
     }
+    
 }
 
 void OptionChat::Render(HDC hdc)
 {
+    __super::Render(hdc);
     DrawTimeBar(hdc);
-    DrawSelects(hdc);
+    if (state == OptionState::RED)
+        DrawRedSelects(hdc);
+    else if (state == OptionState::NORMAL)
+        DrawNormalSelects(hdc);
+    //DrawSelects(hdc);
 }
 
 void OptionChat::DrawTimeBar(HDC hdc)
@@ -371,17 +450,23 @@ void OptionChat::DrawTimeBar(HDC hdc)
     Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
     float appearTime = 0.3f;
     float height = 12.f;
+    //배경
     {
         float percent = timer / appearTime;
         if (percent > 1.0f)percent = 1.0f;
         DrawRoundRect(pGraphics, timeBarPos, timeBarWidth * percent, height, Gdiplus::Color(128, 255, 255, 255));
     }
+    //빨간 바
     {
         float redWidth = redTime / totalTime * timeBarWidth -2.f;
         float percent = timer / appearTime;
-        if (percent > 1.0f)percent = 1.0f;
+        if (percent > 1.0f)
+        {
+            percent = 1.0f;
+        }
         DrawRoundRect(pGraphics, {timeBarPos.x+2.f,timeBarPos .y+2.f}, redWidth * percent, height-4.f, Gdiplus::Color(255, 255, 0, 0));
     }
+    //하얀 바
     {
         if (timer > appearTime)
         {
@@ -395,49 +480,275 @@ void OptionChat::DrawTimeBar(HDC hdc)
 
 void OptionChat::DrawSelects(HDC hdc)
 {
-    float appearTime = 0.3f;
-    HPEN normalhPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-    HPEN bluehPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
+    // 선택지가 나타날 기준 시간 (애니메이션 등장 시간)
+    float appearTime = 0.3f;  // 선택지 애니메이션 기본 등장 시간 (예)
+
+    // for문을 통해 각 선택지 렌더링
+    // 선택지의 수는 상태에 따라 달라집니다.
+    vector<pair<string, Token>>& currentSelects =
+        (state == OptionState::RED || state == OptionState::TRANSITION) ? redSelects : normalSelects;
     HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
-    HPEN hOldPen;
-    HBRUSH hOldBrush;
-    for (int i = 0; i < selects.size(); i++)
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+    for (int i = 0; i < currentSelects.size(); i++)
     {
-        float y = selectBarPos.y + i * selectGap + i * selectHeight;
+        // 기본 y 위치: 선택지들은 selectBarPos에서 일정 간격으로 배치
+        float y = selectBarPos.y + i * (selectHeight + selectGap);
+
+        // 애니메이션 진행 정도 계산
         float percent = timer / appearTime;
-        if (percent > 1.0f)percent = 1.0f;
+        if (percent > 1.0f) percent = 1.0f;
 
-        if(cursor == i)
-            hOldPen = (HPEN)SelectObject(hdc, bluehPen);
-        else
-            hOldPen = (HPEN)SelectObject(hdc, normalhPen);
-
-        hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-
-        if (percent < 1.0f)
+        float offsetX = 0.f;
+        // 상태에 따른 x 오프셋 계산
+        if (state == OptionState::RED)
         {
-            RoundRect(hdc, selectBarPos.x * percent - selectWidth / 2.f, y - selectHeight / 2.f,
-                selectBarPos.x * percent + selectWidth / 2.f, y + selectHeight / 2.f,
-                5.f, 5.f);
-            selects[i].second.setPos({ selectBarPos.x * percent - selects[i].second.getSize(hdc).cx / 2, y-7.f });
-            selects[i].second.Render(hdc);
+            // 빨간 선택지는 왼쪽에서 슬며시 나타납니다.
+            // target x 위치는 selectBarPos.x, 시작 위치는 selectBarPos.x - selectWidth (왼쪽 오프셋)
+            offsetX = (1.0f - percent) * (-selectWidth);
         }
-        else
+        else if (state == OptionState::TRANSITION)
         {
-            RoundRect(hdc, selectBarPos.x - selectWidth / 2, y - selectHeight / 2.f,
-                selectBarPos.x + selectWidth / 2, y + selectHeight / 2.f,
-                5.f, 5.f);
-            selects[i].second.setPos({ selectBarPos.x - selects[i].second.getSize(hdc).cx / 2, y - 7.f });
-            selects[i].second.Render(hdc);
+            // TRANSITION 상태에서는 빨간 선택지는 오른쪽으로 사라지고,
+            // 일반 선택지는 왼쪽에서 들어옵니다.
+            // 여기서는 간단히 선형 보간으로 두 오프셋을 혼합합니다.
+            // 예를 들어, 빨간 선택지는 (percent) 비율로 오른쪽으로 이동하도록,
+            // 일반 선택지는 (1 - percent) 비율로 왼쪽에서 들어오도록 계산합니다.
+            // 중간 단계에서는 두 집합 모두 잠시 보여줄 수도 있습니다.
+            // 아래는 예시입니다.
+            float redOffset = percent * (selectWidth / 2); // 오른쪽으로 이동
+            float normalOffset = (1.0f - percent) * (-selectWidth / 2); // 왼쪽에서 들어옴
+            // 여기서 우리는 두 집합 간 전환 중이므로, 우선 빨간 선택지는 사라지고,
+            // normal 선택지는 나타나도록 normalOffset을 사용합니다.
+            offsetX = normalOffset;
         }
+        else // NORMAL_STATE
+        {
+            // 일반 선택지는 완전히 제 자리에 위치합니다.
+            offsetX = 0;
+        }
+
+        // 대상 사각형은, 선택지 박스가 selectBarPos.x + offsetX를 기준으로 슬라이드됨
+        RECT rect;
+        rect.left = (LONG)(selectBarPos.x + offsetX - selectWidth / 2);
+        rect.top = (LONG)(y - selectHeight / 2);
+        rect.right = rect.left + (LONG)selectWidth;
+        rect.bottom = rect.top + (LONG)selectHeight;
+
+        // 선택지 박스를 그리기 (둥근 사각형; 여기서 배경 색은 임의로 지정)
+        RoundRect(hdc, rect.left, rect.top, rect.right, rect.bottom, 5, 5);
+
+        // 각 선택지에 해당하는 Token의 위치를 박스 중앙에 맞춥니다.
+        // (Token 클래스의 getSize는 텍스트 크기를 반환)
+        SIZE textSize = currentSelects[i].second.getSize(hdc);
+        FPOINT tokenPos;
+        tokenPos.x = rect.left + ((selectWidth - textSize.cx) / 2.0f);
+        tokenPos.y = y - 7.f; // 약간 위쪽 조정
+
+        // 선택지 Token의 위치 설정 후 렌더링
+        currentSelects[i].second.setPos(tokenPos);
+        currentSelects[i].second.Render(hdc);
+
+        // (커서 표시를 위해, 만약 cursor == i, 외곽선을 다르게 그릴 수 있음)
+        // 선택된 항목은 두꺼운 파란 펜으로 외곽선을 그린다.
+        if (cursor == i)
+        {
+            HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
+            HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
             
-
-        SelectObject(hdc, hOldPen);
-        SelectObject(hdc, hOldBrush);
-
-       
+            RoundRect(hdc, rect.left, rect.top, rect.right, rect.bottom, 5, 5);
+            SelectObject(hdc, hOldPen);
+            
+            DeleteObject(hPen);
+            
+        }
     }
-    DeleteObject(normalhPen);
-    DeleteObject(bluehPen);
+    SelectObject(hdc, hOldBrush);
     DeleteObject(hBrush);
+}
+
+void OptionChat::DrawRedSelects(HDC hdc)
+{
+    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+    
+    for (int i = 0; i < redSelects.size(); i++)
+    {
+        float y = selectBarPos.y + i * (selectHeight + selectGap);
+        int left = (int)(currentSelectBarX - selectWidth / 2.0f);
+        int top = (int)(y - selectHeight / 2.0f);
+        int right = left + (int)selectWidth;
+        int bottom = top + (int)selectHeight;
+        
+        if (cursor == i)
+        {
+            HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
+            HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
+            RoundRect(hdc, left, top, right, bottom, 5, 5);
+            SelectObject(hdc, oldPen);
+            DeleteObject(hPen);
+        }
+        else
+        {
+            RoundRect(hdc, left, top, right, bottom, 5, 5);
+        }
+
+        SIZE textSize = redSelects[i].second.getSize(hdc);
+        FPOINT tokenPos;
+        tokenPos.x = currentSelectBarX - textSize.cx / 2.0f;
+        tokenPos.y = y - textSize.cy / 2.0f;
+        redSelects[i].second.setPos(tokenPos);
+        redSelects[i].second.Render(hdc);
+    }
+    SelectObject(hdc, hOldBrush);
+    DeleteObject(hBrush);
+}
+
+void OptionChat::DrawNormalSelects(HDC hdc)
+{
+    HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+    for (int i = 0; i < normalSelects.size(); i++)
+    {
+        float y = selectBarPos.y + i * (selectHeight + selectGap);
+        int left = (int)(currentSelectBarX - selectWidth / 2.0f);
+        int top = (int)(y - selectHeight / 2.0f);
+        int right = left + (int)selectWidth;
+        int bottom = top + (int)selectHeight;
+        
+        if (cursor == i)
+        {
+            HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
+            HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
+            RoundRect(hdc, left, top, right, bottom, 5, 5);
+            SelectObject(hdc, oldPen);
+            DeleteObject(hPen);
+        }
+        else
+        {
+            RoundRect(hdc, left, top, right, bottom, 5, 5);
+        }
+
+        SIZE textSize = normalSelects[i].second.getSize(hdc);
+        FPOINT tokenPos;
+        tokenPos.x = currentSelectBarX - textSize.cx / 2.0f;
+        tokenPos.y = y - textSize.cy / 2.0f;
+        normalSelects[i].second.setPos(tokenPos);
+        normalSelects[i].second.Render(hdc);
+    }
+
+    SelectObject(hdc, hOldBrush);
+    DeleteObject(hBrush);
+}
+
+void OptionChat::moveCursor(int way)
+{
+    cursor += way;
+    if (cursor < 0)  cursor = (state == OptionState::RED || state == OptionState::TRANSITION ? redSelects.size() : normalSelects.size()) - 1;
+    if (cursor >= (state == OptionState::RED || state == OptionState::TRANSITION ? redSelects.size() : normalSelects.size()))
+        cursor = 0;
+}
+
+string OptionChat::selectCursor()
+{
+    vector<pair<string, Token>>& currentSelects =
+        (state == OptionState::RED || state == OptionState::TRANSITION) ? redSelects : normalSelects;
+    return currentSelects[cursor].first;
+}
+
+void ChatManager::Push(string key, string next, int pos, Chat* chat)
+{
+    chat->setPos(poses[pos]);
+    chatMap.insert(make_pair(key, make_pair(chat, next)));
+}
+
+void ChatManager::startChat(string key)
+{
+    if (key == "END")
+    {
+        currentChat = nullptr;
+        nextChat = "END";
+        return;
+    }
+    auto iter = chatMap.find(key);
+    if (iter != chatMap.end())
+    {
+        currentChat = (*iter).second.first;
+        nextChat = (*iter).second.second;
+    }
+    else
+    {
+        currentChat = nullptr;
+        nextChat = "END";
+    }
+}
+
+
+
+void ChatManager::Update()
+{
+    
+    if (currentChat)
+    {
+        if (explodeFlag)
+        {
+            timer += TimerManager::GetInstance()->GetDeltaTime();
+            if (timer >= 0.7f)
+            {
+                explodeFlag = false;
+                timer = 0.f;
+                startChat(tmpChat);
+                if (currentChat == nullptr) return;
+            }
+        }
+        currentChat->Update();
+        if (currentChat->getStatus() != 0)
+        {
+            if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+            {
+                currentChat->moveCursor(-1);
+            }
+            else if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
+            {
+                currentChat->moveCursor(1);
+            }
+        }
+        if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+        {
+            if (currentChat->getStatus() != 0)
+            {
+                if (currentChat->getStatus() == 2)
+                {
+                    explodeFlag = true;
+                    currentChat->makeExplode();
+                    tmpChat = currentChat->selectCursor();
+                    timer = 0;
+                }
+                else startChat(currentChat->selectCursor());
+            }
+            else
+            {
+                startChat(nextChat);
+            }
+        }
+    }
+    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
+}
+
+void ChatManager::Render(HDC hdc)
+{
+    if (currentChat)
+    {
+        currentChat->Render(hdc);
+    }
+}
+
+void ChatManager::Release()
+{
+    for (auto mp : chatMap)
+    {
+        delete mp.second.first;
+        mp.second.first = nullptr;
+    }
+    chatMap.clear();
 }
