@@ -1,12 +1,15 @@
 #pragma once
 #include "Scene.h"
 
+class HeadHunter;
 class ObjectManager;
 class RenderManager;
 class CollisionManager;
 class SnapShotManager;
 class ScrollManager;
 class LineManager;
+class ChatManager;
+class ScreenEffectManager;
 class Stage1Scene : public Scene
 {
 public:
@@ -34,5 +37,8 @@ private:
 	float elapsedTime;
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
+	ScreenEffectManager* screenEffectManager;
+
+	ChatManager* chatManager;
 };
 

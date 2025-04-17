@@ -8,6 +8,8 @@
 
 #include "LoadingScene.h"
 #include "SoundManager.h"
+#include "ScreenEffectManager.h"
+#include "SnapShotManager.h"
 
 #include "config.h"
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
@@ -49,6 +51,22 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	testDraw.AddImage(L"Image/dragon_idle.png", 12, 1);
 	tmpTimer = 0;
+
+	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
+	if (nFontsAdded == 0)
+	{
+		MessageBox(NULL, L"폰트 로드 실패", L"Error", MB_OK);
+	}
+	LOGFONT lf = { 0 };
+	lf.lfHeight = -MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+	wcscpy_s(lf.lfFaceName, L"DungGeunMo");
+
+	hFont = CreateFontIndirect(&lf);
+	if (!hFont)
+	{
+		MessageBox(NULL, L"폰트 생성 실패", L"Error", MB_OK);
+	}
+	
 	if (FAILED(backBuffer->Init(TILEMAPTOOL_X, TILEMAPTOOL_Y)))
 	{
 		MessageBox(g_hWnd, 
@@ -56,6 +74,8 @@ HRESULT MainGame::Init()
 		return E_FAIL;
 	}
 	return S_OK;
+
+	
 }
 
 void MainGame::Release()
@@ -73,6 +93,9 @@ void MainGame::Release()
 	KeyManager::GetInstance()->Release();
 	ImageManager::GetInstance()->Release();
 	SoundManager::GetInstance()->Release();
+	SelectObject(hdc, hOldFont);
+	DeleteObject(hFont);
+	RemoveFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
 }
 
 void MainGame::Update()
@@ -94,6 +117,7 @@ void MainGame::Render()
 {
 	// 백버퍼에 먼저 복사
 	HDC hBackBufferDC = backBuffer->GetMemDC();
+	hOldFont = (HFONT)SelectObject(hBackBufferDC, hFont);
 
 	Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hBackBufferDC);
 

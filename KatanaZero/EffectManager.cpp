@@ -1,1 +1,2 @@
 #include "EffectManager.h"
+//¤¾¤·
