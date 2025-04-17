@@ -4,9 +4,10 @@
 Pawn::Pawn()
 {
 	image = nullptr;
-	rc = RECT{};
+	FrameIndex = 0;
+	FrameIndexMax = 0;
 
-	Controller = nullptr;
+	rc = RECT{};
 }
 
 HRESULT Pawn::Init()

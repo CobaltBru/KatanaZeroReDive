@@ -68,6 +68,26 @@ Image* ImageManager::AddImage(string key,
 	return image;
 }
 
+Image* ImageManager::AddImage(string key, const wchar_t* filePath, bool isTransparent, COLORREF transColor)
+{
+	Image* image = nullptr;
+	image = FindImage(key);
+	if (image)	return image;
+
+	image = new Image();
+	if (FAILED(image->Init(filePath,
+		isTransparent, transColor)))
+	{
+		image->Release();
+		delete image;
+
+		return nullptr;
+	}
+
+	mapImages.insert(make_pair(key, image));
+	return image;
+}
+
 void ImageManager::DeleteImage(string key)
 {
 	map<string, Image*>::iterator iter;

@@ -6,11 +6,12 @@ class Image;
 class PlayerController;
 class Pawn: public GameObject
 {
-private:
+protected:
 	Image* image;
-	RECT rc;
+	int FrameIndex;
+	int FrameIndexMax;
 
-	PlayerController* Controller;
+	RECT rc;
 
 public:
 	Pawn();
