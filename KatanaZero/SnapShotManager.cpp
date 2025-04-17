@@ -4,6 +4,8 @@
 #include "TestObject.h"
 #include "ScrollManager.h"
 #include "ScreenEffectManager.h"
+#include "Effect.h"
+#include "EffectManager.h"
 
 
 void SnapShotManager::Init()
@@ -23,7 +25,7 @@ void SnapShotManager::Update(bool isDead)
 		if (!isReplaying)
 		{
 			elapsedTime += dt;
-			if (elapsedTime >= 0.01666666667f)
+			if (elapsedTime >= 0.01666666667f * 5.f)
 			{
 				Save();
 				elapsedTime = 0.0f;
@@ -37,7 +39,7 @@ void SnapShotManager::Update(bool isDead)
 		{
 			elapsedTime += dt;
 
-			if (elapsedTime >= 0.01666666667f / 3.0f)
+			if (elapsedTime >= 0.01666666667f)
 			{
 				Replay();
 				elapsedTime = 0.0f;
@@ -113,6 +115,16 @@ void SnapShotManager::Replay()
 		TestObject* e = static_cast<TestObject*>(*enemyIter);
 		e->ApplySnapShot(eSnap);
 		++enemyIter;
+	}
+
+
+	auto fxIter = GameObjectList[(int)EObjectClassType::Effect].begin();
+	for (const EffectSnapShot& fxSnap : frame.effects)
+	{
+		if (fxIter == GameObjectList[(int)EObjectClassType::Effect].end()) break;
+		Effect* fx = static_cast<Effect*>(*fxIter);
+		fx->ApplySnapShot(fxSnap);
+		++fxIter;
 	}
 
 	ScrollManager::GetInstance()->ReplayScroll(frame.scroll.scroll);

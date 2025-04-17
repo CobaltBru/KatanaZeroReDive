@@ -24,6 +24,7 @@ public:
 	virtual void Render(HDC hdc);
 	virtual void MakeSnapShot(void* out) override;
 	void ApplySnapShot(const EnemySnapShot& eSnapShot);
+	void Patrol();
 
 private:
 	Image* Image;

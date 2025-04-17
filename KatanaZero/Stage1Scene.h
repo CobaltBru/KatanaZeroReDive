@@ -10,6 +10,7 @@ class ScrollManager;
 class LineManager;
 class ChatManager;
 class ScreenEffectManager;
+class EffectManager;
 class Stage1Scene : public Scene
 {
 public:
@@ -25,7 +26,7 @@ public:
 protected:
 	virtual HRESULT InitImage();
 	virtual HRESULT InitObject();
-
+	virtual HRESULT InitEffects();
 
 private:
 	void TestCode();
@@ -38,7 +39,7 @@ private:
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 	ScreenEffectManager* screenEffectManager;
-
+	EffectManager* fxManager;
 	ChatManager* chatManager;
 };
 

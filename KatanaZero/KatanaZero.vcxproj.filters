@@ -100,6 +100,9 @@
     <Filter Include="MainGame\Enemy\HeadHunter">
       <UniqueIdentifier>{fe0577ca-7e7f-4548-9fdc-03206668c8de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Player">
+      <UniqueIdentifier>{df2beb3a-5f89-47c4-b089-2d4e0b67311b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -189,13 +192,7 @@
     <ClCompile Include="ScreenEffectManager.cpp">
       <Filter>2D Framework\Effect\ScreenEffect</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>2D Framework\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Pawn.cpp">
-      <Filter>2D Framework\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
       <Filter>2D Framework\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Line.cpp">
@@ -236,6 +233,18 @@
     </ClCompile>
     <ClCompile Include="HeadHunter.cpp">
       <Filter>MainGame\Enemy\HeadHunter</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>MainGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>MainGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>2D Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerInput.cpp">
+      <Filter>MainGame\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,12 +347,6 @@
     <ClInclude Include="Pawn.h">
       <Filter>2D Framework\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>2D Framework\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>2D Framework\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>2D Framework\Line</Filter>
     </ClInclude>
@@ -385,6 +388,21 @@
     </ClInclude>
     <ClInclude Include="HeadHunter.h">
       <Filter>MainGame\Enemy\HeadHunter</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>2D Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInput.h">
+      <Filter>MainGame\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
