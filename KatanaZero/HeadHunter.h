@@ -12,6 +12,7 @@ enum class State
     RoundLazer,
     Dash,
     DashDown,
+    Run,
     Faint
 };
 

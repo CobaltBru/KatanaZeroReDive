@@ -13,7 +13,7 @@ HeadHunter::~HeadHunter()
 
 HRESULT HeadHunter::Init()
 {
-    pos = { 280, 360 };
+    pos = { 460, 360 };
 
     isFlip = false;
     isAttacked = false;
@@ -38,7 +38,7 @@ HRESULT HeadHunter::Init()
     image = ImageManager::GetInstance()->AddImage("Idle", L"Image/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
 
     image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/headhunter_takeoutrifle.bmp", 560, 70, 8, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Lazer", L"Image/headhunter_lazer.bmp", 972, 46, 18, 1, true, RGB(255, 0, 255));
+    image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/headhunter_lazer.bmp", 972, 46, 18, 1, true, RGB(255, 0, 255));
     image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/teleport1.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
     image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/teleport2.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
     image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/teleport3.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
@@ -75,6 +75,7 @@ void HeadHunter::Update()
     RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
     timer += TimerManager::GetInstance()->GetDeltaTime();
     indexTimer += TimerManager::GetInstance()->GetDeltaTime();
+
     CheckPlayerPos();
 
     switch (state) {
@@ -340,13 +341,13 @@ void HeadHunter::VerticalLazer()
             {
                 loop = 0;
                 gunWave = 0;
-                if (rand() % 5 < 3) // rand() 값이 고정적인데 어떡하지 ㅅㅂ.. main, maingame 둘 다 넣어봄 아 왜 안 변하
+                if (rand() % 5 < 3) // rand() 값이 고정적인데 어떡하지 
                 {
-                    ChangeState(State::DashDown);
+                    ChangeState(State::RoundLazer);
                 }
                 else
                 {
-                    ChangeState(State::RoundLazer);
+                    ChangeState(State::DashDown);
                 }
 
             }
@@ -358,11 +359,39 @@ void HeadHunter::VerticalLazer()
 void HeadHunter::RoundLazer()
 {
     image = ImageManager::GetInstance()->FindImage("RoundLazer");
+    // 340으로 먼저 이동 후, 740으로 이동
+    //340 일때 isFlip = true;
+    if (loop == 0)
+    {
+        pos.x = 340;
+        isFlip = true;
+        if(timer > 0.1f)
+        {
+            frameIndex++;
+            timer = 0;
+        }
+        if (frameIndex >= image->GetMaxFrameX())
+        {
+            frameIndex = 0;
+            loop = 1;
+        }
+    }
+    if(loop == 1)
+    {
+        pos.x = 740;
+        isFlip = false;
+        if (timer > 0.1f)
+        {
+            frameIndex++;
+            timer = 0;
+        }
+        if (frameIndex >= image->GetMaxFrameX())
+        {
+            frameIndex = 0;
+            ChangeState(State::DashDown);
+        }
+    }
 
-    /*  if(timer > 0.1f)
-      {
-          frame
-      }*/
 
 }
 
@@ -515,6 +544,17 @@ void HeadHunter::CheckPlayerPos()
             isFlip = true;
         }
     }
+
+    if (pos.y == 360 && abs(pos.x - playerPos.x) <= 100)
+    {
+            if (timer > 0.05f)
+            {
+                pos.x -= 3;
+                timer = 0;
+            }
+
+    }
+
 }
 
 void HeadHunter::NextWave()
