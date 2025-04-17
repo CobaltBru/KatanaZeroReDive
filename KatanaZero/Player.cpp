@@ -16,11 +16,9 @@ Player::~Player()
 
 HRESULT Player::Init()
 {
-	image = ImageManager::GetInstance()->FindImage("zerowalk");
-	Pos = FPOINT{ 300.0f, 300.0f };
+	image = ImageManager::GetInstance()->FindImage("zeroidle");
 
-	// TODO
-	FrameIndexMax = 10;
+	Pos = FPOINT{ 300.0f, 300.0f };
 
 	PlayerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
 	CollisionManager::GetInstance()->AddCollider(PlayerCollider, ECollisionGroup::Player);
@@ -32,7 +30,9 @@ HRESULT Player::Init()
 	// bind input action to state function
 	BindState();
 
-	speed = 0.1f;
+	velocity = FPOINT{ 0.1f, 0.1f };
+	accel = FPOINT{ 0.0f, 0.0f };
+	addaccel = FPOINT{ 0.01f, 0.01f };
 
 	return S_OK;
 }
@@ -49,10 +49,12 @@ void Player::Release()
 
 void Player::Update()
 {
+	// fsm으로 구현할 시 switch문이 일반적
 	// get the pressed keys 
 	std::vector<InputAction> actions = playerInput->GetActions();
 	for (InputAction action : actions)
 	{
+		// action이 attack인 경우 func이 몇번 더 돌아야함
 		stateFunction func = inputStateMap[action];
 		func(*this);
 	}
@@ -63,14 +65,21 @@ void Player::Update()
 void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
-	{
+	{		
+		int FrameIndexMax = image->GetMaxFrameX();
 		image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);
 
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		//image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, FrameIndex, 0);
 
 		FrameIndex++;
-		if (FrameIndex >= FrameIndexMax) FrameIndex %= FrameIndexMax;
+		
+		// attack인 경우
+		if (FrameIndex >= FrameIndexMax)
+		{
+			FrameIndex %= FrameIndexMax;
+			image = ImageManager::GetInstance()->FindImage("zeroidle");		
+		}
 	}
 }
 
@@ -91,22 +100,22 @@ void Player::BindState()
 
 void Player::Left()
 {
-	Pos.x -= speed;
+	Pos.x -= velocity.x;
 }
 
 void Player::Right()
 {
-	Pos.x += speed;
+	Pos.x += velocity.x;
 }
 
 void Player::Down()
 {
-	Pos.y += speed;
+	Pos.y += velocity.y;
 }
 
 void Player::Jump()
 {
-	Pos.y -= speed;
+	Pos.y -= velocity.y;
 }
 
 void Player::Fall()
@@ -115,6 +124,12 @@ void Player::Fall()
 
 void Player::Attack()
 {
+	// frame 끝날때까지 pos 바꿔 줘야함
+	// deltaTime 고려 -> 1초에 걸쳐서 frame 한바퀴 돌 수 있도록
+	Pos.x += velocity.x;
+	Pos.y -= velocity.y;
+
+	image = ImageManager::GetInstance()->FindImage("zeroattack");
 }
 
 void Player::Dead()

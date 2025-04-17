@@ -17,7 +17,9 @@ private:
 
 	PlayerInput* playerInput;
 
-	float speed;
+	FPOINT velocity;
+	FPOINT accel;
+	FPOINT addaccel;
 
 	typedef std::function<void(Player&)> stateFunction;
 

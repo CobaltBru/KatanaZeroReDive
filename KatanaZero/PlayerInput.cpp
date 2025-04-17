@@ -1,5 +1,6 @@
 #include "PlayerInput.h"
 
+
 void PlayerInput::Init()
 {
 	keyActionMap['A'] = InputAction::Left;
@@ -7,7 +8,7 @@ void PlayerInput::Init()
 	keyActionMap['W'] = InputAction::Jump;
 	keyActionMap['S'] = InputAction::Down;
 
-	keyActionMap['P'] = InputAction::Attack;
+	keyActionMap[VK_LBUTTON] = InputAction::Attack;
 	
 }
 
