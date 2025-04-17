@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
+
+
 enum class State
 {
     Idle,
@@ -12,6 +14,7 @@ enum class State
     RoundLazer,
     Dash,
     DashDown,
+    Run,
     Faint
 };
 
@@ -41,6 +44,7 @@ private:
     Image* image;
     State state;
 
+
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;
 
@@ -53,6 +57,8 @@ public:
     virtual void Update();
     virtual void Render(HDC hdc);
 
+    void SetState(State state) { this->state = state; }
+
     void Idle();
     void GroundLazer();
     void GroundGun();
@@ -63,6 +69,7 @@ public:
     void Dash();
     void DashDown();
     void Faint();
+    void Run();
 
 
     void ChangeState(State newState);

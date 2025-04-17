@@ -11,9 +11,17 @@ void ObjectManager::Update()
 	{
 		for (auto iter = GameObjectList[i].begin(); iter != GameObjectList[i].end();)
 		{
-			(*iter)->Update();
-
-			++iter;
+			if ((*iter)->IsDead())
+			{
+				(*iter)->Release();
+				delete (*iter);
+				iter = GameObjectList[i].erase(iter);
+			}
+			else
+			{
+				(*iter)->Update();
+				++iter;
+			}			
 		}
 	}
 }
