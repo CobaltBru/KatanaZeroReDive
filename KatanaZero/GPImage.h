@@ -36,10 +36,16 @@ public:
 	void Middle_RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, float angle = 0.f, bool flip = false, float alpha = 1.0f);
 
 	//플립 + 알파 + 애니메이션 + 회전 + RGB + 확대축소
-	void RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, float angle = 0.f, bool flip = false, 
-		float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, float scaleX = 1.0f, float scaleY = 1.0f);
-	void Middle_RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, float angle = 0.f,
-		bool flip = false, float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, float scaleX = 1.0f, float scaleY = 1.0f);
+	void RenderAll(
+		Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, 
+		float angle = 0.f, bool flip = false, 
+		float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, 
+		float scaleX = 1.0f, float scaleY = 1.0f);
+	void Middle_RenderAll(
+		Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, 
+		float angle = 0.f, bool flip = false, 
+		float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, 
+		float scaleX = 1.0f, float scaleY = 1.0f);
 
 
 	inline int getWidth() { return width; }
