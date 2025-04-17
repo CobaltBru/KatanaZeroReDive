@@ -1,5 +1,7 @@
 #include "EffectManager.h"
 #include "Effect.h"
+#include "SnapShot.h"
+#include "SnapShotManager.h"
 
 void EffectManager::Init()
 {
@@ -31,19 +33,41 @@ void EffectManager::Update()
     }
 }
 
-void EffectManager::Addfx(string key, const wchar_t* filePath)
+void EffectManager::Render(HDC hdc)
+{
+    map<string, Effect*>::iterator iter;
+    for (iter = mapFx.begin(); iter != mapFx.end(); iter++)
+    {
+        if (iter->second)
+            iter->second->Render(hdc);
+    }
+}
+
+void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, int maxFrameY)
 {
     Effect* fx = nullptr;
     fx = Findfx(key);
     if (fx) return;
     fx = new Effect();
-    if (FAILED(fx->Init(filePath)))
+    if (FAILED(fx->Init(filePath, maxFrameX, maxFrameY)))
     {
         fx->Release();
         delete fx;
         return;
     }
     mapFx.insert(make_pair(key, fx));
+}
+
+void EffectManager::RegisterEffect()
+{
+    map<string, Effect*>::iterator iter;
+    for (iter = mapFx.begin(); iter != mapFx.end(); iter++)
+    {
+        if (iter->second)
+        {
+            SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, iter->second);
+        }
+    }
 }
 
 Effect* EffectManager::Findfx(string key)

@@ -25,17 +25,20 @@ HRESULT Effect::Init()
 	return E_FAIL;
 }
 
-HRESULT Effect::Init(const wchar_t* AType)
+HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY)
 {
 	pos = { 0.0f, 0.0f };
 	currFrameX = 0;
 	currFrameY = 0;
+	maxFrameX = maxframeX;
+	maxFrameY = maxframeY;
 	angle = 0.0f;
 	frameTimer = 0.0f;
 	bActive = false;
+	bFlip = false;
 	alpha = 1.0f;
 	fxImage = new GPImage();
-	fxImage->AddImage(AType);
+	fxImage->AddImage(AType, maxframeX, maxframeY);
 	if (!fxImage)
 		return E_FAIL;
 	return S_OK;
@@ -73,7 +76,13 @@ void Effect::MakeSnapShot(void* out)
 	fxSnapShot->pos = this->pos;
 	fxSnapShot->animFrame = this->currFrameX;
 	fxSnapShot->isActive = bActive;
-	fxSnapShot->ID = 0;
+}
+
+void Effect::ApplySnapShot(const EffectSnapShot& fxSnapShot)
+{
+	this->pos = fxSnapShot.pos;
+	this->bActive = fxSnapShot.isActive;
+	this->currFrameX = fxSnapShot.animFrame;
 }
 
 void Effect::Activefx(FPOINT pos, float angle, bool bFlip)

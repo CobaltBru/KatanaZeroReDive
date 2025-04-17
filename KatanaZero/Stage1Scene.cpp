@@ -18,8 +18,11 @@
 
 #include "LineManager.h"
 
+#include "Effect.h"
+#include "EffectManager.h"
+
 Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -46,6 +49,9 @@ HRESULT Stage1Scene::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
+
+	fxManager = EffectManager::GetInstance();
+	fxManager->Init();
 	if (FAILED(LineManager->LoadFile()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -62,6 +68,11 @@ HRESULT Stage1Scene::Init()
 	if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+	if (FAILED(InitEffects()))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -179,8 +190,14 @@ HRESULT Stage1Scene::InitObject()
 
 HRESULT Stage1Scene::InitEffects()
 {
-
-	return E_NOTIMPL;
+	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
+	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
+	fxManager->Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
+	fxManager->Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
+	fxManager->Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
+	fxManager->Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
+	fxManager->RegisterEffect();
+	return S_OK;
 }
 
 void Stage1Scene::TestCode()
@@ -204,6 +221,15 @@ void Stage1Scene::Update()
 	ObjectManager->Update();
 	CollisionManager->Update();
 	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+	fxManager->Update();
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+	{
+		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("hitslash", { 450.0f, 200.0f }, 0.0f, false);
+	}
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
 	{
 		snapShotManager->StartReplay(); // 리플레이
@@ -219,6 +245,7 @@ void Stage1Scene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
+	fxManager->Render(hdc);
 	screenEffectManager->RenderDistortion(hdc);
 	if (snapShotManager->IsReplaying() && snapShotManager->GetReplayIndex() <= 30 && snapShotManager->GetReplayIndex() >= 0)
 	{
@@ -243,6 +270,8 @@ void Stage1Scene::Release()
 		screenEffectManager->Release();
 	if (snapShotManager != nullptr)
 		snapShotManager->Release();
+	if (fxManager != nullptr)
+		fxManager->Release();
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -250,4 +279,5 @@ void Stage1Scene::Release()
 	LineManager = nullptr;
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
+	fxManager = nullptr;
 }

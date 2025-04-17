@@ -9,6 +9,7 @@ class ScrollManager;
 class LineManager;
 class ChatManager;
 class ScreenEffectManager;
+class EffectManager;
 class Stage1Scene : public Scene
 {
 public:
@@ -37,6 +38,7 @@ private:
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 	ScreenEffectManager* screenEffectManager;
+	EffectManager* fxManager;
 
 	ChatManager* chatManager;
 };
