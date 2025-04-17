@@ -3,6 +3,7 @@
 #include "SnapShotManager.h"
 #include "SnapShot.h"
 #include "TimerManager.h"
+#include "ScrollManager.h"
 
 void Effect::UpdateFrame()
 {
@@ -66,7 +67,8 @@ void Effect::Render(HDC hdc)
 	if (fxImage)
 	{
 		Gdiplus::Graphics graphics(hdc);
-		fxImage->Middle_RenderFrameAngle(&graphics, pos, currFrameX, angle, bFlip, alpha);
+		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
+		fxImage->Middle_RenderFrameAngle(&graphics, { pos.x + scroll.x, pos.y + scroll.y }, currFrameX, angle, bFlip, alpha);
 	}
 }
 

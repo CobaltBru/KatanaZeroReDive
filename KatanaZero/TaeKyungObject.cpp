@@ -104,7 +104,7 @@ void TaeKyungObject::Move()
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
-		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x + scroll.x, this->Pos.y + scroll.y }, 0.0f, false);
+		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y}, 0.0f, false);
 		dY = -10.f;
 	}
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
