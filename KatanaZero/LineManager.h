@@ -33,14 +33,15 @@ public:
 	void AddLine(float InX, float InY);
 	void ResetLinePoint();
 	void DestroyLine();
+	void DestroyAllLine();
 
 	bool CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f, bool IsDown = false);
 	bool CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT InSize);
 	bool CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
 	bool CollisionDownLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
 
-	HRESULT SaveFile();
-	HRESULT LoadFile();
+	HRESULT SaveFile(LPCWSTR InSavePath);
+	HRESULT LoadFile(LPCWSTR InLoadPath);
 	
 	void CreateLine(float InX, float InY);
 	void AdjustLine(float InX, float InY);

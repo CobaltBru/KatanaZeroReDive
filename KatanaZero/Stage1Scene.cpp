@@ -43,7 +43,7 @@ HRESULT Stage1Scene::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
-	if (FAILED(LineManager->LoadFile()))
+	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
 		return E_FAIL;

@@ -20,5 +20,11 @@ public:
 	void CleanupDeviceD3D();
 	void CreateRenderTarget();
 	void CleanupRenderTarget();
+
+private:
+	void SaveLine();
+	
+	void LoadFont();
+	void LoadLine();	
 };
 
