@@ -5,6 +5,8 @@
 #include "CollisionManager.h"
 #include "RenderManager.h"
 #include "ScrollManager.h"
+#include "PlayerState.h"
+#include "SpriteAnimator.h"
 
 Player::Player()
 {
@@ -21,19 +23,19 @@ HRESULT Player::Init()
 	Pos = FPOINT{ 300.0f, 300.0f };
 	switchTime = 0.1f;
 
-	PlayerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
-	CollisionManager::GetInstance()->AddCollider(PlayerCollider, ECollisionGroup::Player);
+	playerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
+	CollisionManager::GetInstance()->AddCollider(playerCollider, ECollisionGroup::Player);
 
 	// set player input key
 	playerInput = new PlayerInput();
 	playerInput->Init();
 
 	// bind input action to state function
-	BindState();
+	InitBindState();
 
 	velocity = FPOINT{ 0.1f, 0.1f };
 	accel = FPOINT{ 0.0f, 0.0f };
-	addaccel = FPOINT{ 0.01f, 0.01f };
+	addAccel = FPOINT{ 0.01f, 0.01f };
 
 	return S_OK;
 }
@@ -41,6 +43,11 @@ HRESULT Player::Init()
 
 void Player::Release()
 {
+	if (playerCollider)
+	{
+		delete playerCollider;
+		playerCollider = nullptr;
+	}
 	if (playerInput)
 	{
 		delete playerInput;
@@ -52,13 +59,12 @@ void Player::Update()
 {
 	playerInput->UpdateKeystate();
 	frameTimer += TimerManager::GetInstance()->GetDeltaTime();	
-
-	// fsm으로 구현할 시 switch문이 일반적
 	
 	// get the pressed keys 
-	std::vector<InputAction> actions = playerInput->GetActions();
-	for (InputAction action : actions)
+	std::vector<EInputAction> actions = playerInput->GetActions();
+	for (EInputAction action : actions)
 	{
+
 		// action이 attack인 경우 func이 몇번 더 돌아야함
 		stateFunction func = inputStateMap[action];
 		func(*this);
@@ -92,17 +98,6 @@ void Player::Render(HDC hdc)
 void Player::MakeSnapShot(void* out)
 {
 }
-
-void Player::BindState()
-{
-	inputStateMap[InputAction::Left] = &Player::Left;
-	inputStateMap[InputAction::Right] = &Player::Right;
-	inputStateMap[InputAction::Jump] = &Player::Jump;
-	inputStateMap[InputAction::Down] = &Player::Down;
-
-	inputStateMap[InputAction::Attack] = &Player::Attack;
-}
-
 
 void Player::Left()
 {
@@ -144,4 +139,24 @@ void Player::Dead()
 
 void Player::WallSlide()
 {
+}
+
+void Player::InitBindState()
+{
+	inputStateMap[EInputAction::Left] = &Player::Left;
+	inputStateMap[EInputAction::Right] = &Player::Right;
+	inputStateMap[EInputAction::Jump] = &Player::Jump;
+	inputStateMap[EInputAction::Down] = &Player::Down;
+	inputStateMap[EInputAction::Attack] = &Player::Attack;
+
+	ipActionplayerStateMap[EInputAction::Left] = EPlayerState::IdleToRun;
+	ipActionplayerStateMap[EInputAction::Right] = EPlayerState::IdleToRun;
+	ipActionplayerStateMap[EInputAction::Jump] = EPlayerState::Jump;
+	ipActionplayerStateMap[EInputAction::Down] = EPlayerState::Down;
+	ipActionplayerStateMap[EInputAction::Attack] = EPlayerState::Attack;
+	
+	//PlayerStateInfo IdleToRun
+
+	//playerStateFunctionMap[EPlayerState::IdleToRun] = 
+
 }

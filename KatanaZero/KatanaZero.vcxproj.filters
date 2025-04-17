@@ -103,6 +103,9 @@
     <Filter Include="MainGame\Player">
       <UniqueIdentifier>{df2beb3a-5f89-47c4-b089-2d4e0b67311b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Animator">
+      <UniqueIdentifier>{ef9585e9-bad7-4c86-97be-f433cce02a05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -244,6 +247,12 @@
       <Filter>2D Framework\Input</Filter>
     </ClCompile>
     <ClCompile Include="PlayerInput.cpp">
+      <Filter>MainGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnimator.cpp">
+      <Filter>2D Framework\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAnim.cpp">
       <Filter>MainGame\Player</Filter>
     </ClCompile>
   </ItemGroup>
@@ -402,6 +411,12 @@
       <Filter>2D Framework\Input</Filter>
     </ClInclude>
     <ClInclude Include="PlayerInput.h">
+      <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteAnimator.h">
+      <Filter>2D Framework\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAnim.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,23 +4,32 @@
 #include <functional>
 #include "Pawn.h"
 #include "PlayerInput.h"
+#include "PlayerState.h"
+
+class Image;
+class Player;
+class PlayerAnim;
+struct PlayerStateInfo
+{
+	SpriteAnimator* animator;
+	std::function<void(Player&)> func;
+};
 
 class Collider;
 class PlayerInput;
-class ZeroState;
 class Player: public Pawn
 {
 private:
-	Collider* PlayerCollider;
+	Collider* playerCollider;
 	 
-	ZeroState* state;
-
 	PlayerInput* playerInput;
+	EPlayerState playerState;
+	PlayerAnim* playerAnim;
 
 	// movemnet physics
 	FPOINT velocity;
 	FPOINT accel;
-	FPOINT addaccel;
+	FPOINT addAccel;
 
 	// switch frame
 	float switchTime;	
@@ -28,7 +37,13 @@ private:
 	typedef std::function<void(Player&)> stateFunction;
 
 	// FSM: input, function binding
-	std::unordered_map<InputAction, stateFunction> inputStateMap;
+	std::unordered_map<EInputAction, stateFunction> inputStateMap;
+
+	std::unordered_map<EInputAction, EPlayerState> ipActionplayerStateMap;
+	std::unordered_map<EPlayerState, PlayerStateInfo> playerStateFunctionMap;
+
+	EPlayerState newState;
+	EPlayerState currentState;
 
 public:
 	Player();
@@ -40,7 +55,7 @@ public:
 	void Render(HDC hdc) override;
 	void MakeSnapShot(void* out) override;
 
-	void BindState();
+	void InitBindState();
 
 	void Left();
 	void Right();

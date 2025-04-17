@@ -1,9 +1,11 @@
 #pragma once
 
 
-enum class ZeroState
+enum class EPlayerState
 {
 	Idle,
+	IdleToRun,
+	RunToIdle,
 	Walk,
 	Dash,
 	Down,
@@ -13,4 +15,5 @@ enum class ZeroState
 	SlowTime,
 	Dead,
 };
+
 
