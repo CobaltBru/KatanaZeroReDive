@@ -111,9 +111,9 @@ HRESULT Stage1Scene::InitObject()
 		background->Init("TestBg");
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-		Player* player = new Player();
-		player->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, player);
+		//Player* player = new Player();
+		//player->Init();
+		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });

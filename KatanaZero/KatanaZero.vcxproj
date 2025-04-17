@@ -168,6 +168,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScrollManager.h" />

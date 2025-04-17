@@ -9,10 +9,11 @@
 #include "SoundManager.h"
 #include "LineManager.h"
 #include "EffectManager.h"
+#include "RigidBody.h"
 
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
 {
 }
 
@@ -25,6 +26,8 @@ HRESULT TaeKyungObject::Init(FPOINT InPos)
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	
+	ObjectRigidBody = new RigidBody(this);
+
 	Speed = 300.f;
 
 	InitOffset();
@@ -34,7 +37,8 @@ HRESULT TaeKyungObject::Init(FPOINT InPos)
 
 void TaeKyungObject::Update()
 {
-	Move();
+	RigidBodyTest();
+	//Move();
 
 	Collision();
 
@@ -208,6 +212,23 @@ void TaeKyungObject::Offset()
 		newScroll.y = Speed * TimerManager::GetInstance()->GetDeltaTime();
 
 	ScrollManager::GetInstance()->SetScroll(newScroll);
+}
+
+void TaeKyungObject::RigidBodyTest()
+{
+	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+		ObjectRigidBody->AddForce({ -200.f,0.f });
+	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+		ObjectRigidBody->AddForce({ 200.f,0.f });
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+		ObjectRigidBody->AddForce({ 0.f,-200.f });
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
+		ObjectRigidBody->AddForce({ 0.f,-0.f });
+
+
+	ObjectRigidBody->Update();
 }
 
 

@@ -10,6 +10,7 @@
 #include "Background.h"
 #include "SoundManager.h"
 #include "LineManager.h"
+#include "TaeKyungObject.h"
 
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr)
@@ -81,6 +82,10 @@ HRESULT MapTool::InitObject()
 	Background* background = new Background();
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
+
+	TaeKyungObject* taekyung = new TaeKyungObject();
+	taekyung->Init({ 500.f,550.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 	return S_OK;
 }

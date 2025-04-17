@@ -54,6 +54,31 @@ typedef struct tagFPOINT
 {
 	float x;
 	float y;
+	tagFPOINT& operator +=(const tagFPOINT fp2)
+	{
+		x += fp2.x;
+		y += fp2.y;
+
+		return *this;
+	}
+
+	tagFPOINT operator *(const float& f)
+	{
+		tagFPOINT fp;
+
+		fp.x *= f;
+		fp.y *= f;
+		return fp;
+	}
+	tagFPOINT operator /(const float& f)
+	{
+		tagFPOINT fp;
+
+		fp.x /= f;
+		fp.y /= f;
+		return fp;
+	}
+
 } FPOINT;
 
 typedef struct tagLINE

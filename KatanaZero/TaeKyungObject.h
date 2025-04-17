@@ -4,6 +4,7 @@
 
 class Image;
 class Collider;
+class RigidBody;
 class TaeKyungObject : public GameObject
 {
 public:
@@ -25,9 +26,12 @@ private:
 
 	void InitOffset();
 	void Offset();
+
+	void RigidBodyTest();
 private:
 	Image* Image;
 	Collider* ObjectCollider;
+	RigidBody* ObjectRigidBody;
 	float Speed;
 
 	//Jump

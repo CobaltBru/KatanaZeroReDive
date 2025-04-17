@@ -149,3 +149,15 @@ inline void DrawRoundRect(Gdiplus::Graphics* graphics, FPOINT pos, float width, 
 	Gdiplus::SolidBrush brush(fillColor);
 	graphics->FillPath(&brush, &path);
 }
+
+inline float GetLength(const FPOINT& InPoint)
+{
+	return sqrt(InPoint.x * InPoint.x + InPoint.y * InPoint.y);
+}
+
+inline void Normalize(FPOINT& InPoint)
+{
+	const float Length = GetLength(InPoint);
+	InPoint.x /= Length;
+	InPoint.y /= Length;
+}
