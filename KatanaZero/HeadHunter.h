@@ -1,8 +1,6 @@
 #pragma once
 #include "GameObject.h"
 
-
-
 enum class State
 {
     Idle,
@@ -18,17 +16,22 @@ enum class State
     Faint
 };
 
+
+class Lazer;
 class Image;
+class Bullet1;
 class HeadHunter : public GameObject
 {
 private:
     FPOINT pos;
+    FPOINT firePos;
 
     bool isFlip;
     bool isAttacked;
     bool isDead;
 
     float angle;
+    float weaponAngle;
     float timer;
     float indexTimer;
     int hp;
@@ -39,11 +42,13 @@ private:
     int gunWave;
     int gunCount;
     int loop;
+    int lazerLoop;
 
     int frameIndex;
     Image* image;
     State state;
-
+    Lazer* lazer;
+    Bullet1* bullet;
 
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;

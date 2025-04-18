@@ -2,6 +2,8 @@
 #include "Image.h"
 #include "RenderManager.h"
 #include "CommonFunction.h"
+#include "Lazer.h"
+#include "Bullet.h"
 
 HeadHunter::HeadHunter()
 {
@@ -14,12 +16,14 @@ HeadHunter::~HeadHunter()
 HRESULT HeadHunter::Init()
 {
     pos = { 460, 360 };
+    firePos = { 0,0 };
 
     isFlip = false;
     isAttacked = false;
     isDead = false;
 
     angle = 0;
+    weaponAngle = 0;
     timer = 0;
     indexTimer = 0;
     hp = 4;
@@ -30,44 +34,53 @@ HRESULT HeadHunter::Init()
     gunWave = 0;
 
     loop = 0;
+    lazerLoop = 0;
     gunCount = 0;
     frameIndex = 0;
 
     state = State::Idle;
 
-    image = ImageManager::GetInstance()->AddImage("Idle", L"Image/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
+    {
+        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
 
-    image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/headhunter_takeoutrifle.bmp", 560, 70, 8, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/headhunter_lazer.bmp", 972, 46, 18, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/teleport1.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/teleport2.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/teleport3.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/headhunter_takeoutrifle.bmp", 560, 70, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/headhunter_lazer.bmp", 972, 46, 18, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/teleport1.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/teleport2.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/teleport3.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
 
-    image = ImageManager::GetInstance()->AddImage("Faint", L"Image/headhunter_faint.bmp", 495, 45, 11, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/headhunter_faint.bmp", 495, 45, 11, 1, true, RGB(255, 0, 255));
 
-    image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/GroundGun.bmp", 490, 70, 7, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/GroundGun_shoot.bmp", 800, 70, 8, 1, true, RGB(255, 0, 255));
-    //BULLET
-    image = ImageManager::GetInstance()->AddImage("Jump", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/headhunter_jumpidle.bmp", 90, 43, 3, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/headhunter_jumptoceil.bmp", 35, 46, 1, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/GroundGun.bmp", 490, 70, 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/GroundGun_shoot.bmp", 800, 70, 8, 1, true, RGB(255, 0, 255));
+        //BULLET
+        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/headhunter_jumpidle.bmp", 90, 43, 3, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/headhunter_jumptoceil.bmp", 35, 46, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
 
-    //DASH
-    image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/readytodash.bmp", 432, 45, 9, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Dash", L"Image/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
-    image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/dashend.bmp", 500, 50, 10, 1, true, RGB(255, 0, 255));
+        //DASH
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/readytodash.bmp", 432, 45, 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/dashend.bmp", 500, 50, 10, 1, true, RGB(255, 0, 255));
 
-    image = ImageManager::GetInstance()->FindImage("Idle");
-
+        image = ImageManager::GetInstance()->FindImage("Idle");
+    }
     // test 
     playerPos = { 500 , 360 };
+
+    lazer = new Lazer();
+    lazer->Init();
+
+    bullet = new Bullet1();
+    bullet->Init();
 
     return S_OK;
 }
 
 void HeadHunter::Release()
 {
+    lazer->Release();
 }
 
 void HeadHunter::Update()
@@ -76,8 +89,9 @@ void HeadHunter::Update()
     timer += TimerManager::GetInstance()->GetDeltaTime();
     indexTimer += TimerManager::GetInstance()->GetDeltaTime();
 
-    CheckPlayerPos();
+    lazer->Update(firePos, weaponAngle);
 
+    CheckPlayerPos();
 
     switch (state) {
     case State::Idle:
@@ -129,6 +143,7 @@ void HeadHunter::Render(HDC hdc)
         //RenderRectAtCenter(hdc, WINSIZE_X/2,WINSIZE_Y/2, 640, 260);
         RenderRectAtCenter(hdc, playerPos.x, playerPos.y, 20, 40);
         image->FrameRender(hdc, pos.x, pos.y, frameIndex, 0, isFlip);
+        lazer->Render(hdc);
     }
 }
 
@@ -158,16 +173,31 @@ void HeadHunter::GroundLazer()
 {
     
     image = ImageManager::GetInstance()->FindImage("GroundLazer");
-    if (timer > 0.1f)
+    if (frameIndex < image->GetMaxFrameX() - 1)
     {
-        frameIndex++;
-        timer = 0;
+        if (timer > 0.1f)
+        {
+        
+            frameIndex++;
+            timer = 0;
+        }
     }
+
 
     if (frameIndex >= image->GetMaxFrameX() - 1)
     {
-        frameIndex = 0;
-        ChangeState(State::Teleport);
+        frameIndex = image->GetMaxFrameX();
+        lazer->SetIsActive(true);
+        weaponAngle = 90;
+        firePos = { pos.x - 40, pos.y + 10 };
+        if (timer > 1.5f)
+        {
+            lazer->SetIsActive(false);
+            weaponAngle = 0;
+            frameIndex = 0;
+            ChangeState(State::Teleport);
+        }
+        
     }
 }
 
@@ -329,22 +359,38 @@ void HeadHunter::Teleport()
 
 void HeadHunter::VerticalLazer()
 {
+    firePos = { pos.x, pos.y + 35 };
+    if (lazerLoop == 0) pos.x = 340;
+    if (lazerLoop == 1) pos.x = 740;
+    if (lazerLoop == 2) pos.x = 440;
+    if (lazerLoop == 3) pos.x = 640;
+    if (lazerLoop == 4) pos.x = 540;
     switch (gunWave)
     {
     case 0:
         pos.y = 200;
-        if (loop == 0) pos.x = 340;
+
+        
         image = ImageManager::GetInstance()->FindImage("VerticalLazer");
-        if (timer > 0.1f)
+        if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            frameIndex++;
-            timer = 0;
+            if (timer > 0.1f)
+            {
+                frameIndex++;
+                timer = 0;
+            }
         }
 
-        if (frameIndex > image->GetMaxFrameX() - 1)
-        {
-            frameIndex = 0;
-            gunWave++;
+        if (frameIndex >= image->GetMaxFrameX() - 1)
+        {   
+            lazer->SetIsActive(true);
+            frameIndex = image->GetMaxFrameX() - 1;
+            if (timer > 0.1f)
+            {
+                lazer->SetIsActive(false);
+                frameIndex = 0;
+                gunWave++;
+            }
         }
         break;
 
@@ -359,29 +405,29 @@ void HeadHunter::VerticalLazer()
                 timer = 0;
             }
         }
+        
         if (frameIndex >= image->GetMaxFrameX() - 1)
         {
             frameIndex = -1;
-            if (loop < 4)
+            if (lazerLoop < 4)
             {
-                if (loop == 0) pos.x = 740;
-                if (loop == 1) pos.x = 440;
-                if (loop == 2) pos.x = 640;
-                if (loop == 3) pos.x = 540;
                 gunWave = 0;
-                loop++;
+                lazerLoop++;
             }
             else
-            {
-                loop = 0;
+            {   
+                lazer->SetIsActive(false);
+                lazerLoop = 0;
                 gunWave = 0;
+                loop = 0;
                 if (rand() % 5 < 3) // rand() 값이 고정적인데 어떡하지 
                 {
+                    
                     ChangeState(State::RoundLazer);
                 }
                 else
                 {
-                    ChangeState(State::DashDown);
+                    ChangeState(State::RoundLazer);
                 }
 
             }
@@ -391,21 +437,35 @@ void HeadHunter::VerticalLazer()
 }
 
 void HeadHunter::RoundLazer()
-{
+{   
+    float a = 180 + angle;
+    float b = angle;
     image = ImageManager::GetInstance()->FindImage("RoundLazer");
     // 340으로 먼저 이동 후, 740으로 이동
     //340 일때 isFlip = true;
     if (loop == 0)
     {
         pos.x = 340;
+        
+        firePos.x = pos.x + 40 * cosf(DEG_TO_RAD(a));
+        firePos.y = pos.y + 40 * sinf(DEG_TO_RAD(a));
+        weaponAngle = 90 + angle;
+        
         isFlip = true;
-        if(timer > 0.1f)
+        lazer->SetIsActive(true);
+        if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            frameIndex++;
-            timer = 0;
+		    if (timer > 0.05f)
+		    {
+			    frameIndex++;  
+                angle -= 10;
+                timer = 0;
+		    }
         }
-        if (frameIndex >= image->GetMaxFrameX())
+
+        if (frameIndex >= image->GetMaxFrameX() -1)
         {
+            angle = 0;
             frameIndex = 0;
             loop = 1;
         }
@@ -413,17 +473,30 @@ void HeadHunter::RoundLazer()
     if(loop == 1)
     {
         pos.x = 740;
+
+        firePos.x = pos.x + 40 * cosf(DEG_TO_RAD(angle));
+        firePos.y = pos.y + 40 * sinf(DEG_TO_RAD(angle));
+        weaponAngle = - 90 + angle;
+
         isFlip = false;
-        if (timer > 0.1f)
+        if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            frameIndex++;
-            timer = 0;
+            if (timer > 0.05f)
+            {
+                frameIndex++;
+                angle += 10;
+                timer = 0;
+            }
         }
-        if (frameIndex >= image->GetMaxFrameX())
+
+        if (frameIndex >= image->GetMaxFrameX()-1)
         {
-            frameIndex = 0;
-            ChangeState(State::DashDown);
+                lazer->SetIsActive(false);
+                angle = 0;
+                ChangeState(State::DashDown);
         }
+            
+        
     }
 
 
@@ -436,6 +509,7 @@ void HeadHunter::Dash()
     {
     case 0:
         image = ImageManager::GetInstance()->FindImage("Readytodash");
+        loop = 0;
         if (timer > 0.1f)
         {
             frameIndex++;
