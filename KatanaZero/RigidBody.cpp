@@ -111,7 +111,7 @@ void RigidBody::CollisionLine()
 
 
 	// 땅
-	if (Velocity.y >0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
 	{
 		FPOINT ObjPos = OwnerObj->GetPos();
 		ObjPos.y = Result.OutPos.y;
@@ -122,21 +122,12 @@ void RigidBody::CollisionLine()
 	}
 	else
 	{
-		// 대각선 처리, 땅에 이미 있을 때
-		if (bGround)
+		// 땅에 이미 있을 때
+		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
 		{
-			if (Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
-			{
-				FPOINT ObjPos = OwnerObj->GetPos();
-				ObjPos.y = Result.OutPos.y;
-				OwnerObj->SetPos(ObjPos);
-			}
-			else
-			{
-				bGround = false;
-			}
-			
-			
+			FPOINT ObjPos = OwnerObj->GetPos();
+			ObjPos.y = Result.OutPos.y;
+			OwnerObj->SetPos(ObjPos);
 		}
 		else
 			bGround = false;

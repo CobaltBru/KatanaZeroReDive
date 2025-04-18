@@ -174,9 +174,11 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 
 				float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
 				
+
+				// 이것만 이틀걸렸다.. 점심 나가서 먹을 것 같애~
 				/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
 				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance 
-					&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y)))
+					&& ((i != (int)ELineType::DownLine) || LastObjectBottom <= dY))		
 				{
 					if (i == (int)ELineType::Normal)
 					{
