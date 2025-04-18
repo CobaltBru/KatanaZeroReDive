@@ -12,12 +12,34 @@ void PlayerInput::Init()
 }
 
 // ¹«½¼ Å°¸¦ »õ·Î ´­·¶´ÂÁö
-std::vector<EInputAction> PlayerInput::GetActions()
+std::vector<EInputAction> PlayerInput::GetPressed()
 {
 	std::vector<EInputAction> actions;
 	for (const auto& keyAction : keyActionMap)
 	{
 		if (currKeyState[keyAction.first] && !prevKeyState[keyAction.first])	// Pressed
+			actions.push_back(keyAction.second);
+	}
+	return actions;
+}
+
+std::vector<EInputAction> PlayerInput::GetHeld()
+{
+	std::vector<EInputAction> actions;
+	for (const auto& keyAction : keyActionMap)
+	{
+		if (currKeyState[keyAction.first] && prevKeyState[keyAction.first])	// Held
+			actions.push_back(keyAction.second);
+	}
+	return actions;
+}
+
+std::vector<EInputAction> PlayerInput::GetReleased()
+{
+	std::vector<EInputAction> actions;
+	for (const auto& keyAction : keyActionMap)
+	{
+		if (!currKeyState[keyAction.first] && prevKeyState[keyAction.first])	// Held
 			actions.push_back(keyAction.second);
 	}
 	return actions;

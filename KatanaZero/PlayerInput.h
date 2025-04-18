@@ -12,13 +12,18 @@ enum class EInputAction
 	Idle,
 	Left,
 	Right,
-	Dash,
 	Down,
 	Jump,
 	Fall,
 	Attack,
 	SlowTime,
-	Dead,
+	En
+};
+
+enum class EDirection
+{
+	Left,
+	Right
 };
 
 struct KeyInfo {
@@ -56,7 +61,9 @@ public:
 	
 	std::unordered_map<UINT, EInputAction>& GetkeyActionMap() { return keyActionMap; };
 
-	std::vector<EInputAction> GetActions();
+	std::vector<EInputAction> GetPressed();
+	std::vector<EInputAction> GetHeld();
+	std::vector<EInputAction> GetReleased();
 
 	void UpdateKeystate();
 };

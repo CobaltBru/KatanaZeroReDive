@@ -68,15 +68,19 @@ HRESULT Stage1Scene::Init()
 		return E_FAIL;
 	}
 	
-	/*Background* background = new Background();
+	Background* background = new Background();
 	background->Init("TestBg");
-	ObjectManager->AddGameObject(EObjectType::GameObject, background);*/
+	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	if (FAILED(InitObject()))
+	Player* player = new Player();
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+
+	/*if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}
+	}*/
 	if (FAILED(InitEffects()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
@@ -100,6 +104,7 @@ HRESULT Stage1Scene::InitImage()
 	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroruntoidle", L"Image/zero_run_to_idle.bmp", 270, 38, 5, 1, true, RGB(255, 255, 255));

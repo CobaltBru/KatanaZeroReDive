@@ -246,7 +246,7 @@ void Chat::Update()
     for (int i = 0; i <= tokenIdx; i++)
     {
         appearTime += tokens[i].first;
-        if(timer> appearTime) tokens[i].second.Update();
+        if (timer> appearTime) tokens[i].second.Update();
     }
 
 }

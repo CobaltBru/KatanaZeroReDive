@@ -5,25 +5,37 @@
 #include "Pawn.h"
 #include "PlayerInput.h"
 #include "PlayerState.h"
+#include <stack>
+
 
 class Image;
 class Player;
 class PlayerAnim;
-struct PlayerStateInfo
+class PlayerInput;
+class Collider;
+
+struct stateAnimFunc
 {
 	SpriteAnimator* animator;
-	std::function<void(Player&)> func;
+	std::function<void(Player&, EDirection)> func;
 };
 
-class Collider;
-class PlayerInput;
 class Player: public Pawn
 {
 private:
 	Collider* playerCollider;
 	 
 	PlayerInput* playerInput;
-	EPlayerState playerState;
+	EDirection dir;
+
+	EPlayerState currPlayerState;
+	stateAnimFunc playerAnimFunc;
+	EPlayerState prevPlayerState;
+	EPlayerState newState;
+
+	std::stack<EPlayerState> PlayerStateStack;
+	std::vector<EPlayerState> newPlayerStates;
+
 	PlayerAnim* playerAnim;
 
 	// movemnet physics
@@ -34,17 +46,22 @@ private:
 	// switch frame
 	float switchTime;	
 
-	typedef std::function<void(Player&)> stateFunction;
+	//typedef std::function<void(Player&)> stateFunction;
+	typedef std::function<void(Player&, EDirection)> stateFunction;
 
 	// FSM: input, function binding
 	std::unordered_map<EInputAction, stateFunction> inputStateMap;
 
-	std::unordered_map<EInputAction, EPlayerState> ipActionplayerStateMap;
-	std::unordered_map<EPlayerState, PlayerStateInfo> playerStateFunctionMap;
+	std::unordered_map<EInputAction, EPlayerState> ipActionPlayerStateMap;
+	std::unordered_map<EPlayerState, stateAnimFunc> playerStateFunctionMap;	
 
-	EPlayerState newState;
-	EPlayerState currentState;
-
+	stateAnimFunc IdleAnimFunc;
+	stateAnimFunc IdleToRunAnimFunc;
+	stateAnimFunc RunToIdleAnimFunc;	
+	stateAnimFunc RunAnimFunc;
+	stateAnimFunc FlipAnimFunc;
+	stateAnimFunc JumpAnimFunc;
+	stateAnimFunc AttackAnimFunc;
 public:
 	Player();
 	virtual ~Player();
@@ -57,13 +74,14 @@ public:
 
 	void InitBindState();
 
-	void Left();
-	void Right();
-	void Down();
-	void Jump();
-	void Fall();
-	void Attack();
-	void Dead();
-	void WallSlide();
+	void Idle(EDirection dir);
+	void Run(EDirection dir);
+	void Walk(EDirection dir);
+	void Flip(EDirection dir);
+	void Down(EDirection dir);
+	void Jump(EDirection dir);
+	void Fall(EDirection dir);
+	void Attack(EDirection dir);
+	void WallSlide(EDirection dir);
 };
 
