@@ -1,6 +1,9 @@
 #pragma once
 #include "Singleton.h"
 #include "config.h"
+#include <unordered_map>
+
+class GameObject;
 class ImGuiManager : public Singleton<ImGuiManager>
 {
 public:
@@ -22,9 +25,21 @@ public:
 	void CleanupRenderTarget();
 
 private:
+	vector<string> GetFileNames(const string& InFolderPath);
+
+	void InitBackground();
+	void HelpMarker(const char* desc);
+	void CreateBackground(int Index);
+
+
 	void SaveLine();
-	
+
 	void LoadFont();
-	void LoadLine();	
+	void LoadLine();		
+
+private:
+	unordered_map<const char*, string> BackGroundMap;
+	const char** BackgroundList;
+	GameObject* BackgroundObj;
 };
 

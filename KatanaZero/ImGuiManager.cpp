@@ -7,6 +7,10 @@
 
 #include <fstream>
 #include "LineManager.h"
+#include "ImageManager.h"
+#include "ObjectManager.h"
+
+#include "Background.h"
 
 static TCHAR filter[] = L"모든 파일\0*.*\0dat 파일\0*.dat";
 
@@ -33,7 +37,11 @@ void ImGuiManager::Init()
 	ImGui_ImplWin32_Init(g_hWndDX);
 	ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
+
+	// Init
 	LoadFont();
+	InitBackground();
+	
 }
 
 void ImGuiManager::Update()
@@ -91,7 +99,7 @@ void ImGuiManager::Editor()
 void ImGuiManager::MapTool()
 {
 	Line();
-	Tile();
+	Tile();	
 	Object();
 }
 
@@ -105,6 +113,7 @@ void ImGuiManager::Line()
 		ImGui::RadioButton(u8"라인 보정모드", &LineMode, (int)ELineEditState::Adjust); ImGui::SameLine();
 		ImGui::RadioButton(u8"지우개", &LineMode, (int)ELineEditState::Eraser);
 
+		LineManager::GetInstance()->SetLineEditState((ELineEditState)LineMode);
 
 		static int LineType = 0;
 		ImGui::SeparatorText(u8"라인 타입");
@@ -112,6 +121,8 @@ void ImGuiManager::Line()
 		ImGui::RadioButton(u8"내려가기 땅", &LineType, (int)ELineType::DownLine); ImGui::SameLine();
 		ImGui::RadioButton(u8"벽", &LineType, (int)ELineType::Wall); ImGui::SameLine();
 		ImGui::RadioButton(u8"천장", &LineType, (int)ELineType::Ceiling);
+
+		LineManager::GetInstance()->SetLineType((ELineType)LineType);
 
 
 		if (ImGui::Button(u8"초기화"))
@@ -175,12 +186,31 @@ void ImGuiManager::Line()
 
 		ImGui::EndTabItem();
 	}
+	else
+		LineManager::GetInstance()->ResetLinePoint();
 }
 
 void ImGuiManager::Tile()
 {
 	if (ImGui::BeginTabItem("Tile"))
 	{
+		//Background
+		if (ImGui::CollapsingHeader("Background"))
+		{
+			static int item_current = 1;
+			
+			ImGui::ListBox("Background List", &item_current, BackgroundList, BackGroundMap.size(), 4);
+
+			CreateBackground(item_current);
+		}
+
+		//Tile
+		if (ImGui::CollapsingHeader("Tile"))
+		{
+			
+		}
+
+
 		ImGui::EndTabItem();
 	}
 }
@@ -289,7 +319,6 @@ void ImGuiManager::LoadFont()
 void ImGuiManager::LoadLine()
 {
 	OPENFILENAME ofn;
-	TCHAR filePathName[100] = L"";
 	TCHAR lpstrFile[100] = L"";
 
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -307,6 +336,88 @@ void ImGuiManager::LoadLine()
 	}
 }
 
+vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
+{
+	vector<string> files;
+
+	WIN32_FIND_DATAA findData;
+	HANDLE hFind = FindFirstFileA(InFolderPath.c_str(), &findData);
+
+	if (hFind == INVALID_HANDLE_VALUE)
+		return files;
+
+	do
+	{
+		if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			files.push_back(findData.cFileName);
+		
+	} while (FindNextFileA(hFind,&findData));
+	
+	FindClose(hFind);
+
+	return files;
+}
+
+void ImGuiManager::InitBackground()
+{
+	BackgroundObj = nullptr;
+
+	vector<string> backgrounds = GetFileNames("Image/*.bmp");
+
+	if (backgrounds.empty())
+		return;
+
+	BackgroundList = new const char* [backgrounds.size()];
+
+	for (int i = 0; i < backgrounds.size(); ++i)
+	{
+		int dotPos = backgrounds[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? backgrounds[i].substr(0, dotPos) : backgrounds[i];
+
+		const int size = nameOnly.size() + 1;
+		char* temp = new char[size];
+		strcpy_s(temp, size, nameOnly.c_str());
+
+		BackgroundList[i] = temp;
+ 		BackGroundMap.insert({ BackgroundList[i], backgrounds[i] });
+
+		wstring wsPath = L"Image/";
+		wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), false);
+	}
+}
+
+void ImGuiManager::HelpMarker(const char* desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::BeginItemTooltip())
+    {
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
+void ImGuiManager::CreateBackground(int Index)
+{
+	static int CurrentBackgroundIndex = Index;
+
+
+	if (BackgroundObj != nullptr)
+	{
+		if (CurrentBackgroundIndex == Index)
+			return;
+
+		BackgroundObj->SetDead(true);
+	}		
+
+	BackgroundObj = new Background();
+	static_cast<Background*>(BackgroundObj)->Init(BackgroundList[Index]);
+	ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+}
+
 void ImGuiManager::Release()
 {
 	ImGui_ImplDX11_Shutdown();
@@ -314,6 +425,10 @@ void ImGuiManager::Release()
 	ImGui::DestroyContext();
 
 	CleanupDeviceD3D();
+
+	for (int i = 0; i < BackGroundMap.size(); ++i)
+		delete[] BackgroundList[i];	
+	delete[] BackgroundList;
 
 	ReleaseInstance();
 }
