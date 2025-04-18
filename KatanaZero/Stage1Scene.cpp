@@ -259,6 +259,7 @@ void Stage1Scene::Update()
 	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
+	
 	ScrollManager->Update();
 
 	TestCode();

@@ -11,6 +11,7 @@ class LineManager;
 class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
+class Player;
 class Stage1Scene : public Scene
 {
 public:
