@@ -404,5 +404,8 @@
     <ClInclude Include="PlayerInput.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
