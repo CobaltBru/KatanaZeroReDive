@@ -35,7 +35,7 @@ public:
 	void DestroyLine();
 	void DestroyAllLine();
 
-	bool CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f, bool IsDown = false);
+	bool CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, float tolerance = 3.f, bool IsDown = false);
 	bool CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT InSize);
 	bool CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
 	bool CollisionDownLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);

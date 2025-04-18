@@ -20,7 +20,7 @@ public:
 	inline bool IsDead() { return bDead; }
 
 	Collider* GetCollider() const {return ObjectCollider;}
-
+	FPOINT GetLastPos()  const { return LastPos; }
 private:
 	void Move();
 	void Jump();
@@ -44,5 +44,9 @@ private:
 	bool bFalling;
 	bool bDown;
 	bool bDead{ false };
+
+
+	// 물리 필요한 데이터
+	FPOINT LastPos;
 };
 

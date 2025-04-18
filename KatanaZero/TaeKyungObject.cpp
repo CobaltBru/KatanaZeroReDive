@@ -37,6 +37,8 @@ HRESULT TaeKyungObject::Init(FPOINT InPos)
 
 void TaeKyungObject::Update()
 {
+	LastPos = Pos;
+
 	RigidBodyTest();
 	//Move();
 

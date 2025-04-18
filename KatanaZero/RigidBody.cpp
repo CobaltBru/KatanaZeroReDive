@@ -6,12 +6,12 @@
 #include "Collider.h"
 
 RigidBody::RigidBody()
-	: Owner(nullptr), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 100.f ,300.f }), bGravity(true), Gravity(9.8f),
-	bGround(false), AccelerationAlpha({0.f,0.f}), Acceleration({0.f,0.f})
+	: Owner(nullptr), Mass(0.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 0.f,0.f }), bGravity(false), Gravity(0.f),
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f })
 {
 }
 RigidBody::RigidBody(GameObject* InOwner)
-	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(100.f), MaxVelocity({ 100.f ,300.f}), bGravity(true), Gravity(9.8f),
+	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(100.f), MaxVelocity({ 100.f ,300.f }), bGravity(true), Gravity(9.8f),
 	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f })
 {
 }
@@ -35,9 +35,9 @@ void RigidBody::Update()
 		float Accel = ForceLength / Mass;
 
 		//가속도
-		Acceleration = Force * Accel;		
+		Acceleration = Force * Accel;
 	}
-	
+
 	Acceleration += AccelerationAlpha;
 
 	//속도
@@ -55,7 +55,7 @@ void RigidBody::Update()
 
 	if (MaxVelocity.x < abs(Velocity.x))
 	{
-		Velocity.x = (Velocity.x / abs(Velocity.x))* MaxVelocity.x;
+		Velocity.x = (Velocity.x / abs(Velocity.x)) * MaxVelocity.x;
 	}
 	if (MaxVelocity.y < abs(Velocity.y))
 	{
@@ -72,7 +72,7 @@ void RigidBody::Update()
 
 void RigidBody::GravityUpdate()
 {
-	if (!bGravity)
+	if (!bGravity || bGround)
 		return;
 
 	AccelerationAlpha = { 0.f,800.f };
@@ -109,7 +109,7 @@ void RigidBody::CollisionLine()
 		OwnerObj->SetPos(ObjPos);
 	}
 	// 땅
-	if (LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	if (LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
 	{
 		FPOINT ObjPos = OwnerObj->GetPos();
 		ObjPos.y = Result.OutPos.y;
@@ -119,7 +119,19 @@ void RigidBody::CollisionLine()
 		Velocity.y = 0.f;
 	}
 	else
-		bGround = false;
+	{
+		// 대각선 처리, 땅에 이미 있을 때
+		if (bGround && Velocity.y == 0.f &&
+			LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+		{
+			FPOINT ObjPos = OwnerObj->GetPos();
+			ObjPos.y = Result.OutPos.y;
+			OwnerObj->SetPos(ObjPos);
+		}
+		else
+			bGround = false;
+	}
+
 	//  천장
 	if (!bGround && LineManager::GetInstance()->CollisionCeilingLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
 	{
