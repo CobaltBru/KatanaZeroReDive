@@ -186,10 +186,10 @@ void Stage1Scene::Update()
 	fxManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
 	{
-		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, 0.0f, false);
-		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, 0.0f, false);
-		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, 0.0f, false);
-		fxManager->Activefx("hitslash", { 450.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("hitslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
 	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
@@ -198,6 +198,7 @@ void Stage1Scene::Update()
 	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
+	
 	ScrollManager->Update();
 
 	TestCode();
@@ -209,10 +210,6 @@ void Stage1Scene::Render(HDC hdc)
 	CollisionManager->Render(hdc);
 	fxManager->Render(hdc);
 	screenEffectManager->RenderDistortion(hdc);
-	if (snapShotManager->IsReplaying() && snapShotManager->GetReplayIndex() <= 30 && snapShotManager->GetReplayIndex() >= 0)
-	{
-		screenEffectManager->RenderNoise(hdc);
-	}
 	LineManager->Render(hdc);
 }
 

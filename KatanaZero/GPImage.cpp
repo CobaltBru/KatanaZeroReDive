@@ -341,6 +341,38 @@ void GPImage::Middle_RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int fram
 	graphics->SetTransform(&old);
 }
 
+void GPImage::SourRender(Gdiplus::Graphics* graphics, FPOINT pos, int offset, int frame, bool flip, float alpha, float R, float G, float B, float rb, float gb, float bb)
+{
+	ColorMatrix colorMatrix = {
+		R,    0.f,    0.f,    0.f,    0.f,
+		0.f,  G,      0.f,    0.f,    0.f,
+		0.f,  0.f,    B,      0.f,    0.f,
+		0.f,  0.f,    0.f,    alpha,  0.f,
+		rb,	  gb,     bb,     0,      1.0f  // 마지막 줄은 R, G, B 바이어스
+	};
+	ImageAttributes imgAttr;
+	imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+
+
+	int col = frame % maxFrameX;
+	int row = frame / maxFrameX;
+	float offsetHeight = frameHeight - offset;
+	float srcX = (float)(col * frameWidth);
+	float srcY = (float)(row * frameHeight + offset);
+	if (!flip)
+	{
+		Rect destRect(pos.x - frameWidth / 2, pos.y - frameHeight / 2 + offset, frameWidth, offsetHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, offsetHeight, UnitPixel, &imgAttr);
+	}
+	else
+	{
+		Rect destRect(pos.x + frameWidth / 2, pos.y - frameHeight / 2 + offset, -frameWidth, offsetHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, offsetHeight, UnitPixel, &imgAttr);
+	}
+}
+
 void GPImage::Release()
 {
 	if (pBitmap)
