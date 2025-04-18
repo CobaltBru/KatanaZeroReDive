@@ -19,6 +19,11 @@ private:
 	bool bFlip;
 	bool bActive;
 	float alpha;
+
+	//sour 테스트용
+	int offset = 0;
+	float offsetTimer = 0.0f;
+
 	void UpdateFrame();
 public:
 	virtual HRESULT Init() override;
