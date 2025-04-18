@@ -136,6 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
+    <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="ChatManager.cpp" />
@@ -149,6 +151,7 @@
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
@@ -183,6 +186,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="ChatManager.h" />
@@ -198,6 +203,7 @@
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="Lazer.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="LineManager.h" />
     <ClInclude Include="LoadingScene.h" />

@@ -100,6 +100,9 @@
     <Filter Include="MainGame\Enemy\HeadHunter">
       <UniqueIdentifier>{fe0577ca-7e7f-4548-9fdc-03206668c8de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy\Weapon">
+      <UniqueIdentifier>{62b80ae5-2819-4d50-bc64-e14e20f5190c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -236,6 +239,15 @@
     </ClCompile>
     <ClCompile Include="HeadHunter.cpp">
       <Filter>MainGame\Enemy\HeadHunter</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Lazer.cpp">
+      <Filter>MainGame\Enemy\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -385,6 +397,15 @@
     </ClInclude>
     <ClInclude Include="HeadHunter.h">
       <Filter>MainGame\Enemy\HeadHunter</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Lazer.h">
+      <Filter>MainGame\Enemy\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
