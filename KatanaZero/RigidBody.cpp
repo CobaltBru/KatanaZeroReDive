@@ -6,12 +6,13 @@
 #include "Collider.h"
 
 RigidBody::RigidBody()
-	: Owner(nullptr), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxSpeed(100.f), bGravity(true), Gravity(9.8f), bGround(false)
+	: Owner(nullptr), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 100.f ,300.f }), bGravity(true), Gravity(9.8f),
+	bGround(false), AccelerationAlpha({0.f,0.f}), Acceleration({0.f,0.f})
 {
 }
-
 RigidBody::RigidBody(GameObject* InOwner)
-	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({0.f,0.f}), FrictionCoefficient(80.f), MaxSpeed(100.f), bGravity(true), Gravity(9.8f), bGround(false)
+	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(100.f), MaxVelocity({ 100.f ,300.f}), bGravity(true), Gravity(9.8f),
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f })
 {
 }
 
@@ -21,6 +22,8 @@ RigidBody::~RigidBody()
 
 void RigidBody::Update()
 {
+	GravityUpdate();
+
 	// 힘크기
 	float ForceLength = GetLength(Force);
 	if (ForceLength != 0.f)
@@ -32,12 +35,14 @@ void RigidBody::Update()
 		float Accel = ForceLength / Mass;
 
 		//가속도
-		Acceleration = Force * Accel;
-
-		//속도
-		Velocity += Acceleration * TimerManager::GetInstance()->GetDeltaTime();
+		Acceleration = Force * Accel;		
 	}
 	
+	Acceleration += AccelerationAlpha;
+
+	//속도
+	Velocity += Acceleration * TimerManager::GetInstance()->GetDeltaTime();
+
 	//마찰
 	FPOINT tempVelocity = Velocity;
 	Normalize(tempVelocity);
@@ -48,16 +53,29 @@ void RigidBody::Update()
 	else
 		Velocity += friction;
 
-	if (MaxSpeed < GetLength(Velocity))
+	if (MaxVelocity.x < abs(Velocity.x))
 	{
-		Normalize(Velocity);
-		Velocity *= MaxSpeed;
+		Velocity.x = (Velocity.x / abs(Velocity.x))* MaxVelocity.x;
+	}
+	if (MaxVelocity.y < abs(Velocity.y))
+	{
+		Velocity.y = (Velocity.y / abs(Velocity.y)) * MaxVelocity.y;
 	}
 
 	Move();
 	CollisionLine();
 
 	Force = { 0.f,0.f };
+	Acceleration = { 0.f,0.f };
+	AccelerationAlpha = { 0.f,0.f };
+}
+
+void RigidBody::GravityUpdate()
+{
+	if (!bGravity)
+		return;
+
+	AccelerationAlpha = { 0.f,800.f };
 }
 
 void RigidBody::Move()
@@ -96,9 +114,14 @@ void RigidBody::CollisionLine()
 		FPOINT ObjPos = OwnerObj->GetPos();
 		ObjPos.y = Result.OutPos.y;
 		OwnerObj->SetPos(ObjPos);
+
+		bGround = true;
+		Velocity.y = 0.f;
 	}
+	else
+		bGround = false;
 	//  천장
-	else if (LineManager::GetInstance()->CollisionCeilingLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	if (!bGround && LineManager::GetInstance()->CollisionCeilingLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
 	{
 		FPOINT ObjPos = OwnerObj->GetPos();
 		ObjPos.y = Result.OutPos.y;

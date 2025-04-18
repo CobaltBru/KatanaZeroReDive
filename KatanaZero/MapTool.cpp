@@ -37,6 +37,12 @@ HRESULT MapTool::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
+	if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+
 	if (FAILED(InitImage()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
@@ -86,7 +92,7 @@ HRESULT MapTool::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	TaeKyungObject* taekyung = new TaeKyungObject();
-	taekyung->Init({ 500.f,550.f });
+	taekyung->Init({ 500.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 	return S_OK;

@@ -146,6 +146,7 @@ bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tole
 
 	const float HalfTolerance = tolerance * 0.5f;
 	const float ObjectBottom = InPos.y + HalfTolerance;
+	const float ObjectTop = InPos.y - HalfTolerance;
 
 	float NormalY = 0.f;
 	float DownY = 0.f;
@@ -171,7 +172,7 @@ bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tole
 
 				float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
 
-				if (ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance)
+				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance)
 				{
 					if (i == (int)ELineType::Normal)
 					{

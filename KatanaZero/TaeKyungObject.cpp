@@ -223,7 +223,9 @@ void TaeKyungObject::RigidBodyTest()
 		ObjectRigidBody->AddForce({ -200.f,0.f });
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 		ObjectRigidBody->AddForce({ 200.f,0.f });
-	
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+		ObjectRigidBody->AddVelocity({ 0.f,-200.f });
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
 		ObjectRigidBody->AddVelocity({ -100.f,0.f });
@@ -232,9 +234,6 @@ void TaeKyungObject::RigidBodyTest()
 
 	ObjectRigidBody->Update();
 }
-
-
-
 
 void TaeKyungObject::Release()
 {
