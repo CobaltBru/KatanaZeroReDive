@@ -12,6 +12,7 @@ public:
 	void Update();
 	void GravityUpdate();
 
+	FPOINT GetVelocity() const { return Velocity; }
 	float GetMass() const { return Mass; }
 	bool GetGround() const { return bGround; }
 
@@ -21,6 +22,7 @@ public:
 	void SetGround(bool InGround) { bGround = InGround; }
 	void SetGravityVisible(bool InGravity) { bGravity = InGravity; }
 	void SetAccelerationAlpha(FPOINT InAccelerationAlpha) { AccelerationAlpha = InAccelerationAlpha; }
+	void SetDown(bool InDown) { bDown = InDown; }
 
 	void AddForce(FPOINT InForce) {	Force += InForce;}
 	void AddVelocity(FPOINT InVelocity) { Velocity += InVelocity; }
@@ -49,6 +51,6 @@ private:
 	float Gravity;
 	bool bGravity;
 	bool bGround;
-
+	bool bDown;
 };
 

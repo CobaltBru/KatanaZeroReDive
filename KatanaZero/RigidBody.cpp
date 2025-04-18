@@ -7,12 +7,12 @@
 
 RigidBody::RigidBody()
 	: Owner(nullptr), Mass(0.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 0.f,0.f }), bGravity(false), Gravity(0.f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f })
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false)
 {
 }
 RigidBody::RigidBody(GameObject* InOwner)
-	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(100.f), MaxVelocity({ 100.f ,300.f }), bGravity(true), Gravity(9.8f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f })
+	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(50.f), MaxVelocity({ 200.f ,300.f }), bGravity(true), Gravity(9.8f),
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false)
 {
 }
 
@@ -111,7 +111,7 @@ void RigidBody::CollisionLine()
 
 
 	// ¶¥
-	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y, bDown))
 	{
 		FPOINT ObjPos = OwnerObj->GetPos();
 		ObjPos.y = Result.OutPos.y;
@@ -123,7 +123,7 @@ void RigidBody::CollisionLine()
 	else
 	{
 		// ¶¥¿¡ ÀÌ¹Ì ÀÖÀ» ¶§
-		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y, bDown))
 		{
 			FPOINT ObjPos = OwnerObj->GetPos();
 			ObjPos.y = Result.OutPos.y;
