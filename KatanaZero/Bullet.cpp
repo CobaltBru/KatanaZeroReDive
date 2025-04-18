@@ -21,6 +21,7 @@ void Bullet1::Release()
 {
     if (image)
     {
+        image->Release();
         delete image;
         image = nullptr;
     }

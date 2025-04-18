@@ -82,6 +82,7 @@ HRESULT HeadHunter::Init()
 void HeadHunter::Release()
 {
     lazer->Release();
+    bullet->Release();
 }
 
 void HeadHunter::Update()
