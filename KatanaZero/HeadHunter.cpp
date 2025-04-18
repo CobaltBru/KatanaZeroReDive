@@ -81,7 +81,19 @@ HRESULT HeadHunter::Init()
 
 void HeadHunter::Release()
 {
-    lazer->Release();
+    if (lazer)
+    {
+        lazer->Release();
+        delete lazer;
+        lazer = nullptr;
+    }
+
+    if (bullet)
+    {
+        bullet->Release();
+        delete bullet;
+        bullet = nullptr;
+    }
 }
 
 void HeadHunter::Update()
