@@ -10,6 +10,7 @@ class EffectManager : public Singleton<EffectManager>
 {
 private:
 	map<string, Effect*> mapFx;
+	vector<Effect*> activeFx;
 	vector<RemainEffect> remainFx;
 public:
 	void Init();
