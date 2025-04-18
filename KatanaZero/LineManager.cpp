@@ -173,8 +173,10 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 				float y2 = iter->GetLine().RightPoint.y;
 
 				float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
-
-				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance && LastObjectBottom <= dY)
+				
+				/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
+				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance 
+					&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y)))
 				{
 					if (i == (int)ELineType::Normal)
 					{
@@ -433,7 +435,7 @@ HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 	return S_OK;
 }
 
-void LineManager::CreateLine(float InX, float InY)
+void LineManager::CreateLine(int InX, int InY)
 {
 	// Ã¹ ÇÇÅ·
 	if (!LinePoint[LEFT].x && !LinePoint[LEFT].y)

@@ -43,7 +43,7 @@ public:
 	HRESULT SaveFile(LPCWSTR InSavePath);
 	HRESULT LoadFile(LPCWSTR InLoadPath);
 	
-	void CreateLine(float InX, float InY);
+	void CreateLine(int InX, int InY);
 	void AdjustLine(float InX, float InY);
 private:
 	list<Line*> LineList[(int)ELineType::End];
