@@ -4,6 +4,8 @@
 #include "SnapShot.h"
 #include "TimerManager.h"
 #include "ScrollManager.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 void Effect::UpdateFrame()
 {
@@ -28,22 +30,56 @@ void Effect::UpdateFrame()
 	}
 }
 
+void Effect::Move()
+{
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	pos.x += speed * dt * cosf(angle);
+	pos.y += speed * dt * sinf(angle);
+}
+
 HRESULT Effect::Init()
 {
 	return E_FAIL;
 }
 
-HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY)
+HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bMove)
 {
 	pos = { 0.0f, 0.0f };
+	start = { 0.0f, 0.0f };
+	end = { 0.0f, 0.0f };
 	currFrameX = 0;
 	currFrameY = 0;
 	maxFrameX = maxframeX;
 	maxFrameY = maxframeY;
+	speed = 0.0f;
 	angle = 0.0f;
 	frameTimer = 0.0f;
 	bActive = false;
 	bFlip = false;
+	this->bMove = bMove;
+	alpha = 1.0f;
+	fxImage = new GPImage();
+	fxImage->AddImage(AType, maxframeX, maxframeY);
+	if (!fxImage)
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bMove)
+{
+	this->start = start;
+	this->end = end;
+	pos = this->start;
+	currFrameX = 0;
+	currFrameY = 0;
+	maxFrameX = maxframeX;
+	maxFrameY = maxframeY;
+	this->speed = speed;
+	angle = atan2f(end.y - start.y, end.x - start.x) * 180 / M_PI; // degree(radian x)
+	frameTimer = 0.0f;
+	bActive = false;
+	bFlip = false;
+	this->bMove = bMove;
 	alpha = 1.0f;
 	fxImage = new GPImage();
 	fxImage->AddImage(AType, maxframeX, maxframeY);
@@ -66,6 +102,9 @@ void Effect::Update()
 	//프레임 증가
 	if (!bActive) return;
 	UpdateFrame();
+	//움직임
+	if (!bMove) return;
+	Move();
 }
 
 void Effect::Render(HDC hdc)
@@ -103,4 +142,18 @@ void Effect::Activefx(FPOINT pos, float angle, bool bFlip)
 	bActive = true;
 	currFrameX = 0;
 	currFrameY = 0;
+}
+
+void Effect::Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip)
+{
+	this->pos = pos;
+	this->end = dest;
+	this->angle = atan2f(dest.y - pos.y, dest.x - pos.x) * 180 / M_PI;
+	this->speed = speed;
+	this->bFlip = bFlip;
+	bMove = true;
+	bActive = true;
+	currFrameX = 0;
+	currFrameY = 0;
+
 }

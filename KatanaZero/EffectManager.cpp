@@ -73,6 +73,21 @@ void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, in
     mapFx.insert(make_pair(key, fx));
 }
 
+void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, int maxFrameY, FPOINT start, FPOINT end, float speed, bool bMove)
+{
+    Effect* fx = nullptr;
+    fx = Findfx(key);
+    if (fx) return;
+    fx = new Effect();
+    if (FAILED(fx->Init(filePath, maxFrameX, maxFrameY, start, end, speed, bMove)))
+    {
+        fx->Release();
+        delete fx;
+        return;
+    }
+    mapFx.insert(make_pair(key, fx));
+}
+
 void EffectManager::RegisterEffect()
 {
     map<string, Effect*>::iterator iter;
@@ -99,6 +114,13 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, bool bFlip)
     Effect* fx = Findfx(key);
     if (!fx) return;
     fx->Activefx(pos, angle, bFlip);
+}
+
+void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip)
+{
+    Effect* fx = Findfx(key);
+    if (!fx) return;
+    fx->Activefx(pos, dest, speed, bFlip);
 }
 
 void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip)
