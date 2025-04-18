@@ -2,6 +2,7 @@
 #include "SnapShot.h"
 #include "SnapShotManager.h"
 #include "GPImage.h"
+#include "Image.h"
 #include <algorithm>
 
 void EffectManager::Init()
@@ -107,7 +108,7 @@ void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bo
     rFx.pos = pos;
     rFx.frame = frame;
     rFx.bFlip = bFlip;
-    rFx.lifetime = 0.3f;
+    rFx.lifetime = 0.2f;
     rFx.alpha = 1.0f;
 
     remainFx.push_back(rFx);

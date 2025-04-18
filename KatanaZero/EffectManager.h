@@ -5,6 +5,7 @@
 #include "Effect.h"
 
 class GPImage;
+class Image;
 class EffectManager : public Singleton<EffectManager>
 {
 private:
@@ -20,5 +21,7 @@ public:
 	Effect* Findfx(string key);
 	void Activefx(string key, FPOINT pos, float angle, bool bFlip);
 	void CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip = false);
+	void ApplySourRender(HDC hdc, GPImage* image);
+	void ApplaySourRender(HDC hdc, Image* image);
 };
 

@@ -40,14 +40,8 @@ void ScreenEffectManager::RenderDistortion(HDC hdc)
 	}
 	else
 	{
-		Distortion(hdc, frequency, distortionSpeed, distortionForce);
+		Distortion(hdc, frequency, distortionSpeed * 0.8f, distortionForce);
 	}
-}
-
-void ScreenEffectManager::RenderNoise(HDC hdc)
-{
-	Gdiplus::Graphics graphics(hdc);
-	noise->Middle_Render(&graphics, { WINSIZE_X / 2, WINSIZE_Y / 2 }, false, 1.0f);
 }
 
 void ScreenEffectManager::StopDistortion()

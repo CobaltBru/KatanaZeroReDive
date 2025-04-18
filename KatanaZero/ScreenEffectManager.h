@@ -10,7 +10,6 @@ public:
 	void Release();
 	void StartDistortion();
 	void RenderDistortion(HDC hdc);
-	void RenderNoise(HDC hdc);
 	void StopDistortion();
 	void Distortion(HDC hdc, float frequency,float distortionSpeed, float distortionForce);
 	void ScrollDistortion(HDC hdc, float frequency, float distortionSpeed, float distortionForce);
@@ -21,8 +20,8 @@ private:
 	//마지막 스크롤 효과
 	float scrollTimer{ 0.0f };
 	float scrollOffset{ 0.0f };
-	float scrollSpeed{ 1000.0f };
-	float scrollacceleration{ 1.1f };
+	float scrollSpeed{ WINSIZE_Y * 4.0f };
+	float scrollacceleration{ 1.3f };
 	float scrollDuration{ 1.0f };
 
 	//왜곡 강도
