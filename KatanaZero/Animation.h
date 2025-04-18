@@ -7,20 +7,30 @@ class Animation
 {
 private:
 	Image* image;
-	std::vector<pair<int,float>> times;
+	FPOINT pos;
+	//idx, time
+	std::vector<pair<int,float>> tasks;
 	int frameX;
 
-	int timeIdx;
+	int taskIdx;
 	int idx;
+	bool flip;
 
 	float timer;
+	bool isStart;
 	bool isOn;
+
 public:
 	void Init(Image* image, int frameX);
 	void Update();
 	void Render(HDC hdc);
 
+	void Start();
+	void Stop();
 	void On();
 	void Off();
+
+	void setPos(FPOINT pos, bool flip);
+	void setTask(initializer_list<pair<int, float>>);
 };
 
