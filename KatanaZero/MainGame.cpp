@@ -49,7 +49,7 @@ HRESULT MainGame::Init()
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
-	testDraw.AddImage(L"Image/dragon_idle.png", 12, 1);
+	testDraw.AddImage(L"Image/dragon_idle1.png");
 	tmpTimer = 0;
 
 	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
@@ -136,6 +136,17 @@ void MainGame::Render()
 		1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f);
 	testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
 		1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f);*/
+	/*testDraw.RenderAll(pGraphics, { 100,100 });
+	testDraw.RenderAll(pGraphics, { 130,100 });
+	testDraw.RenderAll(pGraphics, { 160,100 });
+	testDraw.RenderAll(pGraphics, { 190,100 });
+	testDraw.RenderAll(pGraphics, { 220,100 });
+	testDraw.RenderAll(pGraphics, { 250,100 });
+	testDraw.RenderAll(pGraphics, { 280,100 });
+	testDraw.RenderAll(pGraphics, { 310,100 });
+	testDraw.RenderAll(pGraphics, { 340,100 });
+	testDraw.RenderAll(pGraphics, { 370,100 });*/
+
 	//È­¸é ¿Ö°î
 	/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
 	RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/

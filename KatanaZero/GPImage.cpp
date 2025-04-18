@@ -285,14 +285,14 @@ void GPImage::RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame, floa
 		(pos.x + (flip ? destW : 0)),
 		pos.y,
 		(flip ? -destW : destW),
-		destH/2
+		destH
 	);
 
 	graphics->DrawImage(
 		pBitmap,
 		destRect,
 		srcX, srcY,
-		frameWidth, frameHeight/2,
+		frameWidth, frameHeight,
 		UnitPixel,
 		&imgAttr
 	);

@@ -144,7 +144,8 @@ HRESULT Stage1Scene::InitObject()
 		chatManager->LoadChat("ChatDatas/test2.json");
 
 		chatManager->startChat("Q3YMPZfZRO");
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);*/
+		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		*/
 		
 	}
 	return S_OK;
