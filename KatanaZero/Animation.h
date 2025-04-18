@@ -31,6 +31,7 @@ public:
 	void Off();
 
 	void setPos(FPOINT pos, bool flip);
-	void setTask(initializer_list<pair<int, float>>);
+	inline void setFrame(int idx) { this->idx = idx; }
+	void setTask(initializer_list<pair<int, float>> lst);
 };
 

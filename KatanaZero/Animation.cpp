@@ -71,3 +71,11 @@ void Animation::setPos(FPOINT pos, bool flip)
 	this->pos = pos;
 	this->flip = flip;
 }
+
+void Animation::setTask(initializer_list<pair<int, float>> lst)
+{
+	for (auto task : lst)
+	{
+		tasks.push_back(task);
+	}
+}
