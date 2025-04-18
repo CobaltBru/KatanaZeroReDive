@@ -737,12 +737,13 @@ void ChatManager::Update()
                 startChat(nextChat);
             }
         }
+        RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
     }
     else
     {
         currentKey = "";
     }
-    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
+    
 }
 
 void ChatManager::Render(HDC hdc)
