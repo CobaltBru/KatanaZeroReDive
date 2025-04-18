@@ -16,8 +16,8 @@ HRESULT Lazer::Init()
 
     angle = 0;
     isActive = false;
-    image = new GPImage();
-    image->AddImage(L"Image/lazel_2.png", 4, 1);
+    image = new GPImage(); 
+    image->AddImage(L"Image/HeadHunter/lazer_frame.png", 4, 1);
 
     return S_OK;
 }
@@ -26,8 +26,10 @@ void Lazer::Release()
 {
     if (image)
     {
+        image->Release();
         delete image;
         image = nullptr;
+       
     }
 }
 
