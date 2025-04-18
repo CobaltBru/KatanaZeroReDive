@@ -22,7 +22,7 @@ void GameObject::MakeSnapShot(void* out)
 }
 
 GameObject::GameObject()
-	:Pos({})
+	:Pos({}), bDead(false)
 {
 }
 

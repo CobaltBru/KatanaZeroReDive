@@ -19,6 +19,11 @@
 
 #include "LineManager.h"
 
+#include "Effect.h"
+#include "EffectManager.h"
+
+#include "Player.h"
+
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
@@ -47,11 +52,14 @@ HRESULT Stage1Scene::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
-	if (FAILED(LineManager->LoadFile()))
+
+	fxManager = EffectManager::GetInstance();
+	fxManager->Init();
+	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 
 
 	if (FAILED(InitImage()))
@@ -65,13 +73,16 @@ HRESULT Stage1Scene::Init()
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	player = new Player();
-	player->Init();
-	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-	/*if (FAILED(InitObject()))
+
+	if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+	if (FAILED(InitEffects()))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -99,6 +110,10 @@ HRESULT Stage1Scene::InitObject()
 		Background* background = new Background();
 		background->Init("TestBg");
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
+
+		Player* player = new Player();
+		player->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
 		TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });

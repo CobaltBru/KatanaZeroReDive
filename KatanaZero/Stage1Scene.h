@@ -39,5 +39,8 @@ private:
 	float elapsedTime;
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
+	ScreenEffectManager* screenEffectManager;
+	EffectManager* fxManager;
+	ChatManager* chatManager;
 };
 

@@ -166,7 +166,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_tables.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
-     <ClCompile Include="PlayerInput.cpp" />
+    <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -209,6 +209,16 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imgui_internal.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imstb_textedit.h" />
+    <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h" />
+    <ClInclude Include="PlayerInput.h" />
+    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
