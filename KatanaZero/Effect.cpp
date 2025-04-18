@@ -114,8 +114,9 @@ void Effect::Render(HDC hdc)
 	{
 		Gdiplus::Graphics graphics(hdc);
 		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
-		fxImage->SourRender(&graphics, { pos.x + scroll.x, pos.y + 100.0f + scroll.y }, offset, 0, bFlip, alpha, 0.01f, 0.01f, 0.01f, 1.5f, 1.5f, 0.5f);
+		
 		fxImage->Middle_RenderFrameAngle(&graphics, { pos.x + scroll.x, pos.y + scroll.y }, currFrameX, angle, bFlip, alpha);
+		fxImage->SourRender(&graphics, { pos.x + scroll.x, pos.y + 100.0f + scroll.y }, offset, 0, bFlip, alpha, 0.01f, 0.01f, 0.01f, 1.5f, 1.5f, 0.5f);
 	}
 }
 
@@ -160,7 +161,7 @@ void Effect::Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip)
 
 Effect::Effect(const Effect& other)
 {
-	this->fxImage = other.fxImage;   // 공유로 유지 (GPImage가 공유 이미지라면)
+	this->fxImage = other.fxImage;   // 이것도 포인터라 얕복이야
 	this->start = other.start;
 	this->end = other.end;
 	this->pos = other.pos;

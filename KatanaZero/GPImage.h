@@ -57,5 +57,6 @@ public:
 	
 	void Release();
 	static void ReleaseLast();
+
 };
 

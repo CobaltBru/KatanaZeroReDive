@@ -45,7 +45,12 @@ void EffectManager::Update()
         riter.lifetime -= dt;
         riter.alpha = riter.lifetime / 0.5f;
     }
-    remainFx.erase(remove_if(remainFx.begin(), remainFx.end(), [](RemainEffect& e) { return e.lifetime <= 0; }), remainFx.end());
+    remainFx.erase(remove_if(remainFx.begin(), remainFx.end(), [](RemainEffect& e) { 
+        if (e.lifetime <= 0) { 
+            return true; 
+        }
+        return false; 
+    }), remainFx.end());
 }
 
 void EffectManager::Render(HDC hdc)
@@ -118,7 +123,7 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, bool bFlip)
 {
     Effect* fx = Findfx(key);
     if (!fx) return;
-    Effect* newfx = new Effect(*fx);
+    Effect* newfx = new Effect(*fx); // ¾èº¹ -> ´ó±Û¸µ »µÅ· Æ÷ÀÎÅÍ ¹ß»ý
     newfx->Activefx(pos, angle, bFlip);
     activeFx.push_back(newfx);
     //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);
