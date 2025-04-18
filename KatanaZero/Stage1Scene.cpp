@@ -138,74 +138,13 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// 테스트 코드 지운
 	{
-		chatManager = new ChatManager();
+		/*chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
-		vector <pair<float, Token >> tokens;
-		vector <pair<string, Token >> redSelects;
-		vector <pair<string, Token >> selects;
+		chatManager->pushPos({ 400,100 });
+		chatManager->LoadChat("ChatDatas/test2.json");
 
-		tokens.push_back(make_pair(0.f, Token(L"오늘은", { 0.f,0.f },
-			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
-		tokens.push_back(make_pair(0.7f, Token(L"점심으로", { 55,0.f },
-			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
-		tokens.push_back(make_pair(0.7f, Token(L"뭐먹어요", { 122.f,0.f },
-			Token::APPEAR::DOOM, Token::OPTION::SHAKE, Token::COLORS::RED)));
-		
-		/*Chat* chat1 = new Chat();
-		chat1->Init("test", tokens, 400.f, 50.f);
-		chat1->setPos({ 700, 100 });
-		ObjectManager->AddGameObject(EObjectType::GameObject, chat1);*/
-		
-		redSelects.push_back(make_pair("red1", Token(L"* 구내식당 * ", {0.f,0.f},
-			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::RED)));
-		selects.push_back(make_pair("normal1", Token(L"육회바른연어", { 0,0.f },
-			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		selects.push_back(make_pair("normal2", Token(L"김밥천국", { 0,0.f },
-			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		selects.push_back(make_pair("normal3", Token(L"서브웨이", { 0,0.f },
-			Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE)));
-
-		OptionChat* oc = new OptionChat();
-		oc->Init(tokens, 400.f, 50.f, 3.f, 10.f, redSelects, selects);
-		chatManager->Push("Launch", "SELECT",0, oc);
-		tokens.clear();
-		redSelects.clear();
-		selects.clear();
-
-		tokens.push_back(make_pair(0.f, Token(L"얼른 가죠", { 0.f,0.f },
-			Token::APPEAR::DOOM, Token::OPTION::WAVE, Token::COLORS::RED)));
-		Chat* ch = new Chat();
-		ch->Init(tokens, 100, 25);
-		chatManager->Push("red1", "END", 0, ch);
-		tokens.clear();
-
-		tokens.push_back(make_pair(0.f, Token(L"점심특선이 ", { 0.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::GREEN)));
-		tokens.push_back(make_pair(0.f, Token(L"가성비가 좋아요 ", { 80.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		Chat* ch1 = new Chat();
-		ch1->Init(tokens, 200, 25);
-		chatManager->Push("normal1", "END", 0, ch1);
-		tokens.clear();
-
-		tokens.push_back(make_pair(0.f, Token(L"버거킹은", { 0.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::WAVE, Token::COLORS::YELLOW)));
-		tokens.push_back(make_pair(0.f, Token(L"어떠신가요", { 70.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::STOP, Token::COLORS::WHITE)));
-		Chat* ch2 = new Chat();
-		ch2->Init(tokens, 160, 25);
-		chatManager->Push("normal2", "END", 0, ch2);
-		tokens.clear();
-
-		tokens.push_back(make_pair(0.f, Token(L"흠..", { 0.f,0.f },
-			Token::APPEAR::NORMAL, Token::OPTION::SHAKE, Token::COLORS::RED)));
-		Chat* ch3 = new Chat();
-		ch3->Init(tokens, 100, 25);
-		chatManager->Push("normal3", "END", 0, ch3);
-		tokens.clear();
-
-		chatManager->startChat("Launch");
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		chatManager->startChat("Q3YMPZfZRO");
+		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);*/
 		
 	}
 	return S_OK;
@@ -247,10 +186,10 @@ void Stage1Scene::Update()
 	fxManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
 	{
-		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, 0.0f, false);
-		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, 0.0f, false);
-		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, 0.0f, false);
-		fxManager->Activefx("hitslash", { 450.0f, 200.0f }, 0.0f, false);
+		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("hitslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
 	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
@@ -259,6 +198,7 @@ void Stage1Scene::Update()
 	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
+	
 	ScrollManager->Update();
 
 	TestCode();
@@ -270,10 +210,6 @@ void Stage1Scene::Render(HDC hdc)
 	CollisionManager->Render(hdc);
 	fxManager->Render(hdc);
 	screenEffectManager->RenderDistortion(hdc);
-	if (snapShotManager->IsReplaying() && snapShotManager->GetReplayIndex() <= 30 && snapShotManager->GetReplayIndex() >= 0)
-	{
-		screenEffectManager->RenderNoise(hdc);
-	}
 	LineManager->Render(hdc);
 }
 

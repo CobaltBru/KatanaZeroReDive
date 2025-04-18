@@ -35,6 +35,21 @@ public:
 	void RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, float angle = 0.f, bool flip = false, float alpha = 1.0f);
 	void Middle_RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, float angle = 0.f, bool flip = false, float alpha = 1.0f);
 
+	//플립 + 알파 + 애니메이션 + 회전 + RGB + 확대축소
+	void RenderAll(
+		Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, 
+		float angle = 0.f, bool flip = false, 
+		float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, 
+		float scaleX = 1.0f, float scaleY = 1.0f);
+	void Middle_RenderAll(
+		Gdiplus::Graphics* graphics, FPOINT pos, int frame = 0, 
+		float angle = 0.f, bool flip = false, 
+		float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, 
+		float scaleX = 1.0f, float scaleY = 1.0f);
+
+	//Sour렌더 추가
+	void SourRender(Gdiplus::Graphics* graphics, FPOINT pos, int offset, int frame = 0, bool flip = false, 
+		float alpha = 1.0f, float R = 1.0f, float G = 1.0f, float B = 1.0f, float rb = 0.0f, float gb = 0.0f, float bb = 0.0f);
 
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }

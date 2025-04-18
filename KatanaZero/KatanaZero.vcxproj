@@ -192,6 +192,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
