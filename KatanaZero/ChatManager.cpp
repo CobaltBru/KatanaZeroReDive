@@ -3,21 +3,24 @@
 #include "GPImage.h"
 #include "ScrollManager.h"
 #include "CommonFunction.h"
+#include <fstream>
+using json = nlohmann::json;
 using namespace Gdiplus;
 
 
-Token::Token(const wchar_t* text, FPOINT pos, APPEAR appear, OPTION option, COLORS color)
+Token::Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS color)
 {
     globalPos = { 0.f,0.f };
 	this->pos = pos;
     
-	this->text = text;
+	//this->wtext = wtext;
+    this->wtext.assign(wtext);
     this->appear = appear;
 	this->option = option;
 	this->color = color;
 	timer = 0;
     explodeTimer = 0;
-    len = lstrlenW(text);
+    len = wtext.size();
     currentAppear = -1;
     if (appear == APPEAR::END)
         currentAppear = len - 1;
@@ -68,7 +71,7 @@ void Token::Render(HDC hdc)
     switch (option)
     {
     case OPTION::STOP:
-        TextOut(hdc, pos.x + globalPos.x, pos.y + globalPos.y, text, len);
+        TextOut(hdc, pos.x + globalPos.x, pos.y + globalPos.y, wtext.c_str(), len);
         break;
     case OPTION::SHAKE:
         ShakeEffect(hdc);
@@ -106,7 +109,7 @@ void Token::NormalAppear(HDC hdc)
                 float percent = elapsed / upTime;
                 y = pos.y + globalPos.y + (int)(pixel * (1.0 - percent));
             }
-            wchar_t letter[2] = { text[i], L'\0' };
+            wchar_t letter[2] = { wtext.c_str()[i], L'\0' };
             TextOut(hdc, x, y, letter, 1);
 
             SIZE size;
@@ -134,7 +137,7 @@ void Token::DoomAppear(HDC hdc)
         if (timer >= upTime)
         {
             currentAppear = max(currentAppear, i);
-            wchar_t letter[2] = { text[i], L'\0' };
+            wchar_t letter[2] = { wtext.c_str()[i], L'\0' };
             TextOut(hdc, x, pos.y + globalPos.y, letter, 1);
             if (i == len - 1)
             {
@@ -142,7 +145,7 @@ void Token::DoomAppear(HDC hdc)
                 appear = APPEAR::END;
             }
             SIZE size;
-            GetTextExtentPoint32W(hdc, &text[i], 1, &size);
+            GetTextExtentPoint32W(hdc, &wtext.c_str()[i], 1, &size);
             x += size.cx;
         }
 
@@ -173,7 +176,7 @@ void Token::ExplodeAppear(HDC hdc)
 
         float offsetX = speedX * explodeTimer;
         float offsetY = speedY * explodeTimer + 0.5f * gravity * explodeTimer * explodeTimer;
-        wchar_t letter[2] = { text[i], L'\0' };
+        wchar_t letter[2] = { wtext.c_str()[i], L'\0' };
         TextOut(hdc, x + offsetX, y + offsetY, letter, 1);
 
         SIZE size;
@@ -195,7 +198,7 @@ void Token::WaveEffect(HDC hdc)
     {
         float offsetY = amplitude * sin(timer * speed + i * delay);
 
-        wchar_t letter[2] = { text[i], L'\0' };
+        wchar_t letter[2] = { wtext.c_str()[i], L'\0' };
 
         TextOut(hdc, x, pos.y + globalPos.y + offsetY, letter, 1);
 
@@ -216,7 +219,7 @@ void Token::ShakeEffect(HDC hdc)
         float offsetX = ((rand() % (2 * range + 1)) - range)/10.0f;
         float offsetY = ((rand() % (2 * range + 1)) - range)/10.0f;
 
-        wchar_t letter[2] = { text[i], L'\0' };
+        wchar_t letter[2] = { wtext.c_str()[i], L'\0' };
         TextOut(hdc, x + offsetX, pos.y + globalPos.y + offsetY, letter, 1);
 
         SIZE size;
@@ -666,6 +669,7 @@ void ChatManager::startChat(string key)
 {
     if (key == "END")
     {
+        currentKey = "";
         currentChat = nullptr;
         nextChat = "END";
         return;
@@ -673,11 +677,13 @@ void ChatManager::startChat(string key)
     auto iter = chatMap.find(key);
     if (iter != chatMap.end())
     {
+        currentKey = key;
         currentChat = (*iter).second.first;
         nextChat = (*iter).second.second;
     }
     else
     {
+        currentKey = "";
         currentChat = nullptr;
         nextChat = "END";
     }
@@ -731,8 +737,13 @@ void ChatManager::Update()
                 startChat(nextChat);
             }
         }
+        RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
     }
-    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
+    else
+    {
+        currentKey = "";
+    }
+    
 }
 
 void ChatManager::Render(HDC hdc)
@@ -751,4 +762,83 @@ void ChatManager::Release()
         mp.second.first = nullptr;
     }
     chatMap.clear();
+}
+
+void ChatManager::LoadChat(const std::string& path)
+{
+    std::ifstream ifs(path);
+    if (!ifs.is_open()) return;
+    json arr;
+    ifs >> arr;
+
+    for (auto& entry : arr) {
+        int posIndex = entry["posIndex"].get<int>();
+
+        // 2) 키/넥스트
+        std::string key = entry["key"].get<std::string>();
+        std::string next = entry["next"].get<std::string>();
+
+        // 3) chat 박스 크기
+        auto& cj = entry["chat"];
+        float boxW = cj["boxWidth"].get<float>();
+        float boxH = cj["boxHeight"].get<float>();
+
+        // 4) tokens 파싱
+        std::vector<std::pair<float, Token>> tokens;
+        float timecalc = 0.f;
+        for (auto& tj : cj["tokens"]) {
+            float delay = tj["delay"].get<float>();
+            std::string txt = tj["text"].get<std::string>();
+            
+            float x = tj["x"].get<float>();
+            float y = tj["y"].get<float>();
+            int appear_i = tj["appear"].get<int>();
+            int option_i = tj["option"].get<int>();
+            int color_i = tj["colors"].get<int>();
+
+            // UTF-8 -> wide
+            std::wstring wtxt = Utf8ToWstring(txt);
+            timecalc += wtxt.size() * 0.08f;
+            timecalc += delay;
+            Token t(
+                wtxt,
+                { x, y },
+                static_cast<Token::APPEAR>(appear_i),
+                static_cast<Token::OPTION>(option_i),
+                static_cast<Token::COLORS>(color_i)
+            );
+            tokens.emplace_back(delay, std::move(t));
+        }
+
+        // 5) 선택지 파싱 (norm / red)
+        std::vector<std::pair<std::string, Token>> norm, red;
+        for (auto& s : entry["norm"]) {
+            std::string selNext = s["next"].get<std::string>();
+            std::wstring wtxt = Utf8ToWstring(s["text"].get<std::string>());
+            Token t(wtxt, { 0,0 }, Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE);
+            norm.emplace_back(selNext, std::move(t));
+        }
+        for (auto& s : entry["red"]) {
+            std::string selNext = s["next"].get<std::string>();
+            std::wstring wtxt = Utf8ToWstring(s["text"].get<std::string>());
+            Token t(wtxt, { 0,0 }, Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::RED);
+            red.emplace_back(selNext, std::move(t));
+        }
+
+        timecalc += 0.7f;
+        float redTime = entry.value("redTime", max(1.5f, timecalc));
+        float totalTime = entry.value("totalTime", max(10.f, timecalc * 2.f));
+
+        // 7) Chat vs OptionChat 분기
+        if (norm.empty() && red.empty()) {
+            Chat* ch = new Chat();
+            ch->Init(tokens, boxW+10.f, boxH+10.f);
+            Push(key, next, posIndex, ch);
+        }
+        else {
+            OptionChat* oc = new OptionChat();
+            oc->Init(tokens, boxW+10.f, boxH+10.f, redTime, totalTime, red, norm);
+            Push(key, next, posIndex, oc);
+        }
+    }
 }

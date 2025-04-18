@@ -198,6 +198,8 @@ void GPImage::RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int fram
 	int row = frame / maxFrameX;
 	float srcX = (float)(col * frameWidth);
 	float srcY = (float)(row * frameHeight);
+	Gdiplus::Matrix old;
+	graphics->GetTransform(&old);
 	Gdiplus::Matrix matrix;
 	matrix.RotateAt(angle, Gdiplus::PointF(pos.x + frameWidth / 2, pos.y + frameHeight / 2));
 	graphics->SetTransform(&matrix);
@@ -213,6 +215,7 @@ void GPImage::RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int fram
 		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
 			frameWidth, frameHeight, UnitPixel, &imgAttr);
 	}
+	graphics->SetTransform(&old);
 }
 
 void GPImage::Middle_RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame, float angle, bool flip, float alpha)
@@ -232,7 +235,8 @@ void GPImage::Middle_RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, i
 	int row = frame / maxFrameX;
 	float srcX = (float)(col * frameWidth);
 	float srcY = (float)(row * frameHeight);
-
+	Gdiplus::Matrix old;
+	graphics->GetTransform(&old);
 	Gdiplus::Matrix matrix;
 	matrix.RotateAt(angle, Gdiplus::PointF(pos.x, pos.y));
 	graphics->SetTransform(&matrix);
@@ -248,6 +252,7 @@ void GPImage::Middle_RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, i
 		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
 			frameWidth, frameHeight, UnitPixel, &imgAttr);
 	}
+	graphics->SetTransform(&old);
 }
 
 void GPImage::RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame, float angle, bool flip,
@@ -270,7 +275,8 @@ void GPImage::RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame, floa
 	float srcY = (float)(row * frameHeight);
 	float destW = frameWidth * scaleX;
 	float destH = frameHeight * scaleY;
-
+	Gdiplus::Matrix old;
+	graphics->GetTransform(&old);
 	Gdiplus::Matrix matrix;
 	matrix.RotateAt(angle, Gdiplus::PointF(pos.x + destW *0.5f, pos.y + destH * 0.5f));
 	graphics->SetTransform(&matrix);
@@ -279,17 +285,18 @@ void GPImage::RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame, floa
 		(pos.x + (flip ? destW : 0)),
 		pos.y,
 		(flip ? -destW : destW),
-		destH
+		destH/2
 	);
 
 	graphics->DrawImage(
 		pBitmap,
 		destRect,
 		srcX, srcY,
-		frameWidth, frameHeight,
+		frameWidth, frameHeight/2,
 		UnitPixel,
 		&imgAttr
 	);
+	graphics->SetTransform(&old);
 }
 
 void GPImage::Middle_RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int frame, float angle, bool flip, 
@@ -312,7 +319,8 @@ void GPImage::Middle_RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int fram
 	float srcY = (float)(row * frameHeight);
 	float destW = frameWidth * scaleX;
 	float destH = frameHeight * scaleY;
-
+	Gdiplus::Matrix old;
+	graphics->GetTransform(&old);
 	Gdiplus::Matrix matrix;
 	matrix.RotateAt(angle, Gdiplus::PointF(pos.x, pos.y));
 	graphics->SetTransform(&matrix);
@@ -330,7 +338,39 @@ void GPImage::Middle_RenderAll(Gdiplus::Graphics* graphics, FPOINT pos, int fram
 		frameWidth, frameHeight,
 		Gdiplus::UnitPixel,
 		&imgAttr);
+	graphics->SetTransform(&old);
+}
 
+void GPImage::SourRender(Gdiplus::Graphics* graphics, FPOINT pos, int offset, int frame, bool flip, float alpha, float R, float G, float B, float rb, float gb, float bb)
+{
+	ColorMatrix colorMatrix = {
+		R,    0.f,    0.f,    0.f,    0.f,
+		0.f,  G,      0.f,    0.f,    0.f,
+		0.f,  0.f,    B,      0.f,    0.f,
+		0.f,  0.f,    0.f,    alpha,  0.f,
+		rb,	  gb,     bb,     0,      1.0f  // 마지막 줄은 R, G, B 바이어스
+	};
+	ImageAttributes imgAttr;
+	imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+
+
+	int col = frame % maxFrameX;
+	int row = frame / maxFrameX;
+	float offsetHeight = frameHeight - offset;
+	float srcX = (float)(col * frameWidth);
+	float srcY = (float)(row * frameHeight + offset);
+	if (!flip)
+	{
+		Rect destRect(pos.x - frameWidth / 2, pos.y - frameHeight / 2 + offset, frameWidth, offsetHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, offsetHeight, UnitPixel, &imgAttr);
+	}
+	else
+	{
+		Rect destRect(pos.x + frameWidth / 2, pos.y - frameHeight / 2 + offset, -frameWidth, offsetHeight);
+		graphics->DrawImage(pBitmap, destRect, srcX, srcY,
+			frameWidth, offsetHeight, UnitPixel, &imgAttr);
+	}
 }
 
 void GPImage::Release()
