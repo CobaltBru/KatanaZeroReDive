@@ -135,7 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Background.cpp" />
+    <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -150,6 +153,7 @@
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
@@ -182,9 +186,13 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
+    <ClCompile Include="UIGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Background.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
@@ -202,6 +210,7 @@
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="Lazer.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="LineManager.h" />
     <ClInclude Include="LoadingScene.h" />
@@ -237,6 +246,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
+    <ClInclude Include="UIGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

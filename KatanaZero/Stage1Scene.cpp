@@ -13,6 +13,7 @@
 #include "SoundManager.h"
 
 #include "ChatManager.h"
+#include "UIGame.h"
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
 #include "HeadHunter.h"
@@ -144,7 +145,11 @@ HRESULT Stage1Scene::InitObject()
 		chatManager->LoadChat("ChatDatas/test2.json");
 
 		chatManager->startChat("Q3YMPZfZRO");
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);*/
+		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		*/
+		UIGame* ui = new UIGame();
+		ui->init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 		
 	}
 	return S_OK;
