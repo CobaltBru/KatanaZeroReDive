@@ -246,6 +246,12 @@
     <ClCompile Include="PlayerInput.cpp">
       <Filter>MainGame\Player</Filter>
     </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -406,6 +412,12 @@
     </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGame.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
