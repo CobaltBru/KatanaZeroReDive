@@ -109,6 +109,12 @@
     <Filter Include="2D Framework\Physics">
       <UniqueIdentifier>{a0d7a5c1-f88b-4dd7-8b76-6bf501ba20ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy\EnemyState">
+      <UniqueIdentifier>{4b104575-95f5-4064-a259-f53881f94b3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Grunt">
+      <UniqueIdentifier>{debbe255-3626-40ac-9dbb-63151611002d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -272,6 +278,15 @@
     </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>MainGame\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>MainGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Grunt.cpp">
+      <Filter>MainGame\Enemy\Grunt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -454,6 +469,15 @@
     </ClInclude>
     <ClInclude Include="SimpleObject.h">
       <Filter>MainGame\TaeKyung</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>MainGame\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>MainGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Grunt.h">
+      <Filter>MainGame\Enemy\Grunt</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

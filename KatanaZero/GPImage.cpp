@@ -181,6 +181,79 @@ void GPImage::Middle_RenderFrame(Gdiplus::Graphics* graphics, FPOINT pos, int fr
 	
 }
 
+void GPImage::RenderFrameScale(Gdiplus::Graphics* graphics, FPOINT pos, int frame, bool flip, float alpha, float scaleX, float scaleY)
+{
+	ColorMatrix colorMatrix = {
+		1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, alpha, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
+	ImageAttributes imgAttr;
+	imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+
+
+	int col = frame % maxFrameX;
+	int row = frame / maxFrameX;
+	float srcX = (float)(col * frameWidth);
+	float srcY = (float)(row * frameHeight);
+	float destW = frameWidth * scaleX;
+	float destH = frameHeight * scaleY;
+	
+
+	Gdiplus::Rect destRect(
+		(pos.x + (flip ? destW : 0)),
+		pos.y,
+		(flip ? -destW : destW),
+		destH
+	);
+
+	graphics->DrawImage(
+		pBitmap,
+		destRect,
+		srcX, srcY,
+		frameWidth, frameHeight,
+		UnitPixel,
+		&imgAttr
+	);
+}
+
+void GPImage::Middle_RenderFrameScale(Gdiplus::Graphics* graphics, FPOINT pos, int frame, bool flip, float alpha, float scaleX, float scaleY)
+{
+	ColorMatrix colorMatrix = {
+		1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, alpha, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
+	ImageAttributes imgAttr;
+	imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+
+
+	int col = frame % maxFrameX;
+	int row = frame / maxFrameX;
+	float srcX = (float)(col * frameWidth);
+	float srcY = (float)(row * frameHeight);
+	float destW = frameWidth * scaleX;
+	float destH = frameHeight * scaleY;
+	
+	Gdiplus::Rect dest(
+		(INT)(pos.x - destW * 0.5f + (flip ? destW : 0)),
+		(INT)(pos.y - destH * 0.5f),
+		(INT)(flip ? -destW : destW),
+		(INT)destH);
+
+	graphics->DrawImage(
+		pBitmap,
+		dest,
+		srcX, srcY,
+		frameWidth, frameHeight,
+		Gdiplus::UnitPixel,
+		&imgAttr);
+}
+
 void GPImage::RenderFrameAngle(Gdiplus::Graphics* graphics, FPOINT pos, int frame, float angle, bool flip, float alpha)
 {
 	ColorMatrix colorMatrix = {

@@ -126,7 +126,7 @@ void MainGame::Render()
 	TimerManager::GetInstance()->Render(hBackBufferDC);
 	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
 	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
-	//testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
+	testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
 	/*testDraw.Render(pGraphics, {140,100}, 0.5f);
 	testDraw.Render(pGraphics, { 160,100 }, 0.7f);
 	testDraw.Render(pGraphics, { 180,100 }, 0.9f);

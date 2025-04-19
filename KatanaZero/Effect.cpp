@@ -116,6 +116,7 @@ void Effect::Render(HDC hdc)
 		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
 		
 		fxImage->Middle_RenderFrameAngle(&graphics, { pos.x + scroll.x, pos.y + scroll.y }, currFrameX, angle, bFlip, alpha);
+
 		fxImage->SourRender(&graphics, { pos.x + scroll.x, pos.y + 100.0f + scroll.y }, offset, 0, bFlip, alpha, 0.01f, 0.01f, 0.01f, 1.5f, 1.5f, 0.5f);
 	}
 }
