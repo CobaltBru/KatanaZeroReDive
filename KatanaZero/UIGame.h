@@ -12,12 +12,24 @@ private:
 	Animation battery;
 	Animation batteryCellBlue[BCELLCNT];
 	Animation batteryCellRed[BCELLCNT];
-	Animation Timer;
+	Animation shiftButton;
+	Animation timerUI;
+	Animation timerBarUI;
+	Animation itemSlot;
 	Image* hud;
+	Image* mouseLeft;
+	Image* mouseRight;
+	Image* item1;
+	Image* item2;
+	vector<string> itemKey;
 
 	FPOINT batteryPos;
-	FPOINT batterCellPos[BCELLCNT];
-	FPOINT TimerPos;
+	FPOINT batteryCellPos[BCELLCNT];
+	FPOINT timerPos;
+	FPOINT timerBarPos;
+	FPOINT slotPos;
+	FPOINT item1Pos;
+	FPOINT item2Pos;
 
 public:
 	void init();
