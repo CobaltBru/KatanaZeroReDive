@@ -111,7 +111,7 @@ void RigidBody::CollisionLine()
 
 
 	// 땅
-	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y, bDown))
+	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, bGround, OwnerObj->GetCollider()->GetSize().y, bDown))
 	{
 		FPOINT ObjPos = OwnerObj->GetPos();
 		ObjPos.y = Result.OutPos.y;
@@ -122,8 +122,8 @@ void RigidBody::CollisionLine()
 	}
 	else
 	{
-		// 땅에 이미 있을 때
-		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, OwnerObj->GetCollider()->GetSize().y, bDown))
+		// 땅에 이미 있을 때				// 대각선 처리를 어떻게 할까 일단 땅인걸 인자로 받아야하는지 부터 생각해보자.
+		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, bGround, OwnerObj->GetCollider()->GetSize().y, bDown))
 		{
 			FPOINT ObjPos = OwnerObj->GetPos();
 			ObjPos.y = Result.OutPos.y;

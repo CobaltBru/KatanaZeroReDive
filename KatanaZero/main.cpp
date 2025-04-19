@@ -107,7 +107,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//	WS_OVERLAPPEDWINDOW, 50, 50, WINSIZE_X, WINSIZE_Y,
 	//	NULL, NULL, g_hInstance, NULL);
 
-	RECT rcWindowSize = { 0, 0, TILEMAPTOOL_X, WINSIZE_Y };
+	RECT rcWindowSize = { 0, 0, WINSIZE_X, WINSIZE_Y };
 	AdjustWindowRect(&rcWindowSize, WS_OVERLAPPEDWINDOW, FALSE);
 	int width = rcWindowSize.right - rcWindowSize.left;
 	int height = rcWindowSize.bottom - rcWindowSize.top;
@@ -122,7 +122,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	g_hWndDX = CreateWindowEx(0, g_lpszClassName, g_lpszClassName,
 		WS_CHILD | WS_VISIBLE,
-		WINSIZE_X, 0, TILEMAPTOOL_X, WINSIZE_Y,
+		WINSIZE_X, 0, WINSIZE_X + TILEMAPTOOL_X, WINSIZE_Y,
 		g_hWndParent, nullptr, hInstance, nullptr);
 
 	ImGuiManager::GetInstance()->Init();

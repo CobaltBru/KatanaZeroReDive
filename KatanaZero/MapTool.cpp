@@ -21,7 +21,7 @@ MapTool::MapTool()
 
 HRESULT MapTool::Init()
 {
-	SetClientRect(g_hWnd, WINSIZE_X, WINSIZE_Y);
+	SetClientRect(g_hWndParent, WINSIZE_X + TILEMAPTOOL_X, WINSIZE_Y);
 
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();

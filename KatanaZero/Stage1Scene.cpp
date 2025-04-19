@@ -31,7 +31,7 @@ Stage1Scene::Stage1Scene()
 
 HRESULT Stage1Scene::Init()
 {
-	SetClientRect(g_hWnd, WINSIZE_X, WINSIZE_Y);
+	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
