@@ -287,6 +287,69 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
     }
 }
 
+void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int frameY, float start, float end, bool isFlip, bool isCenter)
+{
+    int x = destX;
+    int y = destY;
+    if (isCenter)
+    {
+        x = destX - (imageInfo->frameWidth / 2);
+        y = destY - (imageInfo->frameHeight / 2);
+    }
+
+    imageInfo->currFrameX = frameX;
+    imageInfo->currFrameY = frameY;
+
+    float startX = imageInfo->frameWidth * start;
+    float endX = imageInfo->frameWidth * end;
+
+    if (isFlip && isTransparent)
+    {
+        StretchBlt(imageInfo->hTempDC, 0, 0,
+            imageInfo->frameWidth, imageInfo->frameHeight,
+            imageInfo->hMemDC,
+            (imageInfo->frameWidth * imageInfo->currFrameX) + (imageInfo->frameWidth - 1),
+            imageInfo->frameHeight * imageInfo->currFrameY,
+            -imageInfo->frameWidth, imageInfo->frameHeight,
+            SRCCOPY
+        );
+
+        GdiTransparentBlt(hdc,
+            x + startX, y,
+            endX - startX, imageInfo->frameHeight,
+
+            imageInfo->hTempDC,
+            0, 0,
+            imageInfo->frameWidth - endX, imageInfo->frameHeight,
+            transColor);
+    }
+    else if (isTransparent)
+    {
+        GdiTransparentBlt(hdc,
+            x + startX, y,
+            endX - startX, imageInfo->frameHeight,
+            imageInfo->hMemDC,
+            imageInfo->frameWidth * imageInfo->currFrameX + startX,
+            imageInfo->frameHeight * imageInfo->currFrameY,
+            endX - startX, imageInfo->frameHeight,
+            transColor);
+    }
+    else
+    {
+        BitBlt(
+            hdc,
+            x + startX, y,
+            endX - startX, imageInfo->frameHeight,
+            imageInfo->hMemDC,
+            imageInfo->frameWidth * imageInfo->currFrameX + startX,
+            imageInfo->frameHeight * imageInfo->currFrameY,
+            SRCCOPY
+        );
+    }
+}
+
+
+
 void Image::Release()
 {
     if (imageInfo)
