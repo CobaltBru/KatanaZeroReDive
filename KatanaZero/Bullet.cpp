@@ -9,10 +9,15 @@ Bullet1::~Bullet1()
 {
 }
 
-HRESULT Bullet1::Init()
+HRESULT Bullet1::Init(FPOINT pos, float angle)
 {
+    startPos = pos;
+    this->angle = angle;
+
+    isActive = true;
+
     image = new GPImage();
-    image->AddImage(L"Image/bullet.png");
+    image->AddImage(L"Image/HeadHunter/bullet.png");
 
     return S_OK;
 }
@@ -27,12 +32,13 @@ void Bullet1::Release()
     }
 }
 
-void Bullet1::Update(FPOINT pos, float angle)
+void Bullet1::Update()
 {
     if(isActive)
     {
-        this->startPos = pos;
-        this->angle = angle;
+        startPos.x += cosf(DEG_TO_RAD(angle));
+        startPos.y += sinf(DEG_TO_RAD(angle));
+
     }
 }
 

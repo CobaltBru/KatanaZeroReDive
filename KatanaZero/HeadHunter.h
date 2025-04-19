@@ -25,15 +25,22 @@ class HeadHunter : public GameObject
 private:
     FPOINT pos;
     FPOINT firePos;
+    FPOINT wallPos;
 
     bool isFlip;
     bool isAttacked;
     bool isDead;
 
+    FPOINT jumpDist1;
+    FPOINT jumpDist2;
+    FPOINT jumpDist3;
     float angle;
-    float weaponAngle;
+    float weaponAngle; // 레이저 각도
+    float dAngle; // 
     float timer;
-    float indexTimer;
+    float moveTimer;
+    float bulletTimer;
+
     int hp;
     int wave;
     int bulletWave;
@@ -48,7 +55,7 @@ private:
     Image* image;
     State state;
     Lazer* lazer;
-    Bullet1* bullet;
+    std::vector<Bullet1*> bullets;
 
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;
@@ -76,6 +83,7 @@ public:
     void Faint();
     void Run();
 
+    void SpawnBullet(FPOINT firePos, float angle);
 
     void ChangeState(State newState);
     void PlayAnimation(string key);
