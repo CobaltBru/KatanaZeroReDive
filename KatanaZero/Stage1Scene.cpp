@@ -13,6 +13,7 @@
 #include "SoundManager.h"
 
 #include "ChatManager.h"
+#include "UIGame.h"
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
 #include "HeadHunter.h"
@@ -159,7 +160,11 @@ HRESULT Stage1Scene::InitObject()
 		chatManager->LoadChat("ChatDatas/test2.json");
 
 		chatManager->startChat("Q3YMPZfZRO");
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);*/
+		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
+		*/
+		UIGame* ui = new UIGame();
+		ui->init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 		
 	}
 	return S_OK;
@@ -202,9 +207,9 @@ void Stage1Scene::Update()
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
 	{
 		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("rainbowslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("bulletreflect", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("hitslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("normalslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("normalslash", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
+		fxManager->Activefx("normalslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
 	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))

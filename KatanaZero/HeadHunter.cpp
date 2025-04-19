@@ -41,28 +41,29 @@ HRESULT HeadHunter::Init()
     state = State::Idle;
 
     {
-        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
 
-        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/headhunter_takeoutrifle.bmp", 560, 70, 8, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/headhunter_lazer.bmp", 972, 46, 18, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/teleport1.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/teleport2.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/teleport3.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/HeadHunter/headhunter_takeoutrifle.bmp", 560, 70, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/HeadHunter/headhunter_lazer.bmp", 972, 46, 18, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/HeadHunter/teleport1.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/HeadHunter/teleport2.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/HeadHunter/teleport3.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
 
-        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/headhunter_faint.bmp", 495, 45, 11, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/HeadHunter/headhunter_faint.bmp", 495, 45, 11, 1, true, RGB(255, 0, 255));
 
-        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/GroundGun.bmp", 490, 70, 7, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/GroundGun_shoot.bmp", 800, 70, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/HeadHunter/GroundGun.bmp", 490, 70, 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/HeadHunter/GroundGun_shoot.bmp", 800, 70, 8, 1, true, RGB(255, 0, 255));
+
         //BULLET
-        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/headhunter_jumpidle.bmp", 90, 43, 3, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/headhunter_jumptoceil.bmp", 35, 46, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/HeadHunter/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/HeadHunter/headhunter_jumpidle.bmp", 90, 43, 3, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/HeadHunter/headhunter_jumptoceil.bmp", 35, 46, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
 
         //DASH
-        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/readytodash.bmp", 432, 45, 9, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/dashend.bmp", 500, 50, 10, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432, 45, 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500, 50, 10, 1, true, RGB(255, 0, 255));
 
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
@@ -80,7 +81,19 @@ HRESULT HeadHunter::Init()
 
 void HeadHunter::Release()
 {
-    lazer->Release();
+    if (lazer)
+    {
+        lazer->Release();
+        delete lazer;
+        lazer = nullptr;
+    }
+
+    if (bullet)
+    {
+        bullet->Release();
+        delete bullet;
+        bullet = nullptr;
+    }
 }
 
 void HeadHunter::Update()
@@ -150,15 +163,21 @@ void HeadHunter::Render(HDC hdc)
 void HeadHunter::Idle()
 {
     image = ImageManager::GetInstance()->FindImage("Idle");
-    if (timer > 0.1f)
+    if (frameIndex < image->GetMaxFrameX() - 1)
     {
-        frameIndex++;
-        timer = 0;
+          
+        if (timer > 0.1f)
+        {
+            frameIndex++;
+            timer = 0;
+        }
     }
+
 
     if (frameIndex >= image->GetMaxFrameX() - 1)
     {
         frameIndex = 0;
+        
         if (loop == 0) {
             ChangeState(State::GroundGun); // ¶Ç´Â groundGun
         }
@@ -170,8 +189,7 @@ void HeadHunter::Idle()
 }
 
 void HeadHunter::GroundLazer()
-{
-    
+{ 
     image = ImageManager::GetInstance()->FindImage("GroundLazer");
     if (frameIndex < image->GetMaxFrameX() - 1)
     {
@@ -207,13 +225,16 @@ void HeadHunter::GroundGun()
     {
     case 0:
         image = ImageManager::GetInstance()->FindImage("GroundGun");
-        if (timer > 0.1f)
+        if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            frameIndex++;
-            timer = 0;
+            if (timer > 0.1f)
+            {
+                frameIndex++;
+                timer = 0;
+            }
         }
 
-        if (frameIndex > image->GetMaxFrameX() - 1)
+        if (frameIndex >= image->GetMaxFrameX() - 1)
         {
             frameIndex = 0;
             gunWave++;

@@ -261,7 +261,13 @@
     <ClCompile Include="PlayerInput.cpp">
       <Filter>MainGame\Player</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteAnimator.cpp">
+        <ClCompile Include="UIGame.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+       <ClCompile Include="SpriteAnimator.cpp">
       <Filter>2D Framework\Animator</Filter>
     </ClCompile>
     <ClCompile Include="PlayerAnim.cpp">
@@ -441,6 +447,12 @@
     </ClInclude>
     <ClInclude Include="PlayerAnim.h">
       <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGame.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
