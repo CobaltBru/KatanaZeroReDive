@@ -6,13 +6,7 @@
 #include "CollisionManager.h"
 #include "Collider.h"
 #include "ScrollManager.h"
-#include "SoundManager.h"
-#include "LineManager.h"
-#include "EffectManager.h"
 #include "RigidBody.h"
-
-#include "GPImage.h"
-
 
 SimpleObject::SimpleObject()
 	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
@@ -146,11 +140,7 @@ void SimpleObject::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus())
 		return;
-	// 역재생시 스크롤 업데이트 따로
-	if (SnapShotManager::GetInstance()->IsReplaying())
-	{
-		return;
-	}
+	
 	// 스크롤 업데이트 (플레이어)
 
 	const float OffsetMinX = 200.f;
