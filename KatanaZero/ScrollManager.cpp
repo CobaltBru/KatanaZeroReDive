@@ -38,16 +38,19 @@ void ScrollManager::Update()
 	Scroll.x = ScrollOffset.x + ShakeOffset.x;
 	Scroll.y = ScrollOffset.y + ShakeOffset.y;
 
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
+		bFocus = !bFocus;
+
 	if (bFocus)
 		return;
 
-	if (KeyManager::GetInstance()->IsStayKeyDown('W'))
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_UP))
 		ScrollOffset.y += Speed * TimerManager::GetInstance()->GetDeltaTime();
-	else if (KeyManager::GetInstance()->IsStayKeyDown('S'))
+	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_DOWN))
 		ScrollOffset.y -= Speed * TimerManager::GetInstance()->GetDeltaTime();
-	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_LEFT))
 		ScrollOffset.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
-	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+	else if (KeyManager::GetInstance()->IsStayKeyDown(VK_RIGHT))
 		ScrollOffset.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
 }
 

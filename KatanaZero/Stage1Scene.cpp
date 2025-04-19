@@ -32,7 +32,7 @@ Stage1Scene::Stage1Scene()
 
 HRESULT Stage1Scene::Init()
 {
-	SetClientRect(g_hWnd, WINSIZE_X, WINSIZE_Y);
+	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
@@ -127,13 +127,13 @@ HRESULT Stage1Scene::InitObject()
 		background->Init("TestBg");
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-		Player* player = new Player();
-		player->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, player);
+		//Player* player = new Player();
+		//player->Init();
+		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-		TaeKyungObject* taekyung = new TaeKyungObject();
+		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
 
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
@@ -147,7 +147,7 @@ HRESULT Stage1Scene::InitObject()
 
 		//해영 테스트
 		{
-			snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
+			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
 		}
 	
@@ -184,10 +184,6 @@ HRESULT Stage1Scene::InitEffects()
 
 void Stage1Scene::TestCode()
 {
-	// 플레이어 포커스 toggle
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
-		ScrollManager->SetFocus(!ScrollManager::GetInstance()->IsFocus());
-
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 

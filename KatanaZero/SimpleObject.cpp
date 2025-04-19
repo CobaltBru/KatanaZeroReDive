@@ -1,4 +1,4 @@
-#include "TaeKyungObject.h"
+#include "SimpleObject.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
 #include "Image.h"
@@ -14,61 +14,47 @@
 #include "GPImage.h"
 
 
-TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false), timer(0.0f)
+SimpleObject::SimpleObject()
+	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
 {
 }
 
 // 테스트 코드 
-HRESULT TaeKyungObject::Init(FPOINT InPos)
+HRESULT SimpleObject::Init(FPOINT InPos)
 {
 	Image = ImageManager::GetInstance()->FindImage("rocket");
 	Pos = InPos;
 	//콜라이더 추가
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
-	
+
 	ObjectRigidBody = new RigidBody(this);
 
 	Speed = 300.f;
 
 	InitOffset();
 
-	gpImage = new GPImage();
-	gpImage->AddImage(L"Image/rocket.bmp", 1, 1);
-
 	return S_OK;
 }
 
-void TaeKyungObject::Update()
+void SimpleObject::Update()
 {
-	//잔상 테스트 위한 타이머 추가
-	float dt = TimerManager::GetInstance()->GetDeltaTime();
-	timer += dt;
-
 	LastPos = Pos;
 
-	Move();
-	//RigidBodyTest();
-	
+	//Move();
+	RigidBodyTest();
+
 
 	Collision();
 
 	// 위치에 관한 모든 로직이 끝난 뒤 마지막에 호출 권장
 	Offset();
 
-	//테스트 이펙트 사운드 재생
-	if (KeyManager::GetInstance()->IsOnceKeyDown('E'))
-		SoundManager::GetInstance()->PlaySounds("EffectTest", EChannelType::Effect);
-	// 모든 음악 끄기
-	if (KeyManager::GetInstance()->IsOnceKeyDown('P'))
-		SoundManager::GetInstance()->StopAll();
-
 	//렌더그룹 추가 (해당에서 조건을 달아서  Render를 호출할지 안할지도 설정 가능)
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
 
-void TaeKyungObject::Render(HDC hdc)
+void SimpleObject::Render(HDC hdc)
 {
 	if (Image != nullptr)
 	{
@@ -79,47 +65,21 @@ void TaeKyungObject::Render(HDC hdc)
 	}
 }
 
-void TaeKyungObject::MakeSnapShot(void* out)
-{
-	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
-	pSnapShot->pos = this->GetPos();
-	pSnapShot->animFrame = 0;
-}
-
-void TaeKyungObject::ApplySnapShot(const PlayerSnapShot& snapShot)
-{
-	this->Pos = snapShot.pos;
-	//추후 애니메이션 생기면 프레임도 수정
-	//this->animFrame = snapShot.animFrame;
-}
-
-
-void TaeKyungObject::Move()
+void SimpleObject::Move()
 {
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 	{
-		if (timer >= 0.05f)
-		{
-			EffectManager::GetInstance()->CreateRemainEffect(gpImage, { Pos.x + scroll.x, Pos.y + scroll.y }, 0);
-			timer = 0.0f;
-		}
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
 	}
-		
+
 	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 	{
-		if (timer >= 0.05f)
-		{
-			EffectManager::GetInstance()->CreateRemainEffect(gpImage, {Pos.x + scroll.x, Pos.y + scroll.y}, 0);
-			timer = 0.0f;
-		}
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
 	}
-		
+
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
-		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y}, 0.0f, false);
 		dY = -10.f;
 	}
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
@@ -130,39 +90,12 @@ void TaeKyungObject::Move()
 	}
 
 	Jump();
-
-	// 라인충돌 한번에 처리할 수 있게 만들면 좋을 것 같은데
-	//=========================================================================================================================
-	// 수직 벽
-	//FLineResult Result;
-	//if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
-	//	Pos.x = Result.OutPos.x;
-
-	//// 땅
-	//if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result, ObjectCollider->GetSize().y, bDown))
-	//{
-	//	Pos.y = Result.OutPos.y;
-
-	//	bJump = false;
-	//	bDown = false;
-	//	dY = -10.f;
-	//}
-	////  천장
-	//else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().y))
-	//{
-	//	Pos.y = Result.OutPos.y;
-	//	dY = 0.f;
-	//}
-	//=========================================================================================================================
 }
 
-void TaeKyungObject::Jump()
+void SimpleObject::Jump()
 {
 	if (bJump || bDown)
 	{
-		// 그냥 조잡한 점프 공식..
-		// 리지드 바디 구현하는게 좋을 듯.. ㅠ
-		
 		dY += Gravity;
 		Pos.y += dY * Speed * TimerManager::GetInstance()->GetDeltaTime();
 		if (dY >= 0.f)
@@ -172,7 +105,7 @@ void TaeKyungObject::Jump()
 	}
 }
 
-void TaeKyungObject::Collision()
+void SimpleObject::Collision()
 {
 	// 충돌 정보
 	FHitResult HitResult;
@@ -189,7 +122,7 @@ void TaeKyungObject::Collision()
 	}
 }
 
-void TaeKyungObject::InitOffset()
+void SimpleObject::InitOffset()
 {
 	//포커스해야 오프셋할 수 있듬.
 	ScrollManager::GetInstance()->SetFocus(true);
@@ -209,7 +142,7 @@ void TaeKyungObject::InitOffset()
 	}
 }
 
-void TaeKyungObject::Offset()
+void SimpleObject::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus())
 		return;
@@ -242,7 +175,7 @@ void TaeKyungObject::Offset()
 	ScrollManager::GetInstance()->SetScroll(newScroll);
 }
 
-void TaeKyungObject::RigidBodyTest()
+void SimpleObject::RigidBodyTest()
 {
 	if (ObjectRigidBody == nullptr)
 		return;
@@ -268,16 +201,11 @@ void TaeKyungObject::RigidBodyTest()
 	ObjectRigidBody->Update();
 }
 
-void TaeKyungObject::Release()
+void SimpleObject::Release()
 {
 	if (ObjectRigidBody != nullptr)
 	{
 		delete ObjectRigidBody;
 		ObjectRigidBody = nullptr;
-	}
-	if (gpImage)
-	{
-		delete gpImage;
-		gpImage = nullptr;
 	}
 }
