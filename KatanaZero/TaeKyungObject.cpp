@@ -9,10 +9,13 @@
 #include "SoundManager.h"
 #include "LineManager.h"
 #include "EffectManager.h"
+#include "RigidBody.h"
+
+#include "GPImage.h"
 
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false), timer(0.0f)
 {
 }
 
@@ -25,16 +28,29 @@ HRESULT TaeKyungObject::Init(FPOINT InPos)
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	
+	ObjectRigidBody = new RigidBody(this);
+
 	Speed = 300.f;
 
 	InitOffset();
+
+	gpImage = new GPImage();
+	gpImage->AddImage(L"Image/rocket.bmp", 1, 1);
 
 	return S_OK;
 }
 
 void TaeKyungObject::Update()
 {
+	//잔상 테스트 위한 타이머 추가
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	timer += dt;
+
+	LastPos = Pos;
+
 	Move();
+	//RigidBodyTest();
+	
 
 	Collision();
 
@@ -58,7 +74,7 @@ void TaeKyungObject::Render(HDC hdc)
 	{
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-
+		scroll = Scroll;
 		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
 	}
 }
@@ -81,13 +97,29 @@ void TaeKyungObject::ApplySnapShot(const PlayerSnapShot& snapShot)
 void TaeKyungObject::Move()
 {
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+	{
+		if (timer >= 0.05f)
+		{
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, { Pos.x + scroll.x, Pos.y + scroll.y }, 0);
+			timer = 0.0f;
+		}
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
+	}
+		
 	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+	{
+		if (timer >= 0.05f)
+		{
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, {Pos.x + scroll.x, Pos.y + scroll.y}, 0);
+			timer = 0.0f;
+		}
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
+	}
+		
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
-		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y }, 0.0f, false);
+		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y}, 0.0f, false);
 		dY = -10.f;
 	}
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
@@ -102,25 +134,25 @@ void TaeKyungObject::Move()
 	// 라인충돌 한번에 처리할 수 있게 만들면 좋을 것 같은데
 	//=========================================================================================================================
 	// 수직 벽
-	FLineResult Result;
-	if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
-		Pos.x = Result.OutPos.x;
+	//FLineResult Result;
+	//if (LineManager::GetInstance()->CollisionWallLine(Pos, Result, ObjectCollider->GetSize()))
+	//	Pos.x = Result.OutPos.x;
 
-	// 땅
-	if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result, ObjectCollider->GetSize().y, bDown))
-	{
-		Pos.y = Result.OutPos.y;
+	//// 땅
+	//if (bFalling && LineManager::GetInstance()->CollisionLine(Pos, Result, ObjectCollider->GetSize().y, bDown))
+	//{
+	//	Pos.y = Result.OutPos.y;
 
-		bJump = false;
-		bDown = false;
-		dY = -10.f;
-	}
-	//  천장
-	else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().y))
-	{
-		Pos.y = Result.OutPos.y;
-		dY = 0.f;
-	}
+	//	bJump = false;
+	//	bDown = false;
+	//	dY = -10.f;
+	//}
+	////  천장
+	//else if (!bFalling && LineManager::GetInstance()->CollisionCeilingLine(Pos, Result, ObjectCollider->GetSize().y))
+	//{
+	//	Pos.y = Result.OutPos.y;
+	//	dY = 0.f;
+	//}
 	//=========================================================================================================================
 }
 
@@ -210,7 +242,42 @@ void TaeKyungObject::Offset()
 	ScrollManager::GetInstance()->SetScroll(newScroll);
 }
 
+void TaeKyungObject::RigidBodyTest()
+{
+	if (ObjectRigidBody == nullptr)
+		return;
+
+	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+		ObjectRigidBody->AddForce({ -200.f,0.f });
+	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+		ObjectRigidBody->AddForce({ 200.f,0.f });
+
+	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
+		ObjectRigidBody->SetDown(true);
+	else
+		ObjectRigidBody->SetDown(false);
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+		ObjectRigidBody->AddVelocity({ 0.f,-200.f });
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+		ObjectRigidBody->AddVelocity({ -200.f,0.f });
+	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+		ObjectRigidBody->AddVelocity({ 200.f,0.f });
+
+	ObjectRigidBody->Update();
+}
 
 void TaeKyungObject::Release()
 {
+	if (ObjectRigidBody != nullptr)
+	{
+		delete ObjectRigidBody;
+		ObjectRigidBody = nullptr;
+	}
+	if (gpImage)
+	{
+		delete gpImage;
+		gpImage = nullptr;
+	}
 }

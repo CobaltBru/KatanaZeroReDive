@@ -10,6 +10,11 @@
 #include "Background.h"
 #include "SoundManager.h"
 #include "LineManager.h"
+#include "SnapShotManager.h"
+
+#include "SimpleObject.h"
+#include "SimpleTestObject.h"
+#include "EffectManager.h"
 
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr)
@@ -18,7 +23,9 @@ MapTool::MapTool()
 
 HRESULT MapTool::Init()
 {
-	SetClientRect(g_hWnd, WINSIZE_X, WINSIZE_Y);
+	SoundManager::GetInstance()->StopAll();
+
+	SetClientRect(g_hWndParent, WINSIZE_X + TILEMAPTOOL_X, WINSIZE_Y);
 
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
@@ -33,6 +40,12 @@ HRESULT MapTool::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
+
+	if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		return E_FAIL;
+	}
 
 	if (FAILED(InitImage()))
 	{
@@ -81,6 +94,15 @@ HRESULT MapTool::InitObject()
 	Background* background = new Background();
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
+
+	SimpleObject* taekyung = new SimpleObject();
+	taekyung->Init({ 500.f,300.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+
+	SimpleTestObject* enemy = new SimpleTestObject();
+	enemy->Init({ 500.f,100.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
+	
 
 	return S_OK;
 }

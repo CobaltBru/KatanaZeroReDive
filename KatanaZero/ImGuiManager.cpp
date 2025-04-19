@@ -74,7 +74,7 @@ void ImGuiManager::ShowGui()
 {
 	ImVec4 clear_color = ImVec4(0.f, 0.f, 0.f, 0.f);
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(TILEMAPTOOL_X - WINSIZE_X, WINSIZE_Y), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(WINSIZE_X - TILEMAPTOOL_X, WINSIZE_Y), ImGuiCond_Once);
 
 	ImGui::Begin(u8"À°¹Ù¿¬");
 
@@ -362,7 +362,7 @@ void ImGuiManager::InitBackground()
 {
 	BackgroundObj = nullptr;
 
-	vector<string> backgrounds = GetFileNames("Image/*.bmp");
+	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
 
 	if (backgrounds.empty())
 		return;

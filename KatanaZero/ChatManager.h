@@ -9,7 +9,7 @@ public:
 private:
 	FPOINT globalPos;
 	FPOINT pos;
-	const wchar_t* text;
+	wstring wtext;
 	int len;
 	APPEAR appear;
 	OPTION option;
@@ -21,7 +21,7 @@ private:
 	int currentAppear;
 	bool complete;
 public:
-	Token(const wchar_t* text, FPOINT pos, APPEAR appear, OPTION option, COLORS color);
+	Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS color);
 	inline void setGlobalPos(FPOINT pos) { this->globalPos = pos; }
 	inline void setPos(FPOINT pos) { this->pos = pos; }
 	void Update();
@@ -40,7 +40,7 @@ public:
 	inline SIZE getSize(HDC hdc)
 	{
 		SIZE size;
-		GetTextExtentPoint32W(hdc, text, len, &size);
+		GetTextExtentPoint32W(hdc, wtext.c_str(), len, &size);
 		return size;
 	}
 };
@@ -55,7 +55,7 @@ protected:
 	//말풍선 크기
 	float width;
 	float height;
-	float timer;
+	float timer = 0;
 	//말풍선 켜지는데 걸리는 시간
 	float boxTime;
 
@@ -129,6 +129,7 @@ private:
 	vector<FPOINT> poses;
 	map<string, pair<Chat*,string>> chatMap;
 	Chat* currentChat = nullptr;
+	string currentKey = "";
 	string nextChat;
 	bool explodeFlag = false;
 	string tmpChat;
@@ -142,5 +143,9 @@ public:
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 	virtual void Release() override;
+
+	void LoadChat(const std::string& path);
+
+	inline string getKey() { return currentKey; }
 };
 

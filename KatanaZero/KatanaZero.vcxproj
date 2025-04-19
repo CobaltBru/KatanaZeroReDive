@@ -135,7 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Background.cpp" />
+    <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -150,6 +153,7 @@
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
@@ -168,9 +172,12 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
+    <ClCompile Include="SimpleObject.cpp" />
+    <ClCompile Include="SimpleTestObject.cpp" />
     <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
@@ -182,11 +189,16 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
+    <ClCompile Include="UIGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Background.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
@@ -201,6 +213,7 @@
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="Lazer.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="LineManager.h" />
     <ClInclude Include="LoadingScene.h" />
@@ -220,9 +233,12 @@
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScrollManager.h" />
+    <ClInclude Include="SimpleObject.h" />
+    <ClInclude Include="SimpleTestObject.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SnapShot.h" />
     <ClInclude Include="SnapShotManager.h" />
@@ -236,6 +252,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
+    <ClInclude Include="UIGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
