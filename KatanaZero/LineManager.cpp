@@ -135,7 +135,7 @@ void LineManager::DestroyAllLine()
 	}
 }
 
-bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutResult, float tolerance, bool IsDown)
+bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, float tolerance, bool IsDown)
 {
 	if (LineList[(int)ELineType::Normal].empty() && LineList[(int)ELineType::DownLine].empty())
 		return false;
@@ -173,13 +173,13 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 				float y2 = iter->GetLine().RightPoint.y;
 
 				float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
-				
+
 
 				// 이것만 이틀걸렸다.. 점심 나가서 먹을 것 같애~
 				/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
 				//&& (iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y&&))
 				//&& LastObjectBottom <= dY /*((i != (int)ELineType::DownLine) || LastObjectBottom <= dY)*/
-				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance 
+				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance
 					&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y)))
 				{
 					if (i == (int)ELineType::Normal)
@@ -273,9 +273,9 @@ bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& Out
 
 					float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
 
-				
+
 					//대각선
-					if (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y && InPos.x != InLastPos.x 
+					if (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y && InPos.x != InLastPos.x
 						&& ObjectBottom < dY && OutResult.IsDiagonalLine)
 					{
 						if (i == (int)ELineType::Normal)
@@ -348,7 +348,7 @@ bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& Out
 		return CollisionLine(InPos, InLastPos, OutResult, tolerance, IsDown);
 }
 
-bool LineManager::CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT InSize)
+bool LineManager::CollisionWallLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, FPOINT InSize)
 {
 	if (LineList[(int)ELineType::Wall].empty())
 		return false;
@@ -364,7 +364,6 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT
 	ObjectRC.top = InPos.y - HalfSize.y;
 	ObjectRC.bottom = InPos.y + HalfSize.y;
 
-	float XMinLength = FLT_MAX;
 	Line* Target = nullptr;
 
 	for (auto& iter : LineList[(int)ELineType::Wall])
@@ -374,23 +373,27 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT
 		{
 			// 양쪽에 라인이 있을 때 
 			// 수직이기 때문에 x값으로 비교하자.			
-			if (XMinLength > abs(InPos.x - iter->GetLine().LeftPoint.x))
+
+			if (ObjectRC.right >= iter->GetLine().LeftPoint.x && ObjectRC.left <= iter->GetLine().LeftPoint.x)
 			{
-				XMinLength = abs(InPos.x - iter->GetLine().LeftPoint.x);
-
-				if (ObjectRC.right >= iter->GetLine().LeftPoint.x && ObjectRC.left < iter->GetLine().LeftPoint.x)
+				const float LeftLength = abs(ObjectRC.left - iter->GetLine().LeftPoint.x);
+				const float RightLength = abs(ObjectRC.right - iter->GetLine().LeftPoint.x);
+				if (InPos.x >= InLastPos.x && LeftLength > RightLength)
 				{
-					if (InPos.x <= iter->GetLine().LeftPoint.x)
-					{
-						OutResult.OutPos.x = iter->GetLine().LeftPoint.x - HalfSize.x;
-					}
-					if (InPos.x >= iter->GetLine().LeftPoint.x)
-					{
-						OutResult.OutPos.x = iter->GetLine().LeftPoint.x + HalfSize.x;
-					}
-
+					OutResult.OutPos.x = iter->GetLine().LeftPoint.x - HalfSize.x;
 					OutResult.LineType = iter->GetLineType();
 					Target = iter;
+
+					OutResult.IsLeft = false;
+				}
+				else if (InPos.x <= InLastPos.x && LeftLength < RightLength)
+				{
+					OutResult.OutPos.x = iter->GetLine().LeftPoint.x + HalfSize.x;
+					OutResult.LineType = iter->GetLineType();
+					Target = iter;
+
+					OutResult.IsLeft = true;
+
 				}
 			}
 		}
@@ -402,7 +405,7 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT
 	return true;
 }
 
-bool LineManager::CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, float tolerance)
+bool LineManager::CollisionCeilingLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, float tolerance)
 {
 	if (LineList[(int)ELineType::Ceiling].empty())
 		return false;
@@ -412,8 +415,12 @@ bool LineManager::CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, flo
 	// 두점을 사용해 직선의 방정식을 구하자.
 	const float HalfTolerance = tolerance * 0.5f;
 	const float ObjectTop = InPos.y - HalfTolerance;
+	const float LastObjectTop = InLastPos.y - HalfTolerance;
+
 
 	Line* Target = nullptr;
+
+	//ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance
 
 	for (auto& iter : LineList[(int)ELineType::Ceiling])
 	{
@@ -427,13 +434,11 @@ bool LineManager::CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, flo
 			float x2 = iter->GetLine().RightPoint.x;
 			float y2 = iter->GetLine().RightPoint.y;
 
-			float y = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
+			float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
 
-			float ObjectTop = InPos.y - HalfTolerance;
-
-			if (ObjectTop >= y - HalfTolerance && ObjectTop <= y + HalfTolerance)
+			if (ObjectTop <= dY && LastObjectTop > dY)
 			{
-				OutResult.OutPos.y = y + HalfTolerance;
+				OutResult.OutPos.y = dY + HalfTolerance;
 				OutResult.LineType = iter->GetLineType();
 				Target = iter;
 			}
@@ -725,7 +730,7 @@ void LineManager::Render(HDC hdc)
 	{
 		for (auto& iter : LineList[i])
 			iter->Render(hdc);
-	}	
+	}
 }
 
 void LineManager::Release()

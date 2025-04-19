@@ -14,11 +14,13 @@ public:
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
-	inline bool IsDead() { return bDead; }
 
 	//Collider* GetCollider() const { return ObjectCollider; }
 	//RigidBody* GetRigidBody() const { return ObjectRigidBody; }
 	//FPOINT GetLastPos()  const { return LastPos; }
+
+	void InitRegidBodySetting();
+
 private:
 	void Collision();
 
@@ -27,20 +29,6 @@ private:
 private:
 	Image* Image;
 	//Collider* ObjectCollider;
-	float Speed;
-
-	FPOINT scroll;
-
-	//Jump
-	float Gravity;
-	float dY;
-	bool bJump;
-	bool bFalling;
-	bool bDown;
-	bool bDead{ false };
-
-
-	// 물리 필요한 데이터
-
+	float ScrollSpeed;
 };
 

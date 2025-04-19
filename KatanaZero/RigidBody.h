@@ -12,18 +12,20 @@ public:
 	void Update();
 	void GravityUpdate();
 
-	FPOINT GetVelocity() const { return Velocity; }
-	float GetMass() const { return Mass; }
-	bool GetGround() const { return bGround; }
+	const FPOINT& GetVelocity() const { return Velocity; }
+	const float& GetMass() const { return Mass; }
+	const bool& IsGround() const { return bGround; }
+	const FLineResult& GetResult() const { return Result; }
 
 	void SetMass(float InMass) {Mass = InMass;}
 	void SetVelocity(FPOINT InVelocity) { Velocity = InVelocity; }
 	void SetMaxVelocity(FPOINT InMaxVelocity) { MaxVelocity = InMaxVelocity;}
 	void SetGround(bool InGround) { bGround = InGround; }
 	void SetGravityVisible(bool InGravity) { bGravity = InGravity; }
-	void SetAccelerationAlpha(FPOINT InAccelerationAlpha) { AccelerationAlpha = InAccelerationAlpha; }
+	void SetAccelerationAlpha(FPOINT InAccelerationAlpha) { SaveAccelerationAlpha = InAccelerationAlpha; }
 	void SetDown(bool InDown) { bDown = InDown; }
-	void SetElasticity(float InElasticity) { Elasticity = InElasticity; }
+	void SetElasticity(float InElasticity) { Elasticity = min(InElasticity,1.f); }
+	void SetFriction(float InFriction) {FrictionCoefficient = InFriction;}
 
 	void AddForce(FPOINT InForce) {	Force += InForce;}
 	void AddVelocity(FPOINT InVelocity) { Velocity += InVelocity; }
@@ -41,6 +43,7 @@ private:
 	FPOINT Force;			// 크기 방향정보
 	FPOINT Acceleration;		// 가속도
 	FPOINT AccelerationAlpha;		// 가속도 알파
+	FPOINT SaveAccelerationAlpha;		// 가속도 알파
 	float Mass;				// 질량
 	 
 	float FrictionCoefficient; // 마찰계수
@@ -54,5 +57,7 @@ private:
 	bool bGround;
 	bool bDown;
 	bool bDiagonalLine;
+
+	FLineResult Result;
 };
 
