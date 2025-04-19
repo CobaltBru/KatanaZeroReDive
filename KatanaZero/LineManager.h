@@ -7,6 +7,7 @@ struct FLineResult
 {
 	FPOINT OutPos;
 	ELineType LineType;
+	bool IsDiagonalLine;
 };
 
 enum class ELineEditState : uint8_t
@@ -36,7 +37,7 @@ public:
 	void DestroyAllLine();
 
 	bool CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, float tolerance = 3.f, bool IsDown = false);
-	bool CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, bool IsGround,float tolerance = 3.f, bool IsDown = false);
+	bool CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, bool IsGround, float tolerance = 3.f, bool IsDown = false);
 	bool CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT InSize);
 	bool CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
 	bool CollisionDownLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
