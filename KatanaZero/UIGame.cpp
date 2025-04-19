@@ -4,15 +4,12 @@
 void UIGame::init()
 {
 	
-	
-
-	
 	Image* image = nullptr;
 
 	//battery
 	{
 		batteryPos = { 2.f,5.f };
-
+		batteryGage = 1.0f;
 		vector<pair<int, float>> batteryTask = { { {ONE,3.f},{TWO,0.05f},{ONE,0.1f},{TWO,0.05f},{ONE,2.f},{TWO,0.1f} } };
 		image = ImageManager::GetInstance()->AddImage("UIbattery_bar", L"Image/UI/spr_hud_battery.bmp", 154.f * (UISCALE), 19.f * (UISCALE), 2, 1, true, RGB(255, 0, 255));
 		battery.Init(image, 2);
@@ -60,6 +57,7 @@ void UIGame::init()
 	//timer
 	{
 		timerPos = { WINSIZE_X / 2.f,0 };
+		timeGage = 1.0f;
 		vector<pair<int, float>> timerTask = { 
 			{ONE,3.f},{TWO,0.05f},
 			{ONE,0.1f},{TWO,0.05f},
@@ -100,15 +98,41 @@ void UIGame::init()
 		item1Pos = { slotPos.x + 5.f, slotPos.y + 4.f };
 		item2Pos = { slotPos.x + 82.5f, slotPos.y + 4.f };
 		item1 = ImageManager::GetInstance()->AddImage("UIKatana", L"Image/UI/spr_katanaicons.bmp", 20 * (UISCALE), 20 * (UISCALE), true, RGB(255, 0, 255));
-		itemKey.push_back("UIKatana");
+		leftItem = "UIKatana";
 		item2 = ImageManager::GetInstance()->AddImage("UIHand", L"Image/UI/spr_itemicons.bmp", 20 * (UISCALE), 20 * (UISCALE), true, RGB(255, 0, 255));
-		itemKey.push_back("UIHand");
+		rightItem = "UIHand";
 	}
 	hud = ImageManager::GetInstance()->AddImage("UIhud", L"Image/UI/spr_hud.bmp", 640 * (UISCALE), 23 * (UISCALE), true, RGB(255, 0, 255));
 }
 
 void UIGame::Update()
 {
+	timer += TimerManager::GetInstance()->GetDeltaTime();
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	{
+		shiftButton.setFrame(TWO);
+		if (timer >= 0.1f)
+		{
+			timer = 0.f;
+			batteryGage -= 0.02f;
+			timeGage -= 0.02f;
+			batteryGage = max(batteryGage, 0.0f);
+			timeGage = max(timeGage, 0.0f);
+		}
+
+	}
+	else
+	{
+		shiftButton.setFrame(ONE);
+		if (timer >= 0.1f)
+		{
+			timer = 0.f;
+			batteryGage += 0.01f;
+			timeGage += 0.01f;
+			batteryGage = min(batteryGage, 1.0f);
+			timeGage = min(timeGage, 1.0f);
+		}
+	}
 	battery.Update();
 	
 	for (int i = 0; i < BCELLCNT; i++)
@@ -116,7 +140,7 @@ void UIGame::Update()
 		batteryCellBlue[i].Update();
 		batteryCellRed[i].Update();
 	}
-	timerBarUI.setSour(0.0f, 0.3f);
+	timerBarUI.setSour(0.0f, timeGage);
 	timerUI.Update();
 	
 	timerBarUI.Update();
@@ -130,9 +154,12 @@ void UIGame::Render(HDC hdc)
 	
 	hud->Render(hdc, 0, 0);
 	battery.Render(hdc);
-	for (int i = 0; i < BCELLCNT; i++)
+	for (int i = 0; i < (BCELLCNT * batteryGage); i++)
 	{
-		//batteryCellBlue[i].Render(hdc);
+		batteryCellBlue[i].Render(hdc);
+	}
+	for (int i = (BCELLCNT * batteryGage); i < BCELLCNT; i++)
+	{
 		batteryCellRed[i].Render(hdc);
 	}
 	shiftButton.Render(hdc);
@@ -150,4 +177,24 @@ void UIGame::Render(HDC hdc)
 
 void UIGame::Release()
 {
+}
+
+void UIGame::EventPlayerState(const PlayerState& ps)
+{
+	batteryGage = ps.battery;
+	if (leftItem != ps.leftItem)
+	{
+		leftItem = ps.leftItem;
+		item1 = ImageManager::GetInstance()->FindImage(leftItem);
+	}
+	if (rightItem != ps.rightItem)
+	{
+		rightItem = ps.rightItem;
+		item2 = ImageManager::GetInstance()->FindImage(rightItem);
+	}
+}
+
+void UIGame::TimerUIEvent(const float t)
+{
+	timeGage = t;
 }
