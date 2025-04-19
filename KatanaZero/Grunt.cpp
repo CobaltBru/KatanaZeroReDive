@@ -32,13 +32,6 @@ void Grunt::InitImages()
 	image = images[(int)EImageType::IDLE];
 }
 
-void Grunt::Update()
-{
-	UpdateAnimation();
-	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
-	if (eState)
-		eState->Update(*this);
-}
 
 void Grunt::Render(HDC hdc)
 {
@@ -47,4 +40,16 @@ void Grunt::Render(HDC hdc)
 		Gdiplus::Graphics graphics(hdc);
 		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 2.5f, 2.5f);
 	}
+}
+
+void Grunt::Patrol()
+{
+}
+
+void Grunt::Attack()
+{
+}
+
+void Grunt::Chasing()
+{
 }

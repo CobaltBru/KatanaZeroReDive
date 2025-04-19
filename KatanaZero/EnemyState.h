@@ -32,6 +32,9 @@ public:
 
 class EIDLE : public EnemyState
 {
+private:
+	float idletimer{ 0.f };
+	float idleCooldown{ 1.f };
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -41,6 +44,9 @@ public:
 
 class EWalk : public EnemyState
 {
+private:
+	float walktimer{ 0.f };
+	float walkCooldown{ 3.f };
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -60,17 +66,18 @@ public:
 class EAttack : public EnemyState
 {
 protected:
-	float attackCooldown{ 1.5f };
-	float attackCooltime{ 0.f };
+	float attackCooldown{ 0.f };
+	float attacktimer{ 0.f };
+	bool isAttacking{ true };
+	void UpdateCooltime()
+	{
+		attacktimer += TimerManager::GetInstance()->GetDeltaTime();
+	}
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
 	virtual void Exit(Enemy& enemy) override;
 	virtual EnemyState* CheckTransition(Enemy* enemy) override;
-	virtual void UpdateCooltime()
-	{
-
-	}
 };
 
 class EDead : public EnemyState
@@ -84,5 +91,36 @@ public:
 
 class GruntAttack : public EAttack
 {
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
 
+class PompAttack : public EAttack
+{
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
+
+class GangsterAttack : public EAttack
+{
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
+
+class ShieldCopAttack : public EAttack
+{
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
 };

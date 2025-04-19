@@ -3,6 +3,15 @@
 #include "config.h"
 #include "EnemyState.h"
 
+enum class EType
+{
+	Grunt,
+	Pomp,
+	Gangster,
+	SheildCop,
+	None
+};
+
 class GPImage;
 class Enemy : public GameObject
 {
@@ -17,6 +26,7 @@ protected:
 	int dir;
 	float detectRange;
 	float attackRange;
+	EType eType;
 
 	// Jump
 	float Gravity;
@@ -37,10 +47,18 @@ public:
 	virtual void MakeSnapShot(void* out);
 	inline bool IsDead() { return bDead; }
 	EnemyState* GetState() const { return eState; }
+	int GetMaxAttackFrame() const;
+	int GetCurrFrame() const { return currFrame; }
+	EType GetEnemyType() const { return eType; }
 
 	void UpdateAnimation();
 	void ChangeState(EnemyState* newState);
 	void ChangeAnimation(EImageType newImage);
 	virtual bool Detecting();
-};
+	virtual bool IsInAttackRange();
 
+	// Çàµ¿
+	virtual void Patrol() {};
+	virtual void Attack() {};
+	virtual void Chasing() {};
+};

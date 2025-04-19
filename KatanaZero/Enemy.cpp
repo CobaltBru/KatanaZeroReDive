@@ -4,9 +4,12 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "SnapShotManager.h"
+#include "TaeKyungObject.h"
+#include "RenderManager.h"
 
 Enemy::Enemy()
-	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f)
+	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
+	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None)
 {
 }
 
@@ -44,6 +47,19 @@ void Enemy::Release()
 
 void Enemy::Update()
 {
+	if (eState)
+	{
+		eState->Update(*this);
+		EnemyState* newState = eState->CheckTransition(this);
+		if (newState && newState != eState)
+		{
+			ChangeState(newState);
+		}
+	}
+		
+	UpdateAnimation();
+
+	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
 
 void Enemy::Render(HDC hdc)
@@ -57,6 +73,11 @@ void Enemy::MakeSnapShot(void* out)
 	eSnapShot->ID = 0;
 	eSnapShot->animFrame = currFrame;
 	eSnapShot->isDead = this->bDead;
+}
+
+int Enemy::GetMaxAttackFrame() const
+{
+	return images[(int)EImageType::Attack]->getMaxFrame();
 }
 
 void Enemy::UpdateAnimation()
@@ -77,10 +98,16 @@ void Enemy::UpdateAnimation()
 void Enemy::ChangeState(EnemyState* newState)
 {
 	if (eState)
+	{
 		eState->Exit(*this);
+		delete eState;
+	}
 	eState = newState;
 	if (eState)
+	{
 		eState->Enter(*this);
+	}
+		
 }
 
 void Enemy::ChangeAnimation(EImageType newImage)
@@ -93,4 +120,10 @@ void Enemy::ChangeAnimation(EImageType newImage)
 bool Enemy::Detecting()
 {
 	return false;
+}
+
+bool Enemy::IsInAttackRange()
+{
+	float dist = fabs(Pos.x - SnapShotManager::GetInstance()->GetPlayer().front()->GetPos().x);
+	return dist < attackRange;
 }
