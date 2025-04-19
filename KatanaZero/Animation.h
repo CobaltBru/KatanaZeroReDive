@@ -15,6 +15,10 @@ private:
 	int taskIdx;
 	int idx;
 	bool flip;
+	bool anker;
+	bool isSour;
+	float sStart;
+	float sEnd;
 
 	float timer;
 	bool isStart;
@@ -30,8 +34,10 @@ public:
 	void On();
 	void Off();
 
-	void setPos(FPOINT pos, bool flip);
+	void setPos(FPOINT pos, bool flip, bool anker = false);
+	void setSour(float start, float end);
 	inline void setFrame(int idx) { this->idx = idx; }
 	void setTask(initializer_list<pair<int, float>> lst);
+	void setTask(std::vector < pair<int, float>>& lst);
 };
 
