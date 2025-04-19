@@ -15,20 +15,18 @@ void Animation::Init(Image* image, int frameX)
 
 void Animation::Update()
 {
-	if (isOn)
+	if (isStart)
 	{
-		if (isStart)
+		timer += TimerManager::GetInstance()->GetDeltaTime();
+		if (timer >= tasks[taskIdx].second)
 		{
-			timer += TimerManager::GetInstance()->GetDeltaTime();
-			if (timer >= tasks[taskIdx].second)
-			{
-				taskIdx++;
-				if (taskIdx >= tasks.size())taskIdx = 0;
-				idx = tasks[taskIdx].first;
-				timer = 0.f;
-			}
+			taskIdx++;
+			if (taskIdx >= tasks.size())taskIdx = 0;
+			idx = tasks[taskIdx].first;
+			timer = 0.f;
 		}
 	}
+	
 	
 }
 
