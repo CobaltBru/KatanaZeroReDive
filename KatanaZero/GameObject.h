@@ -2,6 +2,8 @@
 #include "config.h"
 
 
+class Collider;
+class RigidBody;
 class GameObject
 {
 public:
@@ -27,5 +29,18 @@ protected:
 
 	FPOINT spawnPos;
 	bool bDead;
+
+	
+
+	//테스트코드 태경
+public:
+	RigidBody* GetRigidBody() const { return ObjectRigidBody; }
+	Collider* GetCollider() const { return ObjectCollider; }
+	FPOINT GetLastPos() const { return LastPos; }
+protected:
+	Collider* ObjectCollider;
+	RigidBody* ObjectRigidBody;
+	FPOINT LastPos;
+
 };
 

@@ -13,6 +13,7 @@
 #include "SnapShotManager.h"
 
 #include "SimpleObject.h"
+#include "SimpleTestObject.h"
 #include "EffectManager.h"
 
 MapTool::MapTool()
@@ -98,6 +99,11 @@ HRESULT MapTool::InitObject()
 	taekyung->Init({ 500.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
+	SimpleTestObject* enemy = new SimpleTestObject();
+	enemy->Init({ 500.f,100.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
+	
+
 	return S_OK;
 }
 
@@ -114,8 +120,6 @@ void MapTool::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
-	SnapShotManager::GetInstance()->Release();
-	//EffectManager::GetInstance()->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;

@@ -3,16 +3,17 @@
 #include "CommonFunction.h"
 #include "LineManager.h"
 #include "TaeKyungObject.h"
+#include "SimpleObject.h"
 #include "Collider.h"
 
 RigidBody::RigidBody()
 	: Owner(nullptr), Mass(0.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 0.f,0.f }), bGravity(false), Gravity(0.f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false)
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false)
 {
 }
 RigidBody::RigidBody(GameObject* InOwner)
 	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(50.f), MaxVelocity({ 200.f ,300.f }), bGravity(true), Gravity(9.8f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false)
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false)
 {
 }
 
@@ -100,22 +101,26 @@ void RigidBody::CollisionLine()
 	if (!bGravity)
 		return;
 
-	TaeKyungObject* OwnerObj = static_cast<TaeKyungObject*>(Owner);
+	//SimpleObject* OwnerObj = static_cast<SimpleObject*>(Owner);
 	FLineResult Result;
-	if (LineManager::GetInstance()->CollisionWallLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize()))
+	Result.IsDiagonalLine = bDiagonalLine;
+
+	if (LineManager::GetInstance()->CollisionWallLine(Owner->GetPos(), Result, Owner->GetCollider()->GetSize()))
 	{
-		FPOINT ObjPos = OwnerObj->GetPos();
+		FPOINT ObjPos = Owner->GetPos();
 		ObjPos.x = Result.OutPos.x;
-		OwnerObj->SetPos(ObjPos);
+		Owner->SetPos(ObjPos);
 	}
 
 
 	// 땅
-	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, bGround, OwnerObj->GetCollider()->GetSize().y, bDown))
+	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(Owner->GetPos(), Owner->GetLastPos(), Result, bGround, Owner->GetCollider()->GetSize().y, bDown))
 	{
-		FPOINT ObjPos = OwnerObj->GetPos();
+		FPOINT ObjPos = Owner->GetPos();
 		ObjPos.y = Result.OutPos.y;
-		OwnerObj->SetPos(ObjPos);
+		Owner->SetPos(ObjPos);
+
+		bDiagonalLine = Result.IsDiagonalLine;
 
 		bGround = true;
 		Velocity.y = 0.f;
@@ -123,21 +128,23 @@ void RigidBody::CollisionLine()
 	else
 	{
 		// 땅에 이미 있을 때				// 대각선 처리를 어떻게 할까 일단 땅인걸 인자로 받아야하는지 부터 생각해보자.
-		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(OwnerObj->GetPos(), OwnerObj->GetLastPos(), Result, bGround, OwnerObj->GetCollider()->GetSize().y, bDown))
+		if (bGround && Velocity.y == 0.f && LineManager::GetInstance()->CollisionLine(Owner->GetPos(), Owner->GetLastPos(), Result, bGround, Owner->GetCollider()->GetSize().y, bDown))
 		{
-			FPOINT ObjPos = OwnerObj->GetPos();
+			FPOINT ObjPos = Owner->GetPos();
 			ObjPos.y = Result.OutPos.y;
-			OwnerObj->SetPos(ObjPos);
+			Owner->SetPos(ObjPos);
+
+			bDiagonalLine = Result.IsDiagonalLine;
 		}
 		else
 			bGround = false;
 	}
 
 	//  천장
-	if (!bGround && LineManager::GetInstance()->CollisionCeilingLine(OwnerObj->GetPos(), Result, OwnerObj->GetCollider()->GetSize().y))
+	if (!bGround && LineManager::GetInstance()->CollisionCeilingLine(Owner->GetPos(), Result, Owner->GetCollider()->GetSize().y))
 	{
-		FPOINT ObjPos = OwnerObj->GetPos();
+		FPOINT ObjPos = Owner->GetPos();
 		ObjPos.y = Result.OutPos.y;
-		OwnerObj->SetPos(ObjPos);
+		Owner->SetPos(ObjPos);
 	}
 }

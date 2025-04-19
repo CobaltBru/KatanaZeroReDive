@@ -19,7 +19,7 @@ class GameObject;
 
 struct FHitResult
 {
-	Collider* HitCollision;
+	Collider* HitCollision;		// 이름을 HitCollider로 바꿔야하는데 ㅠ
 };
 
 class CollisionManager : public Singleton<CollisionManager>
