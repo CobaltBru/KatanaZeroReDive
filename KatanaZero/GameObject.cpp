@@ -22,7 +22,7 @@ void GameObject::MakeSnapShot(void* out)
 }
 
 GameObject::GameObject()
-	:Pos({}), bDead(false)
+	:Pos({}), bDead(false), ObjectCollider(nullptr), ObjectRigidBody(nullptr)
 {
 }
 

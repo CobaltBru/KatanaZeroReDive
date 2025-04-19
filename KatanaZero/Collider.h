@@ -38,6 +38,7 @@ public:
 	void SetPivot(FPOINT pivot) { PivotPos = pivot; }
 	void SetHitDelayTime(float hitDelayTime) { HitDelayTime = hitDelayTime; }
 	void SetDead(bool bDead) { this->bDead = bDead; }
+	void SetPos(FPOINT InPos) { Pos = InPos; }
 private:
 	void DrawRectLine(HDC hdc, FPOINT HalfSize);
 private:

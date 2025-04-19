@@ -6,16 +6,12 @@
 #include "CollisionManager.h"
 #include "Collider.h"
 #include "ScrollManager.h"
-#include "SoundManager.h"
-#include "LineManager.h"
-#include "EffectManager.h"
 #include "RigidBody.h"
-
-#include "GPImage.h"
-
+#include "SimpleTestObject.h"
+#include "CommonFunction.h"
 
 SimpleObject::SimpleObject()
-	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
 {
 }
 
@@ -28,6 +24,7 @@ HRESULT SimpleObject::Init(FPOINT InPos)
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
+	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 
 	Speed = 300.f;
@@ -65,46 +62,6 @@ void SimpleObject::Render(HDC hdc)
 	}
 }
 
-void SimpleObject::Move()
-{
-	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
-	{
-		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
-	}
-
-	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
-	{
-		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
-	}
-
-	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
-	{
-		bJump = true;
-		dY = -10.f;
-	}
-	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
-	{
-		if (!bDown)
-			dY = 0.f;
-		bDown = true;
-	}
-
-	Jump();
-}
-
-void SimpleObject::Jump()
-{
-	if (bJump || bDown)
-	{
-		dY += Gravity;
-		Pos.y += dY * Speed * TimerManager::GetInstance()->GetDeltaTime();
-		if (dY >= 0.f)
-			bFalling = true;
-		else
-			bFalling = false;
-	}
-}
-
 void SimpleObject::Collision()
 {
 	// 충돌 정보
@@ -119,6 +76,13 @@ void SimpleObject::Collision()
 		HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
 
 		HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
+
+		FPOINT pos;
+		pos.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
+		pos.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
+		Normalize(pos);
+
+		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 100.f);
 	}
 }
 
@@ -146,11 +110,7 @@ void SimpleObject::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus())
 		return;
-	// 역재생시 스크롤 업데이트 따로
-	if (SnapShotManager::GetInstance()->IsReplaying())
-	{
-		return;
-	}
+	
 	// 스크롤 업데이트 (플레이어)
 
 	const float OffsetMinX = 200.f;

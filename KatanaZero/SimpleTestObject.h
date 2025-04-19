@@ -4,11 +4,11 @@
 class Image;
 class Collider;
 class RigidBody;
-class SimpleObject : public GameObject
+class SimpleTestObject : public GameObject
 {
 public:
-	SimpleObject();
-	virtual ~SimpleObject() = default;
+	SimpleTestObject();
+	virtual ~SimpleTestObject() = default;
 
 	HRESULT Init(FPOINT InPos);
 	virtual void Release();
@@ -19,19 +19,14 @@ public:
 	//Collider* GetCollider() const { return ObjectCollider; }
 	//RigidBody* GetRigidBody() const { return ObjectRigidBody; }
 	//FPOINT GetLastPos()  const { return LastPos; }
-	
 private:
 	void Collision();
-
-	void InitOffset();
-	void Offset();
 
 	void RigidBodyTest();
 
 private:
 	Image* Image;
-	/*Collider* ObjectCollider;
-	RigidBody* ObjectRigidBody;*/
+	//Collider* ObjectCollider;
 	float Speed;
 
 	FPOINT scroll;
@@ -46,6 +41,6 @@ private:
 
 
 	// 물리 필요한 데이터
-	//FPOINT LastPos;
+
 };
 

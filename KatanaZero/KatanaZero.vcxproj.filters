@@ -114,6 +114,9 @@
     </Filter>
     <Filter Include="MainGame\Enemy\Grunt">
       <UniqueIdentifier>{debbe255-3626-40ac-9dbb-63151611002d}</UniqueIdentifier>
+    </Filter>  
+    <Filter Include="MainGame\TaeKyung\Physics">
+      <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -277,7 +280,10 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
-      <Filter>MainGame\TaeKyung</Filter>
+      <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleTestObject.cpp">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
     <ClCompile Include="EnemyState.cpp">
       <Filter>MainGame\Enemy\EnemyState</Filter>
@@ -468,7 +474,10 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SimpleObject.h">
-      <Filter>MainGame\TaeKyung</Filter>
+      <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleTestObject.h">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClInclude>
     <ClInclude Include="EnemyState.h">
       <Filter>MainGame\Enemy\EnemyState</Filter>

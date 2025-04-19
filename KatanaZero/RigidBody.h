@@ -52,5 +52,6 @@ private:
 	bool bGravity;
 	bool bGround;
 	bool bDown;
+	bool bDiagonalLine;
 };
 

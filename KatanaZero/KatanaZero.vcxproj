@@ -180,6 +180,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
     <ClCompile Include="SimpleObject.cpp" />
+    <ClCompile Include="SimpleTestObject.cpp" />
     <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScrollManager.h" />
     <ClInclude Include="SimpleObject.h" />
+    <ClInclude Include="SimpleTestObject.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SnapShot.h" />
     <ClInclude Include="SnapShotManager.h" />
