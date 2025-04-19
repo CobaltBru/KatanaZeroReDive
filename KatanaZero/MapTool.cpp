@@ -12,7 +12,8 @@
 #include "LineManager.h"
 #include "SnapShotManager.h"
 
-#include "TaeKyungObject.h"
+#include "SimpleObject.h"
+#include "EffectManager.h"
 
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr)
@@ -21,6 +22,8 @@ MapTool::MapTool()
 
 HRESULT MapTool::Init()
 {
+	SoundManager::GetInstance()->StopAll();
+
 	SetClientRect(g_hWndParent, WINSIZE_X + TILEMAPTOOL_X, WINSIZE_Y);
 
 	ObjectManager = ObjectManager::GetInstance();
@@ -91,7 +94,7 @@ HRESULT MapTool::InitObject()
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	TaeKyungObject* taekyung = new TaeKyungObject();
+	SimpleObject* taekyung = new SimpleObject();
 	taekyung->Init({ 500.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
@@ -112,6 +115,7 @@ void MapTool::Release()
 	if (LineManager != nullptr)
 		LineManager->Release();
 	SnapShotManager::GetInstance()->Release();
+	EffectManager::GetInstance()->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;

@@ -176,6 +176,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
+    <ClCompile Include="SimpleObject.cpp" />
     <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScrollManager.h" />
+    <ClInclude Include="SimpleObject.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SnapShot.h" />
     <ClInclude Include="SnapShotManager.h" />

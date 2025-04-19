@@ -270,6 +270,9 @@
     <ClCompile Include="Animation.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SimpleObject.cpp">
+      <Filter>MainGame\TaeKyung</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -448,6 +451,9 @@
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleObject.h">
+      <Filter>MainGame\TaeKyung</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
