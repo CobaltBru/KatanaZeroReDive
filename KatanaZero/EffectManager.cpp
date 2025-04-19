@@ -27,12 +27,17 @@ void EffectManager::Release()
 
 void EffectManager::Update()
 {
-    map<string, Effect*>::iterator iter;
-    for (iter = mapFx.begin(); iter != mapFx.end(); iter++)
+    for (auto& fx : activeFx)
     {
-        if (iter->second)
-            iter->second->Update();
+        fx->Update();
     }
+    activeFx.erase(remove_if(activeFx.begin(), activeFx.end(), [](Effect* e) {
+        if (!e->IsActive()) 
+        { 
+            delete e; 
+            return true; 
+        }
+        return false; }), activeFx.end());
 
     float dt = TimerManager::GetInstance()->GetDeltaTime();
     for (auto& riter : remainFx)
@@ -40,7 +45,12 @@ void EffectManager::Update()
         riter.lifetime -= dt;
         riter.alpha = riter.lifetime / 0.5f;
     }
-    remainFx.erase(remove_if(remainFx.begin(), remainFx.end(), [](RemainEffect& e) { return e.lifetime <= 0; }), remainFx.end());
+    remainFx.erase(remove_if(remainFx.begin(), remainFx.end(), [](RemainEffect& e) { 
+        if (e.lifetime <= 0) { 
+            return true; 
+        }
+        return false; 
+    }), remainFx.end());
 }
 
 void EffectManager::Render(HDC hdc)
@@ -50,12 +60,12 @@ void EffectManager::Render(HDC hdc)
     {
         rIter.image->Middle_RenderFrame(&graphics, rIter.pos, rIter.frame, rIter.bFlip, rIter.alpha);
     }
-    map<string, Effect*>::iterator iter;
-    for (iter = mapFx.begin(); iter != mapFx.end(); iter++)
+    
+    for (auto& fx : activeFx)
     {
-        if (iter->second)
-            iter->second->Render(hdc);
+        fx->Render(hdc);
     }
+
 }
 
 void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, int maxFrameY)
@@ -113,14 +123,20 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, bool bFlip)
 {
     Effect* fx = Findfx(key);
     if (!fx) return;
-    fx->Activefx(pos, angle, bFlip);
+    Effect* newfx = new Effect(*fx); // ¾èº¹ -> ´ó±Û¸µ »µÅ· Æ÷ÀÎÅÍ ¹ß»ý
+    newfx->Activefx(pos, angle, bFlip);
+    activeFx.push_back(newfx);
+    //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);
 }
 
 void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip)
 {
     Effect* fx = Findfx(key);
     if (!fx) return;
-    fx->Activefx(pos, dest, speed, bFlip);
+    Effect* newfx = new Effect(*fx);
+    newfx->Activefx(pos, dest, speed, bFlip);
+    activeFx.push_back(newfx);
+    //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);
 }
 
 void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip)

@@ -2,6 +2,8 @@
 #include "config.h"
 
 
+class Collider;
+class RigidBody;
 class GameObject
 {
 public:
@@ -18,6 +20,7 @@ public:
 	FPOINT GetSpawnPos() { return spawnPos; }
 	bool IsDead() const { return bDead; }
 
+	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
 	void SetDead(bool InDead) { bDead = InDead; }
 
@@ -26,5 +29,18 @@ protected:
 
 	FPOINT spawnPos;
 	bool bDead;
+
+	
+
+	//테스트코드 태경
+public:
+	RigidBody* GetRigidBody() const { return ObjectRigidBody; }
+	Collider* GetCollider() const { return ObjectCollider; }
+	FPOINT GetLastPos() const { return LastPos; }
+protected:
+	Collider* ObjectCollider;
+	RigidBody* ObjectRigidBody;
+	FPOINT LastPos;
+
 };
 

@@ -67,7 +67,7 @@ HRESULT MainGame::Init()
 		MessageBox(NULL, L"폰트 생성 실패", L"Error", MB_OK);
 	}
 	
-	if (FAILED(backBuffer->Init(TILEMAPTOOL_X, TILEMAPTOOL_Y)))
+	if (FAILED(backBuffer->Init(WINSIZE_X, WINSIZE_Y)))
 	{
 		MessageBox(g_hWnd, 
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);

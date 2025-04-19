@@ -106,6 +106,12 @@
     <Filter Include="MainGame\Player">
       <UniqueIdentifier>{df2beb3a-5f89-47c4-b089-2d4e0b67311b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Physics">
+      <UniqueIdentifier>{a0d7a5c1-f88b-4dd7-8b76-6bf501ba20ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\TaeKyung\Physics">
+      <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -258,11 +264,20 @@
     <ClCompile Include="PlayerInput.cpp">
       <Filter>MainGame\Player</Filter>
     </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>2D Framework\Physics</Filter>
+    </ClCompile>
     <ClCompile Include="UIGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleObject.cpp">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleTestObject.cpp">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -431,6 +446,9 @@
     <ClInclude Include="PlayerInput.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>2D Framework\Physics</Filter>
+    </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
@@ -439,6 +457,12 @@
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleObject.h">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleTestObject.h">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
