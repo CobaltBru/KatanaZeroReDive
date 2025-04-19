@@ -18,6 +18,7 @@ public:
 	FPOINT GetSpawnPos() { return spawnPos; }
 	bool IsDead() const { return bDead; }
 
+	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
 	void SetDead(bool InDead) { bDead = InDead; }
 

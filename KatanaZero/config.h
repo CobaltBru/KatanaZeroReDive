@@ -43,10 +43,10 @@ using namespace std;
 /*
 	컴파일러에서 해당 코드를 뒤에 정의된 코드로 변경한다. 
 */
-#define WINSIZE_X	1080
-#define WINSIZE_Y	500
-#define TILEMAPTOOL_X	1420
-#define TILEMAPTOOL_Y	700
+#define WINSIZE_X	1600
+#define WINSIZE_Y	900
+#define TILEMAPTOOL_X	340
+#define TILEMAPTOOL_Y	200
 
 #define DEG_TO_RAD(degree) ((3.14 / 180.0) * degree)
 #define RAD_TO_DEG(radian) ((180.0 / 3.14) * radian)
@@ -55,6 +55,51 @@ typedef struct tagFPOINT
 {
 	float x;
 	float y;
+	tagFPOINT& operator +=(const tagFPOINT& fp2)
+	{
+		x += fp2.x;
+		y += fp2.y;
+		return *this;
+	}
+	tagFPOINT& operator *=(const float& f)
+	{
+		x *= f;
+		y *= f;
+		return *this;
+	}
+	tagFPOINT& operator -=(const float& f)
+	{
+		x -= f;
+		y -= f;
+		return *this;
+	}
+	
+
+	tagFPOINT operator *(const float& f)
+	{
+		tagFPOINT fp;
+
+		fp.x = x * f;
+		fp.y = y * f;
+		return fp;
+	}	
+	tagFPOINT operator /(const float& f)
+	{
+		tagFPOINT fp;
+
+		fp.x = x / f;
+		fp.y = y / f;
+		return fp;
+	}
+
+	tagFPOINT operator -()
+	{
+		tagFPOINT fp;
+		fp.x = -x;
+		fp.y = -y;
+		return fp;
+	}
+
 } FPOINT;
 
 typedef struct tagLINE

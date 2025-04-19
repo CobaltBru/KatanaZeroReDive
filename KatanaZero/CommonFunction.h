@@ -150,6 +150,21 @@ inline void DrawRoundRect(Gdiplus::Graphics* graphics, FPOINT pos, float width, 
 	graphics->FillPath(&brush, &path);
 }
 
+inline float GetLength(const FPOINT& InPoint)
+{
+	return sqrt(InPoint.x * InPoint.x + InPoint.y * InPoint.y);
+}
+
+inline void Normalize(FPOINT& InPoint)
+{
+	const float Length = GetLength(InPoint);
+	if(InPoint.x != 0.f)
+		InPoint.x /= Length;
+
+	if (InPoint.y != 0.f)
+		InPoint.y /= Length;
+}
+
 inline std::wstring Utf8ToWstring(const std::string& utf8) {
 	if (utf8.empty()) return {};
 	int size = ::MultiByteToWideChar(

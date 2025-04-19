@@ -135,7 +135,7 @@ void LineManager::DestroyAllLine()
 	}
 }
 
-bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance, bool IsDown)
+bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutResult, float tolerance, bool IsDown)
 {
 	if (LineList[(int)ELineType::Normal].empty() && LineList[(int)ELineType::DownLine].empty())
 		return false;
@@ -146,6 +146,9 @@ bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tole
 
 	const float HalfTolerance = tolerance * 0.5f;
 	const float ObjectBottom = InPos.y + HalfTolerance;
+	const float ObjectTop = InPos.y - HalfTolerance;
+
+	const float LastObjectBottom = InLastPos.y + HalfTolerance;
 
 	float NormalY = 0.f;
 	float DownY = 0.f;
@@ -170,8 +173,13 @@ bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tole
 				float y2 = iter->GetLine().RightPoint.y;
 
 				float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
+				
 
-				if (ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance)
+				// 이것만 이틀걸렸다.. 점심 나가서 먹을 것 같애~
+				/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
+				//&& (iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y&&))
+				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance 
+					&& ((i != (int)ELineType::DownLine) || LastObjectBottom <= dY))				
 				{
 					if (i == (int)ELineType::Normal)
 					{
@@ -223,6 +231,119 @@ bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tole
 	}
 
 	return true;
+}
+
+bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, bool IsGround, float tolerance, bool IsDown)
+{
+	if (LineList[(int)ELineType::Normal].empty() && LineList[(int)ELineType::DownLine].empty())
+		return false;
+
+	// 직선의 방정식으로 라인을 태우자.
+	// 캐릭터의 X 값으로 높이를 알 수 있다.
+	// 두점을 사용해 직선의 방정식을 구하자.
+
+	if (IsGround)
+	{
+		const float HalfTolerance = tolerance * 0.5f;
+		const float ObjectBottom = InPos.y + HalfTolerance;
+		const float ObjectTop = InPos.y - HalfTolerance;
+
+		const float LastObjectBottom = InLastPos.y + HalfTolerance;
+
+		float NormalY = 0.f;
+		float DownY = 0.f;
+		Line* NormalTarget = nullptr;
+		Line* DownTarget = nullptr;
+
+		for (int i = 0; i < (int)ELineType::DownLine + 1; ++i)
+		{
+			if (IsDown && i == (int)ELineType::DownLine)
+				break;
+
+			for (auto& iter : LineList[i])
+			{
+				// X Offset
+				// 해당 라인 안에 있다면
+				if (InPos.x >= iter->GetLine().LeftPoint.x && InPos.x <= iter->GetLine().RightPoint.x)
+				{
+					float x1 = iter->GetLine().LeftPoint.x;
+					float y1 = iter->GetLine().LeftPoint.y;
+
+					float x2 = iter->GetLine().RightPoint.x;
+					float y2 = iter->GetLine().RightPoint.y;
+
+					float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
+
+					//대각선
+					if (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y)
+					{
+						//왼쪽 대각선
+						//if()
+					}
+					else
+					{
+
+					}
+
+					// 이것만 이틀걸렸다.. 점심 나가서 먹을 것 같애~
+					/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
+					//&& (iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y&&))
+					if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance
+						/*&& ((i != (int)ELineType::DownLine) || LastObjectBottom <= dY)*/)
+					{
+						if (i == (int)ELineType::Normal)
+						{
+							NormalY = dY - HalfTolerance;
+							NormalTarget = iter;
+						}
+						else
+						{
+							DownY = dY - HalfTolerance;
+							DownTarget = iter;
+						}
+					}
+
+					/*float dy = abs(InPos.y - y);
+					if (dy <= tolerance)
+					{
+						OutResult.OutPos.y = y - tolerance;
+						OutResult.LineType = iter->GetLineType();
+						Target = iter;
+					}*/
+				}
+			}
+		}
+
+		if (NormalTarget == nullptr && DownTarget == nullptr)
+			return false;
+
+		// 예외
+		if (NormalTarget == nullptr || DownTarget == nullptr)
+		{
+			OutResult.OutPos.y = DownTarget == nullptr ? NormalY : DownY;
+			OutResult.LineType = DownTarget == nullptr ? NormalTarget->GetLineType() : DownTarget->GetLineType();
+
+			return true;
+		}
+
+		//두개의 라인 중 작은거
+		const float NormalDY = abs(ObjectBottom - (NormalY + HalfTolerance));
+		const float DownDY = abs(ObjectBottom - (DownY + HalfTolerance));
+		if (NormalDY >= DownDY)
+		{
+			OutResult.OutPos.y = DownY;
+			OutResult.LineType = DownTarget->GetLineType();
+		}
+		else
+		{
+			OutResult.OutPos.y = NormalY;
+			OutResult.LineType = NormalTarget->GetLineType();
+		}
+
+		return true;
+	}
+	else
+		return CollisionLine(InPos, InLastPos, OutResult, tolerance, IsDown);
 }
 
 bool LineManager::CollisionWallLine(FPOINT InPos, FLineResult& OutResult, FPOINT InSize)
@@ -430,7 +551,7 @@ HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 	return S_OK;
 }
 
-void LineManager::CreateLine(float InX, float InY)
+void LineManager::CreateLine(int InX, int InY)
 {
 	// 첫 피킹
 	if (!LinePoint[LEFT].x && !LinePoint[LEFT].y)
