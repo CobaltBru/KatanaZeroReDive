@@ -13,6 +13,7 @@
 #include "SnapShotManager.h"
 
 #include "SimpleObject.h"
+#include "SimpleTestObject.h"
 #include "EffectManager.h"
 
 MapTool::MapTool()
@@ -97,6 +98,11 @@ HRESULT MapTool::InitObject()
 	SimpleObject* taekyung = new SimpleObject();
 	taekyung->Init({ 500.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
+
+	SimpleTestObject* enemy = new SimpleTestObject();
+	enemy->Init({ 500.f,100.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
+	
 
 	return S_OK;
 }

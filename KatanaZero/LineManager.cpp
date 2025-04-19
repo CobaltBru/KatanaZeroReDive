@@ -193,14 +193,6 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 						DownTarget = iter;
 					}
 				}
-
-				/*float dy = abs(InPos.y - y);
-				if (dy <= tolerance)
-				{
-					OutResult.OutPos.y = y - tolerance;
-					OutResult.LineType = iter->GetLineType();
-					Target = iter;
-				}*/
 			}
 		}
 	}
