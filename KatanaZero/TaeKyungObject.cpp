@@ -11,9 +11,11 @@
 #include "EffectManager.h"
 #include "RigidBody.h"
 
+#include "GPImage.h"
+
 
 TaeKyungObject::TaeKyungObject()
-	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false), timer(0.0f)
 {
 }
 
@@ -32,15 +34,23 @@ HRESULT TaeKyungObject::Init(FPOINT InPos)
 
 	InitOffset();
 
+	gpImage = new GPImage();
+	gpImage->AddImage(L"Image/rocket.bmp", 1, 1);
+
 	return S_OK;
 }
 
 void TaeKyungObject::Update()
 {
+	//잔상 테스트 위한 타이머 추가
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	timer += dt;
+
 	LastPos = Pos;
 
-	RigidBodyTest();
-	//Move();
+	Move();
+	//RigidBodyTest();
+	
 
 	Collision();
 
@@ -64,7 +74,7 @@ void TaeKyungObject::Render(HDC hdc)
 	{
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-
+		scroll = Scroll;
 		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
 	}
 }
@@ -87,13 +97,29 @@ void TaeKyungObject::ApplySnapShot(const PlayerSnapShot& snapShot)
 void TaeKyungObject::Move()
 {
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+	{
+		if (timer >= 0.05f)
+		{
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, { Pos.x + scroll.x, Pos.y + scroll.y }, 0);
+			timer = 0.0f;
+		}
 		Pos.x -= Speed * TimerManager::GetInstance()->GetDeltaTime();
+	}
+		
 	else if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+	{
+		if (timer >= 0.05f)
+		{
+			EffectManager::GetInstance()->CreateRemainEffect(gpImage, {Pos.x + scroll.x, Pos.y + scroll.y}, 0);
+			timer = 0.0f;
+		}
 		Pos.x += Speed * TimerManager::GetInstance()->GetDeltaTime();
+	}
+		
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('W') || KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		bJump = true;
-		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y }, 0.0f, false);
+		EffectManager::GetInstance()->Activefx("jumpcloud", { this->Pos.x, this->Pos.y}, 0.0f, false);
 		dY = -10.f;
 	}
 	if (!bJump && KeyManager::GetInstance()->IsOnceKeyDown('S'))
@@ -248,5 +274,10 @@ void TaeKyungObject::Release()
 	{
 		delete ObjectRigidBody;
 		ObjectRigidBody = nullptr;
+	}
+	if (gpImage)
+	{
+		delete gpImage;
+		gpImage = nullptr;
 	}
 }

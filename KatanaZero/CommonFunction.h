@@ -164,3 +164,20 @@ inline void Normalize(FPOINT& InPoint)
 	if (InPoint.y != 0.f)
 		InPoint.y /= Length;
 }
+
+inline std::wstring Utf8ToWstring(const std::string& utf8) {
+	if (utf8.empty()) return {};
+	int size = ::MultiByteToWideChar(
+		CP_UTF8, 0,
+		utf8.data(), (int)utf8.size(),
+		nullptr, 0
+	);
+	std::wstring wstr;
+	wstr.resize(size);
+	::MultiByteToWideChar(
+		CP_UTF8, 0,
+		utf8.data(), (int)utf8.size(),
+		&wstr[0], size
+	);
+	return wstr;
+}

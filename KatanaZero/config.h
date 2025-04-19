@@ -18,6 +18,7 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#include "json.hpp"
 using namespace std;
 //using namespace Gdiplus;
 

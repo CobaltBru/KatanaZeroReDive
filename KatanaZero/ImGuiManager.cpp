@@ -362,7 +362,7 @@ void ImGuiManager::InitBackground()
 {
 	BackgroundObj = nullptr;
 
-	vector<string> backgrounds = GetFileNames("Image/*.bmp");
+	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
 
 	if (backgrounds.empty())
 		return;
