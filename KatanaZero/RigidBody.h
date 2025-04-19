@@ -23,6 +23,7 @@ public:
 	void SetGravityVisible(bool InGravity) { bGravity = InGravity; }
 	void SetAccelerationAlpha(FPOINT InAccelerationAlpha) { AccelerationAlpha = InAccelerationAlpha; }
 	void SetDown(bool InDown) { bDown = InDown; }
+	void SetElasticity(float InElasticity) { Elasticity = InElasticity; }
 
 	void AddForce(FPOINT InForce) {	Force += InForce;}
 	void AddVelocity(FPOINT InVelocity) { Velocity += InVelocity; }
@@ -43,7 +44,7 @@ private:
 	float Mass;				// 질량
 	 
 	float FrictionCoefficient; // 마찰계수
-	
+	float Elasticity; // 탄성
 
 	// F = m * a    즉 퓨마				힘 = 질량 * 가속도
 	// V += a * DT  (deltatime)

@@ -411,6 +411,8 @@ bool LineManager::CollisionCeilingLine(FPOINT InPos, FLineResult& OutResult, flo
 	// 캐릭터의 X 값으로 높이를 알 수 있다.
 	// 두점을 사용해 직선의 방정식을 구하자.
 	const float HalfTolerance = tolerance * 0.5f;
+	const float ObjectTop = InPos.y - HalfTolerance;
+
 	Line* Target = nullptr;
 
 	for (auto& iter : LineList[(int)ELineType::Ceiling])

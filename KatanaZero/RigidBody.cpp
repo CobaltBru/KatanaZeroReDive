@@ -8,12 +8,12 @@
 
 RigidBody::RigidBody()
 	: Owner(nullptr), Mass(0.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 0.f,0.f }), bGravity(false), Gravity(0.f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false)
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(1.f)
 {
 }
 RigidBody::RigidBody(GameObject* InOwner)
 	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(50.f), MaxVelocity({ 200.f ,300.f }), bGravity(true), Gravity(9.8f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false)
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(0.3f)
 {
 }
 
@@ -110,6 +110,11 @@ void RigidBody::CollisionLine()
 		FPOINT ObjPos = Owner->GetPos();
 		ObjPos.x = Result.OutPos.x;
 		Owner->SetPos(ObjPos);
+
+		Velocity.x = -Velocity.x * Elasticity;
+
+		if (abs(Velocity.x) < 1.f)
+			Velocity.x = 0.f;
 	}
 
 
@@ -123,7 +128,13 @@ void RigidBody::CollisionLine()
 		bDiagonalLine = Result.IsDiagonalLine;
 
 		bGround = true;
-		Velocity.y = 0.f;
+
+
+		//Velocity.y = 0.f;
+		Velocity.y = -Velocity.y * Elasticity;
+
+		if (abs(Velocity.y) < 1.f)
+			Velocity.y = 0.f;		
 	}
 	else
 	{
@@ -144,7 +155,12 @@ void RigidBody::CollisionLine()
 	if (!bGround && LineManager::GetInstance()->CollisionCeilingLine(Owner->GetPos(), Result, Owner->GetCollider()->GetSize().y))
 	{
 		FPOINT ObjPos = Owner->GetPos();
-		ObjPos.y = Result.OutPos.y;
-		Owner->SetPos(ObjPos);
+		//ObjPos.y = Result.OutPos.y;
+		//Owner->SetPos(ObjPos);
+
+		Velocity.y = -Velocity.y * Elasticity;
+
+		if (abs(Velocity.y) < 1.f)
+			Velocity.y = 0.f;
 	}
 }
