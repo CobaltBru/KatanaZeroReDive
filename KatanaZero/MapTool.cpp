@@ -114,8 +114,6 @@ void MapTool::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
-	SnapShotManager::GetInstance()->Release();
-	//EffectManager::GetInstance()->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;

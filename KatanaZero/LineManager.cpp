@@ -178,8 +178,9 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 				// 이것만 이틀걸렸다.. 점심 나가서 먹을 것 같애~
 				/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
 				//&& (iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y&&))
+				//&& LastObjectBottom <= dY /*((i != (int)ELineType::DownLine) || LastObjectBottom <= dY)*/
 				if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance 
-					&& ((i != (int)ELineType::DownLine) || LastObjectBottom <= dY))				
+					&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y)))
 				{
 					if (i == (int)ELineType::Normal)
 					{
@@ -210,8 +211,12 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 	// 예외
 	if (NormalTarget == nullptr || DownTarget == nullptr)
 	{
+		Line* Target = DownTarget == nullptr ? NormalTarget : DownTarget;
+
 		OutResult.OutPos.y = DownTarget == nullptr ? NormalY : DownY;
-		OutResult.LineType = DownTarget == nullptr ? NormalTarget->GetLineType() : DownTarget->GetLineType();
+		OutResult.LineType = Target->GetLineType();
+
+		OutResult.IsDiagonalLine = (Target->GetLine().LeftPoint.y != Target->GetLine().RightPoint.y);
 
 		return true;
 	}
@@ -223,11 +228,13 @@ bool LineManager::CollisionLine(FPOINT InPos,FPOINT InLastPos, FLineResult& OutR
 	{
 		OutResult.OutPos.y = DownY;
 		OutResult.LineType = DownTarget->GetLineType();
+		OutResult.IsDiagonalLine = (DownTarget->GetLine().LeftPoint.y != DownTarget->GetLine().RightPoint.y);
 	}
 	else
 	{
 		OutResult.OutPos.y = NormalY;
 		OutResult.LineType = NormalTarget->GetLineType();
+		OutResult.IsDiagonalLine = (NormalTarget->GetLine().LeftPoint.y != NormalTarget->GetLine().RightPoint.y);
 	}
 
 	return true;
@@ -274,22 +281,10 @@ bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& Out
 
 					float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
 
+				
 					//대각선
-					if (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y)
-					{
-						//왼쪽 대각선
-						//if()
-					}
-					else
-					{
-
-					}
-
-					// 이것만 이틀걸렸다.. 점심 나가서 먹을 것 같애~
-					/*&& ((iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y && LastObjectBottom <= dY) || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y))*/
-					//&& (iter->GetLine().LeftPoint.y == iter->GetLine().RightPoint.y || (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y&&))
-					if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance
-						/*&& ((i != (int)ELineType::DownLine) || LastObjectBottom <= dY)*/)
+					if (iter->GetLine().LeftPoint.y != iter->GetLine().RightPoint.y && InPos.x != InLastPos.x 
+						&& ObjectBottom < dY && OutResult.IsDiagonalLine)
 					{
 						if (i == (int)ELineType::Normal)
 						{
@@ -302,14 +297,23 @@ bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& Out
 							DownTarget = iter;
 						}
 					}
-
-					/*float dy = abs(InPos.y - y);
-					if (dy <= tolerance)
+					else
 					{
-						OutResult.OutPos.y = y - tolerance;
-						OutResult.LineType = iter->GetLineType();
-						Target = iter;
-					}*/
+						if (ObjectBottom >= dY && ObjectTop < dY && ObjectBottom >= dY - HalfTolerance && ObjectBottom <= dY + HalfTolerance
+							/*&& ((i != (int)ELineType::DownLine) || LastObjectBottom <= dY)*/)
+						{
+							if (i == (int)ELineType::Normal)
+							{
+								NormalY = dY - HalfTolerance;
+								NormalTarget = iter;
+							}
+							else
+							{
+								DownY = dY - HalfTolerance;
+								DownTarget = iter;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -320,8 +324,12 @@ bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& Out
 		// 예외
 		if (NormalTarget == nullptr || DownTarget == nullptr)
 		{
+			Line* Target = DownTarget == nullptr ? NormalTarget : DownTarget;
+
 			OutResult.OutPos.y = DownTarget == nullptr ? NormalY : DownY;
-			OutResult.LineType = DownTarget == nullptr ? NormalTarget->GetLineType() : DownTarget->GetLineType();
+			OutResult.LineType = Target->GetLineType();
+
+			OutResult.IsDiagonalLine = (Target->GetLine().LeftPoint.y != Target->GetLine().RightPoint.y);
 
 			return true;
 		}
@@ -333,11 +341,13 @@ bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& Out
 		{
 			OutResult.OutPos.y = DownY;
 			OutResult.LineType = DownTarget->GetLineType();
+			OutResult.IsDiagonalLine = (DownTarget->GetLine().LeftPoint.y != DownTarget->GetLine().RightPoint.y);
 		}
 		else
 		{
 			OutResult.OutPos.y = NormalY;
 			OutResult.LineType = NormalTarget->GetLineType();
+			OutResult.IsDiagonalLine = (NormalTarget->GetLine().LeftPoint.y != NormalTarget->GetLine().RightPoint.y);
 		}
 
 		return true;
