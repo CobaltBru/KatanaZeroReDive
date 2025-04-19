@@ -19,6 +19,7 @@ void UIGame::init()
 	battery.Start();
 
 	image = ImageManager::GetInstance()->AddImage("UItimer", L"Image/UI/spr_hud_timer.bmp", 224 * (UISCALE), 19 * (UISCALE), 2, 1, true, RGB(255, 0, 255));
+	TimerPos.x -= image->GetFrameWidth() / 2.f;
 	Timer.Init(image, 2);
 	Timer.setPos(TimerPos, false);
 	Timer.setTask({ {ONE,3.f},{TWO,0.05f},{ONE,0.1f},{TWO,0.05f},{ONE,2.f},{TWO,0.1f} });
