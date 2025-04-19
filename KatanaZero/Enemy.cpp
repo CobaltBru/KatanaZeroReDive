@@ -6,7 +6,7 @@
 #include "SnapShotManager.h"
 
 Enemy::Enemy()
-	:image(nullptr), ObjectCollider(nullptr), ObjectRigidBody(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false)
+	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f)
 {
 }
 
@@ -48,6 +48,15 @@ void Enemy::Update()
 
 void Enemy::Render(HDC hdc)
 {
+}
+
+void Enemy::MakeSnapShot(void* out)
+{
+	EnemySnapShot* eSnapShot = static_cast<EnemySnapShot*>(out);
+	eSnapShot->pos = this->GetPos();
+	eSnapShot->ID = 0;
+	eSnapShot->animFrame = currFrame;
+	eSnapShot->isDead = this->bDead;
 }
 
 void Enemy::UpdateAnimation()

@@ -139,7 +139,6 @@ void SimpleObject::RigidBodyTest()
 {
 	if (ObjectRigidBody == nullptr)
 		return;
-
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 		ObjectRigidBody->AddForce({ -200.f,0.f });
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))

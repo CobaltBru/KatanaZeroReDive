@@ -5,17 +5,18 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "SnapShotManager.h"
+#include "RenderManager.h"
 #include "EnemyState.h"
 
 HRESULT Grunt::Init(FPOINT InPos)
 {
+	InitImages();
 	Pos = InPos;
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 200.f;
-
-	InitImages();
 
 	return S_OK;
 }
@@ -34,7 +35,9 @@ void Grunt::InitImages()
 void Grunt::Update()
 {
 	UpdateAnimation();
-
+	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+	if (eState)
+		eState->Update(*this);
 }
 
 void Grunt::Render(HDC hdc)
