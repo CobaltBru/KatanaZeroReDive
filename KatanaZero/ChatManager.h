@@ -137,6 +137,7 @@ private:
 
 
 public:
+	virtual ~ChatManager() = default;
 	inline void pushPos(FPOINT pos) { poses.push_back(pos); }
 	void Push(string key, string next,int pos, Chat* chat);
 	void startChat(string key);
