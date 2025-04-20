@@ -1,17 +1,17 @@
 #include "Animation.h"
 #include "Image.h"
+#include "CommonFunction.h"
 
 void Animation::Init(Image* image, int frameX)
 {
 	this->image = image;
 	this->frameX = frameX;
-	taskIdx = 0;
-	idx = 0;
+	anitaskIdx = 0;
+	frameIdx = 0;
 	flip = false;
 
-	isSour = false;
 	sStart = 0.f;
-	sEnd = 100.f;
+	sEnd = 1.f;
 
 	timer = 0;
 	isStart = false;
@@ -23,12 +23,39 @@ void Animation::Update()
 	if (isStart)
 	{
 		timer += TimerManager::GetInstance()->GetDeltaTime();
-		if (timer >= tasks[taskIdx].second)
+		if (timer >= aniTasks[anitaskIdx].second)
 		{
-			taskIdx++;
-			if (taskIdx >= tasks.size())taskIdx = 0;
-			idx = tasks[taskIdx].first;
+			anitaskIdx++;
+			if (anitaskIdx >= aniTasks.size())anitaskIdx = 0;
+			frameIdx = aniTasks[anitaskIdx].first;
 			timer = 0.f;
+		}
+	}
+	if (isMove)
+	{
+		moveTask.timer += TimerManager::GetInstance()->GetDeltaTime();
+		float percent = min(moveTask.timer / moveTask.duration, 1.0f);
+
+		float rate;
+		if (moveTask.flag & (Move_SoftStart | Move_SoftEnd))rate = SoftStartEnd(percent);
+		else if (moveTask.flag & Move_SoftStart) rate = SoftStart(percent);
+		else if (moveTask.flag & Move_SoftEnd)rate = SoftEnd(percent);
+		
+		else rate = percent;
+
+		moveTask.offset.x = moveTask.src.x + (moveTask.dest.x - moveTask.src.x) * rate;
+		moveTask.offset.y = moveTask.src.y + (moveTask.dest.y - moveTask.src.y) * rate;
+
+		if (moveTask.timer >= moveTask.duration)
+		{
+			if (moveTask.flag & Move_Loop)
+			{
+				moveTask.timer = 0.f;
+			}
+			else if (moveTask.flag & Move_Stop)
+			{
+				MoveOff();
+			}
 		}
 	}
 	
@@ -39,18 +66,17 @@ void Animation::Render(HDC hdc)
 {
 	if (isOn)
 	{
-		if (!isSour)
-			image->FrameRender(hdc, pos.x, pos.y, idx, 0, flip, anker);
-		else
-			image->SourFrameRenderWidth(hdc, pos.x, pos.y, idx, 0, sStart, sEnd, flip, anker);
+		image->SourFrameRenderWidth(hdc, pos.x + moveTask.offset.x, pos.y + moveTask.offset.y,
+			frameIdx, 0, sStart, sEnd, flip, anker);
+		
 	}
 	
 }
 
 void Animation::Start()
 {
-	taskIdx = 0;
-	idx = 0;
+	anitaskIdx = 0;
+	frameIdx = 0;
 	timer = 0;
 	isStart = true;
 }
@@ -72,6 +98,23 @@ void Animation::Off()
 	this->Stop();
 }
 
+
+void Animation::MoveOn(FPOINT dest, float duration, int flag)
+{
+	isMove = true;
+	moveTask.src = {0,0};
+	moveTask.dest = dest;
+	moveTask.offset = {0,0};
+	moveTask.duration = duration;
+	moveTask.flag = flag;
+	moveTask.timer = 0;
+}
+
+void Animation::MoveOff()
+{
+	isMove = false;
+}
+
 void Animation::setPos(FPOINT pos, bool flip, bool anker)
 {
 	this->pos = pos;
@@ -81,20 +124,19 @@ void Animation::setPos(FPOINT pos, bool flip, bool anker)
 
 void Animation::setSour(float start, float end)
 {
-	isSour = true;
 	sStart = start;
 	sEnd = end;
 }
 
-void Animation::setTask(initializer_list<pair<int, float>> lst)
+void Animation::setAniTask(initializer_list<pair<int, float>> lst)
 {
 	for (auto task : lst)
 	{
-		tasks.push_back(task);
+		aniTasks.push_back(task);
 	}
 }
 
-void Animation::setTask(std::vector<pair<int, float>>& lst)
+void Animation::setAniTask(std::vector<pair<int, float>>& lst)
 {
-	tasks.assign(lst.begin(), lst.end());
+	aniTasks.assign(lst.begin(), lst.end());
 }
