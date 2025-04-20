@@ -41,6 +41,7 @@ public:
 	virtual ~Enemy();
 	virtual HRESULT Init(FPOINT InPos);
 	virtual void InitImages();
+	virtual void InitRigidBodySetting();
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
@@ -50,6 +51,9 @@ public:
 	int GetMaxAttackFrame() const;
 	int GetCurrFrame() const { return currFrame; }
 	EType GetEnemyType() const { return eType; }
+	int GetDir() const { return dir; }
+	void SetDir(int InDir) { dir = InDir; }
+	float GetSpeed() const { return Speed; }
 
 	void UpdateAnimation();
 	void ChangeState(EnemyState* newState);

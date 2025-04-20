@@ -32,16 +32,6 @@ void Grunt::InitImages()
 	image = images[(int)EImageType::IDLE];
 }
 
-
-void Grunt::Render(HDC hdc)
-{
-	if (image)
-	{
-		Gdiplus::Graphics graphics(hdc);
-		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 2.5f, 2.5f);
-	}
-}
-
 void Grunt::Patrol()
 {
 }

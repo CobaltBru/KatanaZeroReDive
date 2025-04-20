@@ -1,6 +1,7 @@
 #include "EnemyState.h"
 #include "Enemy.h"
 #include "RigidBody.h"
+#include "SnapShotManager.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -42,11 +43,18 @@ void EWalk::Enter(Enemy& enemy)
 void EWalk::Update(Enemy& enemy)
 {
 	walktimer += TimerManager::GetInstance()->GetDeltaTime();
+
+	int dir = enemy.GetDir();
+	const float speed = enemy.GetSpeed();
+
+	enemy.GetRigidBody()->SetVelocity({ dir * speed, 0.f });
+
 	enemy.GetRigidBody()->Update();
 }
 
 void EWalk::Exit(Enemy& enemy)
 {
+	enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
 }
 
 EnemyState* EWalk::CheckTransition(Enemy* enemy)
@@ -70,6 +78,17 @@ void ERun::Enter(Enemy& enemy)
 
 void ERun::Update(Enemy& enemy)
 {
+	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return;
+
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	FPOINT pos = enemy.GetPos();
+
+	float dx = playerPos.x - pos.x;
+	int dir = (dx > 0) ? 1 : -1;
+	enemy.SetDir(dir);
+	const float chaseSpeed = enemy.GetSpeed() * 2.f;
+	enemy.GetRigidBody()->SetVelocity({ dir * chaseSpeed, 0.f });
+
 	enemy.GetRigidBody()->Update();
 }
 

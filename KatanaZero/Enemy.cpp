@@ -26,6 +26,29 @@ void Enemy::InitImages()
 {
 }
 
+void Enemy::InitRigidBodySetting()
+{
+	if (ObjectRigidBody == nullptr)
+		return;
+
+	// 탄성 적용안함  0 ~ 1 사이
+	ObjectRigidBody->SetElasticity(0.3f);
+
+	// 중력 적용
+	ObjectRigidBody->SetGravityVisible(true);
+	// 저항 
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
+	//무게
+	ObjectRigidBody->SetMass(1.f);
+	//최대 속도
+	ObjectRigidBody->SetMaxVelocity({ 200.f,400.f });
+	//마찰
+	ObjectRigidBody->SetFriction(50.f);
+
+	//밑으로 내려가고 싶을 때
+	//ObjectRigidBody->SetDown(true);
+}
+
 void Enemy::Release()
 {
 	for (auto& img : images)
@@ -64,6 +87,11 @@ void Enemy::Update()
 
 void Enemy::Render(HDC hdc)
 {
+	if (image)
+	{
+		Gdiplus::Graphics graphics(hdc);
+		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 2.5f, 2.5f);
+	}
 }
 
 void Enemy::MakeSnapShot(void* out)
@@ -93,6 +121,14 @@ void Enemy::UpdateAnimation()
 		}
 		frameTimer = 0.f;
 	}
+	if (dir == -1)
+	{
+		bFlip = true;
+	}
+	else if(dir == 1)
+	{
+		bFlip = false;
+	}
 }
 
 void Enemy::ChangeState(EnemyState* newState)
@@ -119,6 +155,17 @@ void Enemy::ChangeAnimation(EImageType newImage)
 
 bool Enemy::Detecting()
 {
+	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	
+	float dx = playerPos.x - Pos.x;
+	float dist = fabs(dx);
+
+	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	{
+		return dist < detectRange;
+	}
+
 	return false;
 }
 
