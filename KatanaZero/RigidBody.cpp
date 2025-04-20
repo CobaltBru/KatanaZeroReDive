@@ -6,7 +6,7 @@
 
 RigidBody::RigidBody()
 	: Owner(nullptr), Mass(0.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 0.f,0.f }), bGravity(false), Gravity(0.f),
-	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(0.f), SaveAccelerationAlpha({0.f,0.f})
+	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(0.f), SaveAccelerationAlpha({ 0.f,0.f })
 {
 	ZeroMemory(&Result, sizeof(FLineResult));
 }
@@ -14,7 +14,7 @@ RigidBody::RigidBody(GameObject* InOwner)
 	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(50.f), MaxVelocity({ 200.f ,600.f }), bGravity(true), Gravity(9.8f),
 	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(0.f), SaveAccelerationAlpha({ 0.f,800.f })
 {
-	ZeroMemory(&Result, sizeof(FLineResult));	
+	ZeroMemory(&Result, sizeof(FLineResult));
 }
 
 RigidBody::~RigidBody()
@@ -100,22 +100,11 @@ void RigidBody::CollisionLine()
 {
 	if (!bGravity)
 		return;
-	
+
+	// 사실 각 라인 충돌이 필요한 클래스에서 충돌됐을 때의 로직을 맡기는게 맞는데, 일단 모두 관리하게끔 여기서 관리함.
+
 	ZeroMemory(&Result, sizeof(FLineResult));
 	Result.IsDiagonalLine = bDiagonalLine;
-
-	// 벽
-	if (LineManager::GetInstance()->CollisionWallLine(Owner->GetPos(), Owner->GetLastPos(), Result, Owner->GetCollider()->GetSize()))
-	{
-		FPOINT ObjPos = Owner->GetPos();
-		ObjPos.x = Result.OutPos.x;
-		Owner->SetPos(ObjPos);
-
-		Velocity.x = -Velocity.x * Elasticity;
-
-		if (abs(Velocity.x) < 1.f)
-			Velocity.x = 0.f;
-	}
 
 	// 땅
 	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(Owner->GetPos(), Owner->GetLastPos(), Result, bGround, Owner->GetCollider()->GetSize().y, bDown))
@@ -133,7 +122,7 @@ void RigidBody::CollisionLine()
 		Velocity.y = -Velocity.y * Elasticity;
 
 		if (abs(Velocity.y) < 1.f)
-			Velocity.y = 0.f;		
+			Velocity.y = 0.f;
 	}
 	else
 	{
@@ -150,6 +139,7 @@ void RigidBody::CollisionLine()
 			bGround = false;
 	}
 
+
 	//  천장
 	if (!bGround && LineManager::GetInstance()->CollisionCeilingLine(Owner->GetPos(), Owner->GetLastPos(), Result, Owner->GetCollider()->GetSize().y))
 	{
@@ -162,4 +152,18 @@ void RigidBody::CollisionLine()
 		if (abs(Velocity.y) < 1.f)
 			Velocity.y = 0.f;
 	}
+	// 벽
+	else if (LineManager::GetInstance()->CollisionWallLine(Owner->GetPos(), Owner->GetLastPos(), Result, Owner->GetCollider()->GetSize()))
+	{
+		FPOINT ObjPos = Owner->GetPos();
+		ObjPos.x = Result.OutPos.x;
+		Owner->SetPos(ObjPos);
+
+		Velocity.x = -Velocity.x * Elasticity;
+
+		if (abs(Velocity.x) < 1.f)
+			Velocity.x = 0.f;
+	}
+
+
 }
