@@ -369,7 +369,7 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FPOINT InLastPos, FLineResult&
 	for (auto& iter : LineList[(int)ELineType::Wall])
 	{
 		// 해당 수직안에 있다.		
-		if (ObjectRC.bottom >= min(iter->GetLine().RightPoint.y, iter->GetLine().LeftPoint.y) && ObjectRC.top <= max(iter->GetLine().RightPoint.y, iter->GetLine().LeftPoint.y))
+		if (ObjectRC.bottom > min(iter->GetLine().RightPoint.y, iter->GetLine().LeftPoint.y) && ObjectRC.top < max(iter->GetLine().RightPoint.y, iter->GetLine().LeftPoint.y))
 		{
 			// 양쪽에 라인이 있을 때 
 			// 수직이기 때문에 x값으로 비교하자.			
@@ -378,16 +378,17 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FPOINT InLastPos, FLineResult&
 			{
 				const float LeftLength = abs(ObjectRC.left - iter->GetLine().LeftPoint.x);
 				const float RightLength = abs(ObjectRC.right - iter->GetLine().LeftPoint.x);
+
 				if (InPos.x >= InLastPos.x && LeftLength > RightLength)
 				{
-					OutResult.OutPos.x = iter->GetLine().LeftPoint.x - HalfSize.x;
+					OutResult.OutPos.x = iter->GetLine().LeftPoint.x - HalfSize.x;					
 					OutResult.LineType = iter->GetLineType();
 					Target = iter;
 
 					OutResult.IsLeft = false;
 				}
 				else if (InPos.x <= InLastPos.x && LeftLength < RightLength)
-				{
+				{					
 					OutResult.OutPos.x = iter->GetLine().LeftPoint.x + HalfSize.x;
 					OutResult.LineType = iter->GetLineType();
 					Target = iter;
