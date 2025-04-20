@@ -2,6 +2,9 @@
 #include "Enemy.h"
 #include "RigidBody.h"
 #include "SnapShotManager.h"
+#include "Collider.h"
+#include "CollisionManager.h"
+#include "GPImage.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -47,7 +50,7 @@ void EWalk::Update(Enemy& enemy)
 	int dir = enemy.GetDir();
 	const float speed = enemy.GetSpeed();
 
-	enemy.GetRigidBody()->SetVelocity({ dir * speed, 0.f });
+	enemy.GetRigidBody()->AddVelocity({ dir * speed, 0.f });
 
 	enemy.GetRigidBody()->Update();
 }
@@ -87,7 +90,7 @@ void ERun::Update(Enemy& enemy)
 	int dir = (dx > 0) ? 1 : -1;
 	enemy.SetDir(dir);
 	const float chaseSpeed = enemy.GetSpeed() * 2.f;
-	enemy.GetRigidBody()->SetVelocity({ dir * chaseSpeed, 0.f });
+	enemy.GetRigidBody()->AddVelocity({ dir * chaseSpeed, 0.f });
 
 	enemy.GetRigidBody()->Update();
 }
@@ -149,6 +152,10 @@ void EDead::Enter(Enemy& enemy)
 
 void EDead::Update(Enemy& enemy)
 {
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame())
+	{
+		enemy.SetDead(true);
+	}
 }
 
 void EDead::Exit(Enemy& enemy)

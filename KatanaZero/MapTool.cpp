@@ -16,6 +16,10 @@
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
 
+// 해영 Enemy 테스트
+#include "Enemy.h"
+#include "Enemies.h"
+
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), fxManager(nullptr)
 {
@@ -105,6 +109,9 @@ HRESULT MapTool::InitObject()
 	enemy->Init({ 500.f,200.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
 	
+	Grunt* grunt = new Grunt();
+	grunt->Init({ 300.f,200.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
 
 	return S_OK;
 }

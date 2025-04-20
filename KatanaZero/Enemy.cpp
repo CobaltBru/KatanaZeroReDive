@@ -9,7 +9,7 @@
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
-	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None)
+	Gravity(0.1f), bFalling(true), bDown(false), dir(-1), detectRange(0.f), attackRange(0.f), eType(EType::None)
 {
 }
 
@@ -51,6 +51,17 @@ void Enemy::InitRigidBodySetting()
 
 void Enemy::Release()
 {
+	if (ObjectRigidBody != nullptr)
+	{
+		delete ObjectRigidBody;
+		ObjectRigidBody = nullptr;
+	}
+	if (eState)
+	{
+		delete eState;
+		eState = nullptr;
+	}
+	image = nullptr;
 	for (auto& img : images)
 	{
 		if (img)
@@ -61,11 +72,6 @@ void Enemy::Release()
 		}
 	}
 	images.clear();
-	if (ObjectRigidBody != nullptr)
-	{
-		delete ObjectRigidBody;
-		ObjectRigidBody = nullptr;
-	}
 }
 
 void Enemy::Update()
@@ -90,7 +96,7 @@ void Enemy::Render(HDC hdc)
 	if (image)
 	{
 		Gdiplus::Graphics graphics(hdc);
-		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 2.5f, 2.5f);
+		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 1.f, 1.f);
 	}
 }
 
@@ -105,11 +111,13 @@ void Enemy::MakeSnapShot(void* out)
 
 int Enemy::GetMaxAttackFrame() const
 {
+	if (image == nullptr) return 0;
 	return images[(int)EImageType::Attack]->getMaxFrame();
 }
 
 void Enemy::UpdateAnimation()
 {
+	if (image == nullptr) return;
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	frameTimer += dt;
 	if (frameTimer > 0.1f)
@@ -148,6 +156,7 @@ void Enemy::ChangeState(EnemyState* newState)
 
 void Enemy::ChangeAnimation(EImageType newImage)
 {
+	if (image == nullptr) return;
 	currFrame = 0;
 	if (image == images[(int)newImage]) return;
 	image = images[(int)newImage];
@@ -171,6 +180,15 @@ bool Enemy::Detecting()
 
 bool Enemy::IsInAttackRange()
 {
-	float dist = fabs(Pos.x - SnapShotManager::GetInstance()->GetPlayer().front()->GetPos().x);
-	return dist < attackRange;
+	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	float dx = playerPos.x - Pos.x;
+	float dist = fabs(dx);
+
+	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	{
+		return dist < attackRange;
+	}
+
+	return false;
 }

@@ -34,7 +34,7 @@ class EIDLE : public EnemyState
 {
 private:
 	float idletimer{ 0.f };
-	float idleCooldown{ 1.f };
+	float idleCooldown{ 2.f };
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
