@@ -181,3 +181,18 @@ inline std::wstring Utf8ToWstring(const std::string& utf8) {
 	);
 	return wstr;
 }
+
+inline float SoftStart(float t)
+{
+	return t * t;
+}
+inline float SoftEnd(float t)
+{
+	return 1 - (1 - t) * (1 - t);
+}
+inline float SoftStartEnd(float t)
+{
+	return t < 0.5f
+		? 2 * t * t
+		: 1 - 2 * (1 - t) * (1 - t);
+}

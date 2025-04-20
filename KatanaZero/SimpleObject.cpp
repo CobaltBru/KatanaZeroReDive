@@ -11,7 +11,7 @@
 #include "CommonFunction.h"
 
 SimpleObject::SimpleObject()
-	:Image(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr), ScrollSpeed(0.f), bWall(false)
 {
 }
 
@@ -27,9 +27,11 @@ HRESULT SimpleObject::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 
-	Speed = 300.f;
+	InitRegidBodySetting();
 
 	InitOffset();
+
+	ScrollSpeed = 300.f;
 
 	return S_OK;
 }
@@ -38,9 +40,7 @@ void SimpleObject::Update()
 {
 	LastPos = Pos;
 
-	//Move();
 	RigidBodyTest();
-
 
 	Collision();
 
@@ -82,7 +82,8 @@ void SimpleObject::Collision()
 		pos.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
 		Normalize(pos);
 
-		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 100.f);
+		// 상대방의 리지드바디에 힘을 전달
+		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
 	}
 }
 
@@ -123,14 +124,14 @@ void SimpleObject::Offset()
 	FPOINT newScroll{};
 
 	if (OffsetMaxX < Pos.x + Scroll.x)
-		newScroll.x = -Speed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.x = -ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
 	if (OffsetMinX > Pos.x + Scroll.x && OffsetMinX < Pos.x)
-		newScroll.x = Speed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.x = ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
 
 	if (OffsetMaxY < Pos.y + Scroll.y)
-		newScroll.y = -Speed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.y = -ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
 	if (OffsetMinY > Pos.y + Scroll.y && OffsetMinY < Pos.y)
-		newScroll.y = Speed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.y = ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
 
 	ScrollManager::GetInstance()->SetScroll(newScroll);
 }
@@ -140,10 +141,62 @@ void SimpleObject::RigidBodyTest()
 	if (ObjectRigidBody == nullptr)
 		return;
 
+	PhysicsMove();
+
+	//NoPhysicsMove();
+
+	ObjectRigidBody->Update();
+
+	//업데이트 후 충돌된 라인의 정보를 받아 올 수 있다.
+	const FLineResult Result = ObjectRigidBody->GetResult();
+	
+	if (Result.LineType == ELineType::Wall)
+	{
+		ObjectRigidBody->SetAccelerationAlpha({ 0.f,500.f });
+		bWall = true;
+
+		const float L = Pos.x - (ObjectCollider->GetSize().x * 0.5f);
+		const float R = Pos.x + (ObjectCollider->GetSize().x * 0.5f);
+
+		const float LeftLength = abs(L - Result.OutPos.x);
+		const float RightLength = abs(R - Result.OutPos.x);
+
+		bIsLeft = Result.IsLeft;
+	}
+	else
+	{
+		ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
+		bWall = false;
+	}
+}
+
+void SimpleObject::InitRegidBodySetting()
+{
+	if (ObjectRigidBody == nullptr)
+		return;
+
+	// 탄성 적용안함  0 ~ 1 사이
+	ObjectRigidBody->SetElasticity(0.f);
+	// 중력 적용
+	ObjectRigidBody->SetGravityVisible(true);
+	// 저항 
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
+	//무게
+	ObjectRigidBody->SetMass(5.f);
+	//최대 속도
+	ObjectRigidBody->SetMaxVelocity({ 200.f,400.f });
+	//마찰
+	ObjectRigidBody->SetFriction(300.f);
+}
+
+void SimpleObject::PhysicsMove()
+{
+	// 미끄러진다~ 
+
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
-		ObjectRigidBody->AddForce({ -200.f,0.f });
+		ObjectRigidBody->AddVelocity({ -200.f,0.f });
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
-		ObjectRigidBody->AddForce({ 200.f,0.f });
+		ObjectRigidBody->AddVelocity({ 200.f,0.f });
 
 	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
 		ObjectRigidBody->SetDown(true);
@@ -151,14 +204,38 @@ void SimpleObject::RigidBodyTest()
 		ObjectRigidBody->SetDown(false);
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
-		ObjectRigidBody->AddVelocity({ 0.f,-200.f });
+	{
+		if (bWall)
+		{
+			ObjectRigidBody->AddVelocity({ (bIsLeft ? 200.f : -200.f) ,-500.f });
+		}
+		else
+		{
+			ObjectRigidBody->AddVelocity({ 0.f,-300.f });
+		}
+	}
+		
+	//if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+	//	ObjectRigidBody->AddVelocity({ -200.f,0.f });
+	//if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+	//	ObjectRigidBody->AddVelocity({ 200.f,0.f });
+}
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+void SimpleObject::NoPhysicsMove()
+{
+	ObjectRigidBody->SetVelocity({ 0.f,ObjectRigidBody->GetVelocity().y});
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+		ObjectRigidBody->AddVelocity({ 0.f,-200.f });
+	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 		ObjectRigidBody->AddVelocity({ -200.f,0.f });
-	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 		ObjectRigidBody->AddVelocity({ 200.f,0.f });
 
-	ObjectRigidBody->Update();
+	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
+		ObjectRigidBody->SetDown(true);
+	else
+		ObjectRigidBody->SetDown(false);
 }
 
 void SimpleObject::Release()

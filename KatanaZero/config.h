@@ -100,6 +100,15 @@ typedef struct tagFPOINT
 		return fp;
 	}
 
+	bool operator == (const tagFPOINT& fp2)
+	{
+		return (x == fp2.x && y == fp2.y);
+	}
+	bool operator != (const tagFPOINT& fp2)
+	{
+		return (x != fp2.x || y != fp2.y);
+	}
+
 } FPOINT;
 
 typedef struct tagLINE
@@ -126,6 +135,14 @@ enum class ELineType
 	Wall,	
 	Ceiling,
 	End
+};
+
+struct FLineResult
+{
+	FPOINT OutPos;
+	ELineType LineType;
+	bool IsDiagonalLine;
+	bool IsLeft;
 };
 
 /*
