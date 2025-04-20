@@ -299,7 +299,9 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
 
     imageInfo->currFrameX = frameX;
     imageInfo->currFrameY = frameY;
-
+    start = max(0.f, start);
+    end = min(1.f, end);
+    if (start > end)return;
     float startX = imageInfo->frameWidth * start;
     float endX = imageInfo->frameWidth * end;
 

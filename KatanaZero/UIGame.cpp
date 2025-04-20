@@ -14,7 +14,7 @@ void UIGame::init()
 		image = ImageManager::GetInstance()->AddImage("UIbattery_bar", L"Image/UI/spr_hud_battery.bmp", 154.f * (UISCALE), 19.f * (UISCALE), 2, 1, true, RGB(255, 0, 255));
 		battery.Init(image, 2);
 		battery.setPos(batteryPos, false, false);
-		battery.setTask(batteryTask);
+		battery.setAniTask(batteryTask);
 		battery.On();
 		battery.Start();
 
@@ -29,7 +29,7 @@ void UIGame::init()
 
 			batteryCellBlue[i].Init(image, 2);
 			batteryCellBlue[i].setPos(batteryCellPos[i], false, false);
-			batteryCellBlue[i].setTask(batteryTask);
+			batteryCellBlue[i].setAniTask(batteryTask);
 			batteryCellBlue[i].On();
 			batteryCellBlue[i].Start();
 		}
@@ -40,7 +40,7 @@ void UIGame::init()
 
 			batteryCellRed[i].Init(image, 2);
 			batteryCellRed[i].setPos(batteryCellPos[i], false, false);
-			batteryCellRed[i].setTask(batteryTask);
+			batteryCellRed[i].setAniTask(batteryTask);
 			batteryCellRed[i].On();
 			batteryCellRed[i].Start();
 		}
@@ -48,7 +48,7 @@ void UIGame::init()
 		image = ImageManager::GetInstance()->AddImage("UIShift", L"Image/UI/spr_keyboard_shift.bmp", 60.f * (UISCALE), 14.f * (UISCALE), 2, 1, true, RGB(255, 0, 255));
 		shiftButton.Init(image, 2);
 		shiftButton.setPos({ batteryPos.x + 190.f, batteryPos.y + 5.f }, false, false);
-		shiftButton.setTask({ {ONE, 0.f},{TWO,0.f} });
+		shiftButton.setAniTask({ {ONE, 0.f},{TWO,0.f} });
 		shiftButton.On();
 	
 	
@@ -68,7 +68,7 @@ void UIGame::init()
 		timerPos.x -= (image->GetFrameWidth() / 2.f + 12.f);
 		timerUI.Init(image, 2);
 		timerUI.setPos(timerPos, false, false);
-		timerUI.setTask(timerTask);
+		timerUI.setAniTask(timerTask);
 		timerUI.On();
 		timerUI.Start();
 
@@ -76,9 +76,10 @@ void UIGame::init()
 		timerBarPos = { timerPos.x + 42.f, timerPos.y + 5.f };
 		timerBarUI.Init(image, 2);
 		timerBarUI.setPos(timerBarPos, false,false);
-		timerBarUI.setTask(timerTask);
+		timerBarUI.setAniTask(timerTask);
 		timerBarUI.On();
 		timerBarUI.Start();
+		//timerBarUI.MoveOn({ 0,30.f }, 1.0f, (Move_SoftStart | Move_Loop));
 
 	}
 	//itemslot
@@ -88,7 +89,7 @@ void UIGame::init()
 		slotPos.x -= (image->GetFrameWidth() + 20.f);
 		itemSlot.Init(image, 2);
 		itemSlot.setPos(slotPos, false);
-		itemSlot.setTask({ {ONE,3.f},{TWO,0.05f},{ONE,0.1f},{TWO,0.05f},{ONE,1.f},{TWO,0.1f} });
+		itemSlot.setAniTask({ {ONE,3.f},{TWO,0.05f},{ONE,0.1f},{TWO,0.05f},{ONE,1.f},{TWO,0.1f} });
 		itemSlot.On();
 		itemSlot.Start();
 
