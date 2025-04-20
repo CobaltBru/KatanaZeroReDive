@@ -299,7 +299,9 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
 
     imageInfo->currFrameX = frameX;
     imageInfo->currFrameY = frameY;
-
+    start = max(0.f, start);
+    end = min(1.f, end);
+    if (start > end)return;
     float startX = imageInfo->frameWidth * start;
     float endX = imageInfo->frameWidth * end;
 
@@ -315,12 +317,12 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
         );
 
         GdiTransparentBlt(hdc,
-            x, y,
-            imageInfo->frameWidth, imageInfo->frameHeight,
+            x + startX, y,
+            endX - startX, imageInfo->frameHeight,
 
             imageInfo->hTempDC,
             0, 0,
-            imageInfo->frameWidth, imageInfo->frameHeight,
+            imageInfo->frameWidth - endX, imageInfo->frameHeight,
             transColor);
     }
     else if (isTransparent)

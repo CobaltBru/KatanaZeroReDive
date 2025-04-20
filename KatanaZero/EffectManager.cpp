@@ -123,7 +123,7 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, bool bFlip)
 {
     Effect* fx = Findfx(key);
     if (!fx) return;
-    Effect* newfx = new Effect(*fx); // 얕복 -> 댕글링 뻐킹 포인터 발생
+    Effect* newfx = new Effect(*fx); // 얕복 -> 댕글링 뻐킹 포인터 발생   << 기모링~
     newfx->Activefx(pos, angle, bFlip);
     activeFx.push_back(newfx);
     //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);

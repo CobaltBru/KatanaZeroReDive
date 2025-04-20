@@ -1,15 +1,15 @@
-ï»¿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="¼Ò½º ÆÄÀÏ">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="í—¤ë” íŒŒì¼">
+    <Filter Include="Çì´õ ÆÄÀÏ">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="ë¦¬ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="¸®¼Ò½º ÆÄÀÏ">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -121,7 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>2D Framework\Timer</Filter>
@@ -273,12 +273,6 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>2D Framework\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="UIGame.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
@@ -294,13 +288,25 @@
     <ClCompile Include="Grunt.cpp">
       <Filter>MainGame\Enemy\Grunt</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="CommonFunction.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
     <ClInclude Include="MainGame.h">
       <Filter>MainGame</Filter>
@@ -467,12 +473,6 @@
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UIGame.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleObject.h">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClInclude>
@@ -487,6 +487,18 @@
     </ClInclude>
     <ClInclude Include="Grunt.h">
       <Filter>MainGame\Enemy\Grunt</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGame.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Çì´õ ÆÄÀÏ</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

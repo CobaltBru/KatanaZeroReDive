@@ -10,7 +10,7 @@
 #include "SimpleObject.h"
 
 SimpleTestObject::SimpleTestObject()
-	:Image(nullptr), Speed(0.f), bJump(false), dY(-10.f), Gravity(0.1f), bFalling(true), bDown(false)
+	:Image(nullptr)
 {
 }
 
@@ -26,7 +26,9 @@ HRESULT SimpleTestObject::Init(FPOINT InPos)
 
 	ObjectRigidBody = new RigidBody(this);
 
-	Speed = 300.f;
+	InitRegidBodySetting();
+
+	ScrollSpeed = 300.f;
 
 	return S_OK;
 }
@@ -49,9 +51,31 @@ void SimpleTestObject::Render(HDC hdc)
 	{
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-		scroll = Scroll;
 		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
 	}
+}
+
+void SimpleTestObject::InitRegidBodySetting()
+{
+	if (ObjectRigidBody == nullptr)
+		return;
+
+	// 탄성 적용안함  0 ~ 1 사이
+	ObjectRigidBody->SetElasticity(0.3f);
+
+	// 중력 적용
+	ObjectRigidBody->SetGravityVisible(true);
+	// 저항 
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
+	//무게
+	ObjectRigidBody->SetMass(1.f);
+	//최대 속도
+	ObjectRigidBody->SetMaxVelocity({ 200.f,400.f });
+	//마찰
+	ObjectRigidBody->SetFriction(50.f);
+
+	//밑으로 내려가고 싶을 때
+	//ObjectRigidBody->SetDown(true);
 }
 
 void SimpleTestObject::Collision()
@@ -77,10 +101,10 @@ void SimpleTestObject::RigidBodyTest()
 		return;
 
 
-	if (KeyManager::GetInstance()->IsStayKeyDown('O'))
+	/*if (KeyManager::GetInstance()->IsStayKeyDown('O'))
 	{
 		ObjectRigidBody->AddForce({ 200.f,0.f });
-	}
+	}*/
 
 	ObjectRigidBody->Update();
 }
