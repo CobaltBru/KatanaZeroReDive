@@ -27,6 +27,8 @@ private:
 	Animation* fence;
 	Animation* grass1;
 	Animation* grass2;
+	Animation* zero_zer;
+	Animation* zero_o;
 
 };
 
