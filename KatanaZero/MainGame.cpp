@@ -62,7 +62,7 @@ HRESULT MainGame::Init()
 		MessageBox(NULL, L"폰트 로드 실패", L"Error", MB_OK);
 	}
 	LOGFONT lf = { 0 };
-	lf.lfHeight = -MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(18, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 	wcscpy_s(lf.lfFaceName, L"DungGeunMo");
 
 	hFont = CreateFontIndirect(&lf);

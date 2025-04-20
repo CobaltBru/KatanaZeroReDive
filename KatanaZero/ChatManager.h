@@ -72,6 +72,8 @@ public:
 	inline int getStatus() { return statusFlag; }
 	virtual void moveCursor(int way) {};
 	virtual inline string selectCursor() { return "NULL"; }
+
+	void calcSizes(HDC hdc);
 };
 
 enum class OptionState { RED, TRANSITION, NORMAL };

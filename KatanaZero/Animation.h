@@ -8,7 +8,9 @@ enum MoveFlags {
 	Move_SoftStart = 1 << 0,
 	Move_SoftEnd = 1 << 1,
 	Move_Loop = 1 << 2,
-	Move_Stop = 1 << 3
+	Move_Stop = 1 << 3,
+	POS_Update = 1 << 4
+	
 };
 
 struct Task

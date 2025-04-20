@@ -138,12 +138,19 @@ void Animation::Off()
 void Animation::MoveOn(FPOINT dest, float duration, int flag)
 {
 	isMove = true;
+	if (flag & POS_Update)
+	{
+		pos.x += moveTask.offset.x;
+		pos.y += moveTask.offset.y;
+	}
 	moveTask.src = {0,0};
 	moveTask.dest = dest;
 	moveTask.offset = {0,0};
 	moveTask.duration = duration;
 	moveTask.flag = flag;
 	moveTask.timer = 0;
+
+	
 }
 
 void Animation::MoveOff()

@@ -139,14 +139,14 @@ HRESULT Stage1Scene::InitObject()
 	}
 	// 테스트 코드 지운
 	{
-		/*chatManager = new ChatManager();
+		chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
 		chatManager->pushPos({ 400,100 });
 		chatManager->LoadChat("ChatDatas/test2.json");
 
 		chatManager->startChat("Q3YMPZfZRO");
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
-		*/
+		
 		UIGame* ui = new UIGame();
 		ui->init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
@@ -171,7 +171,8 @@ void Stage1Scene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
-
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
+		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
 		// 인자 : 쉐이크 강도, 지속시간

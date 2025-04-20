@@ -10,9 +10,13 @@
 #include "GPImage.h"
 #include "Image.h"
 
+#include "ChatManager.h"
+
 HomeScene::HomeScene():
 	ObjectManager(nullptr), RenderManager(nullptr)
 {
+	timerStart = false;
+	sceneChangeTimer = 0;
 }
 
 HRESULT HomeScene::Init()
@@ -44,6 +48,29 @@ void HomeScene::Release()
 		ObjectManager->Release();
 	if (RenderManager != nullptr)
 		RenderManager->Release();
+	if (tmpGP)
+	{
+		tmpGP->Release();
+		delete tmpGP;
+		tmpGP = nullptr;
+	}
+	if (tokenNew)
+	{
+		delete tokenNew;
+		tokenNew = nullptr;
+	}
+	if (tokenContinue)
+	{
+		delete tokenContinue;
+		tokenContinue = nullptr;
+	}
+	if (tokenEnd)
+	{
+		delete tokenEnd;
+		tokenEnd = nullptr;
+	}
+
+
 	ScrollManager::GetInstance()->Release();
 
 	ObjectManager = nullptr;
@@ -53,16 +80,40 @@ void HomeScene::Release()
 void HomeScene::Update()
 {
 	ObjectManager->Update();
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+	{
+		timerStart = true;
+		background->MoveOn({ 0.f, - WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
+		fence->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
+		zero_zer->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
+		zero_o->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
+		katana->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
+
+		grass1->MoveOn({ 0.f,-WINSIZE_Y }, 1.0f, Move_SoftEnd | Move_Stop | POS_Update);
+		grass2->MoveOn({ 0.f,-WINSIZE_Y }, 1.0f, Move_SoftEnd | Move_Stop | POS_Update);
+		wall->On();
+		wall->MoveOn({ 0.f,-WINSIZE_Y }, 1.0f, Move_SoftEnd | Move_Stop);
+	}
+	if (timerStart)
+	{
+		sceneChangeTimer += TimerManager::GetInstance()->GetDeltaTime();
+	}
+	if (sceneChangeTimer >= 1.1f)
+	{
+		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+	}
+	
 }
 
 void HomeScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
+	SelectBox(hdc, {500,500});
 }
 
 HRESULT HomeScene::InitImage()
 {
-	ImageManager::GetInstance()->AddImage("BlackBackground",L"Image/Background/black.bmp");
+	ImageManager::GetInstance()->AddImage("BlackBackground", L"Image/Background/black.bmp", 1600, 900, 1, 1);
 	return S_OK;
 }
 
@@ -76,27 +127,69 @@ HRESULT HomeScene::InitObject()
 	Image* tmp = ImageManager::GetInstance()->AddImage("title_bg", L"Image/UI/Home/spr_title_background.bmp",1600,1800,1,1, true, RGB(255, 0, 255));
 	background = new Animation();
 	background->Init(tmp, 1);
-	background->setPos({ 0.f,-600.f }, false, false);
+	background->setPos({ 0.f,-400.f }, false, false);
 	background->setAniTask({ {0,10.f} });
-	background->MoveOn({ 0.f,-300.f }, 2.5f, Move_SoftEnd | Move_Stop);
+	background->MoveOn({ 0.f,-500.f }, 1.0f, Move_SoftEnd | Move_Stop);
 	background->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	tmp = ImageManager::GetInstance()->AddImage("title_fence", L"Image/UI/Home/spr_title_fence.bmp", 1600, 1800, 1, 1, true, RGB(255, 0, 255));
 	fence = new Animation();
 	fence->Init(tmp, 1);
-	fence->setPos({ 0.f,-600.f }, false, false);
+	fence->setPos({ 0.f,-400.f }, false, false);
 	fence->setAniTask({ {0,10.f} });
-	fence->MoveOn({ 0.f,-300.f }, 2.7f, Move_SoftEnd | Move_Stop);
+	fence->MoveOn({ 0.f,-500.f }, 1.05f, Move_SoftEnd | Move_Stop);
 	fence->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, fence);
+
+	
+
+	GPImage* gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/spr_zer.png", 2, 1);
+	zero_zer = new Animation();
+	zero_zer->Init(gpi, 2);
+	zero_zer->setPos({ WINSIZE_X/2 - 80.f,WINSIZE_Y+100.f }, false, true);
+	zero_zer->setAniTask({
+		{0,1.0f},{1,0.01f},
+		{0,0.05f},{1,0.01f} ,
+		{0,0.05f},{1,0.01f} ,
+		{0,2.f},{1,0.01f},
+		{0,1.5f} });
+	zero_zer->MoveOn({ 0.f,-WINSIZE_Y/2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
+	zero_zer->On();
+	ObjectManager->AddGameObject(EObjectType::GameObject, zero_zer);
+
+	gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/spr_o.png", 2, 1);
+	zero_o = new Animation();
+	zero_o->Init(gpi, 2);
+	zero_o->setPos({ WINSIZE_X / 2 + 203.f,WINSIZE_Y-2.f + 100.f}, false, true);
+	zero_o->setAniTask({
+		{0,2.0f},{1,0.5f},
+		{0,0.05f},{1,0.01f} ,
+		{0,0.05f},{1,0.01f},
+		{0,4.f}});
+	zero_o->MoveOn({ 0.f,-WINSIZE_Y / 2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
+	zero_o->On();
+	ObjectManager->AddGameObject(EObjectType::GameObject, zero_o);
+
+	gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/spr_title_katana.png", 1, 1);
+	katana = new Animation();
+	katana->Init(gpi, 2);
+	katana->setPos({ WINSIZE_X / 2,WINSIZE_Y - 100.f + 100.f}, false, true);
+	katana->setAniTask({
+		{0,10.f}});
+	katana->MoveOn({ 0.f,-WINSIZE_Y / 2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
+	katana->On();
+	ObjectManager->AddGameObject(EObjectType::GameObject, katana);
 
 	tmp = ImageManager::GetInstance()->AddImage("title_grass1", L"Image/UI/Home/spr_grass1.bmp", 1600, 300, 1, 1, true, RGB(255, 0, 255));
 	grass1 = new Animation();
 	grass1->Init(tmp, 1);
-	grass1->setPos({ 0.f,WINSIZE_Y}, false, false);
+	grass1->setPos({ 0.f,WINSIZE_Y }, false, false);
 	grass1->setAniTask({ {0,10.f} });
-	grass1->MoveOn({ 0.f,-300.f }, 2.0f, Move_SoftEnd | Move_Stop);
+	grass1->MoveOn({ 0.f,-300.f }, 1.3f, Move_SoftEnd | Move_Stop);
 	grass1->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, grass1);
 
@@ -107,23 +200,38 @@ HRESULT HomeScene::InitObject()
 	float fs = 0.1f;
 	grass2->setAniTask({
 		{0,fs},{1,fs},{2,fs},
-		{3,fs},{4,fs},{5,fs}, 
-		{6,fs},{7,fs},{8,fs}, 
+		{3,fs},{4,fs},{5,fs},
+		{6,fs},{7,fs},{8,fs},
 		{9,fs},{10,fs},{11,fs}, });
-	grass2->MoveOn({ 0.f,-637.f }, 1.8f, Move_SoftEnd | Move_Stop);
+	grass2->MoveOn({ 0.f,-637.f }, 1.3f, Move_SoftEnd | Move_Stop);
 	grass2->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, grass2);
 
-	/*GPImage* gpi = new GPImage();
-	gpi->AddImage(L"Image/UI/Home/spr_zer.png", 2, 1);
-	zero_zer = new Animation();
-	zero_zer->Init(gpi, 2);
-	zero_zer->setPos({ WINSIZE_X/2 - 100.f,WINSIZE_Y }, false, true);
-	zero_zer->setAniTask({
-		{0,0.5f},{1,0.5f}});
-	zero_zer->MoveOn({ 0.f,-WINSIZE_Y/2 }, 2.5f, Move_SoftEnd | Move_Stop);
-	zero_zer->On();
-	ObjectManager->AddGameObject(EObjectType::GameObject, zero_zer);*/
+	tmp = ImageManager::GetInstance()->FindImage("BlackBackground");
+	wall = new Animation();
+	wall->Init(tmp, 1);
+	wall->setPos({ 0.f,WINSIZE_Y }, false, false);
+	wall->setAniTask({ {0,10.f} });
+	ObjectManager->AddGameObject(EObjectType::GameObject, wall);
+
+	tmpGP = new GPImage();
+	tokenNew = new Token(L"새로운 게임", { 0,-40.f },Token::APPEAR::END,Token::OPTION::STOP,Token::COLORS::WHITE);
+	tokenContinue = new Token(L"이어하기", { 0,0.f }, Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE);
+	tokenEnd = new Token(L"종료", { 0,40.f }, Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE);
 
 	return S_OK;
+}
+
+void HomeScene::SelectBox(HDC& hdc, FPOINT bpos)
+{
+	Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
+	tokenNew->setGlobalPos(bpos);
+	tokenContinue->setGlobalPos(bpos);
+	tokenEnd->setGlobalPos(bpos);
+
+	tokenNew->Render(hdc);
+	tokenContinue->Render(hdc);
+	tokenEnd->Render(hdc);
+
+	delete pGraphics;
 }

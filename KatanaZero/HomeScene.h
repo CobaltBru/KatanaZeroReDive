@@ -4,6 +4,8 @@
 class ObjectManager;
 class RenderManager;
 class Animation;
+class Token;
+class GPImage;
 class HomeScene : public Scene
 {
 public:
@@ -29,6 +31,20 @@ private:
 	Animation* grass2;
 	Animation* zero_zer;
 	Animation* zero_o;
+	Animation* katana;
+	Animation* wall;
+
+	bool timerStart;
+	float sceneChangeTimer;
+
+	int cursor;
+
+	GPImage* tmpGP;
+	Token* tokenNew;
+	Token* tokenContinue;
+	Token* tokenEnd;
+
+	void SelectBox(HDC& hdc, FPOINT bpos);
 
 };
 

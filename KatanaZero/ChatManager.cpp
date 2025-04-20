@@ -361,6 +361,17 @@ void Chat::makeExplode()
     }
 }
 
+void Chat::calcSizes(HDC hdc)
+{
+    float x = 0.f;
+    float y = 0.f;
+    for (auto tok : tokens)
+    {
+        tok.second.setPos({ x,y });
+
+    }
+}
+
 void OptionChat::Init(vector <pair<float, Token >> &tokens, float width, float height, 
     float redTime, float totalTime, 
     vector<pair<string, Token>> &redSelects,
