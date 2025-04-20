@@ -6,6 +6,7 @@
 #include "ObjectManager.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
+#include "ScrollManager.h"
 #include "GPImage.h"
 #include "Image.h"
 
@@ -43,16 +44,15 @@ void HomeScene::Release()
 		ObjectManager->Release();
 	if (RenderManager != nullptr)
 		RenderManager->Release();
+	ScrollManager::GetInstance()->Release();
 
 	ObjectManager = nullptr;
 	RenderManager = nullptr;
-
 }
 
 void HomeScene::Update()
 {
 	ObjectManager->Update();
-
 }
 
 void HomeScene::Render(HDC hdc)
@@ -62,7 +62,6 @@ void HomeScene::Render(HDC hdc)
 
 HRESULT HomeScene::InitImage()
 {
-
 	ImageManager::GetInstance()->AddImage("BlackBackground",L"Image/Background/black.bmp");
 	return S_OK;
 }

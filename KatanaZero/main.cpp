@@ -148,9 +148,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		{
 			TimerManager::GetInstance()->Update();
 			g_mainGame.Update();
-			ImGuiManager::GetInstance()->Update();
-
-			ImGuiManager::GetInstance()->Render();
 			g_mainGame.Render();	
 		}
 	}
