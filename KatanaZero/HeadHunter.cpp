@@ -4,6 +4,8 @@
 #include "CommonFunction.h"
 #include "Lazer.h"
 #include "Bullet.h"
+#include "Collider.h"
+#include "CollisionManager.h"
 
 HeadHunter::HeadHunter()
 {
@@ -13,9 +15,9 @@ HeadHunter::~HeadHunter()
 {
 }
 
-HRESULT HeadHunter::Init()
+HRESULT HeadHunter::Init(FPOINT InPos)
 {
-    pos = { 460, 360 };
+    Pos = InPos;
     firePos = { 0,0 };
     wallPos = { 840, 360 };
     jumpDist1 = { 0,0 };
@@ -76,6 +78,10 @@ HRESULT HeadHunter::Init()
     // test 
     playerPos = { 500 , 360 };
 
+    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f ,40.f}, true, 1.f);
+    CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+    ObjectCollider->SetPos(Pos);
+
     lazer = new Lazer();
     lazer->Init();
 
@@ -104,6 +110,8 @@ void HeadHunter::Update()
     timer += TimerManager::GetInstance()->GetDeltaTime();
     moveTimer += TimerManager::GetInstance()->GetDeltaTime();
     bulletTimer += TimerManager::GetInstance()->GetDeltaTime();
+
+    Collision();
 
     lazer->Update(firePos, weaponAngle);
 
@@ -164,13 +172,30 @@ void HeadHunter::Render(HDC hdc)
         //RenderRectAtCenter(hdc, WINSIZE_X/2,WINSIZE_Y/2, 640, 260);
         RenderRectAtCenter(hdc, playerPos.x, playerPos.y, 20, 40);
 
-        image->FrameRender(hdc, pos.x, pos.y, frameIndex, 0, isFlip);
+        image->FrameRender(hdc, Pos.x, Pos.y, frameIndex, 0, isFlip);
 
         lazer->Render(hdc);
 
         for (auto bullet : bullets) {
             bullet->Render(hdc);
         }
+    }
+}
+
+void HeadHunter::Collision()
+{
+    // 충돌 정보
+    FHitResult HitResult;
+
+    // 내 콜라이더와 ECollisionGroup::Player에 있는 콜라이더들과 충돌처리
+    if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Player))
+    {
+    	// 충돌했다.
+
+    	ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
+    	HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
+
+    	HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
     }
 }
 
@@ -220,7 +245,7 @@ void HeadHunter::GroundLazer()
         frameIndex = image->GetMaxFrameX();
         lazer->SetIsActive(true);
         weaponAngle = 90;
-        firePos = { pos.x - 40, pos.y + 10 };
+        firePos = { Pos.x - 40, Pos.y + 10 };
         if (timer > 1.5f)
         {
             lazer->SetIsActive(false);
@@ -294,18 +319,19 @@ void HeadHunter::Bullet()
         image = ImageManager::GetInstance()->FindImage("Jump");
         if (timer > 0.004f)
         {
-            float a = 180 + angle;
             
-            pos.x = wallPos.x + cosf(DEG_TO_RAD(a)) * jumpDist1.x; 
-            pos.y = wallPos.y + sinf(DEG_TO_RAD(a)) * jumpDist1.y;
+          float a = 180 + angle;
+            
+            Pos.x = wallPos.x + cosf(DEG_TO_RAD(a)) * jumpDist1.x; 
+            Pos.y = wallPos.y + sinf(DEG_TO_RAD(a)) * jumpDist1.y;
             angle += 1;
 
             timer = 0;
         }
 
-        if (pos.x >= wallPos.x) // 840 : 벽 x좌표 임시값
+        if (Pos.x >= wallPos.x) // 840 : 벽 x좌표 임시값
         {
-            pos.x = wallPos.x;
+            Pos.x = wallPos.x;
             
             angle = 0;
             bulletWave++;
@@ -332,16 +358,16 @@ void HeadHunter::Bullet()
         if (timer > 0.004f)
         {   
             float b = 360 + angle;
-            pos.x = (wallPos.x - jumpDist2.x) + cosf(DEG_TO_RAD(b)) * jumpDist2.x;
-            pos.y = (wallPos.y-jumpDist1.y) + sinf(DEG_TO_RAD(b)) * jumpDist2.y;
+            Pos.x = (wallPos.x - jumpDist2.x) + cosf(DEG_TO_RAD(b)) * jumpDist2.x;
+            Pos.y = (wallPos.y-jumpDist1.y) + sinf(DEG_TO_RAD(b)) * jumpDist2.y;
             angle -= 1;
 
             timer = 0;
         }
-        if (pos.x <= (wallPos.x - jumpDist2.x)) // 570 은 맵의 2/3 or 3/4 지점쯤으로 변경
+        if (Pos.x <= (wallPos.x - jumpDist2.x)) // 570 은 맵의 2/3 or 3/4 지점쯤으로 변경
         {
 
-            pos.x = (wallPos.x - jumpDist2.x);
+            Pos.x = (wallPos.x - jumpDist2.x);
             angle = 0;
             bulletWave++;
         }
@@ -368,15 +394,15 @@ void HeadHunter::Bullet()
         if (moveTimer > 0.004f)
         {
             float c = 270 + angle;
-            pos.x = (wallPos.x - jumpDist2.x) + cosf(DEG_TO_RAD(c)) * jumpDist3.x;
-            pos.y = wallPos.y + sinf(DEG_TO_RAD(c)) * jumpDist3.y;
+            Pos.x = (wallPos.x - jumpDist2.x) + cosf(DEG_TO_RAD(c)) * jumpDist3.x;
+            Pos.y = wallPos.y + sinf(DEG_TO_RAD(c)) * jumpDist3.y;
             angle -= 1;
 
             moveTimer = 0;
 
-            if (pos.y >= 360)
+            if (Pos.y >= 360)
             {
-                pos.y = 360;
+                Pos.y = 360;
                 angle = 0;
                 frameIndex = 0;
                 dAngle = 0;
@@ -384,12 +410,12 @@ void HeadHunter::Bullet()
                 ChangeState(State::Idle);
             }
         }
-
-        if (bulletTimer > 0.04f) 
+        //총알 각도 변환, 발사
+        if (bulletTimer > 0.01f) 
         {
             if (dAngle <= 180)
 			{
-				FPOINT fire = { pos.x + 40 * cosf(DEG_TO_RAD(dAngle)),pos.y + 40 * sinf(DEG_TO_RAD(dAngle)) };
+				FPOINT fire = { Pos.x + 40 * cosf(DEG_TO_RAD(dAngle)),Pos.y + 40 * sinf(DEG_TO_RAD(dAngle)) };
 				SpawnBullet(fire, dAngle);
 				dAngle += 10;
 			}
@@ -418,16 +444,16 @@ void HeadHunter::Teleport()
 
 void HeadHunter::VerticalLazer()
 {
-    firePos = { pos.x, pos.y + 35 };
-    if (lazerLoop == 0) pos.x = 340;
-    if (lazerLoop == 1) pos.x = 740;
-    if (lazerLoop == 2) pos.x = 440;
-    if (lazerLoop == 3) pos.x = 640;
-    if (lazerLoop == 4) pos.x = 540;
+    firePos = { Pos.x, Pos.y + 35 };
+    if (lazerLoop == 0) Pos.x = 340;
+    if (lazerLoop == 1) Pos.x = 740;
+    if (lazerLoop == 2) Pos.x = 440;
+    if (lazerLoop == 3) Pos.x = 640;
+    if (lazerLoop == 4) Pos.x = 540;
     switch (gunWave)
     {
     case 0:
-        pos.y = 200;
+        Pos.y = 200;
 
         
         image = ImageManager::GetInstance()->FindImage("VerticalLazer");
@@ -504,10 +530,10 @@ void HeadHunter::RoundLazer()
     //340 일때 isFlip = true;
     if (loop == 0)
     {
-        pos.x = 340;
+        Pos.x = 340;
         
-        firePos.x = pos.x + 40 * cosf(DEG_TO_RAD(a));
-        firePos.y = pos.y + 40 * sinf(DEG_TO_RAD(a));
+        firePos.x = Pos.x + 40 * cosf(DEG_TO_RAD(a));
+        firePos.y = Pos.y + 40 * sinf(DEG_TO_RAD(a));
         weaponAngle = 90 + angle;
         
         isFlip = true;
@@ -531,10 +557,10 @@ void HeadHunter::RoundLazer()
     }
     if(loop == 1)
     {
-        pos.x = 740;
+        Pos.x = 740;
 
-        firePos.x = pos.x + 40 * cosf(DEG_TO_RAD(angle));
-        firePos.y = pos.y + 40 * sinf(DEG_TO_RAD(angle));
+        firePos.x = Pos.x + 40 * cosf(DEG_TO_RAD(angle));
+        firePos.y = Pos.y + 40 * sinf(DEG_TO_RAD(angle));
         weaponAngle = - 90 + angle;
 
         isFlip = false;
@@ -585,12 +611,12 @@ void HeadHunter::Dash()
         image = ImageManager::GetInstance()->FindImage("Dash");
         if (timer > 0.002f)
         {
-            pos.x += 5;
+            Pos.x += 5;
             timer = 0;
 
-            if (pos.x > playerPos.x + 50)
+            if (Pos.x > playerPos.x + 50)
             {
-                pos.x = playerPos.x + 50;
+                Pos.x = playerPos.x + 50;
                 gunWave++;
             }
         }
@@ -623,12 +649,12 @@ void HeadHunter::DashDown()
 
         if (timer > 0.005f)
         {
-            pos.y += 5;
+            Pos.y += 5;
             timer = 0;
 
-            if (pos.y > 360)
+            if (Pos.y > 360)
             {
-                pos.y = 360;
+                Pos.y = 360;
                 gunWave++;
             }
         }
@@ -659,7 +685,7 @@ void HeadHunter::Faint()
         if (timer > 0.1f)
         {
             frameIndex++;
-            pos.x -= 10;
+            Pos.x -= 10;
             timer = 0;
         }
     }
@@ -678,11 +704,11 @@ void HeadHunter::Faint()
 
 void HeadHunter::Run()
 {
-    if (pos.y == 360 && abs(pos.x - playerPos.x) <= 100)
+    if (Pos.y == 360 && abs(Pos.x - playerPos.x) <= 100)
     {
         if (timer > 0.05f)
         {
-            pos.x -= 3;
+            Pos.x -= 3;
             timer = 0;
         }
     }
@@ -700,7 +726,7 @@ void HeadHunter::ChangeState(State newState) {
     state = newState;
     timer = 0;
     frameIndex = 0;
-    jumpDist1.x = wallPos.x - pos.x;
+    jumpDist1.x = wallPos.x - Pos.x;
     jumpDist2.x = 250;
     jumpDist3.x = 290;
 
@@ -729,9 +755,9 @@ void HeadHunter::PlayAnimation(string key)
 
 void HeadHunter::CheckPlayerPos()
 {
-    if (pos.y >= 360) // 땅에 있을 때 기준으로 전환
+    if (Pos.y >= 360) // 땅에 있을 때 기준으로 전환
     {
-        if (pos.x < playerPos.x)
+        if (Pos.x < playerPos.x)
         {
             isFlip = false;
         }

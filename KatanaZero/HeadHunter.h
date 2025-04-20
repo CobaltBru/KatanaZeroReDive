@@ -23,7 +23,7 @@ class Bullet1;
 class HeadHunter : public GameObject
 {
 private:
-    FPOINT pos;
+   
     FPOINT firePos;
     FPOINT wallPos;
 
@@ -64,12 +64,14 @@ public:
     HeadHunter();
     virtual ~HeadHunter();
 
-    virtual HRESULT Init();
+    virtual HRESULT Init(FPOINT InPos);
     virtual void Release();
     virtual void Update();
     virtual void Render(HDC hdc);
 
     void SetState(State state) { this->state = state; }
+
+    void Collision();
 
     void Idle();
     void GroundLazer();
