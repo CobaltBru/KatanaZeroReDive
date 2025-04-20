@@ -12,7 +12,6 @@
 #include "ScreenEffectManager.h"
 #include "SnapShotManager.h"
 
-#include "config.h"
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
 //{
 //	int width = rect.right - rect.left;
