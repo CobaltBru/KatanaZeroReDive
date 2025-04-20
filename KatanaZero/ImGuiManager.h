@@ -30,16 +30,21 @@ private:
 	void InitBackground();
 	void HelpMarker(const char* desc);
 	void CreateBackground(int Index);
-
+	bool CheckBakcground(int Index);
 
 	void SaveLine();
+	void SaveBackGround();
 
 	void LoadFont();
-	void LoadLine();		
+	void LoadLine();
+	void LoadBackGround();
+
+
 
 private:
 	unordered_map<const char*, string> BackGroundMap;
 	const char** BackgroundList;
 	GameObject* BackgroundObj;
+	int CurrentBackgroundIndex;
 };
 

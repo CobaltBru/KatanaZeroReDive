@@ -5,6 +5,11 @@ HRESULT GameObject::Init()
 	return S_OK;
 }
 
+HRESULT GameObject::Init(FPOINT Pos)
+{
+	return S_OK;
+}
+
 void GameObject::Release()
 {
 }

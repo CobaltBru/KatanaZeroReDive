@@ -15,6 +15,7 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
+#include "Factory.h"
 
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), fxManager(nullptr)
@@ -101,10 +102,13 @@ HRESULT MapTool::InitObject()
 	taekyung->Init({ 500.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
-	SimpleTestObject* enemy = new SimpleTestObject();
-	enemy->Init({ 500.f,200.f });
-	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
-	
+	auto object = CreateObject("SimpleTestObject");
+	object->Init({ 500.f,200.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, object);
+
+	//SimpleTestObject* enemy = new SimpleTestObject();
+	//enemy->Init({ 500.f,200.f });
+	//ObjectManager->AddGameObject(EObjectType::GameObject, enemy);	
 
 	return S_OK;
 }

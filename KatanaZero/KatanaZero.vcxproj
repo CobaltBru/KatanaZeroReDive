@@ -199,6 +199,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Factory.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Observer.h" />

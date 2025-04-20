@@ -10,7 +10,8 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	virtual HRESULT Init();		
+	virtual HRESULT Init();
+	virtual HRESULT Init(FPOINT Pos);
 	virtual void Release();		
 	virtual void Update();		
 	virtual void Render(HDC hdc);

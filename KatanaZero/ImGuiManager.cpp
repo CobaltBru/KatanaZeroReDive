@@ -13,6 +13,7 @@
 #include "Background.h"
 
 static TCHAR filter[] = L"모든 파일\0*.*\0dat 파일\0*.dat";
+static int item_current = 0;
 
 void ImGuiManager::Init()
 {
@@ -42,6 +43,7 @@ void ImGuiManager::Init()
 	LoadFont();
 	InitBackground();
 	
+	CurrentBackgroundIndex = 0;
 }
 
 void ImGuiManager::Update()
@@ -183,7 +185,7 @@ void ImGuiManager::Line()
 				ImGui::Spacing();
 			}
 		}
-
+		
 		ImGui::EndTabItem();
 	}
 	else
@@ -197,11 +199,20 @@ void ImGuiManager::Tile()
 		//Background
 		if (ImGui::CollapsingHeader("Background"))
 		{
-			static int item_current = 1;
-			
 			ImGui::ListBox("Background List", &item_current, BackgroundList, BackGroundMap.size(), 4);
 
 			CreateBackground(item_current);
+
+			if (ImGui::Button(u8"저장"))
+			{
+				SaveBackGround();
+			
+			}
+			ImGui::SameLine();
+			if (ImGui::Button(u8"불러오기"))
+			{
+				LoadBackGround();
+			}
 		}
 
 		//Tile
@@ -219,6 +230,11 @@ void ImGuiManager::Object()
 {
 	if (ImGui::BeginTabItem("Object"))
 	{
+		if (ImGui::CollapsingHeader("PlayerStartPoint"))
+		{
+
+		}
+
 		ImGui::EndTabItem();
 	}
 }
@@ -300,6 +316,50 @@ void ImGuiManager::SaveLine()
 	}
 }
 
+void ImGuiManager::SaveBackGround()
+{
+	if(BackgroundObj == nullptr)
+		MessageBox(g_hWnd, L"백그라운드 없음.", TEXT("경고"), MB_OK);
+
+	OPENFILENAME ofn;
+	TCHAR filePathName[100] = L"";
+	TCHAR lpstrFile[100] = L"";
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = g_hWndParent;
+	ofn.lpstrFile = lpstrFile;
+	ofn.nMaxFile = 100;
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrDefExt = L"dat";
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+
+	if (GetSaveFileName(&ofn))
+	{
+		HANDLE hFile = CreateFile(
+			ofn.lpstrFile, GENERIC_WRITE, 0, NULL,
+			CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			MessageBox(g_hWnd, L"SaveBackGround Failed.", TEXT("경고"), MB_OK);
+			return;
+		}
+
+		DWORD dwByte = 0;
+		string str = BackgroundList[CurrentBackgroundIndex];
+		int Size = str.length();
+		WriteFile(hFile, &CurrentBackgroundIndex, sizeof(int), &dwByte, NULL);
+		WriteFile(hFile, &Size, sizeof(int), &dwByte, NULL);
+		WriteFile(hFile, str.c_str(), Size, &dwByte, NULL);
+		
+
+		CloseHandle(hFile);
+
+		MessageBox(g_hWnd, L"백그라운드 저장 성공", TEXT("성공"), MB_OK);
+	}
+}
+
 void ImGuiManager::LoadFont()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -333,6 +393,61 @@ void ImGuiManager::LoadLine()
 	{
 		if (SUCCEEDED(LineManager::GetInstance()->LoadFile(ofn.lpstrFile)))
 			MessageBox(g_hWnd, L"라인 불러오기 성공", TEXT("성공"), MB_OK);
+	}
+}
+
+void ImGuiManager::LoadBackGround()
+{
+	OPENFILENAME ofn;
+	TCHAR lpstrFile[100] = L"";
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = g_hWndParent;
+	ofn.lpstrFilter = filter;
+	ofn.lpstrFile = lpstrFile;
+	ofn.nMaxFile = 100;
+	ofn.lpstrInitialDir = L".";
+
+	if (GetOpenFileName(&ofn))
+	{
+		HANDLE hFile = CreateFile(
+			ofn.lpstrFile, GENERIC_READ, 0, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("경고"), MB_OK);
+			return;
+		}
+
+		DWORD dwByte = 0;
+		int Index;
+		int Size;
+		
+		ReadFile(hFile, &Index, sizeof(int), &dwByte, NULL);
+		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
+
+		char* buffer = new char[Size + 1];
+		ReadFile(hFile, buffer, Size, &dwByte, NULL);
+		buffer[Size] = '\0';
+		
+		string BackgroundName = buffer;
+
+		delete[] buffer;
+
+		if (CheckBakcground(Index))
+		{
+			item_current = Index;
+			CurrentBackgroundIndex = Index;
+
+			BackgroundObj = new Background();
+			static_cast<Background*>(BackgroundObj)->Init(BackgroundName);
+			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+
+			MessageBox(g_hWnd, L"백그라운드 불러오기 성공", TEXT("성공"), MB_OK);
+		}		
+
+		CloseHandle(hFile);
 	}
 }
 
@@ -402,20 +517,26 @@ void ImGuiManager::HelpMarker(const char* desc)
 
 void ImGuiManager::CreateBackground(int Index)
 {
-	static int CurrentBackgroundIndex = Index;
+	if (CheckBakcground(Index))
+	{
+		CurrentBackgroundIndex = Index;
 
+		BackgroundObj = new Background();
+		static_cast<Background*>(BackgroundObj)->Init(BackgroundList[Index]);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+	}	
+}
 
+bool ImGuiManager::CheckBakcground(int Index)
+{
 	if (BackgroundObj != nullptr)
 	{
 		if (CurrentBackgroundIndex == Index)
-			return;
+			return false;
 
 		BackgroundObj->SetDead(true);
-	}		
-
-	BackgroundObj = new Background();
-	static_cast<Background*>(BackgroundObj)->Init(BackgroundList[Index]);
-	ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+	}
+	return true;
 }
 
 void ImGuiManager::Release()

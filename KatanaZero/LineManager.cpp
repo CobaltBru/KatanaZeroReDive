@@ -394,7 +394,6 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FPOINT InLastPos, FLineResult&
 					Target = iter;
 
 					OutResult.IsLeft = true;
-
 				}
 			}
 		}
