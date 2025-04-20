@@ -23,7 +23,7 @@ HRESULT HomeScene::Init()
 	RenderManager = RenderManager::GetInstance();
 	RenderManager->Init();
 
-	/*if (FAILED(InitImage()))
+	if (FAILED(InitImage()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -33,7 +33,7 @@ HRESULT HomeScene::Init()
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 	return S_OK;
 }
 
