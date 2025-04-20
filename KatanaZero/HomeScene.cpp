@@ -69,7 +69,12 @@ void HomeScene::Release()
 		delete tokenEnd;
 		tokenEnd = nullptr;
 	}
-
+	if (wall)
+	{
+		wall->Release();
+		delete wall;
+		wall = nullptr;
+	}
 
 	ScrollManager::GetInstance()->Release();
 
@@ -101,14 +106,20 @@ void HomeScene::Update()
 	if (sceneChangeTimer >= 1.1f)
 	{
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+		timerStart = false;
+		sceneChangeTimer = 0;
 	}
-	
+	if(wall)
+		wall->Update();
 }
 
 void HomeScene::Render(HDC hdc)
 {
+	
 	RenderManager->Render(hdc);
-	SelectBox(hdc, {500,500});
+	SelectBox(hdc, { selectBoxPos });
+	if(wall)
+		wall->Render(hdc);
 }
 
 HRESULT HomeScene::InitImage()
@@ -174,15 +185,28 @@ HRESULT HomeScene::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, zero_o);
 
 	gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/Select_bg.png", 1, 1);
+	selectBoxPos = { WINSIZE_X / 2,WINSIZE_Y + 400.f };
+	select_bg = new Animation();
+	select_bg->Init(gpi, 2);
+	select_bg->setPos(selectBoxPos, false, true);
+	select_bg->setAniTask({
+		{0,10.f}});
+	select_bg->MoveOn({ 0.f,-600.f}, 1.0f, Move_SoftEnd | Move_Stop);
+	select_bg->On();
+	ObjectManager->AddGameObject(EObjectType::GameObject, select_bg);
+
+	gpi = new GPImage();
 	gpi->AddImage(L"Image/UI/Home/spr_title_katana.png", 1, 1);
 	katana = new Animation();
 	katana->Init(gpi, 2);
-	katana->setPos({ WINSIZE_X / 2,WINSIZE_Y - 100.f + 100.f}, false, true);
+	katana->setPos({ WINSIZE_X / 2,WINSIZE_Y - 100.f + 100.f }, false, true);
 	katana->setAniTask({
-		{0,10.f}});
+		{0,10.f} });
 	katana->MoveOn({ 0.f,-WINSIZE_Y / 2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
 	katana->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, katana);
+
 
 	tmp = ImageManager::GetInstance()->AddImage("title_grass1", L"Image/UI/Home/spr_grass1.bmp", 1600, 300, 1, 1, true, RGB(255, 0, 255));
 	grass1 = new Animation();
@@ -212,7 +236,7 @@ HRESULT HomeScene::InitObject()
 	wall->Init(tmp, 1);
 	wall->setPos({ 0.f,WINSIZE_Y }, false, false);
 	wall->setAniTask({ {0,10.f} });
-	ObjectManager->AddGameObject(EObjectType::GameObject, wall);
+	//ObjectManager->AddGameObject(EObjectType::GameObject, wall);
 
 	tmpGP = new GPImage();
 	tokenNew = new Token(L"새로운 게임", { 0,-40.f },Token::APPEAR::END,Token::OPTION::STOP,Token::COLORS::WHITE);
@@ -235,3 +259,5 @@ void HomeScene::SelectBox(HDC& hdc, FPOINT bpos)
 
 	delete pGraphics;
 }
+
+

@@ -142,9 +142,9 @@ HRESULT Stage1Scene::InitObject()
 		chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
 		chatManager->pushPos({ 400,100 });
-		chatManager->LoadChat("ChatDatas/test2.json");
+		chatManager->LoadChat("ChatDatas/test3.json");
 
-		chatManager->startChat("Q3YMPZfZRO");
+		chatManager->startChat("PaF26grPoH");
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		
 		UIGame* ui = new UIGame();

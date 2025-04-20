@@ -9,6 +9,7 @@ public:
 private:
 	FPOINT globalPos;
 	FPOINT pos;
+	int yIdx;
 	wstring wtext;
 	int len;
 	APPEAR appear;
@@ -24,6 +25,9 @@ public:
 	Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS color);
 	inline void setGlobalPos(FPOINT pos) { this->globalPos = pos; }
 	inline void setPos(FPOINT pos) { this->pos = pos; }
+	inline void setyIdx(int yIdx) { this->yIdx = yIdx; }
+	inline int getyIdx() { return this->yIdx; }
+	inline wstring getText() { return wtext; }
 	void Update();
 	void Render(HDC hdc);
 
@@ -43,6 +47,7 @@ public:
 		GetTextExtentPoint32W(hdc, wtext.c_str(), len, &size);
 		return size;
 	}
+	
 };
 
 
@@ -56,13 +61,14 @@ protected:
 	float width;
 	float height;
 	float timer = 0;
+	float chatTimer = 0;
+	float delayTimer = 0;
 	//말풍선 켜지는데 걸리는 시간
 	float boxTime;
-
 	int statusFlag = 0;
 public:
 	virtual ~Chat() {};
-	void Init(vector <pair<float, Token >> &tokens, float width, float height);
+	void Init(vector <pair<float, Token >> &tokens);
 	inline void setPos(FPOINT pos) { this->pos = pos; }
 	virtual void Update();
 	virtual void Render(HDC hdc);
@@ -95,7 +101,7 @@ private:
 	float redTime;
 	//전체시간 길이
 	float totalTime;
-	float timer;
+	//float optimer;
 
 	//시간 바 위치, 길이
 	FPOINT timeBarPos;
@@ -110,7 +116,7 @@ private:
 	float selectGap;
 public:
 	virtual ~OptionChat() {};
-	void Init(vector <pair<float, Token >> &tokens, float width, float height,
+	void Init(vector <pair<float, Token >> &tokens,
 		float redTime, float totalTime,
 		vector<pair<string, Token>> &redSelects,
 		vector<pair<string, Token>> &normalSelects);

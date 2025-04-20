@@ -33,6 +33,7 @@ private:
 	Animation* zero_o;
 	Animation* katana;
 	Animation* wall;
+	Animation* select_bg;
 
 	bool timerStart;
 	float sceneChangeTimer;
@@ -44,7 +45,8 @@ private:
 	Token* tokenContinue;
 	Token* tokenEnd;
 
+	FPOINT selectBoxPos;
 	void SelectBox(HDC& hdc, FPOINT bpos);
-
+	void reset();
 };
 
