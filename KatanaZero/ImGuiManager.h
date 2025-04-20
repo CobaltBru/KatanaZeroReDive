@@ -7,6 +7,7 @@ class GameObject;
 class ImGuiManager : public Singleton<ImGuiManager>
 {
 public:
+	ImGuiManager();
 	void Init();
 	void Update();
 	void Render();
@@ -31,6 +32,12 @@ private:
 	void HelpMarker(const char* desc);
 	void CreateBackground(int Index);
 	bool CheckBakcground(int Index);
+	void PlayerStartPointTap();
+	void ObjectTap();
+	void ObjectUpdate();
+
+	void DestorySelectObject();
+
 
 	void SaveLine();
 	void SaveBackGround();
@@ -46,5 +53,8 @@ private:
 	const char** BackgroundList;
 	GameObject* BackgroundObj;
 	int CurrentBackgroundIndex;
+
+	GameObject* PlayerStartPoint;
+	GameObject* SelectObject;
 };
 

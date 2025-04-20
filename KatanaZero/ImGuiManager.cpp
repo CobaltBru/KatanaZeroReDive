@@ -11,9 +11,30 @@
 #include "ObjectManager.h"
 
 #include "Background.h"
+#include "DefaultObject.h"
 
 static TCHAR filter[] = L"모든 파일\0*.*\0dat 파일\0*.dat";
-static int item_current = 0;
+static int item_current = -1;
+static int Object_current = -1;
+static int World_current = -1;
+
+
+//!!=========================================================!!
+//! 무조건 두개 다 동기화해야합니다.
+// 오브젝트 리스트 이름
+static const char* Objectnames[] = { "StartPoint", "SimpleTestObject", };
+// 오브젝트 이미지 이름
+static const char* ObjectImagenames[] = { "rocket", "rocket", };
+//! 무조건 두개 다 동기화해야합니다.
+//!!=========================================================!!
+static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
+//!!=========================================================!!
+
+
+ImGuiManager::ImGuiManager()
+	:BackgroundObj(nullptr), PlayerStartPoint(nullptr), SelectObject(nullptr)
+{
+}
 
 void ImGuiManager::Init()
 {
@@ -230,12 +251,27 @@ void ImGuiManager::Object()
 {
 	if (ImGui::BeginTabItem("Object"))
 	{
-		if (ImGui::CollapsingHeader("PlayerStartPoint"))
-		{
+		//static int LineMode = 0;
+		//ImGui::SeparatorText(u8"라인 모드");
+		//ImGui::RadioButton(u8"라인 일반모드", &LineMode, (int)ELineEditState::Create); ImGui::SameLine();
+		//ImGui::RadioButton(u8"라인 보정모드", &LineMode, (int)ELineEditState::Adjust); ImGui::SameLine();
 
-		}
+		ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+		ImGui::ListBox("Object List", &Object_current, Objectnames, ObjectArrlength, 4);
+		ImGui::SameLine();
+		ImGui::ListBox("World", &World_current, ObjectImagenames, ObjectArrlength, 4);
+		
+		ObjectTap();
+
+		ObjectUpdate();
+
+		//PlayerStartPointTap();		
 
 		ImGui::EndTabItem();
+	}
+	else
+	{
+		DestorySelectObject();
 	}
 }
 
@@ -517,6 +553,9 @@ void ImGuiManager::HelpMarker(const char* desc)
 
 void ImGuiManager::CreateBackground(int Index)
 {
+	if (Index == -1)
+		return;
+
 	if (CheckBakcground(Index))
 	{
 		CurrentBackgroundIndex = Index;
@@ -537,6 +576,106 @@ bool ImGuiManager::CheckBakcground(int Index)
 		BackgroundObj->SetDead(true);
 	}
 	return true;
+}
+
+void ImGuiManager::PlayerStartPointTap()
+{
+	if (ImGui::CollapsingHeader("PlayerStartPoint"))
+	{
+		if (PlayerStartPoint != nullptr)
+		{
+			static float PlayerX = 0.0f;
+			static float PlayerY = 0.0f;
+
+			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+			ImGui::DragFloat("X", &PlayerX);
+			ImGui::SameLine();
+
+			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+			ImGui::DragFloat("Y", &PlayerY);
+
+
+
+		}
+		if (ImGui::Button(u8"생성"))
+		{
+			if (PlayerStartPoint != nullptr)
+				MessageBox(g_hWnd, L"이미 플레이어 위치가 있습니다.", TEXT("성공"), MB_OK);
+			else
+			{
+				PlayerStartPoint = new DefaultObject();
+				static_cast<DefaultObject*>(PlayerStartPoint)->Init("rocket", { 0.f,0.f }, false, ERenderGroup::NonAlphaBlend);
+				ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, PlayerStartPoint);
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(u8"제거"))
+		{
+			if (PlayerStartPoint != nullptr)
+			{
+				PlayerStartPoint->SetDead(true);
+				PlayerStartPoint = nullptr;
+			}
+		}
+	}
+}
+
+void ImGuiManager::ObjectTap()
+{
+	if (Object_current == -1)
+		return;
+
+	DestorySelectObject();
+
+	// 플레이어 시작점
+	if (Object_current == 0)
+	{
+		if (PlayerStartPoint != nullptr)
+		{
+			MessageBox(g_hWnd, L"이미 플레이어 위치가 있습니다.", TEXT("성공"), MB_OK);
+			Object_current = -1;
+		}
+		else
+		{
+			PlayerStartPoint = new DefaultObject();
+			static_cast<DefaultObject*>(PlayerStartPoint)->Init(ObjectImagenames[Object_current], {0.f,0.f}, false, ERenderGroup::NonAlphaBlend);
+			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, PlayerStartPoint);
+
+			Object_current = -1;
+			SelectObject = PlayerStartPoint;
+		}			
+	}
+	// 그 외 오브젝트들
+	else
+	{
+		DefaultObject* Object = new DefaultObject();
+		Object->Init(ObjectImagenames[Object_current], { 0.f,0.f }, false, ERenderGroup::NonAlphaBlend);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, PlayerStartPoint);
+
+		Object_current = -1;
+		SelectObject = Object;
+	}	
+}
+
+void ImGuiManager::ObjectUpdate()
+{
+	if (SelectObject != nullptr)
+	{
+
+	}
+	else
+	{
+
+	}
+}
+
+void ImGuiManager::DestorySelectObject()
+{
+	if (SelectObject != nullptr)
+	{
+		SelectObject->SetDead(true);
+		SelectObject = nullptr;
+	}
 }
 
 void ImGuiManager::Release()

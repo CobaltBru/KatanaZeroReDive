@@ -112,6 +112,9 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\TaeKyung\Default">
+      <UniqueIdentifier>{86dcc670-f5f8-4997-8012-f31385a29e7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -284,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultObject.cpp">
+      <Filter>MainGame\TaeKyung\Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultObject.h">
+      <Filter>MainGame\TaeKyung\Default</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
