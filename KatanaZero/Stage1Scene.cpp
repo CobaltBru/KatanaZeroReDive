@@ -169,10 +169,10 @@ HRESULT Stage1Scene::InitEffects()
 
 void Stage1Scene::TestCode()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
+		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
-		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
-		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");	
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))

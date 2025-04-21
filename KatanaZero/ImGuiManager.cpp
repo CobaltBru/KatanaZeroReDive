@@ -82,7 +82,7 @@ void ImGuiManager::Update()
 
 	ShowGui();
 
-	/*ImGui::EndFrame();*/
+	ImGui::EndFrame();
 }
 
 void ImGuiManager::Render()

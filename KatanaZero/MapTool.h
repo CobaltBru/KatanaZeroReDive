@@ -30,6 +30,5 @@ private:
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 	EffectManager* fxManager;
-
 };
 
