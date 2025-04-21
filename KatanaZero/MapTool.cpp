@@ -113,19 +113,20 @@ HRESULT MapTool::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	SimpleObject* taekyung = new SimpleObject();
-	taekyung->Init({ 500.f,300.f });
+	taekyung->Init({ 500.f,100.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 	SimpleTestObject* enemy = new SimpleTestObject();
-	enemy->Init({ 500.f,200.f });
+	enemy->Init({ 500.f, 0.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
 	
-	Grunt* grunt = new Grunt();
-	grunt->Init({ 800.f,300.f });
-	ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
 
 	// 해영 테스트
 	{
+		Grunt* grunt = new Grunt();
+		grunt->Init({ 800.f, 0.f });
+		ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
+
 		snapShotManager->AddGameObject(EObjectClassType::Enemy, grunt);
 		snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
 	}
