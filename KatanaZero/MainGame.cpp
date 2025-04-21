@@ -47,8 +47,8 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 
-	//SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
-	SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
+	//SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
