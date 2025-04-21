@@ -8,6 +8,7 @@
 #include "PlayerState.h"
 #include "SpriteAnimator.h"
 #include "PlayerAnim.h"
+#include "RigidBody.h"
 
 
 Player::Player()
@@ -27,6 +28,12 @@ HRESULT Player::Init()
 
 	playerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
 	CollisionManager::GetInstance()->AddCollider(playerCollider, ECollisionGroup::Player);
+
+	playerRigidBody = new RigidBody(this);
+	InitRigidBody();
+
+	InitScrollOffset();
+	scrollSpeed = 300.f;
 
 	// set player input key
 	playerInput = new PlayerInput();
@@ -53,12 +60,6 @@ HRESULT Player::Init()
 
 void Player::Release()
 {
-	if (playerCollider)
-	{
-		playerCollider->Release();
-		delete playerCollider;
-		playerCollider = nullptr;
-	}
 	if (playerInput)
 	{		
 		delete playerInput;
@@ -263,11 +264,11 @@ void Player::Flip(EDirection dir)
 {
 	if (dir == EDirection::Right)
 	{
-		velocity.x += 0.005f;
+		//velocity.x += 0.005f;
 	}
 	else
 	{
-		velocity.x -= 0.005f;
+		//velocity.x -= 0.005f;
 	}
 }
 
@@ -322,4 +323,57 @@ void Player::InitBindState()
 	playerStateFunctionMap[EPlayerState::Jump] = JumpAnimFunc;
 	playerStateFunctionMap[EPlayerState::Attack] = AttackAnimFunc;
 	playerStateFunctionMap[EPlayerState::Flip] = FlipAnimFunc;
+}
+
+void Player::InitRigidBody()
+{
+	if (playerRigidBody == nullptr) return;
+
+	playerRigidBody->SetElasticity(0.f);
+	playerRigidBody->SetGravityVisible(true);
+	playerRigidBody->SetAccelerationAlpha({ 0.f, 800.f });
+	playerRigidBody->SetMass(5.f);
+	playerRigidBody->SetMaxVelocity({ 200.f, 400.f });
+	playerRigidBody->SetFriction(300.f);
+}
+
+void Player::InitScrollOffset()
+{
+	ScrollManager::GetInstance()->SetFocus(true);
+	FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
+	while (true)
+	{
+		Offset();
+
+		const FPOINT newScroll = ScrollManager::GetInstance()->GetScroll();
+
+		if (scroll.x != newScroll.x || scroll.y != newScroll.y)
+			scroll = newScroll;
+		else
+			break;
+	}
+}
+
+void Player::Offset()
+{
+	if (!ScrollManager::GetInstance()->IsFocus()) return;
+
+	const float OffsetMinX = 200.f;
+	const float OffsetMaxX = WINSIZE_X - 200.f;
+	const float OffsetMinY = 100.f;
+	const float OffsetMaxY = WINSIZE_Y - 100.f;
+
+	const FPOINT scroll = ScrollManager::GetInstance()->GetScrollOffset();
+
+	FPOINT newScroll{};
+	if (OffsetMaxX < Pos.x + scroll.x)
+		newScroll.x = -scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMinX > Pos.x + scroll.x && OffsetMinX < Pos.x)
+		newScroll.x = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMaxY < Pos.y + scroll.y)
+		newScroll.y = -scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMinY > Pos.y + scroll.y && OffsetMinY < Pos.y)
+		newScroll.y = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+
+	ScrollManager::GetInstance()->SetScroll(newScroll);
 }

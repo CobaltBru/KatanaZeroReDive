@@ -106,22 +106,22 @@
     <Filter Include="MainGame\Player">
       <UniqueIdentifier>{df2beb3a-5f89-47c4-b089-2d4e0b67311b}</UniqueIdentifier>
     </Filter>
-        <Filter Include="2D Framework\Physics">
+    <Filter Include="2D Framework\Physics">
       <UniqueIdentifier>{a0d7a5c1-f88b-4dd7-8b76-6bf501ba20ee}</UniqueIdentifier>
     </Filter>
-        <Filter Include="MainGame\TaeKyung\Physics">
+    <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-        <Filter Include="2D Framework\Observer">
+    <Filter Include="2D Framework\Observer">
       <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
     </Filter>
-        <Filter Include="MainGame\TaeKyung\Default">
+    <Filter Include="MainGame\TaeKyung\Default">
       <UniqueIdentifier>{86dcc670-f5f8-4997-8012-f31385a29e7e}</UniqueIdentifier>
     </Filter>
     <Filter Include="MainGame\Scene\Stage\Test">
       <UniqueIdentifier>{a0bc9861-762c-4f20-9b31-80457a5e7475}</UniqueIdentifier>
     </Filter>
-                    <Filter Include="2D Framework\Animator">
+    <Filter Include="2D Framework\Animator">
       <UniqueIdentifier>{ef9585e9-bad7-4c86-97be-f433cce02a05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -282,9 +282,6 @@
     <ClCompile Include="Animation.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SimpleObject.cpp">
-      <Filter>MainGame\TaeKyung</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleTestObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
@@ -308,6 +305,21 @@
     </ClCompile>
     <ClCompile Include="GoPopUp.cpp">
       <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAnim.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnimator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleObject.cpp">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -472,10 +484,11 @@
     </ClInclude>
     <ClInclude Include="PlayerInput.h">
       <Filter>MainGame\Player</Filter>
-    </ClInclude>    <ClInclude Include="json.hpp">
+    </ClInclude>
+    <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
-        <ClInclude Include="SpriteAnimator.h">
+    <ClInclude Include="SpriteAnimator.h">
       <Filter>2D Framework\Animator</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
@@ -516,6 +529,12 @@
     </ClInclude>
     <ClInclude Include="TestScene.h">
       <Filter>MainGame\Scene\Stage\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAnim.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

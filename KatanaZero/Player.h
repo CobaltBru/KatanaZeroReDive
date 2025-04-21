@@ -13,6 +13,7 @@ class Player;
 class PlayerAnim;
 class PlayerInput;
 class Collider;
+class RigidBody;
 
 struct stateAnimFunc
 {
@@ -33,9 +34,20 @@ private:
 	EPlayerState prevPlayerState;
 	EPlayerState newState;
 
+	// rigid body
+	RigidBody* playerRigidBody;
+	void InitRigidBody();
+
+	// scroll
+	void InitScrollOffset();
+	void Offset();
+	float scrollSpeed;
+
+	// player state
 	std::stack<EPlayerState> PlayerStateStack;
 	std::vector<EPlayerState> newPlayerStates;
 
+	// player anim
 	PlayerAnim* playerAnim;
 
 	// movemnet physics
