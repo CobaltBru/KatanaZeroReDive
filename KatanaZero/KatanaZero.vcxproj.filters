@@ -112,6 +112,9 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Observer">
+      <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MainGame\TaeKyung\Default">
       <UniqueIdentifier>{86dcc670-f5f8-4997-8012-f31385a29e7e}</UniqueIdentifier>
     </Filter>
@@ -283,9 +286,12 @@
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="Observer.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2D Framework\Observer</Filter>
     </ClCompile>
     <ClCompile Include="Subject.cpp">
+      <Filter>2D Framework\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DefaultObject.cpp">
@@ -477,9 +483,12 @@
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
     <ClInclude Include="Observer.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>2D Framework\Observer</Filter>
     </ClInclude>
     <ClInclude Include="Subject.h">
+      <Filter>2D Framework\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="HomeScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">

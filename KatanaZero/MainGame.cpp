@@ -6,12 +6,12 @@
 #include "TestScene.h"
 #include "MapTool.h"
 
+#include "HomeScene.h"
 #include "LoadingScene.h"
 #include "SoundManager.h"
 #include "ScreenEffectManager.h"
 #include "SnapShotManager.h"
 
-#include "config.h"
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
 //{
 //	int width = rect.right - rect.left;
@@ -42,6 +42,7 @@ HRESULT MainGame::Init()
 	}
 	
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
+	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
@@ -49,7 +50,8 @@ HRESULT MainGame::Init()
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
-	testDraw.AddImage(L"Image/dragon_idle1.png");
+	//testDraw.AddImage(L"Image/dragon_idle.png",12,1);
+	testDraw.AddImage(L"Image/UI/Home/spr_titlegraphic_0.png",1,1);
 	tmpTimer = 0;
 
 	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
@@ -58,7 +60,7 @@ HRESULT MainGame::Init()
 		MessageBox(NULL, L"폰트 로드 실패", L"Error", MB_OK);
 	}
 	LOGFONT lf = { 0 };
-	lf.lfHeight = -MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+	lf.lfHeight = -MulDiv(18, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 	wcscpy_s(lf.lfFaceName, L"DungGeunMo");
 
 	hFont = CreateFontIndirect(&lf);
@@ -132,10 +134,10 @@ void MainGame::Render()
 	testDraw.Render(pGraphics, { 180,100 }, 0.9f);
 	testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
 	// 백버퍼에 있는 내용을 메인 hdc에 복사
-	/*testDraw.Middle_RenderAll(pGraphics, { 300,100 }, frameIdx, frameIdx * 30, true,
-		1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f);
-	testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
-		1.0f, 1.0f, 0.5f, 0.5f, 2.0f, 2.0f);*/
+	/*testDraw.RenderAll(pGraphics, { 0,0 }, 0, 0, false,
+		1.0f, 1.0f, 1.0f, 1.0f, 1.f, 1.f);*/
+	/*testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
+		1.0f, 1.0f, 0.5f, 0.5f, 1.0f, 1.0f);*/
 	/*testDraw.RenderAll(pGraphics, { 100,100 });
 	testDraw.RenderAll(pGraphics, { 130,100 });
 	testDraw.RenderAll(pGraphics, { 160,100 });

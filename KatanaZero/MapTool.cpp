@@ -16,6 +16,7 @@
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
 #include "Factory.h"
+#include "ImGuiManager.h"
 
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), fxManager(nullptr)
@@ -73,6 +74,9 @@ void MapTool::Update()
 	ScrollManager->Update();
 	LineManager->Update();
 
+	ImGuiManager::GetInstance()->Update();
+	
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "·Îµù_1");
 
@@ -86,6 +90,8 @@ void MapTool::Render(HDC hdc)
 	CollisionManager->Render(hdc);
 
 	LineManager->Render(hdc);
+
+	ImGuiManager::GetInstance()->Render();
 }
 
 HRESULT MapTool::InitImage()
