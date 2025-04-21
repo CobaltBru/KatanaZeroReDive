@@ -179,6 +179,8 @@ HRESULT MainGame::InitSound()
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("EffectTest", "Sound/EffectTest.wav")))
 		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
+		return E_FAIL;
 
 	return S_OK;
 }
