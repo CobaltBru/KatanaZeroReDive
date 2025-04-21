@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "config.h"
 #include "Collider.h"
 #include "ImageManager.h"
 #include "Image.h"
@@ -16,6 +17,8 @@
 #include "JumpState.h"
 #include "FlipState.h"
 #include "WallSlideState.h"
+#include "CommonFunction.h"
+
 
 Player::Player()
 {	
@@ -28,6 +31,7 @@ Player::~Player()
 HRESULT Player::Init()
 {
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
+	effectImage = nullptr;
 
 	Pos = FPOINT{ 300.0f, 300.0f };
 	switchTime = 0.02f;
@@ -111,27 +115,13 @@ void Player::Update()
 		state = newState;
 		state->Enter(this);
 	}
-	
 	state->Update(this);
 
-
 	// apply acceleration including gravity
-	ObjectRigidBody->Update();
-
-	const FLineResult lineResult = ObjectRigidBody->GetResult();
-	if (lineResult.LineType == ELineType::Wall)
-	{
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-		bWall = true;
-		bIsLeft = lineResult.IsLeft;
-	}
-	else
-	{
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-		bWall = false;
-	}
+	UpdateRigidBody();
 
 	// collision
+	UpdateCollision();
 
 	// scroll offset
 	Offset();
@@ -146,14 +136,24 @@ void Player::Render(HDC hdc)
 		else		
 			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);		
 
+		// update frame index
 		if (frameTimer > switchTime)
 		{
 			FrameIndex++;
 			frameTimer = 0.0f;
 		}
 		
+		// init frame index
 		if (FrameIndex >= image->GetMaxFrameX())
 			FrameIndex %= image->GetMaxFrameX();	
+	}
+
+	if (effectImage != nullptr)
+	{
+		if (dir == EDirection::Left)
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true);
+		else
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);
 	}
 }
 
@@ -236,4 +236,43 @@ void Player::Offset()
 		newScroll.y = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
 
 	ScrollManager::GetInstance()->SetScroll(newScroll);
+}
+
+void Player::UpdateRigidBody()
+{
+	ObjectRigidBody->Update();
+
+	const FLineResult lineResult = ObjectRigidBody->GetResult();
+	if (lineResult.LineType == ELineType::Wall)
+	{
+		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
+		bWall = true;
+		bIsLeft = lineResult.IsLeft;
+	}
+	else
+	{
+		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
+		bWall = false;
+	}
+}
+
+void Player::UpdateCollision()
+{
+	FHitResult HitResult;
+	
+	// only checking the enemy
+	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy))
+	{
+		ObjectCollider->SetHit(true);
+		HitResult.HitCollision->SetHit(true);	// opponent
+
+		// direction from player to enemy
+		FPOINT PEDir;
+		PEDir.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
+		PEDir.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
+		Normalize(PEDir);
+
+		// knock enemy
+		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+	}
 }

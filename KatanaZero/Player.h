@@ -64,6 +64,7 @@ private:
 	// player anim
 	// PlayerAnim* playerAnim;
 	Image* image;
+	Image* effectImage;
 
 	playerInfo* info;
 
@@ -85,16 +86,22 @@ public:
 
 	// rigid body
 	void InitRigidBody();
+	void UpdateRigidBody();
+
+	void UpdateCollision();
 
 	// scroll
 	void InitScrollOffset();
 	void Offset();
+
 
 	inline playerStates* GetStates() { return states; }
 	inline playerInfo* GetInfo() { return info; }
 
 	inline Image* GetImage() { return image; }
 	inline void SetImage(Image* image) { this->image = image; }
+
+	inline void SetEffectImage(Image* image) { effectImage = image; }
 
 	inline EPlayerState GetEState() { return EState; }
 	inline void SetEState(EPlayerState state) { this->EState = state; }
@@ -108,7 +115,6 @@ public:
 	inline void SetSwitchTime(float time) { switchTime = time; }
 
 	void InitBindState();
-
 };
 
 

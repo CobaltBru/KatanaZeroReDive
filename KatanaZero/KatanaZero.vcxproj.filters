@@ -312,9 +312,6 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
@@ -347,6 +344,9 @@
     </ClCompile>
     <ClCompile Include="WallSlideState.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>MainGame\Scene\Stage\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

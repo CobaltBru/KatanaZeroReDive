@@ -11,7 +11,8 @@ PlayerState* AttackState::GetInput(Player* player)
 	if (playerInfo->bIsAttack == false)
 	{
         player->SetSwitchTime(0.02f);
-        return player->GetStates()->Idle;
+		player->SetEffectImage(nullptr);
+		return player->GetStates()->Idle;
     }
 	
 	return nullptr;
@@ -26,6 +27,7 @@ void AttackState::Enter(Player* player)
 	player->SetSwitchTime(0.04f);
 	
 	player->SetImage(ImageManager::GetInstance()->FindImage("zeroattack"));
+	player->SetEffectImage(ImageManager::GetInstance()->FindImage("normalslash"));
 	player->SetEState(EPlayerState::Attack);
 	player->GetInfo()->bIsAttack = true;
 	

@@ -112,6 +112,8 @@ HRESULT TestScene::InitImage()
 	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletowalk", L"Image/zero_idle_to_walk.bmp", 180, 38, 4, 1, true, RGB(255, 255, 255));
+
+	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 	return S_OK;
 }
 
