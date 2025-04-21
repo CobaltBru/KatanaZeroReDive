@@ -48,7 +48,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     gunCount = 0;
     frameIndex = 0;
 
-    state = State::Idle;
+    state = State::Dash;
 
     {
         image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 70, 12, 1, true, RGB(255, 0, 255));
@@ -71,7 +71,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
         image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
 
         //DASH
-        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash2.bmp", 432, 70, 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432, 70, 9, 1, true, RGB(255, 0, 255));
         image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
         image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500, 70, 10, 1, true, RGB(255, 0, 255));
 
@@ -82,7 +82,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
     // test 
-    playerPos = { 500 , 360 };
+    playerPos = { 300 , 360 };
 
     ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f ,40.f}, true, 1.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
@@ -126,24 +126,31 @@ void HeadHunter::Update()
     bulletTimer += TimerManager::GetInstance()->GetDeltaTime();
 
     Collision();
+    if (state == State::Idle || state == State::Dash || state == State::Faint || state == State::Die) ObjectRigidBody->Update();
 
-    lazer->Update(firePos, weaponAngle);
+    lazer->Update(firePos, weaponAngle); 
 
     for (auto bullet : bullets) {
         bullet->Update();
     }
     
-    // 죽는거 테스트
+    // 테스트
     if (KeyManager::GetInstance()->IsStayKeyDown('N'))
     {
         isDead = true;
     }
+    if (KeyManager::GetInstance()->IsStayKeyDown('M'))
+    {
+        ObjectCollider->SetHit(true);
+    }
+
     if (isDead)
     {
         state = State::Die;
-        ObjectRigidBody->Update();
     }
     
+    IsAttacked();// 맞았을 때
+
     CheckPlayerPos();
 
     switch (state) {
@@ -420,7 +427,7 @@ void HeadHunter::Bullet()
 
     case 3: // 포물선 그리며 총알 발사 후 웨이브 전환
         image = ImageManager::GetInstance()->FindImage("Bullet");
-
+        
         if (frameIndex < image->GetMaxFrameX())
         {
             if (timer > 0.1f)
@@ -601,13 +608,13 @@ void HeadHunter::RoundLazer()
             loop = 1;
         }
     }
-    if(loop == 1)
+    if (loop == 1)
     {
         Pos.x = 740;
 
         firePos.x = Pos.x + 40 * cosf(DEG_TO_RAD(angle));
         firePos.y = Pos.y + 40 * sinf(DEG_TO_RAD(angle));
-        weaponAngle = - 90 + angle;
+        weaponAngle = -90 + angle;
 
         isFlip = false;
         if (frameIndex < image->GetMaxFrameX() - 1)
@@ -620,17 +627,14 @@ void HeadHunter::RoundLazer()
             }
         }
 
-        if (frameIndex >= image->GetMaxFrameX()-1)
+        if (frameIndex >= image->GetMaxFrameX() - 1)
         {
-                lazer->SetIsActive(false);
-                angle = 0;
-                weaponAngle = 0; //******
-                ChangeState(State::DashDown);
+            lazer->SetIsActive(false);
+            angle = 0;
+            weaponAngle = 0; //******
+            ChangeState(State::DashDown);
         }
-            
-        
     }
-
 
 }
 
@@ -659,11 +663,16 @@ void HeadHunter::Dash()
         
         if (timer > 0.002f)
         {
-           
+           const FLineResult Result = ObjectRigidBody->GetResult();
            if (isLeft)
            {
                 Pos.x += 5;
                 timer = 0;
+
+                if (Result.LineType == ELineType::Wall)
+                {
+                    gunWave++;
+                }
 
                 if (Pos.x > playerPos.x + 250)
                 {
@@ -675,7 +684,12 @@ void HeadHunter::Dash()
            {
                Pos.x -= 5;
                timer = 0;
-
+               
+               if (Result.LineType == ELineType::Wall)
+               {
+                   gunWave++;
+               }
+               
                if (Pos.x < playerPos.x - 250)
                {
                    Pos.x = playerPos.x -250;
@@ -706,6 +720,7 @@ void HeadHunter::Dash()
 
 void HeadHunter::DashDown()
 {
+
     switch (gunWave)
     {
     case 0:
@@ -760,7 +775,7 @@ void HeadHunter::Faint()
         frameIndex = image->GetMaxFrameX() - 1;
         if (timer > 0.5f)
         {
-            frameIndex = image->GetMaxFrameX();
+            ChangeState(State::Idle);
         }
     }
 
@@ -826,7 +841,8 @@ void HeadHunter::ChangeState(State newState) {
 
 void HeadHunter::CheckPlayerPos()
 {
-    if (Pos.y >= 360) // 땅에 있을 때 기준으로 전환
+    const FLineResult Result = ObjectRigidBody->GetResult();
+    if (Result.LineType == ELineType::Normal || Result.LineType == ELineType::DownLine) // 땅에 있을 때 기준으로 이미지전환
     {
         if (Pos.x < playerPos.x)
         {
@@ -854,6 +870,14 @@ void HeadHunter::IsLeft()
     if (Pos.x < playerPos.x)
     {
         isLeft = true;
+    }
+}
+
+void HeadHunter::IsAttacked()
+{
+    if (ObjectCollider->IsHitted())
+    {
+        state = State::Faint;
     }
 }
 

@@ -95,6 +95,6 @@ public:
     void CheckPlayerPos();
     void RandomLoop();
     void IsLeft();
-  
+    void IsAttacked();
 };
 

@@ -26,6 +26,7 @@ public:
 	FPOINT GetSize() const { return Size; }
 	EColliderType GetColliderType() const { return ColliderType; }
 	bool IsDead() const { return bDead; }
+	bool IsHitted() const { return bHit; }
 
 	bool CanDebugDraw() const { return bDebugDraw; }
 	bool CanHit() const { return bCanHit; }
