@@ -14,6 +14,7 @@
 
 #include "ChatManager.h"
 #include "UIGame.h"
+#include "GoPopUp.h"
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
 #include "HeadHunter.h"
@@ -24,6 +25,7 @@
 #include "EffectManager.h"
 
 #include "Player.h"
+
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -151,6 +153,10 @@ HRESULT Stage1Scene::InitObject()
 		ui->init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 		
+		GoPopUp* goPopUp = new GoPopUp();
+		goPopUp->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
+
 	}
 	return S_OK;
 }
