@@ -851,7 +851,6 @@ void ImGuiManager::WorldObjectUpdate()
 		ImGui::SeparatorText(u8"Flip");
 		ImGui::Checkbox("Flip", &bFlip);
 		static_cast<DefaultObject*>(WorldObject[World_current])->SetFlip(bFlip);
-
 	}
 
 	if (!WorldObject.empty())

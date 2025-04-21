@@ -46,19 +46,19 @@ HRESULT MapTool::Init()
 
 	if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("MapTool LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("MapTool InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("MapTool InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 	return S_OK;
@@ -74,7 +74,7 @@ void MapTool::Update()
 	LineManager->Update();
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
-		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 }
 
 void MapTool::Render(HDC hdc)
