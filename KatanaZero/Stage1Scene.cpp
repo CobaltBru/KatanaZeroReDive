@@ -24,6 +24,7 @@
 #include "EffectManager.h"
 
 #include "Player.h"
+#include "DefaultObject.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -56,25 +57,18 @@ HRESULT Stage1Scene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
+
 	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
-
 	if (FAILED(InitImage()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-
-	// 자은 테스트 코드
-	Background* background = new Background();
-	background->Init("TestBg");
-	ObjectManager->AddGameObject(EObjectType::GameObject, background);
-
-
 
 	if (FAILED(InitObject()))
 	{
@@ -95,63 +89,22 @@ HRESULT Stage1Scene::Init()
 HRESULT Stage1Scene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
-	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("blackBg", L"Image/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 	return S_OK;
 }
 
 HRESULT Stage1Scene::InitObject()
 {
-	// 씬 초기에 필요한 오브젝트 생성
+	Background* background = new Background();
+	background->Init("blackBg");
+	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	/**/
-	// 테스트 코드 태경
-	{
-		Background* background = new Background();
-		background->Init("TestBg");
-		ObjectManager->AddGameObject(EObjectType::GameObject, background);
-
-		//Player* player = new Player();
-		//player->Init();
-		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
-
-		/*TaeKyungObject* taekyung = new TaeKyungObject();
-		taekyung->Init({ 500.f,550.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
-
-		TestObject* testObject = new TestObject();
-		testObject->Init("rocket", { 1000.f,300.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
-		
-		{
-		HeadHunter* headhunter = new HeadHunter();
-		headhunter->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
-
-		//해영 테스트
-		{
-			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
-		}
-	
-	}
-	// 테스트 코드 지운
-	{
-		chatManager = new ChatManager();
-		chatManager->pushPos({ 600,100 });
-		chatManager->pushPos({ 400,100 });
-		chatManager->LoadChat("ChatDatas/test3.json");
-
-		chatManager->startChat("PaF26grPoH");
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
-		
-		UIGame* ui = new UIGame();
-		ui->init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-		
-	}
+	DefaultObject* test = new DefaultObject();
+	test->Init("TestPlayer", { 500.f,500.f }, false, ERenderGroup::NonAlphaBlend, "TestPlayer");
+	ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, test);
 	return S_OK;
 }
 
@@ -175,34 +128,15 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");	
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
-	{
-		// 인자 : 쉐이크 강도, 지속시간
-		ScrollManager->CameraShake(5.f, 1.f);
-	}
 }
 
 void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
-	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
 	fxManager->Update();
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
-	{
-		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
-	}
-
-	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
-	{
-		snapShotManager->StartReplay(); // 리플레이
-	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
-	
 	ScrollManager->Update();
 
 	TestCode();

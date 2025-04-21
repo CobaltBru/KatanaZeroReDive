@@ -25,6 +25,8 @@ public:
 	void CreateRenderTarget();
 	void CleanupRenderTarget();
 
+	void Reset();
+
 private:
 	vector<string> GetFileNames(const string& InFolderPath);
 
@@ -32,13 +34,13 @@ private:
 
 	void InitBackground();
 	void CreateBackground(int Index);
-	bool CheckBackground(int Index);
+	void DestroyBackGround();
 
 	void ObjectTap();
 	void ObjectUpdate();
 	void WorldObjectUpdate();
-	void DestorySelectObject();
-	void DestoryAllObject();
+	void DestroySelectObject();
+	void DestroyAllObject();
 
 
 	OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
@@ -53,16 +55,15 @@ private:
 	void LoadBackGround();
 	void LoadObject();
 
-
 private:
 	unordered_map<const char*, string> BackGroundMap;
 	const char** BackgroundList;
-	GameObject* BackgroundObj;
-	int CurrentBackgroundIndex;
 
 	GameObject* PlayerStartPoint;
 	GameObject* SelectObject;
 
 	vector<const char*> WorldObjectName;
+	vector<const char*> BackGroundName;
+
 };
 

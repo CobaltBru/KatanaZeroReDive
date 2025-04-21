@@ -563,13 +563,8 @@ HRESULT LineManager::SaveFile(LPCWSTR InSavePath)
 
 HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 {
-	for (int i = 0; i < (int)ELineType::End; ++i)
-	{
-		for (auto& iter : LineList[i])
-			delete iter;
-
-		LineList[i].clear();
-	}
+	DestroyAllLine();
+	
 	//LPCWSTR
 	HANDLE hFile = CreateFile(
 		InLoadPath, GENERIC_READ, 0, NULL,

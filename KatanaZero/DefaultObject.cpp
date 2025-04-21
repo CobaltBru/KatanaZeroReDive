@@ -19,7 +19,7 @@ HRESULT DefaultObject::Init(string InImageKey, FPOINT InPos, bool InFlip, ERende
 	ImageName = InImageKey;
 	Image = ImageManager::GetInstance()->FindImage(InImageKey);
 
-	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth(),(float)Image->GetFrameHeight()}, false, 1.f);
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(),(float)Image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() }, false, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
 	ObjectCollider->SetPos(Pos);
@@ -40,7 +40,7 @@ void DefaultObject::Update()
 void DefaultObject::Render(HDC hdc)
 {
 	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-	Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip);
+	Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip,true, ScrollManager::GetInstance()->GetScale());
 }
 
 

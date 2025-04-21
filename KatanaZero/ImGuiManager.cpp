@@ -19,9 +19,11 @@
 static TCHAR filter[] = L"모든 파일\0*.*\0dat 파일\0*.dat";
 
 static int item_current = -1;
+static int Bg_current = -1;
 static int Object_current = -1;
 static int World_current = -1;
 static vector<GameObject*> WorldObject;
+static vector<Background*> BackgroundObject;
 
 static float Pos[2] = { 0.f,0.f };
 static float ColliderOffset[2] = { 0.f,0.f };
@@ -29,9 +31,9 @@ static float ColliderSize[2] = { 0.f,0.f };
 //!!=========================================================!!
 //! 무조건 두개 다 동기화해야합니다.
 // 오브젝트 리스트 이름
-static const char* Objectnames[] = { "StartPoint", "SimpleTestObject", };
+static const char* Objectnames[] = { "StartPoint", "SimpleTestObject" };
 // 오브젝트 이미지 이름
-static const char* ObjectImagenames[] = { "rocket", "rocket", };
+static const char* ObjectImagenames[] = { "TestPlayer", "rocket", };
 //! 무조건 두개 다 동기화해야합니다.
 //!!=========================================================!!
 static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
@@ -39,7 +41,7 @@ static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
 
 
 ImGuiManager::ImGuiManager()
-	:BackgroundObj(nullptr), PlayerStartPoint(nullptr), SelectObject(nullptr)
+	:PlayerStartPoint(nullptr), SelectObject(nullptr)
 {
 }
 
@@ -70,8 +72,6 @@ void ImGuiManager::Init()
 	// Init
 	LoadFont();
 	InitBackground();
-
-	CurrentBackgroundIndex = 0;
 }
 
 void ImGuiManager::Update()
@@ -238,9 +238,34 @@ void ImGuiManager::Tile()
 		//Background
 		if (ImGui::CollapsingHeader("Background"))
 		{
-			ImGui::ListBox("Background List", &item_current, BackgroundList, BackGroundMap.size(), 4);
+			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+			ImGui::ListBox("List", &item_current, BackgroundList, BackGroundMap.size(), 4);
+			ImGui::SameLine();
+			ImGui::ListBox("WorldBG", &Bg_current, BackGroundName.data(), BackGroundName.size(), 4);
 
 			CreateBackground(item_current);
+
+			if (Bg_current != -1)
+			{
+				ImGui::SeparatorText(u8"Position");
+
+				static float Pos[2] = { 0.f,0.f };
+				Pos[0] = BackgroundObject[Bg_current]->GetPos().x;
+				Pos[1] = BackgroundObject[Bg_current]->GetPos().y;
+				ImGui::DragFloat2("Pos", Pos);
+				BackgroundObject[Bg_current]->SetPos({ Pos[0],Pos[1] });
+
+				static float ScrollPer = 1.f;
+				ScrollPer = BackgroundObject[Bg_current]->GetScrollPercent();
+				ImGui::DragFloat("ScrollPer", &ScrollPer);
+				BackgroundObject[Bg_current]->SetScrollPercent(ScrollPer);
+
+				if (ImGui::Button(u8"삭제"))
+				{
+					DestroyBackGround();	
+					Bg_current = -1;
+				}
+			}
 
 			if (ImGui::Button(u8"저장"))
 			{
@@ -287,7 +312,7 @@ void ImGuiManager::Object()
 			ImGui::TextWrapped(u8"Start Point는 플레이어의 시작 위치입니다.");
 
 			ImGui::TextWrapped(u8"Auto Line은 가장 가까운 라인으로 이동합니다.");
-			ImGui::TextWrapped(u8"Auto Line은 End키로도 가능합니다.");			
+			ImGui::TextWrapped(u8"Auto Line은 End키로도 가능합니다.");
 
 			ImGui::TextWrapped(u8"삭제는 선택된 오브젝트를 삭제합니다.");
 			ImGui::TextWrapped(u8"모두 삭제는 설치된 오브젝트 모두 삭제합니다.");
@@ -297,7 +322,7 @@ void ImGuiManager::Object()
 	}
 	else
 	{
-		DestorySelectObject();
+		DestroySelectObject();
 	}
 }
 
@@ -355,6 +380,14 @@ void ImGuiManager::CleanupRenderTarget()
 	if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
 }
 
+void ImGuiManager::Reset()
+{
+	LineManager::GetInstance()->DestroyAllLine();
+	DestroyAllObject();
+
+	BackgroundObject.clear();
+}
+
 OPENFILENAME ImGuiManager::GetSaveInfo(TCHAR* lpstrFile)
 {
 	OPENFILENAME ofn;
@@ -399,7 +432,7 @@ void ImGuiManager::SaveLine()
 
 void ImGuiManager::SaveBackGround()
 {
-	if (BackgroundObj == nullptr)
+	if (BackGroundName.empty())
 		MessageBox(g_hWnd, L"백그라운드 없음.", TEXT("경고"), MB_OK);
 
 	TCHAR lpstrFile[100] = L"";
@@ -417,12 +450,17 @@ void ImGuiManager::SaveBackGround()
 		}
 
 		DWORD dwByte = 0;
-		string str = BackgroundList[CurrentBackgroundIndex];
-		int Size = str.length();
-		WriteFile(hFile, &CurrentBackgroundIndex, sizeof(int), &dwByte, NULL);
-		WriteFile(hFile, &Size, sizeof(int), &dwByte, NULL);
-		WriteFile(hFile, str.c_str(), Size, &dwByte, NULL);
-
+		for (auto& iter : BackgroundObject)
+		{
+			string str = iter->GetImageName();
+			int Size = str.length();
+			float ScrollPer = iter->GetScrollPercent();
+			FPOINT Pos = iter->GetPos();
+			WriteFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
+			WriteFile(hFile, &Size, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, str.c_str(), Size, &dwByte, NULL);
+			WriteFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+		}
 
 		CloseHandle(hFile);
 
@@ -449,7 +487,7 @@ void ImGuiManager::SaveObject()
 		//저장해야할 것들 왼쪽인지 오른쪽인지, Pos, ColliderOffset, ColliderSize, ClassName, 이미지이름
 		DWORD dwByte = 0;
 
-		
+
 		for (auto& iter : WorldObject)
 		{
 			DefaultObject* obj = static_cast<DefaultObject*>(iter);
@@ -529,31 +567,43 @@ void ImGuiManager::LoadBackGround()
 		}
 
 		DWORD dwByte = 0;
-		int Index;
-		int Size;
 
-		ReadFile(hFile, &Index, sizeof(int), &dwByte, NULL);
-		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
-
-		char* buffer = new char[Size + 1];
-		ReadFile(hFile, buffer, Size, &dwByte, NULL);
-		buffer[Size] = '\0';
-
-		string BackgroundName = buffer;
-
-		delete[] buffer;
-
-		if (CheckBackground(Index))
+		while (true)
 		{
-			item_current = Index;
-			CurrentBackgroundIndex = Index;
+			int Size;
+			float ScrollPer;
+			FPOINT Pos;
+			ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
+			ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 
-			BackgroundObj = new Background();
-			static_cast<Background*>(BackgroundObj)->Init(BackgroundName);
+			char* buffer = new char[Size + 1];
+			ReadFile(hFile, buffer, Size, &dwByte, NULL);
+			buffer[Size] = '\0';
+			ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+
+			string BackgroundName = buffer;
+
+			delete[] buffer;
+
+			if (dwByte == 0)
+				break;
+
+			Background* BackgroundObj = new Background();
+			BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
+			BackgroundObj->SetPos(Pos);
 			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
 
-			MessageBox(g_hWnd, L"백그라운드 불러오기 성공", TEXT("성공"), MB_OK);
+			char* Name = new char[BackgroundName.size() + 1];
+			strcpy_s(Name, BackgroundName.size() + 1, BackgroundName.c_str());
+
+			BackGroundName.push_back(Name);
+			BackgroundObject.push_back(BackgroundObj);
+
+			item_current = -1;
+			Bg_current = -1;
 		}
+
+		MessageBox(g_hWnd, L"백그라운드 불러오기 성공", TEXT("성공"), MB_OK);
 
 		CloseHandle(hFile);
 	}
@@ -604,23 +654,23 @@ void ImGuiManager::LoadObject()
 
 			if (dwByte == 0)
 				break;
-			
+
 			if (bFirst)
 			{
 				bFirst = false;
-				DestoryAllObject();
-			}			
+				DestroyAllObject();
+			}
 
 			DefaultObject* Object = new DefaultObject();
 			Object->Init(ImageName, ObjData.Pos, ObjData.bLeft, ERenderGroup::NonAlphaBlend, ClassName);
-			
+
 			WorldObject.push_back(Object);
 
 			char* Name = new char[Object->GetName().size() + 1];
 			strcpy_s(Name, Object->GetName().size() + 1, Object->GetName().c_str());
 			WorldObjectName.push_back(Name);
 
-			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, Object);		
+			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, Object);
 		}
 
 		CloseHandle(hFile);
@@ -653,8 +703,6 @@ vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
 
 void ImGuiManager::InitBackground()
 {
-	BackgroundObj = nullptr;
-
 	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
 
 	if (backgrounds.empty())
@@ -674,10 +722,10 @@ void ImGuiManager::InitBackground()
 		BackgroundList[i] = temp;
 		BackGroundMap.insert({ BackgroundList[i], backgrounds[i] });
 
-		wstring wsPath = L"Image/";
+		wstring wsPath = L"Image/Background/";
 		wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
 
-		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), false);
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
 	}
 }
 
@@ -698,26 +746,30 @@ void ImGuiManager::CreateBackground(int Index)
 	if (Index == -1)
 		return;
 
-	if (CheckBackground(Index))
-	{
-		CurrentBackgroundIndex = Index;
+	Background* BackgroundObj = new Background();
+	BackgroundObj->Init(BackgroundList[Index], 1.f, ScrollManager::GetInstance()->GetScale());
+	ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
 
-		BackgroundObj = new Background();
-		static_cast<Background*>(BackgroundObj)->Init(BackgroundList[Index]);
-		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
-	}
+	string name = BackgroundList[Index];
+
+	char* Name = new char[name.size() + 1];
+	strcpy_s(Name, name.size() + 1, name.c_str());
+
+	BackGroundName.push_back(Name);
+	BackgroundObject.push_back(BackgroundObj);
+
+	item_current = -1;
 }
 
-bool ImGuiManager::CheckBackground(int Index)
+void ImGuiManager::DestroyBackGround()
 {
-	if (BackgroundObj != nullptr)
-	{
-		if (CurrentBackgroundIndex == Index)
-			return false;
+	if (BackgroundObject.empty())
+		return;
 
-		BackgroundObj->SetDead(true);
-	}
-	return true;
+	BackgroundObject[Bg_current]->SetDead(true);
+
+	BackgroundObject.erase(BackgroundObject.begin() + Bg_current);
+	BackGroundName.erase(BackGroundName.begin() + Bg_current);
 }
 
 void ImGuiManager::ObjectTap()
@@ -725,7 +777,7 @@ void ImGuiManager::ObjectTap()
 	if (Object_current == -1)
 		return;
 
-	DestorySelectObject();
+	DestroySelectObject();
 
 	// 플레이어 시작점
 	if (Object_current == 0)
@@ -813,7 +865,7 @@ void ImGuiManager::WorldObjectUpdate()
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		WorldObject[World_current]->SetPos({ g_ptMouse.x - Scroll.x, g_ptMouse.y - Scroll.y });
 	}
-	
+
 
 	if (World_current != -1)
 	{
@@ -830,7 +882,7 @@ void ImGuiManager::WorldObjectUpdate()
 		{
 			Collider* WorldObjCollider = WorldObject[World_current]->GetCollider();
 
-			ImGui::SeparatorText(u8"Collider");			
+			ImGui::SeparatorText(u8"Collider");
 			ColliderOffset[0] = WorldObjCollider->GetPivot().x;
 			ColliderOffset[1] = WorldObjCollider->GetPivot().y;
 			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.7f);
@@ -844,7 +896,7 @@ void ImGuiManager::WorldObjectUpdate()
 
 			WorldObjCollider->SetSize({ ColliderSize[0] ,ColliderSize[1] });
 			WorldObjCollider->SetDebugDraw(true);
-		}		
+		}
 
 		static bool bFlip = false;
 		bFlip = static_cast<DefaultObject*>(WorldObject[World_current])->GetFlip();
@@ -865,7 +917,7 @@ void ImGuiManager::WorldObjectUpdate()
 
 				FLineResult Result;
 				if (LineManager::GetInstance()->CollisionLine(WorldObject[World_current]->GetPos(), Result, WorldObject[World_current]->GetCollider()->GetSize().y))
-					WorldObject[World_current]->SetPos({ WorldObject[World_current]->GetPos().x, Result.OutPos.y });	
+					WorldObject[World_current]->SetPos({ WorldObject[World_current]->GetPos().x, Result.OutPos.y });
 			}
 
 			ImGui::SameLine();
@@ -886,34 +938,34 @@ void ImGuiManager::WorldObjectUpdate()
 				World_current = -1;
 			}
 		}
-		
+
 		if (ImGui::Button(u8"모두 삭제"))
 		{
 			if (MessageBox(g_hWnd, L"전체 오브젝트를 삭제하시겠습니까?", TEXT("주의"), MB_YESNO) == IDYES)
 			{
-				DestoryAllObject();
+				DestroyAllObject();
 			}
 		}
 
 		if (ImGui::Button(u8"저장"))
 		{
-			DestorySelectObject();
+			DestroySelectObject();
 			World_current = -1;
 			SaveObject();
 		}
 		ImGui::SameLine();
-	}	
+	}
 
-	
+
 	if (ImGui::Button(u8"불러오기"))
 	{
-		DestorySelectObject();
+		DestroySelectObject();
 		World_current = -1;
 		LoadObject();
 	}
 }
 
-void ImGuiManager::DestorySelectObject()
+void ImGuiManager::DestroySelectObject()
 {
 	if (SelectObject != nullptr)
 	{
@@ -925,9 +977,9 @@ void ImGuiManager::DestorySelectObject()
 	}
 }
 
-void ImGuiManager::DestoryAllObject()
+void ImGuiManager::DestroyAllObject()
 {
-	DestorySelectObject();
+	DestroySelectObject();
 
 	for (auto iter = WorldObject.begin(); iter != WorldObject.end();)
 	{
@@ -959,6 +1011,10 @@ void ImGuiManager::Release()
 	for (int i = 0; i < WorldObjectName.size(); ++i)
 		delete[] WorldObjectName[i];
 	WorldObjectName.clear();
+
+	for (int i = 0; i < BackGroundName.size(); ++i)
+		delete[] BackGroundName[i];
+	BackGroundName.clear();
 
 	ReleaseInstance();
 }

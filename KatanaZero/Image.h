@@ -73,10 +73,10 @@ public:
 	HRESULT Init(const wchar_t* filePath, bool isTransparent = FALSE, COLORREF transColor = FALSE);
 
 	// 화면에 출력
-	void Render(HDC hdc, int destX = 0, int destY = 0);
+	void Render(HDC hdc, int destX = 0, int destY = 0, float Scale = 1.f);
 	void Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip = false);
 	void FrameRender(HDC hdc, int destX, int destY,
-		int frameX, int frameY, bool isFlip = false, bool isCenter = true);
+		int frameX, int frameY, bool isFlip = false, bool isCenter = true, float Scale = 1.f);
 	void SourFrameRenderWidth(HDC hdc, int destX, int destY,
 		int frameX, int frameY,float start, float end, bool isFlip = false, bool isCenter = true);
 	// 메모리 해제
