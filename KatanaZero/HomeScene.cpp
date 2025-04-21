@@ -13,7 +13,7 @@
 #include "ChatManager.h"
 
 HomeScene::HomeScene():
-	ObjectManager(nullptr), RenderManager(nullptr)
+	ObjectManager(nullptr), RenderManager(nullptr), wall(nullptr)
 {
 	timerStart = false;
 	sceneChangeTimer = 0;
@@ -50,12 +50,7 @@ void HomeScene::Release()
 	if (RenderManager != nullptr)
 		RenderManager->Release();
 	
-	if (wall)
-	{
-		wall->Release();
-		delete wall;
-		wall = nullptr;
-	}
+	
 
 	ScrollManager::GetInstance()->Release();
 
@@ -86,9 +81,6 @@ void HomeScene::Update()
 		timerStart = false;
 		sceneChangeTimer = 0;
 	}
-	if(wall)
-		wall->Update();
-
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
 		if (cursor - 1 >= 0)--cursor;
@@ -104,8 +96,6 @@ void HomeScene::Render(HDC hdc)
 	
 	RenderManager->Render(hdc);
 	SelectBox(hdc, { selectBoxPos });
-	if(wall)
-		wall->Render(hdc);
 }
 
 HRESULT HomeScene::InitImage()
@@ -267,7 +257,7 @@ HRESULT HomeScene::InitObject()
 	wall->Init(tmp, 1);
 	wall->setPos({ 0.f,WINSIZE_Y }, false, false);
 	wall->setAniTask({ {0,10.f} });
-	//ObjectManager->AddGameObject(EObjectType::GameObject, wall);
+	ObjectManager->AddGameObject(EObjectType::GameObject, wall);
 
 	
 	return S_OK;

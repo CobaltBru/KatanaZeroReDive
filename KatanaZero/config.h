@@ -145,6 +145,19 @@ struct FLineResult
 	bool IsLeft;
 };
 
+//왼쪽인지 오른쪽인지, Pos, ColliderOffset, ColliderSize, ClassName, 이미지이름
+struct FObjectData
+{
+	int ClsasNameSize;
+	int ImageNameSize;
+	char* ClassName;	
+	char* ImageName;	
+	FPOINT Pos;
+	FPOINT Offset;
+	FPOINT Size;
+	bool bLeft;
+};
+
 /*
 	extern 키워드 : 변수나 함수가 다른 파일에 정의되어 있다 라는
 	사실을 알리는 키워드.
