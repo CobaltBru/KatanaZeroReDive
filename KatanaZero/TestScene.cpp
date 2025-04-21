@@ -173,7 +173,8 @@ void TestScene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
-
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
+		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{

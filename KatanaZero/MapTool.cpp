@@ -79,9 +79,10 @@ void MapTool::Update()
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
-
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
+		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
 
 void MapTool::Render(HDC hdc)
