@@ -300,8 +300,14 @@
     <ClCompile Include="Subject.cpp">
       <Filter>2D Framework\Observer</Filter>
     </ClCompile>
+    <ClCompile Include="PopUpManager.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
     <ClCompile Include="HomeScene.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GoPopUp.cpp">
+      <Filter>2D Framework\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -493,8 +499,14 @@
     <ClInclude Include="Subject.h">
       <Filter>2D Framework\Observer</Filter>
     </ClInclude>
+    <ClInclude Include="PopUpManager.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
     <ClInclude Include="HomeScene.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GoPopUp.h">
+      <Filter>2D Framework\UI</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>헤더 파일</Filter>

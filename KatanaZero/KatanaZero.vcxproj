@@ -140,6 +140,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="GoPopUp.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PlayerAnim.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="PopUpManager.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_draw.cpp" />
@@ -203,6 +205,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="GoPopUp.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />
     <ClInclude Include="Factory.h" />
@@ -233,6 +236,7 @@
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="PlayerAnim.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="PopUpManager.h" />
     <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h" />
