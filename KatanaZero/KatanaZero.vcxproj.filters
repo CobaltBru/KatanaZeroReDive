@@ -115,6 +115,9 @@
     <Filter Include="MainGame\TaeKyung\Default">
       <UniqueIdentifier>{86dcc670-f5f8-4997-8012-f31385a29e7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Scene\Stage\Test">
+      <UniqueIdentifier>{a0bc9861-762c-4f20-9b31-80457a5e7475}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -134,9 +137,6 @@
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
       <Filter>MainGame\Scene\Loading</Filter>
-    </ClCompile>
-    <ClCompile Include="TilemapTool.cpp">
-      <Filter>MainGame\Scene\MapTool</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>2D Framework\GameObject</Filter>
@@ -291,6 +291,9 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>MainGame\TaeKyung\Default</Filter>
     </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>MainGame\Scene\Stage\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -319,9 +322,6 @@
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
       <Filter>MainGame\Scene\Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="TilemapTool.h">
-      <Filter>MainGame\Scene\MapTool</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>2D Framework\GameObject</Filter>
@@ -487,6 +487,9 @@
     </ClInclude>
     <ClInclude Include="DefaultObject.h">
       <Filter>MainGame\TaeKyung\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>MainGame\Scene\Stage\Test</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

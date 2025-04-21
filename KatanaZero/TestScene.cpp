@@ -171,6 +171,9 @@ void TestScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
+		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
