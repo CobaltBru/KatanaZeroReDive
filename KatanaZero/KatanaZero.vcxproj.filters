@@ -118,6 +118,9 @@
     <Filter Include="MainGame\Enemy\Enemies">
       <UniqueIdentifier>{debbe255-3626-40ac-9dbb-63151611002d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2D Framework\Observer">
+      <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -295,9 +298,12 @@
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="Observer.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2D Framework\Observer</Filter>
     </ClCompile>
     <ClCompile Include="Subject.cpp">
+      <Filter>2D Framework\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -495,9 +501,12 @@
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
     <ClInclude Include="Observer.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>2D Framework\Observer</Filter>
     </ClInclude>
     <ClInclude Include="Subject.h">
+      <Filter>2D Framework\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="HomeScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

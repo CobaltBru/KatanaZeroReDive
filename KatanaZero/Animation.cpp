@@ -1,10 +1,30 @@
 #include "Animation.h"
 #include "Image.h"
+#include "GPImage.h"
+#include "RenderManager.h"
 #include "CommonFunction.h"
 
 void Animation::Init(Image* image, int frameX)
 {
+	imageFlag = false;
 	this->image = image;
+	this->frameX = frameX;
+	anitaskIdx = 0;
+	frameIdx = 0;
+	flip = false;
+
+	sStart = 0.f;
+	sEnd = 1.f;
+
+	timer = 0;
+	isStart = false;
+	isOn = false;
+}
+
+void Animation::Init(GPImage* image, int frameX)
+{
+	imageFlag = true;
+	this->gpimage = image;
 	this->frameX = frameX;
 	anitaskIdx = 0;
 	frameIdx = 0;
@@ -59,16 +79,32 @@ void Animation::Update()
 		}
 	}
 	
-	
+	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
 }
 
 void Animation::Render(HDC hdc)
 {
 	if (isOn)
 	{
-		image->SourFrameRenderWidth(hdc, pos.x + moveTask.offset.x, pos.y + moveTask.offset.y,
-			frameIdx, 0, sStart, sEnd, flip, anker);
-		
+		if (!imageFlag)
+			image->SourFrameRenderWidth(hdc, pos.x + moveTask.offset.x, pos.y + moveTask.offset.y,
+				frameIdx, 0, sStart, sEnd, flip, anker);
+		else
+		{
+			Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
+			if (!anker)
+			{
+				gpimage->RenderFrame(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
+					frameIdx, flip);
+			}
+			else
+			{
+				gpimage->Middle_RenderFrame(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
+					frameIdx, flip, 1.0f);
+			}
+			delete pGraphics;
+		}
+			
 	}
 	
 }
@@ -102,12 +138,19 @@ void Animation::Off()
 void Animation::MoveOn(FPOINT dest, float duration, int flag)
 {
 	isMove = true;
+	if (flag & POS_Update)
+	{
+		pos.x += moveTask.offset.x;
+		pos.y += moveTask.offset.y;
+	}
 	moveTask.src = {0,0};
 	moveTask.dest = dest;
 	moveTask.offset = {0,0};
 	moveTask.duration = duration;
 	moveTask.flag = flag;
 	moveTask.timer = 0;
+
+	
 }
 
 void Animation::MoveOff()
@@ -139,4 +182,13 @@ void Animation::setAniTask(initializer_list<pair<int, float>> lst)
 void Animation::setAniTask(std::vector<pair<int, float>>& lst)
 {
 	aniTasks.assign(lst.begin(), lst.end());
+}
+
+void Animation::Release()
+{
+	if (imageFlag == true)
+	{
+		delete gpimage;
+		gpimage = nullptr;
+	}
 }

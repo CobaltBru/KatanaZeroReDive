@@ -69,7 +69,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// 누수 난 메모리 블럭 추적
-	//_CrtSetBreakAlloc(108772);
+	//_CrtSetBreakAlloc(101525);
 #endif
 	
 	g_hInstance = hInstance;
@@ -154,9 +154,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		{
 			TimerManager::GetInstance()->Update();
 			g_mainGame.Update();
-			ImGuiManager::GetInstance()->Update();
-
-			ImGuiManager::GetInstance()->Render();
 			g_mainGame.Render();	
 		}
 	}
