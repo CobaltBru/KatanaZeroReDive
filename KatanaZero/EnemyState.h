@@ -128,7 +128,8 @@ public:
 class EFindSlope : public EnemyState
 {
 private:
-	FPOINT slopePos;
+	FPOINT slopeEntry;
+	FPOINT slopeExit;
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -138,7 +139,11 @@ public:
 
 class ERunOnSlope : public EnemyState
 {
+private:
+	FPOINT slopeEntry;
+	FPOINT slopeExit;
 public:
+	ERunOnSlope(const FPOINT& entry, const FPOINT& exit);
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
 	virtual void Exit(Enemy& enemy) override;

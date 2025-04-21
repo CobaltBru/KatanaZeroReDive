@@ -43,3 +43,13 @@ void Line::Render(HDC hdc)
 	// 펜 메모리 해제
 	DeleteObject(hPen);
 }
+
+int Line::GetFloorIndex(FPOINT linePoint) const
+{
+	for (int i = 0; i < FloorZones.size(); ++i)
+	{
+		if (FloorZones[i].Contains(linePoint.y))
+			return i;
+	}
+	return -1;
+}

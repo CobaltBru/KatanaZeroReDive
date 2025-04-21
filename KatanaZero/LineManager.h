@@ -40,6 +40,9 @@ public:
 	
 	void CreateLine(int InX, int InY);
 	void AdjustLine(float InX, float InY);
+
+	// 적 AI용 비탈길 찾기
+	pair<FPOINT, FPOINT> FindNearestSlope(const FPOINT& targetPos, int fromFloor, int toFloor) const;
 private:
 	list<Line*> LineList[(int)ELineType::End];
 	FPOINT LinePoint[END];

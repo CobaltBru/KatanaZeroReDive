@@ -5,6 +5,8 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "GPImage.h"
+#include "LineManager.h"
+#include "CommonFunction.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -78,6 +80,7 @@ void ERun::Enter(Enemy& enemy)
 {
 	state = "Run";
 	enemy.ChangeAnimation(EImageType::Run);
+	enemy.GetRigidBody()->SetDown(false);
 }
 
 void ERun::Update(Enemy& enemy)
@@ -275,8 +278,13 @@ EnemyState* ShieldCopAttack::CheckTransition(Enemy* enemy)
 void EFindSlope::Enter(Enemy& enemy)
 {
 	state = "FindSlope";
-	//slopePos = enemy.GetNearestSlope();
-	slopePos = { 715.f, 330.f };
+	auto player = SnapShotManager::GetInstance()->GetPlayer().front();
+	int targetFloor = player->GetFloorIndex();
+	FPOINT playerPos = player->GetPos();
+	pair<FPOINT, FPOINT> slope = LineManager::GetInstance()->FindNearestSlope(playerPos, enemy.GetFloorIndex(), targetFloor);
+	slopeEntry = slope.first;
+	slopeExit = slope.second;
+	int a = 1;
 }
 
 void EFindSlope::Update(Enemy& enemy)
@@ -284,7 +292,7 @@ void EFindSlope::Update(Enemy& enemy)
 	const float speed = enemy.GetSpeed();
 	const FPOINT pos = enemy.GetPos();
 
-	float dx = slopePos.x - pos.x;
+	float dx = slopeEntry.x - pos.x;
 	int dir = (dx > 0) ? 1 : -1;
 
 	const float chaseSpeed = speed * 2.f;
@@ -303,33 +311,49 @@ void EFindSlope::Exit(Enemy& enemy)
 EnemyState* EFindSlope::CheckTransition(Enemy* enemy)
 {
 	const FPOINT pos = enemy->GetPos();
-	const float dist = fabs(slopePos.x - pos.x);
+	const float dist = fabs(slopeEntry.x - pos.x);
 
 	if (dist < 3.f)
 	{
-		return new ERunOnSlope();
+		return new ERunOnSlope(slopeEntry, slopeExit);
 	}
 
 	return nullptr;
+}
+
+ERunOnSlope::ERunOnSlope(const FPOINT& entry, const FPOINT& exit)
+	: slopeEntry(entry), slopeExit(exit)
+{
 }
 
 void ERunOnSlope::Enter(Enemy& enemy)
 {
 	state = "OnSlope";
 	enemy.GetRigidBody()->SetDown(true);
+	enemy.GetRigidBody()->SetGravityVisible(false);
 	enemy.GetRigidBody()->SetElasticity(0.f);
 }
 
 void ERunOnSlope::Update(Enemy& enemy)
 {
-	enemy.GetRigidBody()->Update();
+	FPOINT dir;
+	dir.x = slopeExit.x - slopeEntry.x;
+	dir.y = slopeExit.y - slopeEntry.y;
+	if (dir.x > 0)
+		enemy.SetDir(1);
+	else if (dir.x < 0)
+		enemy.SetDir(-1);
+	Normalize(dir);
+	float chaseSpeed = enemy.GetSpeed() * 2.f;
+	enemy.GetRigidBody()->SetVelocity({ dir.x * chaseSpeed, dir.y * chaseSpeed });
 
-	
+	enemy.GetRigidBody()->Update();
 }
 
 void ERunOnSlope::Exit(Enemy& enemy)
 {
 	enemy.GetRigidBody()->SetDown(false);
+	enemy.GetRigidBody()->SetGravityVisible(true);
 	enemy.GetRigidBody()->SetElasticity(0.3f);
 }
 
@@ -340,9 +364,14 @@ EnemyState* ERunOnSlope::CheckTransition(Enemy* enemy)
 	{
 		return new ERun();
 	}*/
-	auto player = SnapShotManager::GetInstance()->GetPlayer().front();
+	/*auto player = SnapShotManager::GetInstance()->GetPlayer().front();
 	if (player == nullptr) return nullptr;
 	if (enemy->GetFloorIndex() == player->GetFloorIndex())
+	{
+		return new ERun();
+	}*/
+	float dist = fabs(slopeExit.x - enemy->GetPos().x);
+	if (dist < 3.f)
 	{
 		return new ERun();
 	}
