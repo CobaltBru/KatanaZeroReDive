@@ -14,6 +14,7 @@
 
 #include "ChatManager.h"
 #include "UIGame.h"
+#include "GoPopUp.h"
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
 #include "HeadHunter.h"
@@ -151,6 +152,9 @@ HRESULT TestScene::InitObject()
 		ui->init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
+		GoPopUp* goPopUp = new GoPopUp();
+		goPopUp->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
 	}
 	return S_OK;
 }

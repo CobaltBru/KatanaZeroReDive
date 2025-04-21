@@ -139,25 +139,7 @@ HRESULT Stage1Scene::InitObject()
 		}
 	
 	}
-	// 테스트 코드 지운
-	{
-		chatManager = new ChatManager();
-		chatManager->pushPos({ 600,100 });
-		chatManager->pushPos({ 400,100 });
-		chatManager->LoadChat("ChatDatas/test3.json");
-
-		chatManager->startChat("PaF26grPoH");
-		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
-		
-		UIGame* ui = new UIGame();
-		ui->init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-		
-		GoPopUp* goPopUp = new GoPopUp();
-		goPopUp->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
-
-	}
+	
 	return S_OK;
 }
 
