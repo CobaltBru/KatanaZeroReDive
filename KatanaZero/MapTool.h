@@ -7,6 +7,7 @@ class CollisionManager;
 class ScrollManager;
 class LineManager;
 class EffectManager;
+class SnapShotManager;
 class MapTool : public Scene
 {
 public:
@@ -30,6 +31,7 @@ private:
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 	EffectManager* fxManager;
+	SnapShotManager* snapShotManager;
 
 };
 

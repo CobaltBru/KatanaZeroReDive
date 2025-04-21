@@ -15,13 +15,14 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
+#include "SnapShotManager.h"
 
 // 해영 Enemy 테스트
 #include "Enemy.h"
 #include "Enemies.h"
 
 MapTool::MapTool()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), fxManager(nullptr)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), fxManager(nullptr), snapShotManager(nullptr)
 {
 }
 
@@ -46,6 +47,9 @@ HRESULT MapTool::Init()
 	LineManager->Init();
 
 	fxManager = EffectManager::GetInstance();
+
+	snapShotManager = SnapShotManager::GetInstance();
+	snapShotManager->Init();
 
 	if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
 	{
@@ -131,6 +135,8 @@ void MapTool::Release()
 		LineManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();	
+	if (snapShotManager != nullptr)
+		snapShotManager->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
@@ -138,4 +144,5 @@ void MapTool::Release()
 	ScrollManager = nullptr;
 	LineManager = nullptr;
 	fxManager = nullptr;
+	snapShotManager = nullptr;
 }
