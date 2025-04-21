@@ -140,6 +140,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="HomeScene.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Observer.h" />

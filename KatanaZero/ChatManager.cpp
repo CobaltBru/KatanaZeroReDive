@@ -12,7 +12,7 @@ Token::Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS col
 {
     globalPos = { 0.f,0.f };
 	this->pos = pos;
-    
+    this->yIdx = 0;
 	//this->wtext = wtext;
     this->wtext.assign(wtext);
     this->appear = appear;
@@ -230,13 +230,13 @@ void Token::ShakeEffect(HDC hdc)
 
 
 
-void Chat::Init(vector<pair<float, Token>> &tokens, float width, float height)
+void Chat::Init(vector<pair<float, Token>> &tokens)
 {
     tokenIdx = 0;
     this->tokens.assign(tokens.begin(), tokens.end());
     //this->tokens = tokens;
-    this->width = width;
-    this->height = height;
+    this->width = 0;
+    this->height = 0;
     boxTime = 0.5f;
     statusFlag = 0;
 }
@@ -244,28 +244,58 @@ void Chat::Init(vector<pair<float, Token>> &tokens, float width, float height)
 void Chat::Update()
 {
     statusFlag = 0;
-    timer += TimerManager::GetInstance()->GetDeltaTime();
-    float appearTime = boxTime + 0.5f;
+    float dt = TimerManager::GetInstance()->GetDeltaTime();
+    timer += dt;
+    /*float appearTime = boxTime + 0.7f;
     for (int i = 0; i <= tokenIdx; i++)
     {
-        appearTime += tokens[i].first;
+        appearTime += (tokens[i].first + tokens[i].second.getLen() * 0.1f);
         if(timer> appearTime) tokens[i].second.Update();
+    }*/
+    if (timer >= boxTime)
+    {
+        chatTimer += dt;
+        if (tokens[tokenIdx].second.isComplete()) {
+            if (tokenIdx + 1 < tokens.size())
+            {
+                delayTimer += dt;
+                if (delayTimer >= tokens[tokenIdx + 1].first) {
+                    if (tokenIdx < tokens.size() - 1)
+                    {
+                        delayTimer = 0;
+                        tokenIdx++;
+                    }
+                }
+            }
+            
+        }
+        for (int i = 0; i <= tokenIdx; i++) 
+        {
+            
+            tokens[i].second.Update();
+        }
     }
+    
 
 }
 
 void Chat::Render(HDC hdc)
 {
+    calcSizes(hdc);
     DrawBox(hdc);
-    DrawTokens(hdc);
+    if(timer>=boxTime)
+        DrawTokens(hdc);
 }
 
 void Chat::DrawBox(HDC hdc)
 {
     const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 
+    float cheight = height + 10.f;
+    float cwidth = width + 15.f;
+
     float percent = timer / boxTime;
-    float currentHeight = height * percent;
+    float currentHeight = cheight * percent;
     HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
     HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
 
@@ -273,9 +303,9 @@ void Chat::DrawBox(HDC hdc)
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
     if(percent<1.0f)
-        RoundRect(hdc, (pos.x - width / 2) + Scroll.x, pos.y + Scroll.y, (pos.x + width / 2) + Scroll.x, (pos.y + currentHeight) + Scroll.y, 5.f, 5.f);
+        RoundRect(hdc, (pos.x - cwidth / 2) + Scroll.x, pos.y + Scroll.y, (pos.x + cwidth / 2) + Scroll.x, (pos.y + currentHeight) + Scroll.y, 5.f, 5.f);
     else
-        RoundRect(hdc, (pos.x - width / 2) + Scroll.x, pos.y + Scroll.y, (pos.x + width / 2) + Scroll.x, (pos.y + height) + Scroll.y, 5.f, 5.f);
+        RoundRect(hdc, (pos.x - cwidth / 2) + Scroll.x, pos.y + Scroll.y, (pos.x + cwidth / 2) + Scroll.x, (pos.y + cheight) + Scroll.y, 5.f, 5.f);
 
     SelectObject(hdc, hOldPen);
     SelectObject(hdc, hOldBrush);
@@ -317,9 +347,9 @@ void Chat::DrawTokens(HDC hdc)
     float baseAppearTime = boxTime + 0.5f;
     float scheduledTime = baseAppearTime;
 
-    FPOINT gPos = { pos.x - width / 2 + 5.f, pos.y + 5.f };
+    FPOINT gPos = { pos.x - width / 2 + 0.f + Scroll.x, pos.y + 5.f + Scroll.y };
 
-    for (int i = 0; i < tokens.size(); i++)
+    /*for (int i = 0; i < tokens.size(); i++)
     {
         if (i > 0)
         {
@@ -335,7 +365,7 @@ void Chat::DrawTokens(HDC hdc)
 
         if (timer >= scheduledTime)
         {
-            tokens[i].second.setGlobalPos({ gPos.x + Scroll.x, gPos.y + Scroll.y });
+            tokens[i].second.setGlobalPos({ gPos.x , gPos.y });
             tokens[i].second.Render(hdc);
 
             if (tokens[i].second.isComplete())
@@ -350,6 +380,11 @@ void Chat::DrawTokens(HDC hdc)
         {
             break;
         }
+    }*/
+    
+    for (int i = 0; i <= tokenIdx; ++i) {
+        tokens[i].second.setGlobalPos({ gPos.x , gPos.y });
+        tokens[i].second.Render(hdc);
     }
 }
 
@@ -361,12 +396,34 @@ void Chat::makeExplode()
     }
 }
 
-void OptionChat::Init(vector <pair<float, Token >> &tokens, float width, float height, 
+void Chat::calcSizes(HDC hdc)
+{
+    float x = 0.f;
+    float y = 0.f;
+    int currentYidx = 0;
+    for (auto& tok : tokens)
+    {
+        if (currentYidx != tok.second.getyIdx())
+        {
+            
+            y = tok.second.getyIdx() * (tok.second.getSize(hdc).cy + 2.f);
+            currentYidx++;
+            x = 0.f;
+        }
+        tok.second.setPos({ x,y });
+        x += tok.second.getSize(hdc).cx;
+        width = max(width, x);
+        
+    }
+    height = y + (tokens.back().second.getSize(hdc).cy) ;
+}
+
+void OptionChat::Init(vector <pair<float, Token >> &tokens, 
     float redTime, float totalTime, 
     vector<pair<string, Token>> &redSelects,
     vector<pair<string, Token>> &normalSelects)
 {
-    __super::Init(tokens, width, height);
+    __super::Init(tokens);
     this->redTime = redTime;
     this->totalTime = totalTime;
 
@@ -393,8 +450,8 @@ void OptionChat::Init(vector <pair<float, Token >> &tokens, float width, float h
 void OptionChat::Update()
 {
     __super::Update();
-    float dt = TimerManager::GetInstance()->GetDeltaTime();
-    timer += dt;
+    /*float dt = TimerManager::GetInstance()->GetDeltaTime();
+    timer += dt;*/
 
     if (state == OptionState::RED)
     {
@@ -780,8 +837,6 @@ void ChatManager::LoadChat(const std::string& path)
 
         // 3) chat 박스 크기
         auto& cj = entry["chat"];
-        float boxW = cj["boxWidth"].get<float>();
-        float boxH = cj["boxHeight"].get<float>();
 
         // 4) tokens 파싱
         std::vector<std::pair<float, Token>> tokens;
@@ -789,9 +844,8 @@ void ChatManager::LoadChat(const std::string& path)
         for (auto& tj : cj["tokens"]) {
             float delay = tj["delay"].get<float>();
             std::string txt = tj["text"].get<std::string>();
-            
-            float x = tj["x"].get<float>();
-            float y = tj["y"].get<float>();
+            //if (txt == "")continue;
+            int yIdx = tj["yIdx"].get<int>();
             int appear_i = tj["appear"].get<int>();
             int option_i = tj["option"].get<int>();
             int color_i = tj["colors"].get<int>();
@@ -802,11 +856,12 @@ void ChatManager::LoadChat(const std::string& path)
             timecalc += delay;
             Token t(
                 wtxt,
-                { x, y },
+                { 0, 0 },
                 static_cast<Token::APPEAR>(appear_i),
                 static_cast<Token::OPTION>(option_i),
                 static_cast<Token::COLORS>(color_i)
             );
+            t.setyIdx(yIdx);
             tokens.emplace_back(delay, std::move(t));
         }
 
@@ -832,12 +887,12 @@ void ChatManager::LoadChat(const std::string& path)
         // 7) Chat vs OptionChat 분기
         if (norm.empty() && red.empty()) {
             Chat* ch = new Chat();
-            ch->Init(tokens, boxW+10.f, boxH+10.f);
+            ch->Init(tokens);
             Push(key, next, posIndex, ch);
         }
         else {
             OptionChat* oc = new OptionChat();
-            oc->Init(tokens, boxW+10.f, boxH+10.f, redTime, totalTime, red, norm);
+            oc->Init(tokens, redTime, totalTime, red, norm);
             Push(key, next, posIndex, oc);
         }
     }
