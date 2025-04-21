@@ -58,7 +58,7 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -93,18 +93,19 @@ HRESULT Stage1Scene::InitImage()
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+
+	InitBackgroundImage();
+
 	return S_OK;
 }
 
 HRESULT Stage1Scene::InitObject()
 {
 	Background* background = new Background();
-	background->Init("blackBg");
+	background->Init("blackBg",0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	DefaultObject* test = new DefaultObject();
-	test->Init("TestPlayer", { 500.f,500.f }, false, ERenderGroup::NonAlphaBlend, "TestPlayer");
-	ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, test);
+	LoadBackground();
 	return S_OK;
 }
 
@@ -128,6 +129,67 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");	
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+}
+
+void Stage1Scene::InitBackgroundImage()
+{
+	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
+
+	if (backgrounds.empty())
+		return;
+
+	for (int i = 0; i < backgrounds.size(); ++i)
+	{
+		int dotPos = backgrounds[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? backgrounds[i].substr(0, dotPos) : backgrounds[i];
+
+		wstring wsPath = L"Image/Background/";
+		wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
+	}
+}
+
+void Stage1Scene::LoadBackground()
+{
+	HANDLE hFile = CreateFile(
+		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("경고"), MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	while (true)
+	{
+		int Size;
+		float ScrollPer;
+		FPOINT Pos;
+		ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
+		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
+
+		char* buffer = new char[Size + 1];
+		ReadFile(hFile, buffer, Size, &dwByte, NULL);
+		buffer[Size] = '\0';
+		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+
+		string BackgroundName = buffer;
+
+		delete[] buffer;
+
+		if (dwByte == 0)
+			break;
+
+		Background* BackgroundObj = new Background();
+		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
+		BackgroundObj->SetPos(Pos);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+	}
+
+	CloseHandle(hFile);
 }
 
 void Stage1Scene::Update()

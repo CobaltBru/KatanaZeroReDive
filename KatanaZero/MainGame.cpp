@@ -11,6 +11,7 @@
 #include "SoundManager.h"
 #include "ScreenEffectManager.h"
 #include "SnapShotManager.h"
+#include "ScrollManager.h"
 
 //static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
 //{

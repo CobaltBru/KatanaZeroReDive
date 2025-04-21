@@ -28,8 +28,9 @@ public:
 	void Reset();
 
 private:
-	vector<string> GetFileNames(const string& InFolderPath);
+	//vector<string> GetFileNames(const string& InFolderPath);
 
+	void CreatePlayerObject();
 	void HelpMarker(const char* desc);
 
 	void InitBackground();
@@ -65,5 +66,6 @@ private:
 	vector<const char*> WorldObjectName;
 	vector<const char*> BackGroundName;
 
+	GameObject* PlayerObject;
 };
 

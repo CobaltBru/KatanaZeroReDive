@@ -26,27 +26,27 @@ void LineManager::Update()
 			DestroyLine();
 	}*/
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown('1'))
-		CurrentEditState = ELineEditState::Create;
-	// 보정
-	else if (KeyManager::GetInstance()->IsOnceKeyDown('2'))
-		CurrentEditState = ELineEditState::Adjust;
-	else if (KeyManager::GetInstance()->IsOnceKeyDown('3'))
-	{
-		CurrentEditState = ELineEditState::Eraser;
-		ResetLinePoint();
-	}
+	//if (KeyManager::GetInstance()->IsOnceKeyDown('1'))
+	//	CurrentEditState = ELineEditState::Create;
+	//// 보정
+	//else if (KeyManager::GetInstance()->IsOnceKeyDown('2'))
+	//	CurrentEditState = ELineEditState::Adjust;
+	//else if (KeyManager::GetInstance()->IsOnceKeyDown('3'))
+	//{
+	//	CurrentEditState = ELineEditState::Eraser;
+	//	ResetLinePoint();
+	//}
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
-		ResetLinePoint();
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
-		SetLineType(ELineType::Normal);
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
-		SetLineType(ELineType::Wall);
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD3))
-		SetLineType(ELineType::DownLine);
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
-		SetLineType(ELineType::Ceiling);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
+	//	ResetLinePoint();
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
+	//	SetLineType(ELineType::Normal);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
+	//	SetLineType(ELineType::Wall);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD3))
+	//	SetLineType(ELineType::DownLine);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
+	//	SetLineType(ELineType::Ceiling);
 	////저장
 	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F11))
 	//	SaveFile();
@@ -571,7 +571,7 @@ HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(g_hWnd, L"LineManager SaveFile Failed.", TEXT("경고"), MB_OK);
+		MessageBox(g_hWnd, L"LineManager LoadFile Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
 

@@ -15,6 +15,7 @@
 #include "Background.h"
 #include "DefaultObject.h"
 #include "Collider.h"
+#include "SimpleObject.h"
 
 static TCHAR filter[] = L"모든 파일\0*.*\0dat 파일\0*.dat";
 
@@ -41,7 +42,7 @@ static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
 
 
 ImGuiManager::ImGuiManager()
-	:PlayerStartPoint(nullptr), SelectObject(nullptr)
+	:PlayerStartPoint(nullptr), SelectObject(nullptr), PlayerObject(nullptr)
 {
 }
 
@@ -317,6 +318,22 @@ void ImGuiManager::Object()
 			ImGui::TextWrapped(u8"삭제는 선택된 오브젝트를 삭제합니다.");
 			ImGui::TextWrapped(u8"모두 삭제는 설치된 오브젝트 모두 삭제합니다.");
 		}
+
+		if (ImGui::Button(u8"플레이어 생성"))
+		{
+			CreatePlayerObject();
+		}
+
+		if (ImGui::Button(u8"플레이어 제거"))
+		{
+			if (PlayerObject == nullptr)
+				MessageBox(g_hWnd, L"플레이어가 없습니다.", TEXT("경고"), MB_OK);			
+			else
+			{
+				PlayerObject->SetDead(true);
+				PlayerObject = nullptr;
+			}			
+		}		
 
 		ImGui::EndTabItem();
 	}
@@ -670,6 +687,9 @@ void ImGuiManager::LoadObject()
 			strcpy_s(Name, Object->GetName().size() + 1, Object->GetName().c_str());
 			WorldObjectName.push_back(Name);
 
+			if (Object->GetName() == "StartPoint")
+				PlayerStartPoint = Object;
+				
 			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, Object);
 		}
 
@@ -679,27 +699,27 @@ void ImGuiManager::LoadObject()
 	}
 }
 
-vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
-{
-	vector<string> files;
-
-	WIN32_FIND_DATAA findData;
-	HANDLE hFind = FindFirstFileA(InFolderPath.c_str(), &findData);
-
-	if (hFind == INVALID_HANDLE_VALUE)
-		return files;
-
-	do
-	{
-		if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-			files.push_back(findData.cFileName);
-
-	} while (FindNextFileA(hFind, &findData));
-
-	FindClose(hFind);
-
-	return files;
-}
+//vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
+//{
+//	vector<string> files;
+//
+//	WIN32_FIND_DATAA findData;
+//	HANDLE hFind = FindFirstFileA(InFolderPath.c_str(), &findData);
+//
+//	if (hFind == INVALID_HANDLE_VALUE)
+//		return files;
+//
+//	do
+//	{
+//		if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+//			files.push_back(findData.cFileName);
+//
+//	} while (FindNextFileA(hFind, &findData));
+//
+//	FindClose(hFind);
+//
+//	return files;
+//}
 
 void ImGuiManager::InitBackground()
 {
@@ -727,6 +747,25 @@ void ImGuiManager::InitBackground()
 
 		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
 	}
+}
+
+void ImGuiManager::CreatePlayerObject()
+{
+	if (PlayerObject != nullptr)
+	{
+		MessageBox(g_hWnd, L"플레이어가 이미 있습니다.", TEXT("경고"), MB_OK);
+		return;
+	}
+		
+	if (PlayerStartPoint == nullptr)
+	{
+		MessageBox(g_hWnd, L"스타트 포인트가 없습니다.", TEXT("경고"), MB_OK);
+		return;
+	}
+
+	PlayerObject = new SimpleObject();
+	static_cast<SimpleObject*>(PlayerObject)->Init(PlayerStartPoint->GetPos(),"TestPlayer");
+	ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, PlayerObject);
 }
 
 void ImGuiManager::HelpMarker(const char* desc)

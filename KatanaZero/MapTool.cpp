@@ -43,7 +43,7 @@ HRESULT MapTool::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
-	//if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
+	//if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	//{
 	//	MessageBox(g_hWnd, TEXT("MapTool LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
 	//	return E_FAIL;
@@ -104,7 +104,7 @@ HRESULT MapTool::InitImage()
 HRESULT MapTool::InitObject()
 {
 	Background* background = new Background();
-	background->Init("blackBg");
+	background->Init("blackBg",0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	return S_OK;
