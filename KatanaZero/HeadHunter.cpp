@@ -6,6 +6,7 @@
 #include "Bullet.h"
 #include "Collider.h"
 #include "CollisionManager.h"
+#include "RigidBody.h"
 
 HeadHunter::HeadHunter()
 {
@@ -27,6 +28,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     isFlip = false;
     isAttacked = false;
     isDead = false;
+    isLeft = true;
 
     angle = 0;
     weaponAngle = 0;
@@ -69,9 +71,13 @@ HRESULT HeadHunter::Init(FPOINT InPos)
         image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
 
         //DASH
-        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432, 45, 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash2.bmp", 432, 70, 9, 1, true, RGB(255, 0, 255));
         image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500, 50, 10, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500, 70, 10, 1, true, RGB(255, 0, 255));
+
+        //Dead
+        image = ImageManager::GetInstance()->AddImage("DeadFly", L"Image/HeadHunter/deadfly.bmp", 280, 70, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("DeadLand", L"Image/HeadHunter/deadland.bmp", 560, 70, 8, 1, true, RGB(255, 0, 255));
 
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
@@ -81,6 +87,8 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f ,40.f}, true, 1.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
     ObjectCollider->SetPos(Pos);
+
+    ObjectRigidBody = new RigidBody(this);
 
     lazer = new Lazer();
     lazer->Init();
@@ -102,6 +110,12 @@ void HeadHunter::Release()
         delete bullet;
     }
     bullets.clear();
+
+    if (ObjectRigidBody != nullptr)
+    {
+        delete ObjectRigidBody;
+        ObjectRigidBody = nullptr;
+    }
 }
 
 void HeadHunter::Update()
@@ -119,7 +133,17 @@ void HeadHunter::Update()
         bullet->Update();
     }
     
-
+    // 죽는거 테스트
+    if (KeyManager::GetInstance()->IsStayKeyDown('N'))
+    {
+        isDead = true;
+    }
+    if (isDead)
+    {
+        state = State::Die;
+        ObjectRigidBody->Update();
+    }
+    
     CheckPlayerPos();
 
     switch (state) {
@@ -162,7 +186,16 @@ void HeadHunter::Update()
     case State::Faint:
         Faint();
         break;
+
+    case State::Machine:
+        Machine();
+        break;
+    
+    case State::Die:
+        Die();
+        break;
     }
+
 }
 
 void HeadHunter::Render(HDC hdc)
@@ -192,7 +225,7 @@ void HeadHunter::Collision()
     {
     	// 충돌했다.
 
-    	ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
+    	ObjectCollider->SetHit(false);	// 내 콜라이더 충돌
     	HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
 
     	HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
@@ -218,9 +251,12 @@ void HeadHunter::Idle()
         frameIndex = 0;
         
         if (loop == 0) {
-            ChangeState(State::GroundGun); // 또는 groundGun
+            ChangeState(State::GroundLazer); // 또는 groundGun
         }
         if (loop == 1) {
+            ChangeState(State::GroundGun);
+        }
+        if (loop == 2) {
             ChangeState(State::Dash);
         }
         
@@ -242,10 +278,19 @@ void HeadHunter::GroundLazer()
 
     if (frameIndex >= image->GetMaxFrameX() - 1)
     {
-        frameIndex = image->GetMaxFrameX();
+        frameIndex = image->GetMaxFrameX() - 1;
         lazer->SetIsActive(true);
-        weaponAngle = 90;
-        firePos = { Pos.x - 40, Pos.y + 10 };
+        if (Pos.x > playerPos.x)
+        {
+            weaponAngle = 90;
+            firePos = { Pos.x - 40, Pos.y + 10 };
+        }
+        if (Pos.x < playerPos.x)
+        {
+            weaponAngle = -90;
+            firePos = { Pos.x + 40, Pos.y + 10 };
+        }
+
         if (timer > 1.5f)
         {
             lazer->SetIsActive(false);
@@ -407,6 +452,7 @@ void HeadHunter::Bullet()
                 frameIndex = 0;
                 dAngle = 0;
                 loop = 1;
+                RandomLoop();
                 ChangeState(State::Idle);
             }
         }
@@ -604,21 +650,38 @@ void HeadHunter::Dash()
             {
                 frameIndex = 0;
                 gunWave++;
+                IsLeft();
             }
         }
         break;
     case 1:
         image = ImageManager::GetInstance()->FindImage("Dash");
+        
         if (timer > 0.002f)
         {
-            Pos.x += 5;
-            timer = 0;
+           
+           if (isLeft)
+           {
+                Pos.x += 5;
+                timer = 0;
 
-            if (Pos.x > playerPos.x + 50)
-            {
-                Pos.x = playerPos.x + 50;
-                gunWave++;
-            }
+                if (Pos.x > playerPos.x + 250)
+                {
+                    Pos.x = playerPos.x + 250;
+                    gunWave++;
+                }
+           }
+           if (!isLeft)
+           {
+               Pos.x -= 5;
+               timer = 0;
+
+               if (Pos.x < playerPos.x - 250)
+               {
+                   Pos.x = playerPos.x -250;
+                   gunWave++;
+               }
+           }
         }
         break;
     case 2:
@@ -632,7 +695,8 @@ void HeadHunter::Dash()
             if (frameIndex >= image->GetMaxFrameX())
             {
                 gunWave = 0;
-                ChangeState(State::GroundLazer);
+                RandomLoop();
+                ChangeState(State::Idle);
             }
         }
         break;
@@ -670,7 +734,8 @@ void HeadHunter::DashDown()
             {
                 gunWave = 0;
                 bulletWave = 0;
-                ChangeState(State::Bullet);
+                RandomLoop();
+                ChangeState(State::Idle);
             }
         }
         break;
@@ -702,7 +767,7 @@ void HeadHunter::Faint()
 
 }
 
-void HeadHunter::Run()
+void HeadHunter::Machine()
 {
     if (Pos.y == 360 && abs(Pos.x - playerPos.x) <= 100)
     {
@@ -712,6 +777,26 @@ void HeadHunter::Run()
             timer = 0;
         }
     }
+}
+
+void HeadHunter::Die()
+{
+    image = ImageManager::GetInstance()->FindImage("DeadFly");
+    
+    if (frameIndex < image->GetMaxFrameX() - 1)
+    {
+        if (timer > 0.1f)
+        {
+            frameIndex++;
+            timer = 0;
+        }
+    }
+    
+    if (frameIndex >= image->GetMaxFrameX() - 1)
+    {
+        frameIndex = 0;
+    }
+
 }
 
 void HeadHunter::SpawnBullet(FPOINT firePos, float angle)
@@ -726,6 +811,8 @@ void HeadHunter::ChangeState(State newState) {
     state = newState;
     timer = 0;
     frameIndex = 0;
+    gunWave = 0;
+    bulletWave = 0;
     jumpDist1.x = wallPos.x - Pos.x;
     jumpDist2.x = 250;
     jumpDist3.x = 290;
@@ -736,22 +823,6 @@ void HeadHunter::ChangeState(State newState) {
     // 필요하면 이미지 변경, 방향 리셋 등도 여기에
 }
 
-void HeadHunter::PlayAnimation(string key)
-{
-
-    image = ImageManager::GetInstance()->FindImage(key);
-    if (timer > 0.1f)
-    {
-        frameIndex++;
-        timer = 0;
-    }
-
-    if (frameIndex >= image->GetMaxFrameX() - 1)
-    {
-        frameIndex = -1;
-        NextWave();
-    }
-}
 
 void HeadHunter::CheckPlayerPos()
 {
@@ -769,27 +840,20 @@ void HeadHunter::CheckPlayerPos()
 
 }
 
-void HeadHunter::NextWave()
+void HeadHunter::RandomLoop()
 {
-    wave++;
-    timer = 0;
-    frameIndex = 0;
+    loop = rand() % 3;
+}
 
-    switch (wave) {
-    case 1:
-        ChangeState(State::GroundLazer);
-        break;
-    case 2:
-        ChangeState(State::Teleport /*Dash*/);
-        break;
-    case 3:
-        ChangeState(State::GroundGun);
-        break;
-    case 4:
-        ChangeState(State::Bullet);
-        break;
-    case 5:
-        ChangeState(State::Faint);
-        break;
+void HeadHunter::IsLeft()
+{
+    if (Pos.x > playerPos.x)
+    {
+        isLeft = false;
+    }
+    if (Pos.x < playerPos.x)
+    {
+        isLeft = true;
     }
 }
+

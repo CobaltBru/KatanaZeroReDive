@@ -1,5 +1,7 @@
 #include "Bullet.h"
 #include "GPImage.h"
+#include "CollisionManager.h"
+#include "Collider.h"
 
 Bullet1::Bullet1()
 {
@@ -11,13 +13,17 @@ Bullet1::~Bullet1()
 
 HRESULT Bullet1::Init(FPOINT pos, float angle)
 {
-    startPos = pos;
+    Pos = pos;
     this->angle = angle;
 
     isActive = true;
 
     image = new GPImage();
     image->AddImage(L"Image/HeadHunter/bullet.png");
+
+    BulletCollider = new Collider(this, EColliderType::Rect, {}, 10.f, true, 1.f);
+    CollisionManager::GetInstance()->AddCollider(BulletCollider, ECollisionGroup::Bullet);
+    BulletCollider->SetPos(Pos);
 
     return S_OK;
 }
@@ -36,10 +42,12 @@ void Bullet1::Update()
 {
     if(isActive)
     {
-        startPos.x += cosf(DEG_TO_RAD(angle));
-        startPos.y += sinf(DEG_TO_RAD(angle));
+        Pos.x += cosf(DEG_TO_RAD(angle));
+        Pos.y += sinf(DEG_TO_RAD(angle));
 
     }
+
+    Collision();
 }
 
 void Bullet1::Render(HDC hdc)
@@ -49,12 +57,25 @@ void Bullet1::Render(HDC hdc)
     {
         if (isActive)
         {
-            image->Middle_RenderFrameAngle(&graphics, startPos, 0, angle, false, 1.0f);
+            image->Middle_RenderFrameAngle(&graphics, Pos, 0, angle, false, 1.0f);
         }
 
     }
 }
 
-void Bullet1::Fire(FPOINT startPos, FPOINT destPos)
+void Bullet1::Collision()
 {
+    // 충돌 정보
+    FHitResult HitResult;
+
+    // 내 콜라이더와 ECollisionGroup::Enemy에 있는 콜라이더들과 충돌처리
+    if (CollisionManager::GetInstance()->CollisionAABB(BulletCollider, HitResult, ECollisionGroup::Player))
+    {
+        // 충돌했다.
+
+        BulletCollider->SetHit(true);	// 내 콜라이더 충돌
+        HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
+
+        HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
+    }
 }

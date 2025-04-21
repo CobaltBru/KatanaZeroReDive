@@ -12,11 +12,12 @@ enum class State
     RoundLazer,
     Dash,
     DashDown,
-    Run,
-    Faint
+    Machine,
+    Faint,
+    Die
 };
 
-
+class RigidBody;
 class Lazer;
 class Image;
 class Bullet1;
@@ -30,6 +31,7 @@ private:
     bool isFlip;
     bool isAttacked;
     bool isDead;
+    bool isLeft;
 
     FPOINT jumpDist1;
     FPOINT jumpDist2;
@@ -56,6 +58,7 @@ private:
     State state;
     Lazer* lazer;
     std::vector<Bullet1*> bullets;
+    RigidBody* ObjectRigidBody;
 
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;
@@ -83,14 +86,15 @@ public:
     void Dash();
     void DashDown();
     void Faint();
-    void Run();
+    void Machine();
+    void Die();
 
     void SpawnBullet(FPOINT firePos, float angle);
 
     void ChangeState(State newState);
-    void PlayAnimation(string key);
     void CheckPlayerPos();
-    void NextWave();
-
+    void RandomLoop();
+    void IsLeft();
+  
 };
 
