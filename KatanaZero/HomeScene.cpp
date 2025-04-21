@@ -13,7 +13,7 @@
 #include "ChatManager.h"
 
 HomeScene::HomeScene():
-	ObjectManager(nullptr), RenderManager(nullptr)
+	ObjectManager(nullptr), RenderManager(nullptr), wall(nullptr)
 {
 	timerStart = false;
 	sceneChangeTimer = 0;

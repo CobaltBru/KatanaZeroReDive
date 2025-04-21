@@ -15,6 +15,7 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
+#include "Factory.h"
 #include "ImGuiManager.h"
 
 MapTool::MapTool()
@@ -46,19 +47,19 @@ HRESULT MapTool::Init()
 
 	if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("MapTool LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("MapTool InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("MapTool InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 	return S_OK;
@@ -77,7 +78,11 @@ void MapTool::Update()
 	
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
+		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
+		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
 
 void MapTool::Render(HDC hdc)
@@ -107,9 +112,14 @@ HRESULT MapTool::InitObject()
 	taekyung->Init({ 500.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
-	SimpleTestObject* enemy = new SimpleTestObject();
-	enemy->Init({ 500.f,200.f });
-	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
+	auto object = CreateObject("SimpleTestObject");
+	object->Init({ 500.f,200.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, object);
+
+	//SimpleTestObject* enemy = new SimpleTestObject();
+	//enemy->Init({ 500.f,200.f });
+	//ObjectManager->AddGameObject(EObjectType::GameObject, enemy);	
+
 	return S_OK;
 }
 

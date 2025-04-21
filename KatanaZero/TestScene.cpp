@@ -1,4 +1,4 @@
-#include "Stage1Scene.h"
+#include "TestScene.h"
 #include "CommonFunction.h"
 
 #include "ObjectManager.h"
@@ -25,12 +25,12 @@
 
 #include "Player.h"
 
-Stage1Scene::Stage1Scene()
+TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
 }
 
-HRESULT Stage1Scene::Init()
+HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
@@ -58,33 +58,32 @@ HRESULT Stage1Scene::Init()
 	fxManager->Init();
 	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("TestScene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-	
+
+	// 자은 테스트 코드
 	Background* background = new Background();
 	background->Init("TestBg");
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	Player* player = new Player();
-	player->Init();
-	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-	/*if (FAILED(InitObject()))
+
+	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("TestScene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 	if (FAILED(InitEffects()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("TestScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -93,30 +92,16 @@ HRESULT Stage1Scene::Init()
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitImage()
+HRESULT TestScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
-
-	//zero
-	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 440, 32, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroruntoidle", L"Image/zero_run_to_idle.bmp", 270, 38, 5, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerowallgrab", L"Image/zero_wallgrab.bmp", 48, 38, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroidletowalk", L"Image/zero_idle_to_walk.bmp", 180, 38, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitObject()
+HRESULT TestScene::InitObject()
 {
 	// 씬 초기에 필요한 오브젝트 생성
 
@@ -138,11 +123,11 @@ HRESULT Stage1Scene::InitObject()
 		TestObject* testObject = new TestObject();
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
-		
+
 		{
-		HeadHunter* headhunter = new HeadHunter();
-		headhunter->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
+			HeadHunter* headhunter = new HeadHunter();
+			headhunter->Init();
+			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}
 
 		//해영 테스트
@@ -150,27 +135,27 @@ HRESULT Stage1Scene::InitObject()
 			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
 		}
-	
+
 	}
 	// 테스트 코드 지운
 	{
-		chatManager = new ChatManager();
+		/*chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
 		chatManager->pushPos({ 400,100 });
-		chatManager->LoadChat("ChatDatas/test3.json");
+		chatManager->LoadChat("ChatDatas/test2.json");
 
-		chatManager->startChat("PaF26grPoH");
+		chatManager->startChat("Q3YMPZfZRO");
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
-		
+		*/
 		UIGame* ui = new UIGame();
 		ui->init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-		
+
 	}
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitEffects()
+HRESULT TestScene::InitEffects()
 {
 	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
 	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
@@ -182,14 +167,15 @@ HRESULT Stage1Scene::InitEffects()
 	return S_OK;
 }
 
-void Stage1Scene::TestCode()
+void TestScene::TestCode()
 {
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
-		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
-		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");	
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
+		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
 		// 인자 : 쉐이크 강도, 지속시간
@@ -197,7 +183,7 @@ void Stage1Scene::TestCode()
 	}
 }
 
-void Stage1Scene::Update()
+void TestScene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
@@ -217,13 +203,13 @@ void Stage1Scene::Update()
 	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
-	
+
 	ScrollManager->Update();
 
 	TestCode();
 }
 
-void Stage1Scene::Render(HDC hdc)
+void TestScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
@@ -232,7 +218,7 @@ void Stage1Scene::Render(HDC hdc)
 	LineManager->Render(hdc);
 }
 
-void Stage1Scene::Release()
+void TestScene::Release()
 {
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();

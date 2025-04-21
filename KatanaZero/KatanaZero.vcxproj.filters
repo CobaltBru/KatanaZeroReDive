@@ -115,7 +115,13 @@
         <Filter Include="2D Framework\Observer">
       <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
     </Filter>
-                <Filter Include="2D Framework\Animator">
+        <Filter Include="MainGame\TaeKyung\Default">
+      <UniqueIdentifier>{86dcc670-f5f8-4997-8012-f31385a29e7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Scene\Stage\Test">
+      <UniqueIdentifier>{a0bc9861-762c-4f20-9b31-80457a5e7475}</UniqueIdentifier>
+    </Filter>
+                    <Filter Include="2D Framework\Animator">
       <UniqueIdentifier>{ef9585e9-bad7-4c86-97be-f433cce02a05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -137,9 +143,6 @@
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
       <Filter>MainGame\Scene\Loading</Filter>
-    </ClCompile>
-    <ClCompile Include="TilemapTool.cpp">
-      <Filter>MainGame\Scene\MapTool</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>2D Framework\GameObject</Filter>
@@ -285,6 +288,21 @@
     <ClCompile Include="SimpleTestObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>2D Framework\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>2D Framework\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
@@ -313,9 +331,6 @@
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
       <Filter>MainGame\Scene\Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="TilemapTool.h">
-      <Filter>MainGame\Scene\MapTool</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>2D Framework\GameObject</Filter>
@@ -480,6 +495,15 @@
     </ClInclude>
     <ClInclude Include="HomeScene.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultObject.h">
+      <Filter>MainGame\TaeKyung\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>MainGame\Scene\Stage\Test</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

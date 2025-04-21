@@ -141,6 +141,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="HomeScene.cpp" />
+    <ClCompile Include="DefaultObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -189,7 +190,7 @@
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TestObject.cpp" />
-    <ClCompile Include="TilemapTool.cpp" />
+    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TimeLineBuffer.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
@@ -203,6 +204,8 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="HomeScene.h" />
+    <ClInclude Include="DefaultObject.h" />
+    <ClInclude Include="Factory.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Observer.h" />
@@ -257,7 +260,7 @@
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TestObject.h" />
-    <ClInclude Include="TilemapTool.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="TimeLineBuffer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
