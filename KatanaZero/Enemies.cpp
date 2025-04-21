@@ -17,7 +17,8 @@ HRESULT Grunt::Init(FPOINT InPos)
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 200.f;
+	Speed = 50.f;
+	detectRange = 100.f;
 	eType = EType::Grunt;
 	InitRigidBodySetting();
 	return S_OK;

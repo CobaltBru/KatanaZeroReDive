@@ -27,6 +27,8 @@ protected:
 	float detectRange;
 	float attackRange;
 	EType eType;
+	int targetFloor;
+	bool bReachedTargetFloor;
 
 	// Jump
 	float Gravity;
@@ -54,10 +56,16 @@ public:
 	void SetDir(int InDir) { dir = InDir; }
 	float GetSpeed() const { return Speed; }
 	GPImage* GetImage() const { return image; }
+	void SetTargetFloor(int floor) { targetFloor = floor; }
+	int GetTargetFloor() const { return targetFloor; }
+	void SetReachedTargetFloor(bool value) { bReachedTargetFloor = value; }
+	bool HasReachedTargetFloor() const { return bReachedTargetFloor; }
 
 	void UpdateAnimation();
 	void ChangeState(EnemyState* newState);
 	void ChangeAnimation(EImageType newImage);
 	virtual bool Detecting();
 	virtual bool IsInAttackRange();
+	virtual bool IsInSameFloor();
+	virtual bool IsOnDownLine();
 };

@@ -35,6 +35,12 @@ uniform_int_distribution<int> uid;
 //// DirectX
 // Forward declarations of helper functions
 
+vector<FloorZone> FloorZones = {
+	{ 0.f, 250.f },
+	{ 250.f, 330.f },
+	{ 330.f, 415.f },
+};
+
 // Init
 
 RECT GetRect(int left, int top, int width, int height);

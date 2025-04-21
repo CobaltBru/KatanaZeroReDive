@@ -9,7 +9,8 @@
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
-	Gravity(0.1f), bFalling(true), bDown(false), dir(-1), detectRange(0.f), attackRange(0.f), eType(EType::None)
+	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
+	bReachedTargetFloor(false)
 {
 }
 
@@ -41,7 +42,7 @@ void Enemy::InitRigidBodySetting()
 	//무게
 	ObjectRigidBody->SetMass(1.f);
 	//최대 속도
-	ObjectRigidBody->SetMaxVelocity({ 200.f,400.f });
+	ObjectRigidBody->SetMaxVelocity({ 100.f,400.f });
 	//마찰
 	ObjectRigidBody->SetFriction(50.f);
 
@@ -191,4 +192,20 @@ bool Enemy::IsInAttackRange()
 	}
 
 	return false;
+}
+
+bool Enemy::IsInSameFloor()
+{
+	auto player = SnapShotManager::GetInstance()->GetPlayer();
+	if (player.empty()) return true;
+
+	int myFloor = this->GetFloorIndex();
+	int playerFloor = player.front()->GetFloorIndex();
+
+	return myFloor == playerFloor;
+}
+
+bool Enemy::IsOnDownLine()
+{
+	return GetRigidBody()->GetResult().LineType == ELineType::DownLine;
 }

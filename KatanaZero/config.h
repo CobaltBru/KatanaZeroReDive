@@ -145,6 +145,19 @@ struct FLineResult
 	bool IsLeft;
 };
 
+struct FloorZone
+{
+	float TopY;
+	float BottomY;
+
+	bool Contains(float y)
+	{
+		return (y > TopY && y <= BottomY);
+	}
+};
+
+
+
 /*
 	extern 키워드 : 변수나 함수가 다른 파일에 정의되어 있다 라는
 	사실을 알리는 키워드.
@@ -166,3 +179,6 @@ extern IDXGISwapChain* g_pSwapChain;
 extern bool                     g_SwapChainOccluded;
 extern UINT                     g_ResizeWidth, g_ResizeHeight;
 extern ID3D11RenderTargetView* g_mainRenderTargetView;
+
+// 층 구조
+extern vector<FloorZone> FloorZones;

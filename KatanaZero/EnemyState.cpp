@@ -58,6 +58,7 @@ void EWalk::Update(Enemy& enemy)
 void EWalk::Exit(Enemy& enemy)
 {
 	enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
+	enemy.SetDir(enemy.GetDir() * -1);
 }
 
 EnemyState* EWalk::CheckTransition(Enemy* enemy)
@@ -89,6 +90,7 @@ void ERun::Update(Enemy& enemy)
 	float dx = playerPos.x - pos.x;
 	int dir = (dx > 0) ? 1 : -1;
 	enemy.SetDir(dir);
+
 	const float chaseSpeed = enemy.GetSpeed() * 2.f;
 	enemy.GetRigidBody()->AddVelocity({ dir * chaseSpeed, 0.f });
 
@@ -101,6 +103,12 @@ void ERun::Exit(Enemy& enemy)
 
 EnemyState* ERun::CheckTransition(Enemy* enemy)
 {
+	// 적 층 이동 체크
+	if (!enemy->IsInSameFloor())
+	{
+		return new EFindSlope();
+	}
+
 	if (enemy->IsInAttackRange())
 	{
 		EType type = enemy->GetEnemyType();
@@ -261,5 +269,82 @@ void ShieldCopAttack::Exit(Enemy& enemy)
 
 EnemyState* ShieldCopAttack::CheckTransition(Enemy* enemy)
 {
+	return nullptr;
+}
+
+void EFindSlope::Enter(Enemy& enemy)
+{
+	state = "FindSlope";
+	//slopePos = enemy.GetNearestSlope();
+	slopePos = { 715.f, 330.f };
+}
+
+void EFindSlope::Update(Enemy& enemy)
+{
+	const float speed = enemy.GetSpeed();
+	const FPOINT pos = enemy.GetPos();
+
+	float dx = slopePos.x - pos.x;
+	int dir = (dx > 0) ? 1 : -1;
+
+	const float chaseSpeed = speed * 2.f;
+	enemy.SetDir(dir);
+	enemy.GetRigidBody()->AddVelocity({ dir * chaseSpeed, 0.f });
+	enemy.GetRigidBody()->Update();
+}
+
+void EFindSlope::Exit(Enemy& enemy)
+{
+	int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex();
+	enemy.SetTargetFloor(playerFloor);
+	enemy.SetReachedTargetFloor(false);
+}
+
+EnemyState* EFindSlope::CheckTransition(Enemy* enemy)
+{
+	const FPOINT pos = enemy->GetPos();
+	const float dist = fabs(slopePos.x - pos.x);
+
+	if (dist < 3.f)
+	{
+		return new ERunOnSlope();
+	}
+
+	return nullptr;
+}
+
+void ERunOnSlope::Enter(Enemy& enemy)
+{
+	state = "OnSlope";
+	enemy.GetRigidBody()->SetDown(true);
+	enemy.GetRigidBody()->SetElasticity(0.f);
+}
+
+void ERunOnSlope::Update(Enemy& enemy)
+{
+	enemy.GetRigidBody()->Update();
+
+	
+}
+
+void ERunOnSlope::Exit(Enemy& enemy)
+{
+	enemy.GetRigidBody()->SetDown(false);
+	enemy.GetRigidBody()->SetElasticity(0.3f);
+}
+
+EnemyState* ERunOnSlope::CheckTransition(Enemy* enemy)
+{
+	/*FLineResult result = enemy->GetRigidBody()->GetResult();
+	if (result.LineType == ELineType::Normal)
+	{
+		return new ERun();
+	}*/
+	auto player = SnapShotManager::GetInstance()->GetPlayer().front();
+	if (player == nullptr) return nullptr;
+	if (enemy->GetFloorIndex() == player->GetFloorIndex())
+	{
+		return new ERun();
+	}
 	return nullptr;
 }

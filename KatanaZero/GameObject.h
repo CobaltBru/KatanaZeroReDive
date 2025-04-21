@@ -24,6 +24,8 @@ public:
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
 	void SetDead(bool InDead) { bDead = InDead; }
 
+	int GetFloorIndex() const;
+
 protected:
 	FPOINT Pos;
 

@@ -46,7 +46,7 @@ class EWalk : public EnemyState
 {
 private:
 	float walktimer{ 0.f };
-	float walkCooldown{ 3.f };
+	float walkCooldown{ 2.f };
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -117,6 +117,26 @@ public:
 };
 
 class ShieldCopAttack : public EAttack
+{
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
+
+class EFindSlope : public EnemyState
+{
+private:
+	FPOINT slopePos;
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
+
+class ERunOnSlope : public EnemyState
 {
 public:
 	virtual void Enter(Enemy& enemy) override;

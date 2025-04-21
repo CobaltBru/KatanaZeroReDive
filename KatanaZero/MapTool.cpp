@@ -114,8 +114,15 @@ HRESULT MapTool::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
 	
 	Grunt* grunt = new Grunt();
-	grunt->Init({ 300.f,200.f });
+	grunt->Init({ 800.f,300.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
+
+	// 해영 테스트
+	{
+		snapShotManager->AddGameObject(EObjectClassType::Enemy, grunt);
+		snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
+	}
+	
 
 	return S_OK;
 }
