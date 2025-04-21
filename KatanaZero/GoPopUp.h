@@ -12,10 +12,19 @@ private:
 	Animation* arrowImage;
 	GPImage* angleArrow;
 
+
+	float imageAngle;
+	float posAngle;
+	FPOINT anglePos;
+
 	FPOINT* playerPos;
 	FPOINT* destPos;
+	FPOINT popUpPos;
 
+	bool angleMode;
 	bool isActive;
+	bool flip;
+	bool oldFlip;
 
 public:
 	GoPopUp();
@@ -26,7 +35,10 @@ public:
 	virtual void Render(HDC hdc) override;
 	virtual void Release() override;
 
-	void On(FPOINT& player, FPOINT& dest);
+	void On(FPOINT* player, FPOINT* dest);
 	void Off();
+
+	void calcPos();
+	void ArrowCalc();
 };
 

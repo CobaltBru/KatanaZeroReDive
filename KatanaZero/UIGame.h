@@ -44,7 +44,7 @@ private:
 	float timer = 0.f;
 
 public:
-	void init();
+	virtual HRESULT Init() override;
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 	virtual void Release() override;

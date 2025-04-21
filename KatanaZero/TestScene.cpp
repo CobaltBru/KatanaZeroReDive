@@ -113,9 +113,9 @@ HRESULT TestScene::InitObject()
 		background->Init("TestBg");
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-		//Player* player = new Player();
-		//player->Init();
-		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
+		/*Player* player = new Player();
+		player->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, player);*/
 
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
@@ -149,11 +149,17 @@ HRESULT TestScene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		*/
 		UIGame* ui = new UIGame();
-		ui->init();
+		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+		testPlayerPos = { WINSIZE_X / 2, WINSIZE_Y / 2 };
+		testDestPos = { Scroll.x - 100,Scroll.y + 1200.f };
+
+		
 		GoPopUp* goPopUp = new GoPopUp();
 		goPopUp->Init();
+		goPopUp->On(&testPlayerPos, &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
 	}
 	return S_OK;
@@ -189,6 +195,7 @@ void TestScene::TestCode()
 
 void TestScene::Update()
 {
+	//testDestPos.y -= 1.f;
 	ObjectManager->Update();
 	CollisionManager->Update();
 	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();

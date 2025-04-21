@@ -75,7 +75,7 @@ void HomeScene::Update()
 	if (sceneChangeTimer >= 2.1f)
 	{
 		if(cursor == 0)
-			SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+			SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 		else if(cursor == 2)
 			PostMessage(g_hWnd, WM_CLOSE, 0, 0);
 		timerStart = false;
