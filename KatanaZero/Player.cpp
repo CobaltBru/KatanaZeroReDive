@@ -24,12 +24,12 @@ HRESULT Player::Init()
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 
 	Pos = FPOINT{ 300.0f, 300.0f };
-	switchTime = 0.002f;
+	switchTime = 0.02f;
 
-	playerCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
-	CollisionManager::GetInstance()->AddCollider(playerCollider, ECollisionGroup::Player);
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
-	playerRigidBody = new RigidBody(this);
+	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
 
 	InitScrollOffset();
@@ -43,16 +43,14 @@ HRESULT Player::Init()
 	playerAnim = new PlayerAnim;
 	playerAnim->Init();
 	
+	bWall = false;
+
 	// bind input action to state function
 	InitBindState();
 
 	currPlayerState = EPlayerState::Idle;
 	playerAnimFunc = IdleAnimFunc;
 	prevPlayerState = EPlayerState::Idle;
-
-	velocity = FPOINT{ 0.1f, 0.1f };
-	accel = FPOINT{ 0.0f, 0.0f };
-	addAccel = FPOINT{ 0.01f, 0.01f };
 
 	return S_OK;
 }
@@ -71,16 +69,24 @@ void Player::Release()
 		delete playerAnim;
 		playerAnim = nullptr;
 	}
+	if (ObjectRigidBody)
+	{
+		delete ObjectRigidBody;
+		ObjectRigidBody = nullptr;
+	}
 }
 
 void Player::Update()
 {
+	LastPos = Pos;
+	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+
 	playerInput->UpdateKeystate();
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
 	frameTimer += deltaTime;	
-	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 
 	// get input
+	// released
 	std::vector<EInputAction> released = playerInput->GetReleased();
 	for (EInputAction action : released)
 	{
@@ -89,12 +95,17 @@ void Player::Update()
 			currPlayerState = EPlayerState::Idle;			
 		}
 	}
+
+	// held
 	std::vector<EInputAction> held = playerInput->GetHeld();
 	for (EInputAction action : held)
 	{
 
 		switch (action)
 		{
+		case EInputAction::Jump:
+			currPlayerState = EPlayerState::Idle;
+			break;
 		case EInputAction::Left:
 			dir = EDirection::Left;
 			currPlayerState = EPlayerState::IdleToRun;
@@ -111,14 +122,18 @@ void Player::Update()
 			break;
 		}
 	}
+
+	// pressed
 	std::vector<EInputAction> pressed = playerInput->GetPressed();
+
 	// update by switchTime
 	//if (frameTimer < switchTime) return;
 	//frameTimer -= switchTime;
 
-
+	// prev state ÀúÀå
 	prevPlayerState = currPlayerState;
 
+	// switch player state
 	for (EInputAction action : pressed)
 	{		
 		if (prevPlayerState == EPlayerState::Attack) break;
@@ -153,6 +168,7 @@ void Player::Update()
 		}
 	}
 
+	// player state
 	// update animation and function when player is in new state
 	if (prevPlayerState != currPlayerState)
 	{
@@ -166,21 +182,40 @@ void Player::Update()
 			playerAnimFunc.func(*this, dir);
 		}
 	}
-	else
+	else		// existing state
 	{
 		image = playerAnimFunc.animator->GetImage();
+
 		// update frame index
 		if (playerAnimFunc.animator->UpdateFrame(deltaTime) == false)
 		{
 			playerAnimFunc = IdleAnimFunc;
 		}
+
+		// update movement
 		playerAnimFunc.func(*this, dir);
 	}
 
-	Pos.x += velocity.x;
-	Pos.y -= velocity.y;
+	// apply acceleration including gravity
+	ObjectRigidBody->Update();
 
-	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+	const FLineResult lineResult = ObjectRigidBody->GetResult();
+	if (lineResult.LineType == ELineType::Wall)
+	{
+		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
+		bWall = true;
+		bIsLeft = lineResult.IsLeft;
+	}
+	else
+	{
+		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
+		bWall = false;
+	}
+
+	// collision
+
+	// scroll offset
+	Offset();
 }
 
 	//for (EInputAction action : pressed)
@@ -237,23 +272,21 @@ void Player::MakeSnapShot(void* out)
 
 void Player::Idle(EDirection dir)
 {
-	velocity.x = 0.0f;
-	velocity.y = 0.0f;
 }
 
 void Player::Run(EDirection dir)
 {
 	if (dir == EDirection::Right)
 	{
-		velocity.x += 0.0001f;		
+		ObjectRigidBody->AddVelocity({200.f, 0.f });
 	}
 	else
 	{
-		velocity.x -= 0.0001f;
+		ObjectRigidBody->AddVelocity({ -200.f , 0.f });
 	}
 
-	if (std::abs(velocity.x) > playerAnim->GetIdleToRunSpeed())
-		currPlayerState = EPlayerState::Run;
+	//if (std::abs(velocity.x) > playerAnim->GetIdleToRunSpeed())
+	currPlayerState = EPlayerState::Run;
 }
 
 void Player::Walk(EDirection dir)
@@ -264,22 +297,20 @@ void Player::Flip(EDirection dir)
 {
 	if (dir == EDirection::Right)
 	{
-		//velocity.x += 0.005f;
 	}
 	else
-	{
-		//velocity.x -= 0.005f;
+	{		
 	}
 }
 
 void Player::Down(EDirection dir)
 {
-	/*velocity.x = 0.0f;
-	velocity.y = 0.0f;*/
+	ObjectRigidBody->SetDown(true);
 }
 
 void Player::Jump(EDirection dir)
 {
+	ObjectRigidBody->AddVelocity({ 0.f, -2.f });
 }
 
 void Player::Fall(EDirection dir)
@@ -327,14 +358,14 @@ void Player::InitBindState()
 
 void Player::InitRigidBody()
 {
-	if (playerRigidBody == nullptr) return;
+	if (ObjectRigidBody == nullptr) return;
 
-	playerRigidBody->SetElasticity(0.f);
-	playerRigidBody->SetGravityVisible(true);
-	playerRigidBody->SetAccelerationAlpha({ 0.f, 800.f });
-	playerRigidBody->SetMass(5.f);
-	playerRigidBody->SetMaxVelocity({ 200.f, 400.f });
-	playerRigidBody->SetFriction(300.f);
+	ObjectRigidBody->SetElasticity(0.f);
+	ObjectRigidBody->SetGravityVisible(true);
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 800.f });
+	ObjectRigidBody->SetMass(5.f);
+	ObjectRigidBody->SetMaxVelocity({ 200.f, 400.f });
+	ObjectRigidBody->SetFriction(300.f);
 }
 
 void Player::InitScrollOffset()

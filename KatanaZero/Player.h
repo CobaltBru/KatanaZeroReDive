@@ -24,8 +24,6 @@ struct stateAnimFunc
 class Player: public Pawn
 {
 private:
-	Collider* playerCollider;
-	 
 	PlayerInput* playerInput;
 	EDirection dir;
 
@@ -35,7 +33,6 @@ private:
 	EPlayerState newState;
 
 	// rigid body
-	RigidBody* playerRigidBody;
 	void InitRigidBody();
 
 	// scroll
@@ -47,13 +44,13 @@ private:
 	std::stack<EPlayerState> PlayerStateStack;
 	std::vector<EPlayerState> newPlayerStates;
 
+	// player state에 따른 move function과 animation을 따로 관리
+	
 	// player anim
 	PlayerAnim* playerAnim;
 
-	// movemnet physics
-	FPOINT velocity;
-	FPOINT accel;
-	FPOINT addAccel;
+	bool bIsLeft;
+	bool bWall;
 
 	// switch frame
 	float switchTime;	
@@ -94,6 +91,6 @@ public:
 	void Jump(EDirection dir);
 	void Fall(EDirection dir);
 	void Attack(EDirection dir);
-	void WallSlide(EDirection dir);
+	void WallSlide(EDirection dir);	
 };
 
