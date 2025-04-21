@@ -9,7 +9,7 @@
 #include "ScrollManager.h"
 #include "GPImage.h"
 #include "Image.h"
-
+#include "SoundManager.h"
 #include "ChatManager.h"
 
 HomeScene::HomeScene():
@@ -40,6 +40,8 @@ HRESULT HomeScene::Init()
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("½ÇÆÐ"), MB_OK);
 		return E_FAIL;
 	}
+
+	SoundManager::GetInstance()->PlayBGM("HomeOST");
 	return S_OK;
 }
 

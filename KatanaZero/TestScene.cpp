@@ -87,7 +87,7 @@ HRESULT TestScene::Init()
 		MessageBox(g_hWnd, TEXT("TestScene InitEffect Failed."), TEXT("½ÇÆÐ"), MB_OK);
 		return E_FAIL;
 	}
-
+	
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
 	return S_OK;
