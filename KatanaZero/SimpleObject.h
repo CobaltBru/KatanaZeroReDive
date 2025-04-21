@@ -10,7 +10,7 @@ public:
 	SimpleObject();
 	virtual ~SimpleObject() = default;
 
-	HRESULT Init(FPOINT InPos);
+	virtual HRESULT Init(FPOINT InPos);
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);

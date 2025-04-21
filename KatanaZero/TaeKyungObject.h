@@ -12,7 +12,7 @@ public:
 	TaeKyungObject();
 	virtual ~TaeKyungObject() = default;
 
-	HRESULT Init(FPOINT InPos);
+	virtual HRESULT Init(FPOINT InPos) override;
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
