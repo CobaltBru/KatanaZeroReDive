@@ -140,7 +140,9 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -184,6 +186,7 @@
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="GPImage.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TilemapTool.cpp" />
@@ -199,8 +202,10 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="HomeScene.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
@@ -249,6 +254,7 @@
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="GPImage.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TilemapTool.h" />

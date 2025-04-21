@@ -112,7 +112,10 @@
         <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-            <Filter Include="2D Framework\Animator">
+        <Filter Include="2D Framework\Observer">
+      <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
+    </Filter>
+                <Filter Include="2D Framework\Animator">
       <UniqueIdentifier>{ef9585e9-bad7-4c86-97be-f433cce02a05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -267,6 +270,9 @@
     <ClCompile Include="PlayerInput.cpp">
       <Filter>MainGame\Player</Filter>
     </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>2D Framework\Physics</Filter>
+    </ClCompile>
     <ClCompile Include="UIGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -275,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleTestObject.cpp">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -451,17 +460,26 @@
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UIGame.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleObject.h">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClInclude>
     <ClInclude Include="SimpleTestObject.h">
       <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGame.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>2D Framework\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>2D Framework\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="HomeScene.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

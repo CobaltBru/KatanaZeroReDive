@@ -6,6 +6,7 @@ class RenderManager;
 class CollisionManager;
 class ScrollManager;
 class LineManager;
+class EffectManager;
 class MapTool : public Scene
 {
 public:
@@ -28,5 +29,7 @@ private:
 	CollisionManager* CollisionManager;
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
+	EffectManager* fxManager;
+
 };
 

@@ -15,9 +15,10 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
+#include "ImGuiManager.h"
 
 MapTool::MapTool()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), fxManager(nullptr)
 {
 }
 
@@ -40,6 +41,8 @@ HRESULT MapTool::Init()
 
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
+
+	fxManager = EffectManager::GetInstance();
 
 	if (FAILED(LineManager->LoadFile(L"Data/test2.dat")))
 	{
@@ -70,6 +73,9 @@ void MapTool::Update()
 	ScrollManager->Update();
 	LineManager->Update();
 
+	ImGuiManager::GetInstance()->Update();
+	
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "·Îµù_1");
 }
@@ -80,6 +86,8 @@ void MapTool::Render(HDC hdc)
 	CollisionManager->Render(hdc);
 
 	LineManager->Render(hdc);
+
+	ImGuiManager::GetInstance()->Render();
 }
 
 HRESULT MapTool::InitImage()
@@ -100,10 +108,8 @@ HRESULT MapTool::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);
 
 	SimpleTestObject* enemy = new SimpleTestObject();
-	enemy->Init({ 500.f,100.f });
+	enemy->Init({ 500.f,200.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, enemy);
-	
-
 	return S_OK;
 }
 
@@ -120,10 +126,13 @@ void MapTool::Release()
 		ScrollManager->Release();
 	if (LineManager != nullptr)
 		LineManager->Release();
+	if (fxManager != nullptr)
+		fxManager->Release();	
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
 	ScrollManager = nullptr;
 	LineManager = nullptr;
+	fxManager = nullptr;
 }
