@@ -18,6 +18,7 @@ enum class State
 };
 
 class RigidBody;
+class Bomb;
 class Lazer;
 class Image;
 class Bullet1;
@@ -32,6 +33,7 @@ private:
     bool isAttacked;
     bool isDead;
     bool isLeft;
+    bool bCanSpawnBomb;
 
     FPOINT jumpDist1;
     FPOINT jumpDist2;
@@ -42,6 +44,7 @@ private:
     float timer;
     float moveTimer;
     float bulletTimer;
+
 
     int hp;
     int wave;
@@ -58,6 +61,8 @@ private:
     State state;
     Lazer* lazer;
     std::vector<Bullet1*> bullets;
+    std::vector<Bomb*> bombs;
+    
     RigidBody* ObjectRigidBody;
 
     // test // 삭제 혹은 교체 예정
@@ -90,6 +95,7 @@ public:
     void Die();
 
     void SpawnBullet(FPOINT firePos, float angle);
+    void SpawnBomb(FPOINT firePos, float angle);
 
     void ChangeState(State newState);
     void CheckPlayerPos();

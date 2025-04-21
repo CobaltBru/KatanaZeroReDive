@@ -23,6 +23,8 @@ HRESULT Bullet1::Init(FPOINT pos, float angle)
 
     BulletCollider = new Collider(this, EColliderType::Rect, {}, 10.f, true, 1.f);
     CollisionManager::GetInstance()->AddCollider(BulletCollider, ECollisionGroup::Bullet);
+    BulletCollider->SetPos(Pos);
+
 
     return S_OK;
 }
