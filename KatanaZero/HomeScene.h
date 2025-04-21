@@ -40,13 +40,12 @@ private:
 
 	int cursor;
 
-	GPImage* tmpGP;
-	Token* tokenNew;
-	Token* tokenContinue;
-	Token* tokenEnd;
+	Animation* buttons[3];
 
 	FPOINT selectBoxPos;
 	void SelectBox(HDC& hdc, FPOINT bpos);
 	void reset();
+
+	void nextSceneEffect();
 };
 

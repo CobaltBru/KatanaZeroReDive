@@ -28,6 +28,7 @@ HRESULT HomeScene::Init()
 	RenderManager = RenderManager::GetInstance();
 	RenderManager->Init();
 
+	cursor = 0;
 	if (FAILED(InitImage()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
@@ -48,27 +49,7 @@ void HomeScene::Release()
 		ObjectManager->Release();
 	if (RenderManager != nullptr)
 		RenderManager->Release();
-	if (tmpGP)
-	{
-		tmpGP->Release();
-		delete tmpGP;
-		tmpGP = nullptr;
-	}
-	if (tokenNew)
-	{
-		delete tokenNew;
-		tokenNew = nullptr;
-	}
-	if (tokenContinue)
-	{
-		delete tokenContinue;
-		tokenContinue = nullptr;
-	}
-	if (tokenEnd)
-	{
-		delete tokenEnd;
-		tokenEnd = nullptr;
-	}
+	
 	if (wall)
 	{
 		wall->Release();
@@ -87,30 +68,35 @@ void HomeScene::Update()
 	ObjectManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
-		timerStart = true;
-		background->MoveOn({ 0.f, - WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
-		fence->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
-		zero_zer->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
-		zero_o->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
-		katana->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftEnd | Move_Stop | POS_Update);
-
-		grass1->MoveOn({ 0.f,-WINSIZE_Y }, 1.0f, Move_SoftEnd | Move_Stop | POS_Update);
-		grass2->MoveOn({ 0.f,-WINSIZE_Y }, 1.0f, Move_SoftEnd | Move_Stop | POS_Update);
-		wall->On();
-		wall->MoveOn({ 0.f,-WINSIZE_Y }, 1.0f, Move_SoftEnd | Move_Stop);
+		if (cursor == 0)
+			nextSceneEffect();
+		else if (cursor == 2)
+			nextSceneEffect();
 	}
 	if (timerStart)
 	{
 		sceneChangeTimer += TimerManager::GetInstance()->GetDeltaTime();
 	}
-	if (sceneChangeTimer >= 1.1f)
+	if (sceneChangeTimer >= 2.1f)
 	{
-		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+		if(cursor == 0)
+			SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+		else if(cursor == 2)
+			PostMessage(g_hWnd, WM_CLOSE, 0, 0);
 		timerStart = false;
 		sceneChangeTimer = 0;
 	}
 	if(wall)
 		wall->Update();
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+	{
+		if (cursor - 1 >= 0)--cursor;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
+	{
+		if (cursor + 1 < 3)++cursor;
+	}
 }
 
 void HomeScene::Render(HDC hdc)
@@ -186,15 +172,60 @@ HRESULT HomeScene::InitObject()
 
 	gpi = new GPImage();
 	gpi->AddImage(L"Image/UI/Home/Select_bg.png", 1, 1);
-	selectBoxPos = { WINSIZE_X / 2,WINSIZE_Y + 400.f };
+	selectBoxPos = { WINSIZE_X / 2-20.f,WINSIZE_Y + 400.f };
 	select_bg = new Animation();
 	select_bg->Init(gpi, 2);
 	select_bg->setPos(selectBoxPos, false, true);
 	select_bg->setAniTask({
 		{0,10.f}});
-	select_bg->MoveOn({ 0.f,-600.f}, 1.0f, Move_SoftEnd | Move_Stop);
+	select_bg->MoveOn({ 0.f,-600.f}, 2.0f, Move_SoftEnd | Move_Stop);
 	select_bg->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, select_bg);
+
+	gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/newGame.png", 3, 1);
+	buttons[0] = new Animation();
+	buttons[0]->Init(gpi, 2);
+	buttons[0]->setPos({ selectBoxPos.x,selectBoxPos.y-110.f }, false, true);
+	buttons[0]->setAniTask({
+		{1,0.05f},{2,0.05f},
+		{1,0.05f},{2,0.05f}, 
+		{1,0.05f},{2,0.05f} });
+	buttons[0]->MoveOn({ 0.f,-600.f }, 2.0f, Move_SoftEnd | Move_Stop);
+	buttons[0]->On();
+	buttons[0]->Stop();
+	buttons[0]->setFrame(0);
+	ObjectManager->AddGameObject(EObjectType::GameObject, buttons[0]);
+
+	gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/continue.png", 3, 1);
+	buttons[1] = new Animation();
+	buttons[1]->Init(gpi, 2);
+	buttons[1]->setPos({ selectBoxPos.x,selectBoxPos.y }, false, true);
+	buttons[1]->setAniTask({
+		{1,0.05f},{2,0.05f},
+		{1,0.05f},{2,0.05f},
+		{1,0.05f},{2,0.05f} });
+	buttons[1]->MoveOn({ 0.f,-600.f }, 2.0f, Move_SoftEnd | Move_Stop);
+	buttons[1]->On();
+	buttons[1]->Stop();
+	buttons[1]->setFrame(0);
+	ObjectManager->AddGameObject(EObjectType::GameObject, buttons[1]);
+
+	gpi = new GPImage();
+	gpi->AddImage(L"Image/UI/Home/quit.png", 3, 1);
+	buttons[2] = new Animation();
+	buttons[2]->Init(gpi, 2);
+	buttons[2]->setPos({ selectBoxPos.x,selectBoxPos.y + 110.f }, false, true);
+	buttons[2]->setAniTask({
+		{1,0.05f},{2,0.05f},
+		{1,0.05f},{2,0.05f},
+		{1,0.05f},{2,0.05f} });
+	buttons[2]->MoveOn({ 0.f,-600.f }, 2.0f, Move_SoftEnd | Move_Stop);
+	buttons[2]->On();
+	buttons[2]->Stop();
+	buttons[2]->setFrame(0);
+	ObjectManager->AddGameObject(EObjectType::GameObject, buttons[2]);
 
 	gpi = new GPImage();
 	gpi->AddImage(L"Image/UI/Home/spr_title_katana.png", 1, 1);
@@ -213,7 +244,7 @@ HRESULT HomeScene::InitObject()
 	grass1->Init(tmp, 1);
 	grass1->setPos({ 0.f,WINSIZE_Y }, false, false);
 	grass1->setAniTask({ {0,10.f} });
-	grass1->MoveOn({ 0.f,-300.f }, 1.3f, Move_SoftEnd | Move_Stop);
+	grass1->MoveOn({ 0.f,-200.f }, 1.3f, Move_SoftEnd | Move_Stop);
 	grass1->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, grass1);
 
@@ -238,26 +269,39 @@ HRESULT HomeScene::InitObject()
 	wall->setAniTask({ {0,10.f} });
 	//ObjectManager->AddGameObject(EObjectType::GameObject, wall);
 
-	tmpGP = new GPImage();
-	tokenNew = new Token(L"새로운 게임", { 0,-40.f },Token::APPEAR::END,Token::OPTION::STOP,Token::COLORS::WHITE);
-	tokenContinue = new Token(L"이어하기", { 0,0.f }, Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE);
-	tokenEnd = new Token(L"종료", { 0,40.f }, Token::APPEAR::END, Token::OPTION::STOP, Token::COLORS::WHITE);
-
+	
 	return S_OK;
 }
 
 void HomeScene::SelectBox(HDC& hdc, FPOINT bpos)
 {
-	Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
-	tokenNew->setGlobalPos(bpos);
-	tokenContinue->setGlobalPos(bpos);
-	tokenEnd->setGlobalPos(bpos);
+	for (int i = 0; i < 3; i++)
+	{
+		if (i == cursor)
+		{
+			buttons[i]->setFrame(1);
+		}
+		else
+		{
+			buttons[i]->setFrame(0);
+		}
+	}
+}
 
-	tokenNew->Render(hdc);
-	tokenContinue->Render(hdc);
-	tokenEnd->Render(hdc);
+void HomeScene::nextSceneEffect()
+{
+	timerStart = true;
+	buttons[cursor]->Start();
+	background->MoveOn({ 0.f, -WINSIZE_Y }, 3.0f, Move_SoftStart | Move_Stop | POS_Update);
+	fence->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftStart | Move_Stop | POS_Update);
+	zero_zer->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftStart | Move_Stop | POS_Update);
+	zero_o->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftStart | Move_Stop | POS_Update);
+	katana->MoveOn({ 0.f,-WINSIZE_Y }, 3.0f, Move_SoftStart | Move_Stop | POS_Update);
 
-	delete pGraphics;
+	grass1->MoveOn({ 0.f,-WINSIZE_Y }, 1.7f, Move_SoftStart | Move_Stop | POS_Update);
+	grass2->MoveOn({ 0.f,-WINSIZE_Y }, 1.7f, Move_SoftStart | Move_Stop | POS_Update);
+	wall->On();
+	wall->MoveOn({ 0.f,-WINSIZE_Y }, 1.7f, Move_SoftStart | Move_Stop);
 }
 
 
