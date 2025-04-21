@@ -162,7 +162,7 @@ HRESULT TestScene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		*/
 		UIGame* ui = new UIGame();
-		ui->init();
+		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
 		GoPopUp* goPopUp = new GoPopUp();

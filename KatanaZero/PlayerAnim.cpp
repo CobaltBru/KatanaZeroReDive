@@ -95,17 +95,17 @@ void PlayerAnim::Render(HDC hdc)
 void PlayerAnim::InitStateTransitionTable()
 {
 	
-	stateTransitionTable[(int)EPlayerState::Idle][(int)EPlayerState::IdleToRun] = true;
-	stateTransitionTable[(int)EPlayerState::IdleToRun][(int)EPlayerState::Run] = true;
-	stateTransitionTable[(int)EPlayerState::Run][(int)EPlayerState::RunToIdle] = true;
-	stateTransitionTable[(int)EPlayerState::RunToIdle][(int)EPlayerState::Idle] = true;
+	//stateTransitionTable[(int)EPlayerState::Idle][(int)EPlayerState::IdleToRun] = true;
+	//stateTransitionTable[(int)EPlayerState::IdleToRun][(int)EPlayerState::Run] = true;
+	//stateTransitionTable[(int)EPlayerState::Run][(int)EPlayerState::RunToIdle] = true;
+	//stateTransitionTable[(int)EPlayerState::RunToIdle][(int)EPlayerState::Idle] = true;
 
-	stateTransitionTable[(int)EPlayerState::Idle][(int)EPlayerState::Jump] = true;
-	stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::Idle] = true;
-	stateTransitionTable[(int)EPlayerState::IdleToRun][(int)EPlayerState::Jump] = true;
-	stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::IdleToRun] = true;
-	stateTransitionTable[(int)EPlayerState::Run][(int)EPlayerState::Jump] = true;
-	stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::Run] = true;
-	stateTransitionTable[(int)EPlayerState::RunToIdle][(int)EPlayerState::Jump] = true;
-	stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::RunToIdle] = true;
+	//stateTransitionTable[(int)EPlayerState::Idle][(int)EPlayerState::Jump] = true;
+	//stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::Idle] = true;
+	//stateTransitionTable[(int)EPlayerState::IdleToRun][(int)EPlayerState::Jump] = true;
+	//stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::IdleToRun] = true;
+	//stateTransitionTable[(int)EPlayerState::Run][(int)EPlayerState::Jump] = true;
+	//stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::Run] = true;
+	//stateTransitionTable[(int)EPlayerState::RunToIdle][(int)EPlayerState::Jump] = true;
+	//stateTransitionTable[(int)EPlayerState::Jump][(int)EPlayerState::RunToIdle] = true;
 }

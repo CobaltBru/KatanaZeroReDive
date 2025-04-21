@@ -4,9 +4,7 @@
 enum class EPlayerState
 {
 	Idle,
-	IdleToRun,
 	Run,
-	RunToIdle,
 	Flip,
 	Walk,
 	Crouch,
@@ -17,6 +15,17 @@ enum class EPlayerState
 	End
 };
 
+class Player;
+class PlayerState
+{
+private:
+
+public:
+	virtual PlayerState* GetInput(Player* player) = 0;
+
+	virtual void Enter(Player* player) = 0;
+	virtual void Update(Player* player) = 0;
+};
 
 // anim 사이에 direction 나타내는 정보있으면 좋겠다.
 inline void ChangeState(EPlayerState& currPlayerState, std::vector<EPlayerState>& newStates)

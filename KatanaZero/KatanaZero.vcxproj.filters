@@ -124,6 +124,9 @@
     <Filter Include="2D Framework\Animator">
       <UniqueIdentifier>{ef9585e9-bad7-4c86-97be-f433cce02a05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Player\PlayerState">
+      <UniqueIdentifier>{668b3759-4f92-469d-83e3-66cbd1c2d9e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -309,17 +312,41 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerAnim.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteAnimator.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAnim.cpp">
+      <Filter>MainGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnimator.cpp">
+      <Filter>2D Framework\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="FallState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="RunState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="JumpState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="FlipState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="WallSlideState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -476,9 +503,6 @@
     <ClInclude Include="PlayerController.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>MainGame\Player</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>2D Framework\Input</Filter>
     </ClInclude>
@@ -535,6 +559,30 @@
     </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="FallState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="JumpState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="RunState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="FlipState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="WallSlideState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

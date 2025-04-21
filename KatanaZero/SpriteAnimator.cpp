@@ -17,7 +17,7 @@ void SpriteAnimator::Init(Image* image, int frames, bool IsLoop, float totalTime
 	frameTimer = 0.0f;
 }
 
-// update frameIndex
+// Update frameIndex
 bool SpriteAnimator::UpdateFrame(float deltaTime)
 {
 	if (loop == false && currentFrameIndex >= maxFrameIndex)

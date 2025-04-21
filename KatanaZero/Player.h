@@ -14,11 +14,31 @@ class PlayerAnim;
 class PlayerInput;
 class Collider;
 class RigidBody;
+class AttackState;
+class FallState;
 
 struct stateAnimFunc
 {
 	SpriteAnimator* animator;
 	std::function<void(Player&, EDirection)> func;
+};
+
+struct playerInfo
+{
+	bool bIsAttack;
+	bool bIsJump;
+	bool bIsFlip;
+};
+
+struct playerStates
+{
+	PlayerState* Idle;
+	PlayerState* Attack;
+	PlayerState* Fall;
+	PlayerState* Run;
+	PlayerState* Jump;
+	PlayerState* Flip;
+	PlayerState* WallSlide;
 };
 
 class Player: public Pawn
@@ -27,10 +47,41 @@ private:
 	PlayerInput* playerInput;
 	EDirection dir;
 
-	EPlayerState currPlayerState;
 	stateAnimFunc playerAnimFunc;
-	EPlayerState prevPlayerState;
-	EPlayerState newState;
+
+	bool bIsLeft;
+	bool bWall;
+
+	float scrollSpeed;
+
+	// player EState
+	playerStates* states;
+	PlayerState* state;
+	EPlayerState EState;
+
+	// player state에 따른 move function과 animation을 따로 관리
+	
+	// player anim
+	// PlayerAnim* playerAnim;
+	Image* image;
+
+	playerInfo* info;
+
+	// switch frame
+	float switchTime;	
+
+public:
+	Player();
+	virtual ~Player();
+
+	HRESULT Init() override;
+	void Release() override;
+	void Update() override;
+	void Render(HDC hdc) override;
+	void MakeSnapShot(void* out) override;
+
+	void InitPlayerStates();
+	void InitPlayerInfo();
 
 	// rigid body
 	void InitRigidBody();
@@ -38,24 +89,31 @@ private:
 	// scroll
 	void InitScrollOffset();
 	void Offset();
-	float scrollSpeed;
 
-	// player state
-	std::stack<EPlayerState> PlayerStateStack;
-	std::vector<EPlayerState> newPlayerStates;
+	inline playerStates* GetStates() { return states; }
+	inline playerInfo* GetInfo() { return info; }
 
-	// player state에 따른 move function과 animation을 따로 관리
-	
-	// player anim
-	PlayerAnim* playerAnim;
+	inline Image* GetImage() { return image; }
+	inline void SetImage(Image* image) { this->image = image; }
 
-	bool bIsLeft;
-	bool bWall;
+	inline EPlayerState GetEState() { return EState; }
+	inline void SetEState(EPlayerState state) { this->EState = state; }
 
-	// switch frame
-	float switchTime;	
+	/*inline PlayerState* GetState() { return state; }
+	inline void SetState(PlayerState* state) { this->state = state; }*/
+
+	inline EDirection GetDirection() { return dir; };
+	inline void SetDirection(EDirection dir) { this->dir = dir; }
+
+	inline void SetSwitchTime(float time) { switchTime = time; }
+
+	void InitBindState();
+
+};
+
 
 	//typedef std::function<void(Player&)> stateFunction;
+	/*
 	typedef std::function<void(Player&, EDirection)> stateFunction;
 
 	// FSM: input, function binding
@@ -71,26 +129,4 @@ private:
 	stateAnimFunc FlipAnimFunc;
 	stateAnimFunc JumpAnimFunc;
 	stateAnimFunc AttackAnimFunc;
-public:
-	Player();
-	virtual ~Player();
-
-	HRESULT Init() override;
-	void Release() override;
-	void Update() override;
-	void Render(HDC hdc) override;
-	void MakeSnapShot(void* out) override;
-
-	void InitBindState();
-
-	void Idle(EDirection dir);
-	void Run(EDirection dir);
-	void Walk(EDirection dir);
-	void Flip(EDirection dir);
-	void Down(EDirection dir);
-	void Jump(EDirection dir);
-	void Fall(EDirection dir);
-	void Attack(EDirection dir);
-	void WallSlide(EDirection dir);	
-};
-
+	*/

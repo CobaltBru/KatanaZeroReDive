@@ -182,7 +182,7 @@ void UIGame::Release()
 {
 }
 
-void UIGame::EventPlayerState(const PlayerState& ps)
+void UIGame::EventPlayerState(const ObsPlayerState& ps)
 {
 	batteryGage = ps.battery;
 	if (leftItem != ps.leftItem)

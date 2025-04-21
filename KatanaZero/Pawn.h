@@ -24,5 +24,7 @@ public:
 	void Render(HDC hdc) override;
 	void MakeSnapShot(void* out) override;
 
+	inline int GetFrameIndex() { return FrameIndex; }
+	inline void SetFrameIndex(int index) { FrameIndex = index; }
 };
 
