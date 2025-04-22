@@ -714,6 +714,37 @@ void LineManager::AdjustLine(float InX, float InY)
 	CreateLine(InX, InY);
 }
 
+pair<FPOINT, FPOINT> LineManager::FindNearestSlope(const FPOINT& targetPos, int fromFloor, int toFloor) const
+{
+	FPOINT nearestEntry = { 0.f, 0.f };
+	FPOINT nearestExit = { 0.f, 0.f };
+	float nearestDist = FLT_MAX;
+
+	for (auto* line : LineList[(int)ELineType::Normal])
+	{
+		if (!line->IsDiagonalLine()) continue;
+
+		const auto& Lpos = line->GetLine().LeftPoint;
+		const auto& Rpos = line->GetLine().RightPoint;
+		int floorL = line->GetFloorIndex(Lpos);
+		int floorR = line->GetFloorIndex(Rpos);
+		bool matches =
+			(floorL == fromFloor && floorR == toFloor) ||
+			(floorR == fromFloor && floorL == toFloor);
+		if (!matches) continue;
+		FPOINT entry = (floorL == fromFloor) ? Lpos : Rpos;
+		FPOINT exit = (floorL == fromFloor) ? Rpos : Lpos;
+		float dx = fabs(entry.x - targetPos.x);
+		if (dx < nearestDist)
+		{
+			nearestDist = dx;
+			nearestEntry = entry;
+			nearestExit = exit;
+		}
+	}
+	return make_pair(nearestEntry, nearestExit);
+}
+
 void LineManager::Render(HDC hdc)
 {
 	bStraight = KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT);

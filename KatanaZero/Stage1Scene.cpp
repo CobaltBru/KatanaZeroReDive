@@ -14,6 +14,7 @@
 
 #include "ChatManager.h"
 #include "UIGame.h"
+#include "GoPopUp.h"
 #include "SnapShotManager.h"
 #include "ScreenEffectManager.h"
 #include "HeadHunter.h"

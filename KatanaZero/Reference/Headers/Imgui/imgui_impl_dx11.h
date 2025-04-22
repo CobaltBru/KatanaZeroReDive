@@ -4,7 +4,7 @@
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'ID3D11ShaderResourceView*' as ImTextureID. Read the FAQ about ImTextureID!
 //  [X] Renderer: Large meshes support (64k+ vertices) even with 16-bit indices (ImGuiBackendFlags_RendererHasVtxOffset).
-//  [X] Renderer: Expose selected render state for draw callbacks to use. Access in '(ImGui_ImplXXXX_RenderState*)GetPlatformIO().Renderer_RenderState'.
+//  [X] Renderer: Expose selected render EState for draw callbacks to use. Access in '(ImGui_ImplXXXX_RenderState*)GetPlatformIO().Renderer_RenderState'.
 
 // You can use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
@@ -29,11 +29,11 @@ IMGUI_IMPL_API void     ImGui_ImplDX11_Shutdown();
 IMGUI_IMPL_API void     ImGui_ImplDX11_NewFrame();
 IMGUI_IMPL_API void     ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data);
 
-// Use if you want to reset your rendering device without losing Dear ImGui state.
+// Use if you want to reset your rendering device without losing Dear ImGui EState.
 IMGUI_IMPL_API bool     ImGui_ImplDX11_CreateDeviceObjects();
 IMGUI_IMPL_API void     ImGui_ImplDX11_InvalidateDeviceObjects();
 
-// [BETA] Selected render state data shared with callbacks.
+// [BETA] Selected render EState data shared with callbacks.
 // This is temporarily stored in GetPlatformIO().Renderer_RenderState during the ImGui_ImplDX11_RenderDrawData() call.
 // (Please open an issue if you feel you need access to more data)
 struct ImGui_ImplDX11_RenderState

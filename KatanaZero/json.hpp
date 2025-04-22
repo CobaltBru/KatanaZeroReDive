@@ -3874,7 +3874,7 @@ template<typename T>
 using range_value_t = value_type_t<iterator_traits<iterator_t<T>>>;
 
 // The following implementation of is_complete_type is taken from
-// https://blogs.msdn.microsoft.com/vcblog/2015/12/02/partial-support-for-expression-sfinae-in-vs-2015-update-1/
+// https://blogs.msdn.microsoft.com/vcblog/2015/12/02/partial-support-for-expression-sfinae-in-vs-2015-Update-1/
 // and is written by Xiang Fan who agreed to using it in this library.
 
 template<typename T, typename = void>
@@ -7954,13 +7954,13 @@ class lexer : public lexer_base<BasicJsonType>
 
     This function scans a string according to Sect. 6 of RFC 8259.
 
-    The function is realized with a deterministic finite state machine derived
-    from the grammar described in RFC 8259. Starting in state "init", the
-    input is read and used to determined the next state. Only state "done"
-    accepts the number. State "error" is a trap state to model errors. In the
+    The function is realized with a deterministic finite EState machine derived
+    from the grammar described in RFC 8259. Starting in EState "init", the
+    input is read and used to determined the next EState. Only EState "done"
+    accepts the number. State "error" is a trap EState to model errors. In the
     table below, "anything" means any character but the ones listed before.
 
-    state    | 0        | 1-9      | e E      | +       | -       | .        | anything
+    EState    | 0        | 1-9      | e E      | +       | -       | .        | anything
     ---------|----------|----------|----------|---------|---------|----------|-----------
     init     | zero     | any1     | [error]  | [error] | minus   | [error]  | [error]
     minus    | zero     | any1     | [error]  | [error] | [error] | [error]  | [error]
@@ -7972,8 +7972,8 @@ class lexer : public lexer_base<BasicJsonType>
     sign     | any2     | any2     | [error]  | [error] | [error] | [error]  | [error]
     any2     | any2     | any2     | done     | done    | done    | done     | done
 
-    The state machine is realized with one label per state (prefixed with
-    "scan_number_") and `goto` statements between them. The state machine
+    The EState machine is realized with one label per EState (prefixed with
+    "scan_number_") and `goto` statements between them. The EState machine
     contains cycles, but any cycle can be left when EOF is read. Therefore,
     the function is guaranteed to terminate.
 
@@ -7989,7 +7989,7 @@ class lexer : public lexer_base<BasicJsonType>
           locale's decimal point is used instead of `.` to work with the
           locale-dependent converters.
     */
-    token_type scan_number()  // lgtm [cpp/use-of-goto] `goto` is used in this function to implement the number-parsing state machine described above. By design, any finite input will eventually reach the "done" state or return token_type::parse_error. In each intermediate state, 1 byte of the input is appended to the token_buffer vector, and only the already initialized variables token_buffer, number_type, and error_message are manipulated.
+    token_type scan_number()  // lgtm [cpp/use-of-goto] `goto` is used in this function to implement the number-parsing EState machine described above. By design, any finite input will eventually reach the "done" EState or return token_type::parse_error. In each intermediate EState, 1 byte of the input is appended to the token_buffer vector, and only the already initialized variables token_buffer, number_type, and error_message are manipulated.
     {
         // reset token_buffer to store the number's bytes
         reset();
@@ -7998,7 +7998,7 @@ class lexer : public lexer_base<BasicJsonType>
         // changed if minus sign, decimal point or exponent is read
         token_type number_type = token_type::value_unsigned;
 
-        // state (init): we just found out we need to scan a number
+        // EState (init): we just found out we need to scan a number
         switch (current)
         {
             case '-':
@@ -8033,7 +8033,7 @@ class lexer : public lexer_base<BasicJsonType>
         }
 
 scan_number_minus:
-        // state: we just parsed a leading minus sign
+        // EState: we just parsed a leading minus sign
         number_type = token_type::value_integer;
         switch (get())
         {
@@ -8065,7 +8065,7 @@ scan_number_minus:
         }
 
 scan_number_zero:
-        // state: we just parse a zero (maybe with a leading minus sign)
+        // EState: we just parse a zero (maybe with a leading minus sign)
         switch (get())
         {
             case '.':
@@ -8087,7 +8087,7 @@ scan_number_zero:
         }
 
 scan_number_any1:
-        // state: we just parsed a number 0-9 (maybe with a leading minus sign)
+        // EState: we just parsed a number 0-9 (maybe with a leading minus sign)
         switch (get())
         {
             case '0':
@@ -8124,7 +8124,7 @@ scan_number_any1:
         }
 
 scan_number_decimal1:
-        // state: we just parsed a decimal point
+        // EState: we just parsed a decimal point
         number_type = token_type::value_float;
         switch (get())
         {
@@ -8272,7 +8272,7 @@ scan_number_done:
         char* endptr = nullptr; // NOLINT(misc-const-correctness,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         errno = 0;
 
-        // try to parse integers first and fall back to floats
+        // try to parse integers first and Fall back to floats
         if (number_type == token_type::value_unsigned)
         {
             const auto x = std::strtoull(token_buffer.data(), &endptr, 10);
@@ -13258,7 +13258,7 @@ class parser
                     }
 
                     // We are done with this array. Before we can parse a
-                    // new value, we need to evaluate the new state first.
+                    // new value, we need to evaluate the new EState first.
                     // By setting skip_to_state_evaluation to false, we
                     // are effectively jumping to the beginning of this if.
                     JSON_ASSERT(!states.empty());
@@ -13312,7 +13312,7 @@ class parser
                 }
 
                 // We are done with this object. Before we can parse a
-                // new value, we need to evaluate the new state first.
+                // new value, we need to evaluate the new EState first.
                 // By setting skip_to_state_evaluation to false, we
                 // are effectively jumping to the beginning of this if.
                 JSON_ASSERT(!states.empty());
@@ -19601,17 +19601,17 @@ class serializer
     @brief check whether a string is UTF-8 encoded
 
     The function checks each byte of a string whether it is UTF-8 encoded. The
-    result of the check is stored in the @a state parameter. The function must
-    be called initially with state 0 (accept). State 1 means the string must
+    result of the check is stored in the @a EState parameter. The function must
+    be called initially with EState 0 (accept). State 1 means the string must
     be rejected, because the current byte is not allowed. If the string is
-    completely processed, but the state is non-zero, the string ended
+    completely processed, but the EState is non-zero, the string ended
     prematurely; that is, the last byte indicated more bytes should have
     followed.
 
-    @param[in,out] state  the state of the decoding
-    @param[in,out] codep  codepoint (valid only if resulting state is UTF8_ACCEPT)
+    @param[in,out] EState  the EState of the decoding
+    @param[in,out] codep  codepoint (valid only if resulting EState is UTF8_ACCEPT)
     @param[in] byte       next byte to decode
-    @return               new state
+    @return               new EState
 
     @note The function has been edited: a std::array is used.
 
@@ -20776,7 +20776,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             JSON_ASSERT(type() == value_t::array);
             if (JSON_HEDLEY_UNLIKELY(m_data.m_value.array->capacity() != old_capacity))
             {
-                // capacity has changed: update all parents
+                // capacity has changed: Update all parents
                 set_parents();
                 return j;
             }
@@ -22122,7 +22122,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 #if JSON_DIAGNOSTICS
                 if (JSON_HEDLEY_UNLIKELY(m_data.m_value.array->capacity() != old_capacity))
                 {
-                    // capacity has changed: update all parents
+                    // capacity has changed: Update all parents
                     set_parents();
                 }
                 else
@@ -23444,14 +23444,14 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     }
 
     /// @brief updates a JSON object from another object, overwriting existing keys
-    /// @sa https://json.nlohmann.me/api/basic_json/update/
+    /// @sa https://json.nlohmann.me/api/basic_json/Update/
     void update(const_reference j, bool merge_objects = false)
     {
         update(j.begin(), j.end(), merge_objects);
     }
 
     /// @brief updates a JSON object from another object, overwriting existing keys
-    /// @sa https://json.nlohmann.me/api/basic_json/update/
+    /// @sa https://json.nlohmann.me/api/basic_json/Update/
     void update(const_iterator first, const_iterator last, bool merge_objects = false) // NOLINT(performance-unnecessary-value-param)
     {
         // implicitly convert null value to an empty object

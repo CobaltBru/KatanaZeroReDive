@@ -4,25 +4,72 @@
 #include <functional>
 #include "Pawn.h"
 #include "PlayerInput.h"
+#include "PlayerState.h"
+#include <stack>
 
-class Collider;
+
+class Image;
+class Player;
+class PlayerAnim;
 class PlayerInput;
-class ZeroState;
+class Collider;
+class RigidBody;
+class AttackState;
+class FallState;
+
+struct stateAnimFunc
+{
+	SpriteAnimator* animator;
+	std::function<void(Player&, EDirection)> func;
+};
+
+struct playerInfo
+{
+	bool bIsAttack;
+	bool bIsJump;
+	bool bIsFlip;
+};
+
+struct playerStates
+{
+	PlayerState* Idle;
+	PlayerState* Attack;
+	PlayerState* Fall;
+	PlayerState* Run;
+	PlayerState* Jump;
+	PlayerState* Flip;
+	PlayerState* WallSlide;
+};
+
 class Player: public Pawn
 {
 private:
-	Collider* PlayerCollider;
-	 
-	ZeroState* state;
-
 	PlayerInput* playerInput;
+	EDirection dir;
 
-	float speed;
+	stateAnimFunc playerAnimFunc;
 
-	typedef std::function<void(Player&)> stateFunction;
+	bool bIsLeft;
+	bool bWall;
 
-	// FSM: input, function binding
-	std::unordered_map<InputAction, stateFunction> inputStateMap;
+	float scrollSpeed;
+
+	// player EState
+	playerStates* states;
+	PlayerState* state;
+	EPlayerState EState;
+
+	// player state에 따른 move function과 animation을 따로 관리
+	
+	// player anim
+	// PlayerAnim* playerAnim;
+	Image* image;
+	Image* effectImage;
+
+	playerInfo* info;
+
+	// switch frame
+	float switchTime;	
 
 public:
 	Player();
@@ -34,15 +81,58 @@ public:
 	void Render(HDC hdc) override;
 	void MakeSnapShot(void* out) override;
 
-	void BindState();
+	void InitPlayerStates();
+	void InitPlayerInfo();
 
-	void Left();
-	void Right();
-	void Down();
-	void Jump();
-	void Fall();
-	void Attack();
-	void Dead();
-	void WallSlide();
+	// rigid body
+	void InitRigidBody();
+	void UpdateRigidBody();
+
+	void UpdateCollision();
+
+	// scroll
+	void InitScrollOffset();
+	void Offset();
+
+
+	inline playerStates* GetStates() { return states; }
+	inline playerInfo* GetInfo() { return info; }
+
+	inline Image* GetImage() { return image; }
+	inline void SetImage(Image* image) { this->image = image; }
+
+	inline void SetEffectImage(Image* image) { effectImage = image; }
+
+	inline EPlayerState GetEState() { return EState; }
+	inline void SetEState(EPlayerState state) { this->EState = state; }
+
+	/*inline PlayerState* GetState() { return state; }
+	inline void SetState(PlayerState* state) { this->state = state; }*/
+
+	inline EDirection GetDirection() { return dir; };
+	inline void SetDirection(EDirection dir) { this->dir = dir; }
+
+	inline void SetSwitchTime(float time) { switchTime = time; }
+
+	void InitBindState();
 };
 
+
+	//typedef std::function<void(Player&)> stateFunction;
+	/*
+	typedef std::function<void(Player&, EDirection)> stateFunction;
+
+	// FSM: input, function binding
+	std::unordered_map<EInputAction, stateFunction> inputStateMap;
+
+	std::unordered_map<EInputAction, EPlayerState> ipActionPlayerStateMap;
+	std::unordered_map<EPlayerState, stateAnimFunc> playerStateFunctionMap;	
+
+	stateAnimFunc IdleAnimFunc;
+	stateAnimFunc IdleToRunAnimFunc;
+	stateAnimFunc RunToIdleAnimFunc;	
+	stateAnimFunc RunAnimFunc;
+	stateAnimFunc FlipAnimFunc;
+	stateAnimFunc JumpAnimFunc;
+	stateAnimFunc AttackAnimFunc;
+	*/

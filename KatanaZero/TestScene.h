@@ -41,5 +41,8 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
+
+	FPOINT testPlayerPos;
+	FPOINT testDestPos;
 };
 

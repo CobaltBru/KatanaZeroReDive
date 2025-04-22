@@ -5,26 +5,44 @@
 #include <cstddef>
 #include <vector>
 
+class SpriteAnimator;
 
-enum class InputAction
+enum class EInputAction
 {
 	Idle,
 	Left,
 	Right,
-	Dash,
 	Down,
 	Jump,
 	Fall,
 	Attack,
 	SlowTime,
-	Dead,
+	En
+};
+
+enum class EDirection
+{
+	Left,
+	Right
+};
+
+struct KeyInfo {
+	UINT virtualKey;
+	EInputAction action;
+	std::function<void()> func;	
+	
+	Image* image;
+	SpriteAnimator* animator;
+
+	int FrameIndex;
+	int MaxFrameIndex;
 };
 
 // unordered_map에서 사용하기 위해 hash function 제공
 namespace std {
 	template <>
-	struct hash<InputAction> {
-		size_t operator()(const InputAction& action) const {
+	struct hash<EInputAction> {
+		size_t operator()(const EInputAction& action) const {
 			return static_cast<size_t>(action);
 		}
 	};
@@ -33,15 +51,20 @@ namespace std {
 class PlayerInput
 {
 private:
-	std::unordered_map<UINT, InputAction> keyActionMap;	
+	std::unordered_map<UINT, EInputAction> keyActionMap;	
+
+	bitset<MAX_KEY_COUNT> currKeyState;
+	bitset<MAX_KEY_COUNT> prevKeyState;
 
 public:
 	void Init();
 	
-	std::unordered_map<UINT, InputAction>& GetkeyActionMap() { return keyActionMap; };
+	std::unordered_map<UINT, EInputAction>& GetkeyActionMap() { return keyActionMap; };
 
-	std::vector<InputAction> GetActions();
+	std::vector<EInputAction> GetPressed();
+	std::vector<EInputAction> GetHeld();
+	std::vector<EInputAction> GetReleased();
 
-	void BindKeyAction();
+	void UpdateKeystate();
 };
 

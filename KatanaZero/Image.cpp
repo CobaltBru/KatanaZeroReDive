@@ -320,8 +320,9 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
 
             imageInfo->hTempDC,
             0, 0,
-            imageInfo->frameWidth - endX, imageInfo->frameHeight,
+            endX - startX, imageInfo->frameHeight,
             transColor);
+
     }
     else if (isTransparent)
     {

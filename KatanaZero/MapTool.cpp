@@ -15,6 +15,12 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
+#include "SnapShotManager.h"
+
+// 해영 Enemy 테스트
+#include "Enemy.h"
+#include "Enemies.h"
+
 #include "Factory.h"
 #include "ImGuiManager.h"
 

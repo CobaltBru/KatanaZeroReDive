@@ -61,7 +61,7 @@ Index of this file:
 //    | TableBeginRow()                         - add a new row
 // - TableSetColumnIndex() / TableNextColumn()  user begin into a cell
 //    | TableEndCell()                          - close existing column/cell
-//    | TableBeginCell()                        - enter into current column/cell
+//    | TableBeginCell()                        - Enter into current column/cell
 // - [...]                                      user emit contents
 //-----------------------------------------------------------------------------
 // - EndTable()                                 user ends the table
@@ -579,7 +579,7 @@ bool    ImGui::BeginTableEx(const char* name, ImGuiID id, int columns_count, ImG
         // Initialize
         table->SettingsOffset = -1;
         table->IsSortSpecsDirty = true;
-        table->IsSettingsDirty = true; // Records itself into .ini file even when in default state (#7934)
+        table->IsSettingsDirty = true; // Records itself into .ini file even when in default EState (#7934)
         table->InstanceInteracted = -1;
         table->ContextPopupColumn = -1;
         table->ReorderColumn = table->ResizedColumn = table->LastResizedColumn = -1;
@@ -839,7 +839,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
             column->InitStretchWeightOrWidth = -1.0f;
         }
 
-        // Update Enabled state, mark settings and sort specs dirty
+        // Update Enabled EState, mark settings and sort specs dirty
         if (!(table->Flags & ImGuiTableFlags_Hideable) || (column->Flags & ImGuiTableColumnFlags_NoHide))
             column->IsUserEnabledNextFrame = true;
         if (column->IsUserEnabled != column->IsUserEnabledNextFrame)
@@ -935,7 +935,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
                 width_auto = fixed_max_width_auto;
 
             // Apply automatic width
-            // Latch initial size for fixed columns and update it constantly for auto-resizing column (unless clipped!)
+            // Latch initial size for fixed columns and Update it constantly for auto-resizing column (unless clipped!)
             if (column->AutoFitQueue != 0x00)
                 column->WidthRequest = width_auto;
             else if ((column->Flags & ImGuiTableColumnFlags_WidthFixed) && !column_is_resizable && column->IsRequestOutput)
@@ -979,7 +979,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
     // [Part 4] Apply final widths based on requested widths
     const ImRect work_rect = table->WorkRect;
     const float width_spacings = (table->OuterPaddingX * 2.0f) + (table->CellSpacingX1 + table->CellSpacingX2) * (table->ColumnsEnabledCount - 1);
-    const float width_removed = (table->HasScrollbarYPrev && !table->InnerWindow->ScrollbarY) ? g.Style.ScrollbarSize : 0.0f; // To synchronize decoration width of synced tables with mismatching scrollbar state (#5920)
+    const float width_removed = (table->HasScrollbarYPrev && !table->InnerWindow->ScrollbarY) ? g.Style.ScrollbarSize : 0.0f; // To synchronize decoration width of synced tables with mismatching scrollbar EState (#5920)
     const float width_avail = ImMax(1.0f, (((table->Flags & ImGuiTableFlags_ScrollX) && table->InnerWidth == 0.0f) ? table->InnerClipRect.GetWidth() : work_rect.GetWidth()) - width_removed);
     const float width_avail_for_stretched_columns = width_avail - width_spacings - sum_width_requests;
     float width_remaining_for_stretched_columns = width_avail_for_stretched_columns;
@@ -1271,7 +1271,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
         table->InnerWindow->DecoInnerSizeY1 = table_instance->LastFrozenHeight;
     table_instance->LastFrozenHeight = 0.0f;
 
-    // Initial state
+    // Initial EState
     ImGuiWindow* inner_window = table->InnerWindow;
     if (table->Flags & ImGuiTableFlags_NoClip)
         table->DrawSplitter->SetCurrentChannel(inner_window->DrawList, TABLE_DRAW_CHANNEL_NOCLIP);
@@ -1392,7 +1392,7 @@ void    ImGui::EndTable()
 
     // Setup inner scrolling range
     // FIXME: This ideally should be done earlier, in BeginTable() SetNextWindowContentSize call, just like writing to inner_window->DC.CursorMaxPos.y,
-    // but since the later is likely to be impossible to do we'd rather update both axes together.
+    // but since the later is likely to be impossible to do we'd rather Update both axes together.
     if (table->Flags & ImGuiTableFlags_ScrollX)
     {
         const float outer_padding_for_border = (table->Flags & ImGuiTableFlags_BordersOuterV) ? TABLE_BORDER_SIZE : 0.0f;
@@ -1730,9 +1730,9 @@ const char* ImGui::TableGetColumnName(const ImGuiTable* table, int column_n)
     return &table->ColumnsNames.Buf[column->NameOffset];
 }
 
-// Change user accessible enabled/disabled state of a column (often perceived as "showing/hiding" from users point of view)
+// Change user accessible enabled/disabled EState of a column (often perceived as "showing/hiding" from users point of view)
 // Note that end-user can use the context menu to change this themselves (right-click in headers, or right-click in columns body with ImGuiTableFlags_ContextMenuInBody)
-// - Require table to have the ImGuiTableFlags_Hideable flag because we are manipulating user accessible state.
+// - Require table to have the ImGuiTableFlags_Hideable flag because we are manipulating user accessible EState.
 // - Request will be applied during next layout, which happens on the first call to TableNextRow() after BeginTable().
 // - For the getter you can test (TableGetColumnFlags() & ImGuiTableColumnFlags_IsEnabled) != 0.
 // - Alternative: the ImGuiTableColumnFlags_Disabled is an overriding/master disable flag which will also hide the column from context menu.
@@ -1753,7 +1753,7 @@ void ImGui::TableSetColumnEnabled(int column_n, bool enabled)
     column->IsUserEnabledNextFrame = enabled;
 }
 
-// We allow querying for an extra column in order to poll the IsHovered state of the right-most section
+// We allow querying for an extra column in order to poll the IsHovered EState of the right-most section
 ImGuiTableColumnFlags ImGui::TableGetColumnFlags(int column_n)
 {
     ImGuiContext& g = *GImGui;
@@ -3643,7 +3643,7 @@ ImGuiTableSettings* ImGui::TableGetBoundSettings(ImGuiTable* table)
     return NULL;
 }
 
-// Restore initial state of table (with or without saved settings)
+// Restore initial EState of table (with or without saved settings)
 void ImGui::TableResetSettings(ImGuiTable* table)
 {
     table->IsInitializing = table->IsSettingsDirty = true;
@@ -3689,7 +3689,7 @@ void ImGui::TableSaveSettings(ImGuiTable* table)
         if ((column->Flags & ImGuiTableColumnFlags_WidthStretch) == 0)
             save_ref_scale = true;
 
-        // We skip saving some data in the .ini file when they are unnecessary to restore our state.
+        // We skip saving some data in the .ini file when they are unnecessary to restore our EState.
         // Note that fixed width where initial width was derived from auto-fit will always be saved as InitStretchWeightOrWidth will be 0.0f.
         // FIXME-TABLE: We don't have logic to easily compare SortOrder to DefaultSortOrder yet so it's always saved when present.
         if (width_or_weight != column->InitStretchWeightOrWidth)
@@ -4315,7 +4315,7 @@ void ImGui::BeginColumns(const char* str_id, int columns_count, ImGuiOldColumnFl
     columns->HostBackupParentWorkRect = window->ParentWorkRect;
     window->ParentWorkRect = window->WorkRect;
 
-    // Set state for first column
+    // Set EState for first column
     // We aim so that the right-most column will have the same clipping width as other after being clipped by parent ClipRect
     const float column_padding = g.Style.ItemSpacing.x;
     const float half_clip_extend_x = ImTrunc(ImMax(window->WindowPadding.x * 0.5f, window->WindowBorderSize));
@@ -4393,7 +4393,7 @@ void ImGui::NextColumn()
     PopItemWidth();
 
     // Optimization: avoid PopClipRect() + SetCurrentChannel() + PushClipRect()
-    // (which would needlessly attempt to update commands in the wrong channel, then pop or overwrite them),
+    // (which would needlessly attempt to Update commands in the wrong channel, then pop or overwrite them),
     ImGuiOldColumnData* column = &columns->Columns[columns->Current];
     SetWindowClipRectBeforeSetChannel(window, column->ClipRect);
     columns->Splitter.SetCurrentChannel(window->DrawList, columns->Current + 1);

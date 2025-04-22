@@ -2084,10 +2084,10 @@ static void DemoWindowWidgetsQueryingStatuses()
         bool hovered_delay_normal = ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal);
         bool hovered_delay_tooltip = ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip); // = Normal + Stationary
 
-        // Display the values of IsItemHovered() and other common item state functions.
+        // Display the values of IsItemHovered() and other common item EState functions.
         // Note that the ImGuiHoveredFlags_XXX flags can be combined.
         // Because BulletText is an item itself and that would affect the output of IsItemXXX functions,
-        // we query every state in a single call to avoid storing them and to simplify the code.
+        // we query every EState in a single call to avoid storing them and to simplify the code.
         ImGui::BulletText(
             "Return value = %d\n"
             "IsItemFocused() = %d\n"
@@ -2245,7 +2245,7 @@ static void DemoWindowWidgetsSelectables()
     {
         // Selectable() has 2 overloads:
         // - The one taking "bool selected" as a read-only selection information.
-        //   When Selectable() has been clicked it returns true and you can alter selection state accordingly.
+        //   When Selectable() has been clicked it returns true and you can alter selection EState accordingly.
         // - The one taking "bool* p_selected" as a read-write selection information (convenient in some cases)
         // The earlier is more flexible, as in real application your selection may be stored in many different ways
         // and not necessarily inside a bool value (e.g. in flags within objects, as an external list, etc).
@@ -2420,7 +2420,7 @@ struct ExampleSelectionWithDeletion : ImGuiSelectionBasicStorage
         return -1;
     }
 
-    // Rewrite item list (delete items) + update selection.
+    // Rewrite item list (delete items) + Update selection.
     // - Call after EndMultiSelect()
     // - We cannot provide this logic in core Dear ImGui because we don't have access to your items, nor to selection data.
     template<typename ITEM_TYPE>
@@ -2800,7 +2800,7 @@ static void DemoWindowWidgetsSelectionAndMultiSelect(ImGuiDemoWindowData* demo_d
         IMGUI_DEMO_MARKER("Widgets/Selection State/Multi-Select (dual list box)");
         if (ImGui::TreeNode("Multi-Select (dual list box)"))
         {
-            // Init default state
+            // Init default EState
             static ExampleDualListBox dlb;
             if (dlb.Items[0].Size == 0 && dlb.Items[1].Size == 0)
                 for (int item_id = 0; item_id < IM_ARRAYSIZE(ExampleNames); item_id++)
@@ -3394,7 +3394,7 @@ static void DemoWindowWidgetsTabs()
             ImGui::AlignTextToFramePadding();
             ImGui::Text("Opened:");
             const char* names[4] = { "Artichoke", "Beetroot", "Celery", "Daikon" };
-            static bool opened[4] = { true, true, true, true }; // Persistent user state
+            static bool opened[4] = { true, true, true, true }; // Persistent user EState
             for (int n = 0; n < IM_ARRAYSIZE(opened); n++)
             {
                 ImGui::SameLine();
@@ -3925,7 +3925,7 @@ static void DemoWindowWidgetsTreeNodes()
         {
             for (int i = 0; i < 5; i++)
             {
-                // Use SetNextItemOpen() so set the default state of a node to be open. We could
+                // Use SetNextItemOpen() so set the default EState of a node to be open. We could
                 // also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
                 if (i == 0)
                     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
@@ -3970,8 +3970,8 @@ static void DemoWindowWidgetsTreeNodes()
             if (align_label_with_current_x_position)
                 ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-            // 'selection_mask' is dumb representation of what may be user-side selection state.
-            //  You may retain selection state inside or outside your objects in whatever format you see fit.
+            // 'selection_mask' is dumb representation of what may be user-side selection EState.
+            //  You may retain selection EState inside or outside your objects in whatever format you see fit.
             // 'node_clicked' is temporary storage of what node we have clicked to process selection at the end
             /// of the loop. May be a pointer to your own node type, etc.
             static int selection_mask = (1 << 2);
@@ -4029,7 +4029,7 @@ static void DemoWindowWidgetsTreeNodes()
             }
             if (node_clicked != -1)
             {
-                // Update selection state
+                // Update selection EState
                 // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
                 if (ImGui::GetIO().KeyCtrl)
                     selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
@@ -4272,7 +4272,7 @@ static void DemoWindowLayout()
         // - Using SetCursorPos() to position child window (the child window is an item from the POV of parent window)
         //   You can also call SetNextWindowPos() to position the child window. The parent window will effectively
         //   layout from this position.
-        // - Using ImGui::GetItemRectMin/Max() to query the "item" state (because the child window is an item from
+        // - Using ImGui::GetItemRectMin/Max() to query the "item" EState (because the child window is an item from
         //   the POV of the parent window). See 'Demo->Querying Status (Edited/Active/Hovered etc.)' for details.
         {
             static int offset_x = 0;
@@ -5045,11 +5045,11 @@ static void DemoWindowPopups()
     // The properties of popups windows are:
     // - They block normal mouse hovering detection outside them. (*)
     // - Unless modal, they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
-    // - Their visibility state (~bool) is held internally by Dear ImGui instead of being held by the programmer as
-    //   we are used to with regular Begin() calls. User can manipulate the visibility state by calling OpenPopup().
+    // - Their visibility EState (~bool) is held internally by Dear ImGui instead of being held by the programmer as
+    //   we are used to with regular Begin() calls. User can manipulate the visibility EState by calling OpenPopup().
     // (*) One can use IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) to bypass it and detect hovering even
     //     when normally blocked by a popup.
-    // Those three properties are connected. The library needs to hold their visibility state BECAUSE it can close
+    // Those three properties are connected. The library needs to hold their visibility EState BECAUSE it can close
     // popups at any time.
 
     // Typical use for regular windows:
@@ -5057,7 +5057,7 @@ static void DemoWindowPopups()
     // Typical use for popups:
     //   if (ImGui::Button("Open")) ImGui::OpenPopup("MyPopup"); if (ImGui::BeginPopup("MyPopup") { [...] EndPopup(); }
 
-    // With popups we have to go through a library call (here OpenPopup) to manipulate the visibility state.
+    // With popups we have to go through a library call (here OpenPopup) to manipulate the visibility EState.
     // This may be a bit confusing at first but it should quickly make sense. Follow on the examples below.
 
     IMGUI_DEMO_MARKER("Popups/Popups");
@@ -5297,7 +5297,7 @@ static void DemoWindowPopups()
                 ImGui::OpenPopup("Stacked 2");
 
             // Also demonstrate passing a bool* to BeginPopupModal(), this will create a regular close button which
-            // will close the popup. Note that the visibility state of popups is owned by imgui, so the input value
+            // will close the popup. Note that the visibility EState of popups is owned by imgui, so the input value
             // of the bool actually doesn't matter here.
             bool unused_open = true;
             if (ImGui::BeginPopupModal("Stacked 2", &unused_open))
@@ -9966,7 +9966,7 @@ struct MyDocument
     char        Name[32];   // Document title
     int         UID;        // Unique ID (necessary as we can change title)
     bool        Open;       // Set when open (we keep an array of all available documents to simplify demo code!)
-    bool        OpenPrev;   // Copy of Open from last update.
+    bool        OpenPrev;   // Copy of Open from last Update.
     bool        Dirty;      // Set when the document has been modified
     ImVec4      Color;      // An arbitrary variable associated to the document
 
@@ -10547,7 +10547,7 @@ struct ExampleAssetsBrowser
                         bool item_is_visible = ImGui::IsRectVisible(LayoutItemSize);
                         ImGui::Selectable("", item_is_selected, ImGuiSelectableFlags_None, LayoutItemSize);
 
-                        // Update our selection state immediately (without waiting for EndMultiSelect() requests)
+                        // Update our selection EState immediately (without waiting for EndMultiSelect() requests)
                         // because we use this to alter the color of our text/icon.
                         if (ImGui::IsItemToggledSelection())
                             item_is_selected = !item_is_selected;

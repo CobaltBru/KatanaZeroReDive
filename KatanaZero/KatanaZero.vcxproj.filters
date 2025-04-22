@@ -1,18 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="MainGame">
       <UniqueIdentifier>{cb6807f4-0fdf-47de-b7e8-4546acbe35ae}</UniqueIdentifier>
     </Filter>
@@ -109,8 +97,26 @@
     <Filter Include="2D Framework\Physics">
       <UniqueIdentifier>{a0d7a5c1-f88b-4dd7-8b76-6bf501ba20ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy\EnemyState">
+      <UniqueIdentifier>{4b104575-95f5-4064-a259-f53881f94b3c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Enemies">
+      <UniqueIdentifier>{debbe255-3626-40ac-9dbb-63151611002d}</UniqueIdentifier>
     </Filter>
     <Filter Include="2D Framework\Observer">
       <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
@@ -120,6 +126,12 @@
     </Filter>
     <Filter Include="MainGame\Scene\Stage\Test">
       <UniqueIdentifier>{a0bc9861-762c-4f20-9b31-80457a5e7475}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2D Framework\Animator">
+      <UniqueIdentifier>{ef9585e9-bad7-4c86-97be-f433cce02a05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Player\PlayerState">
+      <UniqueIdentifier>{668b3759-4f92-469d-83e3-66cbd1c2d9e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,11 +285,23 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>2D Framework\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="SimpleObject.cpp">
-      <Filter>MainGame\TaeKyung\Physics</Filter>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SimpleTestObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>MainGame\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>MainGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>MainGame\Enemy\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>2D Framework\UI</Filter>
@@ -291,11 +315,50 @@
     <ClCompile Include="Subject.cpp">
       <Filter>2D Framework\Observer</Filter>
     </ClCompile>
+    <ClCompile Include="PopUpManager.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
     <ClCompile Include="HomeScene.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GoPopUp.cpp">
+      <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="DefaultObject.cpp">
-      <Filter>MainGame\TaeKyung\Default</Filter>
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleObject.cpp">
+      <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAnim.cpp">
+      <Filter>MainGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnimator.cpp">
+      <Filter>2D Framework\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="FallState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="RunState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="JumpState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="FlipState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="WallSlideState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>MainGame\Scene\Stage\Test</Filter>
@@ -455,17 +518,17 @@
     <ClInclude Include="PlayerController.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>MainGame\Player</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>2D Framework\Input</Filter>
     </ClInclude>
     <ClInclude Include="PlayerInput.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>2D Framework\Physics</Filter>
+    <ClInclude Include="json.hpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteAnimator.h">
+      <Filter>2D Framework\Animator</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
@@ -475,6 +538,15 @@
     </ClInclude>
     <ClInclude Include="SimpleTestObject.h">
       <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>MainGame\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>MainGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemies.h">
+      <Filter>MainGame\Enemy\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>2D Framework\UI</Filter>
@@ -488,8 +560,14 @@
     <ClInclude Include="Subject.h">
       <Filter>2D Framework\Observer</Filter>
     </ClInclude>
+    <ClInclude Include="PopUpManager.h">
+      <Filter>2D Framework\UI</Filter>
+    </ClInclude>
     <ClInclude Include="HomeScene.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GoPopUp.h">
+      <Filter>2D Framework\UI</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>헤더 파일</Filter>
@@ -499,6 +577,36 @@
     </ClInclude>
     <ClInclude Include="TestScene.h">
       <Filter>MainGame\Scene\Stage\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAnim.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="FallState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="JumpState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="RunState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="FlipState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="WallSlideState.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
