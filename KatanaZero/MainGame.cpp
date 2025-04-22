@@ -30,7 +30,7 @@ HRESULT MainGame::Init()
 
 	if (FAILED(InitSound()))
 	{
-		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("ï¿½ï¿½ï¿½"), MB_OK);
+		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("°æ°í"), MB_OK);
 		return E_FAIL;
 	}
 	SceneManager::GetInstance()->AddScene("Talk", new TalkScene());
@@ -38,8 +38,8 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
-	SceneManager::GetInstance()->AddLoadingScene("ï¿½Îµï¿½_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Stage1","ï¿½Îµï¿½_1");
+	SceneManager::GetInstance()->AddLoadingScene("·Îµù_1", new LoadingScene());
+	SceneManager::GetInstance()->ChangeScene("Stage1","·Îµù_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -47,7 +47,7 @@ HRESULT MainGame::Init()
 	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
 	if (nFontsAdded == 0)
 	{
-		MessageBox(NULL, L"ï¿½ï¿½Æ® ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½", L"Error", MB_OK);
+		MessageBox(NULL, L"ÆùÆ® ·Îµå ½ÇÆÐ", L"Error", MB_OK);
 	}
 	LOGFONT lf = { 0 };
 	lf.lfHeight = -MulDiv(18, GetDeviceCaps(hdc, LOGPIXELSY), 72);
@@ -56,13 +56,13 @@ HRESULT MainGame::Init()
 	hFont = CreateFontIndirect(&lf);
 	if (!hFont)
 	{
-		MessageBox(NULL, L"ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", L"Error", MB_OK);
+		MessageBox(NULL, L"ÆùÆ® »ý¼º ½ÇÆÐ", L"Error", MB_OK);
 	}
 
 	if (FAILED(backBuffer->Init(WINSIZE_X, WINSIZE_Y)))
 	{
 		MessageBox(g_hWnd,
-			TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), TEXT("ï¿½ï¿½ï¿½"), MB_OK);
+			TEXT("¹é¹öÆÛ »ý¼º ½ÇÆÐ"), TEXT("°æ°í"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -108,7 +108,7 @@ void MainGame::Update()
 
 void MainGame::Render()
 {
-	// ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ¹é¹öÆÛ¿¡ ¸ÕÀú º¹»ç
 	HDC hBackBufferDC = backBuffer->GetMemDC();
 	hOldFont = (HFONT)SelectObject(hBackBufferDC, hFont);
 
@@ -142,7 +142,7 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 
 HRESULT MainGame::InitSound()
 {
-	// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½
+	// ¸ðµç À½¾ÇÀº ¿©±â¿¡ µî·Ï
 	if (FAILED(SoundManager::GetInstance()->AddSound("Katana ZeroTest", "Sound/Katana ZeroTest.wav")))
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("EffectTest", "Sound/EffectTest.wav")))
@@ -195,7 +195,7 @@ MainGame::~MainGame()
 		testDraw.Render(pGraphics, { 160,100 }, 0.7f);
 		testDraw.Render(pGraphics, { 180,100 }, 0.9f);
 		testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
-		// ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ hdcï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ¹é¹öÆÛ¿¡ ÀÖ´Â ³»¿ëÀ» ¸ÞÀÎ hdc¿¡ º¹»ç
 		/*testDraw.RenderAll(pGraphics, { 0,0 }, 0, 0, false,
 			1.0f, 1.0f, 1.0f, 1.0f, 1.f, 1.f);*/
 			/*testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
@@ -211,6 +211,6 @@ MainGame::~MainGame()
 				testDraw.RenderAll(pGraphics, { 340,100 });
 				testDraw.RenderAll(pGraphics, { 370,100 });*/
 
-				//È­ï¿½ï¿½ ï¿½Ö°ï¿½
+				//È­¸é ¿Ö°î
 				/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
 				RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/
