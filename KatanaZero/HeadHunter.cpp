@@ -35,6 +35,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     isDead = false;
     isLeft = true;
     bCanSpawnBomb = false;
+    faintStart = true;
 
     angle = 0;
     weaponAngle = 0;
@@ -58,38 +59,120 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     state = State::GroundGun;
 
     {
-        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840 *2.5, 70 * 2.5, 12, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 70  , 12, 1, true, RGB(255, 0, 255));
 
-        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/HeadHunter/headhunter_takeoutrifle.bmp", 560 * 2.5, 70 * 2.5, 8, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/HeadHunter/headhunter_lazer.bmp", 972 * 2.5, 46 * 2.5, 18, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/HeadHunter/teleport1.bmp", 280 * 2.5, 70 * 2.5, 4, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/HeadHunter/teleport2.bmp", 280 * 2.5, 70 * 2.5, 4, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/HeadHunter/teleport3.bmp", 280 * 2.5, 70 * 2.5, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/HeadHunter/headhunter_takeoutrifle.bmp", 560  , 70  , 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/HeadHunter/headhunter_lazer.bmp", 972  , 46  , 18, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/HeadHunter/teleport1.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/HeadHunter/teleport2.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/HeadHunter/teleport3.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
 
-        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/HeadHunter/headhunter_faint.bmp", 495 * 2.5, 45 * 2.5, 11, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/HeadHunter/headhunter_faint.bmp", 495  , 45  , 11, 1, true, RGB(255, 0, 255));
 
-        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/HeadHunter/GroundGun.bmp", 490 * 2.5, 70 * 2.5, 7, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/HeadHunter/GroundGun_shoot.bmp", 800 * 2.5, 70 * 2.5, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/HeadHunter/GroundGun.bmp", 490  , 70  , 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/HeadHunter/GroundGun_shoot.bmp", 800  , 70  , 8, 1, true, RGB(255, 0, 255));
 
         //BULLET
-        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/HeadHunter/headhunter_jump.bmp", 27 * 2.5, 44 * 2.5, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/HeadHunter/headhunter_jumpidle.bmp", 90 * 2.5, 43 * 2.5, 3, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/HeadHunter/headhunter_jumptoceil.bmp", 35 * 2.5, 46 * 2.5, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385 * 2.5, 55 * 2.5, 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/HeadHunter/headhunter_jump.bmp", 27  , 44  , 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/HeadHunter/headhunter_jumpidle.bmp", 90  , 43  , 3, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/HeadHunter/headhunter_jumptoceil.bmp", 35  , 46  , 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385  , 55  , 7, 1, true, RGB(255, 0, 255));
 
         //DASH
-        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432 * 2.5, 70 * 2.5, 9, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51 * 2.5, 25 * 2.5, 1, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500 * 2.5, 70 * 2.5, 10, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432  , 70  , 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51  , 25  , 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500  , 70  , 10, 1, true, RGB(255, 0, 255));
 
         //Dead
-        image = ImageManager::GetInstance()->AddImage("DeadFly", L"Image/HeadHunter/deadfly.bmp", 280 * 2.5, 70 * 2.5, 4, 1, true, RGB(255, 0, 255));
-        image = ImageManager::GetInstance()->AddImage("DeadLand", L"Image/HeadHunter/deadland.bmp", 560 * 2.5, 70 * 2.5, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("DeadFly", L"Image/HeadHunter/deadfly.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("DeadLand", L"Image/HeadHunter/deadland.bmp", 560  , 70  , 8, 1, true, RGB(255, 0, 255));
 
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
 
-    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f * 2.5 ,40.f * 2.5 }, true, 1.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f   ,40.f   }, true, 10.f);
+    CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+    ObjectCollider->SetPos(Pos);
+
+    ObjectRigidBody = new RigidBody(this);
+
+    player = SnapShotManager::GetInstance()->GetPlayer().front();
+
+    lazer = new Lazer();
+    lazer->Init();
+
+    return S_OK;
+}
+
+HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+    Pos = InPos;
+    firePos = { 0,0 };
+    wallPos = { 840, 360 };
+    jumpDist1 = { 0,0 };
+    jumpDist2 = { 0,0 };
+    jumpDist3 = { 0,0 };
+
+    isFlip = false;
+    isAttacked = false;
+    isDead = false;
+    isLeft = true;
+    bCanSpawnBomb = false;
+
+    angle = 0;
+    weaponAngle = 0;
+    dAngle = 0;
+    timer = 0;
+    moveTimer = 0;
+    bulletTimer = 0;
+
+    hp = 4;
+    wave = 0;
+    bulletWave = 0;
+    dashWave = 0;
+    lazerWave = 0;
+    gunWave = 0;
+
+    loop = 0;
+    lazerLoop = 0;
+    gunCount = 0;
+    frameIndex = 0;
+
+    state = State::GroundGun;
+
+    {
+        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840  , 70  , 12, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/HeadHunter/headhunter_takeoutrifle.bmp", 560  , 70  , 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/HeadHunter/headhunter_lazer.bmp", 972  , 46  , 18, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/HeadHunter/teleport1.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/HeadHunter/teleport2.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/HeadHunter/teleport3.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/HeadHunter/headhunter_faint.bmp", 495, 70, 11, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/HeadHunter/GroundGun.bmp", 490  , 70  , 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/HeadHunter/GroundGun_shoot.bmp", 800  , 70  , 8, 1, true, RGB(255, 0, 255));
+
+        //BULLET
+        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/HeadHunter/headhunter_jump.bmp", 27  , 44  , 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/HeadHunter/headhunter_jumpidle.bmp", 90  , 43  , 3, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/HeadHunter/headhunter_jumptoceil.bmp", 35  , 46  , 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385  , 55  , 7, 1, true, RGB(255, 0, 255));
+
+        //DASH
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432 , 70  , 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51  , 25  , 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500  , 70  , 10, 1, true, RGB(255, 0, 255));
+
+        //Dead
+        image = ImageManager::GetInstance()->AddImage("DeadFly", L"Image/HeadHunter/deadfly.bmp", 280  , 70  , 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("DeadLand", L"Image/HeadHunter/deadland.bmp", 560  , 70  , 8, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->FindImage("Idle");
+    }
+
+    ObjectCollider = new Collider(this, EColliderType::Rect, { 0,10.f }, { 20.f   ,40.f   }, true, 1.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
     ObjectCollider->SetPos(Pos);
 
@@ -139,13 +222,13 @@ void HeadHunter::Update()
     bulletTimer += TimerManager::GetInstance()->GetDeltaTime();
 
     Collision();
-    if (state == State::Idle || state == State::Dash || state == State::GroundGun || state == State::Faint || state == State::Die || state == State::Bullet) ObjectRigidBody->Update();
+    if (state == State::Idle || state == State::Dash || state == State::GroundGun || state == State::Faint || state == State::Die || state == State::Bullet || state == State::DashDown) ObjectRigidBody->Update();
 
     lazer->Update(firePos, weaponAngle); 
 
-    for (auto bullet : bullets) {
-        bullet->Update();
-    }
+    //for (auto bullet : bullets) {
+    //    bullet->Update();
+    //}
 
     /*for (auto bomb : bombs) {
         bomb->Update();
@@ -227,7 +310,7 @@ void HeadHunter::Render(HDC hdc)
 {
     if (image)
     {
-        image->FrameRender(hdc, Pos.x, Pos.y, frameIndex, 0, isFlip);
+        image->FrameRender(hdc, Pos.x, Pos.y, frameIndex, 0, isFlip, true, ScrollManager::GetInstance()->GetScale());
 
         lazer->Render(hdc);
 
@@ -396,7 +479,7 @@ void HeadHunter::Bullet()
         const FLineResult Result = ObjectRigidBody->GetResult();
    
         ObjectRigidBody->SetMaxVelocity({2000.f,1000.f});
-        ObjectRigidBody->SetVelocity({ 500.f, -150.f }); 
+        ObjectRigidBody->SetVelocity({ 500.f, -250.f }); 
 
         if (Result.LineType == ELineType::Wall)
         {
@@ -407,6 +490,8 @@ void HeadHunter::Bullet()
     case 1: // 벽에 붙어 대기
         image = ImageManager::GetInstance()->FindImage("Jumpidle");
         isFlip = true;
+        ObjectRigidBody->SetGravityVisible(false);
+        ObjectRigidBody->SetVelocity({ 0.f, -0.f });
         if (timer > 0.1f)
         {
             frameIndex++;
@@ -414,6 +499,7 @@ void HeadHunter::Bullet()
             if (frameIndex >= image->GetMaxFrameX())
             {
                 frameIndex = 0;
+                ObjectRigidBody->SetGravityVisible(true);
                 bulletWave++;
             }
         }
@@ -421,7 +507,7 @@ void HeadHunter::Bullet()
 
     case 2: // 천장으로 점프
         image = ImageManager::GetInstance()->FindImage("Jumpto");
-        ObjectRigidBody->SetVelocity({ -500.f, -150.f }); // 왼쪽 위 점프
+        ObjectRigidBody->SetVelocity({ -700.f, -250.f }); // 왼쪽 위 점프
 
         Pos = GetPos();
         
@@ -445,7 +531,7 @@ void HeadHunter::Bullet()
             angle = 0;
             frameIndex = 0;
             dAngle = 0;
-            ObjectRigidBody->SetMaxVelocity({ 200.f,600.f });
+            
             ChangeState(State::Idle);
         }
 
@@ -773,7 +859,7 @@ void HeadHunter::Dash()
            if (isLeft)
            {
                
-               ObjectRigidBody->AddVelocity({ 200.f,0.f });
+               ObjectRigidBody->SetVelocity({ 200.f,0.f });
                
                 //timer = 0;
 
@@ -822,18 +908,15 @@ void HeadHunter::DashDown()
     {
     case 0:
         image = ImageManager::GetInstance()->FindImage("Dash");
+        const FLineResult Result = ObjectRigidBody->GetResult();
+    
+        ObjectRigidBody->SetVelocity({ 0.f,600.f });
 
-        if (timer > 0.005f)
+        if (Result.LineType == ELineType::Normal)
         {
-            Pos.y += 5;
-            timer = 0;
-
-            if (Pos.y > 360)
-            {
-                Pos.y = 360;
-                gunWave++;
-            }
+            gunWave++;
         }
+       
         break;
     case 1:
         image = ImageManager::GetInstance()->FindImage("Dashend");
@@ -857,34 +940,45 @@ void HeadHunter::DashDown()
 void HeadHunter::Faint()
 {
     image = ImageManager::GetInstance()->FindImage("Faint");
-    if (frameIndex < image->GetMaxFrameX() - 1)
+
+    if (faintStart)
+    {
+        // 밀리는 힘은 한 번만 적용
+        if (isLeft)
+        {
+            ObjectRigidBody->SetVelocity({ -100.f, 0.f });
+            isFlip = true;
+        }
+        else
+        {
+            ObjectRigidBody->SetVelocity({ +100.f, 0.f });
+            isFlip = false;
+        }
+
+        faintStart = false;
+        frameIndex = 0;
+        timer = 0;
+    }
+
+    if (frameIndex < image->GetMaxFrameX()-1)
     {
         if (timer > 0.1f)
         {
             frameIndex++;
             timer = 0;
         }
-        if (isLeft)
-        {
-            ObjectRigidBody->AddVelocity({ -100.f,0.f });
-            isFlip = true;
-            
-        }
-        if (!isLeft) // 플레이어 기준 오른쪽
-        {
-            ObjectRigidBody->AddVelocity({ +100.f,0.f });
-            
-        }
     }
 
-    if (frameIndex >= image->GetMaxFrameX() - 1)
+    if (frameIndex >= image->GetMaxFrameX()-1)
     {
         frameIndex = image->GetMaxFrameX() - 1;
-        if (timer > 0.5f)
+
+        // 조금 더 누워있는 듯한 연출 후 깨어나기
+        if (timer > 1.0f)
         {
-            isFlip = false;
-            ObjectCollider->SetHit(false);
+            moveTimer = 0;
             ChangeState(State::Idle);
+            faintStart = true; // 다음에 다시 쓸 수 있게 초기화
         }
     }
 
@@ -927,7 +1021,8 @@ void HeadHunter::SpawnBullet(FPOINT firePos, float angle)
 {
     Bullet1* newBullet = new Bullet1();
     newBullet->Init(firePos, angle);
-    bullets.push_back(newBullet);
+    ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, newBullet);
+    //bullets.push_back(newBullet);
 
 }
 
@@ -953,6 +1048,7 @@ void HeadHunter::ChangeState(State newState) {
     jumpDist2.y = 150;
     jumpDist3.y = jumpDist1.y + jumpDist2.y;
 
+    ObjectRigidBody->SetMaxVelocity({ 200.f,600.f });
     ObjectRigidBody->SetVelocity({ 0.f,0.f });
     
 }
@@ -961,17 +1057,20 @@ void HeadHunter::ChangeState(State newState) {
 void HeadHunter::CheckPlayerPos()
 {
     const FLineResult Result = ObjectRigidBody->GetResult();
-    if (Result.LineType == ELineType::Normal || Result.LineType == ELineType::DownLine) // 땅에 있을 때 기준으로 이미지전환
-    {
-        if (Pos.x < player->GetPos().x)
+    if (state != State::Bullet || state != State::DashDown || state != State::RoundLazer || state != State::VerticalLazer) {
+       if (Result.LineType == ELineType::Normal) // 땅에 있을 때 기준으로 이미지전환
         {
-            isFlip = false;
-        }
-        else
-        {
-            isFlip = true;
+            if (Pos.x < player->GetPos().x)
+            {
+                isFlip = false;
+            }
+            else
+            {
+                isFlip = true;
+            }
         }
     }
+ 
 
 }
 

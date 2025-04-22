@@ -2,6 +2,7 @@
 #include "GPImage.h"
 #include "CollisionManager.h"
 #include "Collider.h"
+#include "ScrollManager.h"
 
 Bullet1::Bullet1()
 {
@@ -14,6 +15,24 @@ Bullet1::~Bullet1()
 HRESULT Bullet1::Init(FPOINT pos, float angle)
 {
     Pos = pos;
+    this->angle = angle;
+
+    isActive = true;
+
+    image = new GPImage();
+    image->AddImage(L"Image/HeadHunter/bullet.png");
+
+    ObjectCollider = new Collider(this, EColliderType::Rect, {}, 10.f, true, 1.f);
+    CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Bullet);
+    ObjectCollider->SetPos(Pos);
+
+
+    return S_OK;
+}
+
+HRESULT Bullet1::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+    Pos = InPos;
     this->angle = angle;
 
     isActive = true;
@@ -48,6 +67,10 @@ void Bullet1::Update()
 
     }
 
+    if (ObjectCollider->IsHitted()) {
+        bDead = true;
+    }
+
     Collision();
 }
 
@@ -58,7 +81,7 @@ void Bullet1::Render(HDC hdc)
     {
         if (isActive)
         {
-            image->Middle_RenderFrameAngle(&graphics, Pos, 0, angle, false, 1.0f);
+            image->Middle_RenderAll(&graphics, Pos, 0, angle, false, 1.0f, 1.0f,1.0f,1.0f, ScrollManager::GetInstance()->GetScale());
         }
 
     }

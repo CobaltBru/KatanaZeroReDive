@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "SnapShotManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -60,7 +61,7 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/headhunter_test.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -93,6 +94,7 @@ HRESULT Stage1Scene::InitImage()
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("headhunter", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
 
@@ -156,7 +158,7 @@ void Stage1Scene::InitBackgroundImage()
 void Stage1Scene::LoadBackground()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/headhunter_bg.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -198,7 +200,7 @@ void Stage1Scene::LoadBackground()
 void Stage1Scene::LoadObject()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/headhunter_object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -240,8 +242,13 @@ void Stage1Scene::LoadObject()
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
-	}
 
+		if (ClassName == "StartPoint")
+		{
+			SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Player, Obj);
+
+		}
+	}
 	CloseHandle(hFile);
 }
 

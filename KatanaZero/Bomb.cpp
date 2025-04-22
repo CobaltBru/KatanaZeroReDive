@@ -98,15 +98,6 @@ void Bomb::Update()
 
     ObjectRigidBody->Update();
     
-    //// ¸ÂÀ¸¸é ¸ØÃß°í ÅÍÁü
-    //if (ObjectCollider->IsHitted())
-    //{
-    //    ObjectCollider->SetSize({ 150,150 });
-    //    image = ImageManager::GetInstance()->FindImage("explosion");
-    //    ObjectRigidBody->SetGravityVisible(false); // ¸ØÃß°í
-    //    ObjectRigidBody->SetVelocity({ 0,0 });
-    //}
-
 
     // ½Ã°£ÀÌ Áö³ª¸é ¸ØÃß°í ÅÍÁü
     if (ObjectCollider->IsHitted() || timer > 5.0f)

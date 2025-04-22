@@ -35,6 +35,7 @@ private:
     bool isDead;
     bool isLeft;
     bool bCanSpawnBomb;
+    bool faintStart;
 
     FPOINT jumpDist1;
     FPOINT jumpDist2;
@@ -75,6 +76,7 @@ public:
     virtual ~HeadHunter();
 
     virtual HRESULT Init(FPOINT InPos);
+    virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend);
     virtual void Release();
     virtual void Update();
     virtual void Render(HDC hdc);

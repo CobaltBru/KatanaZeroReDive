@@ -18,6 +18,7 @@ public:
     virtual ~Bullet1();
 
     virtual HRESULT Init(FPOINT pos, float angle);
+    virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend);
     virtual void Release();
     virtual void Update();
     virtual void Render(HDC hdc);
