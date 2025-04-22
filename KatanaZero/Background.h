@@ -15,6 +15,8 @@ public:
 	float GetScrollPercent() const { return ScrollPercent; }
 
 	void SetScrollPercent(float InScrollPercent) { ScrollPercent = InScrollPercent; }
+
+	Image* GetImage() { return Image; }
 private:
 	Image* Image;
 	float ScrollPercent;

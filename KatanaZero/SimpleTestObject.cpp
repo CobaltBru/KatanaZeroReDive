@@ -73,7 +73,7 @@ void SimpleTestObject::Render(HDC hdc)
 	{
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
+		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip,true,ScrollManager::GetInstance()->GetScale());
 	}
 }
 

@@ -171,6 +171,7 @@ void Stage1Scene::LoadBackground()
 		int Size;
 		float ScrollPer;
 		FPOINT Pos;
+		bool bTransparent;
 		ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 
@@ -178,6 +179,7 @@ void Stage1Scene::LoadBackground()
 		ReadFile(hFile, buffer, Size, &dwByte, NULL);
 		buffer[Size] = '\0';
 		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+		ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);		
 
 		string BackgroundName = buffer;
 
@@ -189,6 +191,7 @@ void Stage1Scene::LoadBackground()
 		Background* BackgroundObj = new Background();
 		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
 		BackgroundObj->SetPos(Pos);
+		BackgroundObj->GetImage()->SetTransparent(bTransparent);
 		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
 	}
 

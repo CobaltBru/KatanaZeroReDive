@@ -277,10 +277,19 @@ void ImGuiManager::Tile()
 				ImGui::DragFloat("ScrollPer", &ScrollPer);
 				BackgroundObject[Bg_current]->SetScrollPercent(ScrollPer);
 
+
 				if (ImGui::Button(u8"»èÁ¦"))
 				{
 					DestroyBackGround();
 					Bg_current = -1;
+				}
+				if (Bg_current != -1)
+				{
+					ImGui::SeparatorText(u8"Transparent");
+					static bool IsTransparent = false;
+					IsTransparent = BackgroundObject[Bg_current]->GetImage()->GetTransparent();
+					ImGui::Checkbox("IsTransparent", &IsTransparent);
+					BackgroundObject[Bg_current]->GetImage()->SetTransparent(IsTransparent);
 				}
 			}
 
@@ -510,10 +519,12 @@ void ImGuiManager::SaveBackGround()
 			int Size = str.length();
 			float ScrollPer = iter->GetScrollPercent();
 			FPOINT Pos = iter->GetPos();
+			bool bTransparent = iter->GetImage()->GetTransparent();
 			WriteFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 			WriteFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 			WriteFile(hFile, str.c_str(), Size, &dwByte, NULL);
 			WriteFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+			WriteFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);			
 		}
 
 		CloseHandle(hFile);
@@ -686,6 +697,7 @@ void ImGuiManager::LoadBackGround()
 			int Size;
 			float ScrollPer;
 			FPOINT Pos;
+			bool bTransparent;
 			ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 			ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 
@@ -693,6 +705,7 @@ void ImGuiManager::LoadBackGround()
 			ReadFile(hFile, buffer, Size, &dwByte, NULL);
 			buffer[Size] = '\0';
 			ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+			ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);		
 
 			string BackgroundName = buffer;
 
@@ -704,6 +717,7 @@ void ImGuiManager::LoadBackGround()
 			Background* BackgroundObj = new Background();
 			BackgroundObj->Init(BackgroundName, ScrollPer, scrollManager->GetScale());
 			BackgroundObj->SetPos(Pos);
+			BackgroundObj->GetImage()->SetTransparent(bTransparent);
 			objectManager->AddGameObject(EObjectType::GameObject, BackgroundObj);
 
 			char* Name = new char[BackgroundName.size() + 1];
