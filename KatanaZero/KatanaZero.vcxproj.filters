@@ -381,6 +381,12 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="GPImageManager.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="SnapShotManager2.cpp">
+      <Filter>2D Framework\SnapShot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -628,6 +634,12 @@
     </ClInclude>
     <ClInclude Include="TalkScene.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GPImageManager.h">
+      <Filter>2D Framework\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="SnapShotManager2.h">
+      <Filter>2D Framework\SnapShot</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

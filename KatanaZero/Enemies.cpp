@@ -8,6 +8,7 @@
 #include "RenderManager.h"
 #include "EnemyState.h"
 #include "ScrollManager.h"
+#include "GPImageManager.h"
 
 HRESULT Grunt::Init(FPOINT InPos)
 {
@@ -19,8 +20,8 @@ HRESULT Grunt::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 50.f;
-	detectRange = 50.f;
-	attackRange = 40.f;
+	detectRange = 400.f;
+	attackRange = 50.f;
 	attackDuration = 0.8f;
 	eType = EType::Grunt;
 	InitRigidBodySetting();
@@ -33,8 +34,8 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	eState = new EIDLE();
 	Pos = InPos;
 	Speed = 50.f;
-	detectRange = 50.f;
-	attackRange = 40.f;
+	detectRange = 400.f;
+	attackRange = 50.f;
 	attackDuration = 0.8f;
 	eType = EType::Grunt;
 
@@ -58,11 +59,16 @@ void Grunt::InitImages()
 	{
 		images[i] = new GPImage();
 	}
-	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/Grunt/Grunt_IDLE.png", 8, 1);
-	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/Grunt/Grunt_Walk.png", 10, 1);
-	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/Grunt/Grunt_Run.png", 10, 1);
-	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/Grunt/Grunt_Attack.png", 8, 1);
-	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/Grunt/Grunt_Dead.png", 16, 1);
+	GPImageManager::GetInstance()->AddImage("Grunt_IDLE", L"Image/Enemy/Grunt/Grunt_IDLE.png", 8, 1);
+	GPImageManager::GetInstance()->AddImage("Grunt_Walk", L"Image/Enemy/Grunt/Grunt_Walk.png", 10, 1);
+	GPImageManager::GetInstance()->AddImage("Grunt_Run", L"Image/Enemy/Grunt/Grunt_Run.png", 10, 1);
+	GPImageManager::GetInstance()->AddImage("Grunt_Attack", L"Image/Enemy/Grunt/Grunt_Attack.png", 8, 1);
+	GPImageManager::GetInstance()->AddImage("Grunt_Dead", L"Image/Enemy/Grunt/Grunt_Dead.png", 16, 1);
+	images[(int)EImageType::IDLE] = GPImageManager::GetInstance()->FindImage("Grunt_IDLE");
+	images[(int)EImageType::Walk] = GPImageManager::GetInstance()->FindImage("Grunt_Walk");
+	images[(int)EImageType::Run] = GPImageManager::GetInstance()->FindImage("Grunt_Run");
+	images[(int)EImageType::Attack] = GPImageManager::GetInstance()->FindImage("Grunt_Attack");
+	images[(int)EImageType::Dead] = GPImageManager::GetInstance()->FindImage("Grunt_Dead");
 	image = images[(int)EImageType::IDLE];
 }
 
@@ -76,8 +82,8 @@ HRESULT Pomp::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 70.f;
-	detectRange = 80.f;
-	attackRange = 40.f;
+	detectRange = 600.f;
+	attackRange = 60.f;
 	attackDuration = 0.5f;
 	eType = EType::Pomp;
 	InitRigidBodySetting();
@@ -90,8 +96,8 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 	eState = new EIDLE();
 	Pos = InPos;
 	Speed = 70.f;
-	detectRange = 80.f;
-	attackRange = 40.f;
+	detectRange = 600.f;
+	attackRange = 60.f;
 	attackDuration = 0.5f;
 	eType = EType::Pomp;
 
@@ -133,8 +139,8 @@ HRESULT Gangster::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 40.f;
-	detectRange = 200.f;
-	attackRange = 150.f;
+	detectRange = 500.f;
+	attackRange = 400.f;
 	attackDuration = 0.2f;
 	eType = EType::Gangster;
 	InitRigidBodySetting();
@@ -147,8 +153,8 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 	eState = new EIDLE();
 	Pos = InPos;
 	Speed = 40.f;
-	detectRange = 200.f;
-	attackRange = 150.f;
+	detectRange = 500.f;
+	attackRange = 400.f;
 	attackDuration = 0.2f;
 	eType = EType::Gangster;
 

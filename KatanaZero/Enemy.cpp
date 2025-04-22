@@ -6,6 +6,7 @@
 #include "SnapShotManager.h"
 #include "TaeKyungObject.h"
 #include "RenderManager.h"
+#include "ScrollManager.h"
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
@@ -102,7 +103,7 @@ void Enemy::Render(HDC hdc)
 	if (image)
 	{
 		Gdiplus::Graphics graphics(hdc);
-		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 1.f, 1.f);
+		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 	}
 }
 
@@ -172,11 +173,13 @@ bool Enemy::Detecting()
 {
 	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
 	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+	int myFloor = this->GetFloorIndex(g_FloorZones);
 	
 	float dx = playerPos.x - Pos.x;
 	float dist = fabs(dx);
 
-	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	if (playerFloor == myFloor && ((dx > 0 && dir == 1) || (dx < 0 && dir == -1)))
 	{
 		return dist < detectRange;
 	}
@@ -228,4 +231,10 @@ bool Enemy::IsInSameFloor()
 bool Enemy::IsOnDownLine()
 {
 	return GetRigidBody()->GetResult().LineType == ELineType::DownLine;
+}
+
+bool Enemy::IsHitted()
+{
+	if (ObjectCollider->IsHitted()) return true;
+	return false;
 }

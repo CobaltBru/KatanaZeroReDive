@@ -4,27 +4,26 @@
 struct PlayerSnapShot
 {
 	FPOINT pos;
-	//State EState; -> 현재 애니메이션 정보
 	int animFrame;
+	bool bFlip;
+	string animKey;
 };
 
 struct EnemySnapShot
 {
 	FPOINT pos;
-	//State EState;
 	int animFrame;
-	int ID;
+	bool bFlip;
 	bool isDead;
+	string animKey;
 };
 
 struct EffectSnapShot
 {
 	FPOINT pos;
-	//State EState;
 	int animFrame;
-	//float alpha;
-	//int ID;
 	bool isActive;
+	string effectKey;
 };
 
 struct ScrollSnapShot
@@ -38,4 +37,12 @@ struct SnapShot
 	vector<EnemySnapShot> enemies;
 	vector<EffectSnapShot> effects;
 	ScrollSnapShot scroll;
+};
+
+class ReplayEnemy
+{
+private:
+	GPImage* image;
+	EnemySnapShot eSnapShot;
+
 };

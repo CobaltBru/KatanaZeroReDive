@@ -147,8 +147,9 @@ class ERunOnSlope : public EnemyState
 private:
 	FPOINT slopeEntry;
 	FPOINT slopeExit;
+	int targetFloor;
 public:
-	ERunOnSlope(const FPOINT& entry, const FPOINT& exit);
+	ERunOnSlope(const FPOINT& entry, const FPOINT& exit, int targetFloor);
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
 	virtual void Exit(Enemy& enemy) override;

@@ -72,4 +72,5 @@ public:
 	virtual bool IsInMeleeAttackRange();
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
+	bool IsHitted();
 };

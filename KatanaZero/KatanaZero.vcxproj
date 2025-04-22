@@ -147,6 +147,7 @@
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="FlipState.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
+    <ClCompile Include="GPImageManager.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
     <ClCompile Include="IdleState.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="SimpleObject.cpp" />
     <ClCompile Include="SimpleTestObject.cpp" />
     <ClCompile Include="SnapShotManager.cpp" />
+    <ClCompile Include="SnapShotManager2.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
@@ -224,6 +226,7 @@
     <ClInclude Include="FallState.h" />
     <ClInclude Include="FlipState.h" />
     <ClInclude Include="GoPopUp.h" />
+    <ClInclude Include="GPImageManager.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />
     <ClInclude Include="Factory.h" />
@@ -278,6 +281,7 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SnapShot.h" />
     <ClInclude Include="SnapShotManager.h" />
+    <ClInclude Include="SnapShotManager2.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="Stage1Scene.h" />

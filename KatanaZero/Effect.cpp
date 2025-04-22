@@ -115,9 +115,10 @@ void Effect::Render(HDC hdc)
 		Gdiplus::Graphics graphics(hdc);
 		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
 		
-		fxImage->Middle_RenderFrameAngle(&graphics, { pos.x + scroll.x, pos.y + scroll.y }, currFrameX, angle, bFlip, alpha);
+		fxImage->Middle_RenderAll(&graphics, { pos.x + scroll.x, pos.y + scroll.y }, currFrameX, angle, bFlip, alpha, 1.f, 1.f, 1.f,
+			ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 
-		fxImage->SourRender(&graphics, { pos.x + scroll.x, pos.y + 100.0f + scroll.y }, offset, 0, bFlip, alpha, 0.01f, 0.01f, 0.01f, 1.5f, 1.5f, 0.5f);
+		//fxImage->SourRender(&graphics, { pos.x + scroll.x, pos.y + 100.0f + scroll.y }, offset, 0, bFlip, alpha, 0.01f, 0.01f, 0.01f, 1.5f, 1.5f, 0.5f);
 	}
 }
 

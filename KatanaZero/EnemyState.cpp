@@ -8,6 +8,7 @@
 #include "LineManager.h"
 #include "CommonFunction.h"
 #include "EffectManager.h"
+#include "ScrollManager.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -35,6 +36,10 @@ EnemyState* EIDLE::CheckTransition(Enemy* enemy)
 	if (idletimer > idleCooldown)
 	{
 		return new EWalk();
+	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
 	}
 	return nullptr;
 }
@@ -74,6 +79,10 @@ EnemyState* EWalk::CheckTransition(Enemy* enemy)
 	{
 		return new EIDLE();
 	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
+	}
 	return nullptr;
 }
 
@@ -104,7 +113,7 @@ void ERun::Update(Enemy& enemy)
 
 void ERun::Exit(Enemy& enemy)
 {
-	enemy.GetRigidBody()->SetMaxVelocity({ enemy.GetSpeed(), 400.f });
+	
 }
 
 EnemyState* ERun::CheckTransition(Enemy* enemy)
@@ -136,6 +145,10 @@ EnemyState* ERun::CheckTransition(Enemy* enemy)
 			return new ShieldCopAttack();
 			break;
 		}
+	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
 	}
 	return nullptr;
 }
@@ -174,7 +187,7 @@ void EDead::Enter(Enemy& enemy)
 
 void EDead::Update(Enemy& enemy)
 {
-	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame())
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
 	{
 		enemy.SetDead(true);
 	}
@@ -215,6 +228,10 @@ EnemyState* GruntAttack::CheckTransition(Enemy* enemy)
 	{
 		return new ERun();
 	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
+	}
 	return nullptr;
 }
 
@@ -238,9 +255,16 @@ void PompAttack::Exit(Enemy& enemy)
 
 EnemyState* PompAttack::CheckTransition(Enemy* enemy)
 {
-	if (enemy->GetCollider()->IsHitted() && enemy->GetCurrFrame() >= 2 && enemy->GetCurrFrame() <= 4)
+	if (enemy->IsHitted())
 	{
-		return new PompGroggy();
+		if(enemy->GetCurrFrame() >= 3 && enemy->GetCurrFrame() <= 4)
+		{
+			return new PompGroggy();
+		}
+		else
+		{
+			return new EDead();
+		}
 	}
 	if (isAttackFinish && enemy->GetCurrFrame() == enemy->GetMaxAttackFrame() - 1)
 	{
@@ -262,8 +286,8 @@ void GangsterAttack::Update(Enemy& enemy)
 {
 	if (enemy.GetCurrFrame() == 1)
 	{
-		float offset = (enemy.GetDir() == 1) ? 23.f : -23.f;
-		EffectManager::GetInstance()->Activefx("gangstergun", { enemy.GetPos().x + offset, enemy.GetPos().y - 2.f }, 0.f, false);
+		float offset = (enemy.GetDir() == 1) ? 28.f : -28.f;
+		EffectManager::GetInstance()->Activefx("gangstergun", { enemy.GetPos().x + offset * ScrollManager::GetInstance()->GetScale(), enemy.GetPos().y - 1.f * ScrollManager::GetInstance()->GetScale() }, 0.f, false);
 	}
 	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
 	{
@@ -281,6 +305,10 @@ EnemyState* GangsterAttack::CheckTransition(Enemy* enemy)
 	if (isAttackFinish && enemy->GetCurrFrame() == enemy->GetMaxAttackFrame() - 1)
 	{
 		return new ERun();
+	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
 	}
 	return nullptr;
 }
@@ -344,14 +372,15 @@ EnemyState* EFindSlope::CheckTransition(Enemy* enemy)
 
 	if (dist < 3.f)
 	{
-		return new ERunOnSlope(slopeEntry, slopeExit);
+		int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+		return new ERunOnSlope(slopeEntry, slopeExit, playerFloor);
 	}
 
 	return nullptr;
 }
 
-ERunOnSlope::ERunOnSlope(const FPOINT& entry, const FPOINT& exit)
-	: slopeEntry(entry), slopeExit(exit)
+ERunOnSlope::ERunOnSlope(const FPOINT& entry, const FPOINT& exit, int targetFloor)
+	: slopeEntry(entry), slopeExit(exit), targetFloor(targetFloor)
 {
 }
 
@@ -388,17 +417,11 @@ void ERunOnSlope::Exit(Enemy& enemy)
 
 EnemyState* ERunOnSlope::CheckTransition(Enemy* enemy)
 {
-	/*FLineResult result = enemy->GetRigidBody()->GetResult();
-	if (result.LineType == ELineType::Normal)
+	int currPlayerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+	if (currPlayerFloor != targetFloor)
 	{
 		return new ERun();
-	}*/
-	/*auto player = SnapShotManager::GetInstance()->GetPlayer().front();
-	if (player == nullptr) return nullptr;
-	if (enemy->GetFloorIndex() == player->GetFloorIndex())
-	{
-		return new ERun();
-	}*/
+	}
 	float dist = fabs(slopeExit.x - enemy->GetPos().x);
 	if (dist < 3.f)
 	{
