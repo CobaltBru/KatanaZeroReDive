@@ -1,7 +1,7 @@
 #include "ScrollManager.h"
 
 ScrollManager::ScrollManager()
-	:bFocus(false), Speed(0.f), Intensity(0.f), CurrentTime(0.f), ShakeSeconds(0.f)
+	:bFocus(false), Speed(0.f), Intensity(0.f), CurrentTime(0.f), ShakeSeconds(0.f), Scale(1.f)
 {
 	ZeroMemory(&Scroll, sizeof(FPOINT));
 	ZeroMemory(&ScrollOffset, sizeof(FPOINT));
@@ -11,6 +11,7 @@ ScrollManager::ScrollManager()
 void ScrollManager::Init()
 {
 	Speed = 300.f;
+	ScaleUpdate();
 }
 
 void ScrollManager::Update()
@@ -57,4 +58,17 @@ void ScrollManager::Update()
 void ScrollManager::Release()
 {
 	ReleaseInstance();
+}
+
+void ScrollManager::ScaleUpdate()
+{
+	const int BASE_WIDTH = 640;
+	const int BASE_HEIGHT = 360;
+
+	RECT clientRect;
+	GetClientRect(g_hWnd, &clientRect);
+
+	float ScaleX = (float)clientRect.right / BASE_WIDTH;
+	float ScaleY = (float)clientRect.bottom / BASE_HEIGHT;
+	Scale = min(ScaleX, ScaleY);
 }

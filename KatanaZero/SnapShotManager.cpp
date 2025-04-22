@@ -14,6 +14,10 @@ void SnapShotManager::Init()
 
 void SnapShotManager::Release()
 {
+	for (int i = 0; i < (int)EObjectClassType::End; ++i)
+	{
+		GameObjectList[i].clear();
+	}
 	ReleaseInstance();
 }
 

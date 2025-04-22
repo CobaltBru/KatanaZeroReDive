@@ -60,9 +60,6 @@ HRESULT Player::Init()
 	//playerAnim->Init();
 		
 	bWall = false;
-	
-	// bind input action to EState function
-	InitBindState();
 
 	return S_OK;
 }
@@ -98,6 +95,11 @@ void Player::Release()
 		delete states;
 		states = nullptr;
 	}
+	if (info)
+	{
+		delete info;
+		info = nullptr;
+	}
 }
 
 void Player::Update()
@@ -132,9 +134,9 @@ void Player::Render(HDC hdc)
 	if (image != nullptr)
 	{		
 		if (dir == EDirection::Left)		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true);	
+			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
 		else		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);		
+			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
 		// update frame index
 		if (frameTimer > switchTime)
@@ -245,6 +247,14 @@ void Player::UpdateRigidBody()
 	const FLineResult lineResult = ObjectRigidBody->GetResult();
 	if (lineResult.LineType == ELineType::Wall)
 	{
+		if (ObjectRigidBody->IsGround() == false) 
+			image = ImageManager::GetInstance()->FindImage("zerowallslide");
+		else
+		{
+			image = ImageManager::GetInstance()->FindImage("zeroidle");
+			state = states->Idle;
+		}
+
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
 		bWall = true;
 		bIsLeft = lineResult.IsLeft;

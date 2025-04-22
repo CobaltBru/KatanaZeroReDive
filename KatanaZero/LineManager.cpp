@@ -26,27 +26,27 @@ void LineManager::Update()
 			DestroyLine();
 	}*/
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown('1'))
-		CurrentEditState = ELineEditState::Create;
-	// 보정
-	else if (KeyManager::GetInstance()->IsOnceKeyDown('2'))
-		CurrentEditState = ELineEditState::Adjust;
-	else if (KeyManager::GetInstance()->IsOnceKeyDown('3'))
-	{
-		CurrentEditState = ELineEditState::Eraser;
-		ResetLinePoint();
-	}
+	//if (KeyManager::GetInstance()->IsOnceKeyDown('1'))
+	//	CurrentEditState = ELineEditState::Create;
+	//// 보정
+	//else if (KeyManager::GetInstance()->IsOnceKeyDown('2'))
+	//	CurrentEditState = ELineEditState::Adjust;
+	//else if (KeyManager::GetInstance()->IsOnceKeyDown('3'))
+	//{
+	//	CurrentEditState = ELineEditState::Eraser;
+	//	ResetLinePoint();
+	//}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
 		ResetLinePoint();
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
-		SetLineType(ELineType::Normal);
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
-		SetLineType(ELineType::Wall);
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD3))
-		SetLineType(ELineType::DownLine);
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
-		SetLineType(ELineType::Ceiling);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
+	//	SetLineType(ELineType::Normal);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
+	//	SetLineType(ELineType::Wall);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD3))
+	//	SetLineType(ELineType::DownLine);
+	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD4))
+	//	SetLineType(ELineType::Ceiling);
 	////저장
 	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F11))
 	//	SaveFile();
@@ -563,20 +563,17 @@ HRESULT LineManager::SaveFile(LPCWSTR InSavePath)
 
 HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 {
-	for (int i = 0; i < (int)ELineType::End; ++i)
-	{
-		for (auto& iter : LineList[i])
-			delete iter;
-
-		LineList[i].clear();
-	}
+	DestroyAllLine();
+	
 	//LPCWSTR
 	HANDLE hFile = CreateFile(
 		InLoadPath, GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(g_hWnd, L"LineManager SaveFile Failed.", TEXT("경고"), MB_OK);
+		CloseHandle(hFile);
+		DWORD error = GetLastError();
+		MessageBox(g_hWnd, L"LineManager LoadFile Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -717,6 +714,37 @@ void LineManager::AdjustLine(float InX, float InY)
 	}
 
 	CreateLine(InX, InY);
+}
+
+pair<FPOINT, FPOINT> LineManager::FindNearestSlope(const FPOINT& targetPos, int fromFloor, int toFloor) const
+{
+	FPOINT nearestEntry = { 0.f, 0.f };
+	FPOINT nearestExit = { 0.f, 0.f };
+	float nearestDist = FLT_MAX;
+
+	for (auto* line : LineList[(int)ELineType::Normal])
+	{
+		if (!line->IsDiagonalLine()) continue;
+
+		const auto& Lpos = line->GetLine().LeftPoint;
+		const auto& Rpos = line->GetLine().RightPoint;
+		int floorL = line->GetFloorIndex(Lpos);
+		int floorR = line->GetFloorIndex(Rpos);
+		bool matches =
+			(floorL == fromFloor && floorR == toFloor) ||
+			(floorR == fromFloor && floorL == toFloor);
+		if (!matches) continue;
+		FPOINT entry = (floorL == fromFloor) ? Lpos : Rpos;
+		FPOINT exit = (floorL == fromFloor) ? Rpos : Lpos;
+		float dx = fabs(entry.x - targetPos.x);
+		if (dx < nearestDist)
+		{
+			nearestDist = dx;
+			nearestEntry = entry;
+			nearestExit = exit;
+		}
+	}
+	return make_pair(nearestEntry, nearestExit);
 }
 
 void LineManager::Render(HDC hdc)

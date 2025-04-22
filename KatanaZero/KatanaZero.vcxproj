@@ -141,6 +141,9 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyState.cpp" />
+    <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="FlipState.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
@@ -215,6 +218,9 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="Enemies.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="FlipState.h" />
     <ClInclude Include="GoPopUp.h" />

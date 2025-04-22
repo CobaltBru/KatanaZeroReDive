@@ -31,6 +31,12 @@ protected:
 
 private:
 	void TestCode();
+
+
+
+	void InitBackgroundImage();
+	void LoadBackground();
+	void LoadObject();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;

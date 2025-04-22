@@ -16,12 +16,13 @@ SimpleObject::SimpleObject()
 }
 
 // 테스트 코드 
-HRESULT SimpleObject::Init(FPOINT InPos)
+HRESULT SimpleObject::Init(FPOINT InPos, string InImageName)
 {
-	Image = ImageManager::GetInstance()->FindImage("rocket");
+	Image = ImageManager::GetInstance()->FindImage(InImageName);
 	Pos = InPos;
 	//콜라이더 추가
-	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
+		(float)Image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() }, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
 	ObjectCollider->SetPos(Pos);
@@ -58,7 +59,7 @@ void SimpleObject::Render(HDC hdc)
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		scroll = Scroll;
-		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0);
+		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0,false,true, ScrollManager::GetInstance()->GetScale());
 	}
 }
 
@@ -75,7 +76,7 @@ void SimpleObject::Collision()
 		ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
 		HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
 
-		HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
+		HitResult.HitCollision->GetOwner();  // 상대방 객체 접근adaad
 
 		FPOINT pos;
 		pos.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
@@ -83,7 +84,7 @@ void SimpleObject::Collision()
 		Normalize(pos);
 
 		// 상대방의 리지드바디에 힘을 전달
-		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
+		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
 	}
 }
 

@@ -1,18 +1,6 @@
-ï»¿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="í—¤ë” íŒŒì¼">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="ë¦¬ì†ŒìŠ¤ íŒŒì¼">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="MainGame">
       <UniqueIdentifier>{cb6807f4-0fdf-47de-b7e8-4546acbe35ae}</UniqueIdentifier>
     </Filter>
@@ -109,8 +97,26 @@
     <Filter Include="2D Framework\Physics">
       <UniqueIdentifier>{a0d7a5c1-f88b-4dd7-8b76-6bf501ba20ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy\EnemyState">
+      <UniqueIdentifier>{4b104575-95f5-4064-a259-f53881f94b3c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="?—¤?” ?ŒŒ?¼">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="?†Œ?Š¤ ?ŒŒ?¼">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ë¦¬ì†Œ?Š¤ ?ŒŒ?¼">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Enemies">
+      <UniqueIdentifier>{debbe255-3626-40ac-9dbb-63151611002d}</UniqueIdentifier>
     </Filter>
     <Filter Include="2D Framework\Observer">
       <UniqueIdentifier>{94692896-9f66-46b8-a9af-6971bfbcf511}</UniqueIdentifier>
@@ -130,7 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>2D Framework\Timer</Filter>
@@ -279,8 +285,23 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>2D Framework\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>¼Ò½º ÆÄÀÏ</Filter>
+    </ClCompile>
     <ClCompile Include="SimpleTestObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>MainGame\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>MainGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>MainGame\Enemy\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>2D Framework\UI</Filter>
@@ -304,7 +325,7 @@
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="DefaultObject.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
@@ -319,7 +340,7 @@
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="IdleState.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
@@ -354,10 +375,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="CommonFunction.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="MainGame.h">
       <Filter>MainGame</Filter>
@@ -527,6 +548,15 @@
     <ClInclude Include="SimpleTestObject.h">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>MainGame\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>MainGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemies.h">
+      <Filter>MainGame\Enemy\Enemies</Filter>
+    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
@@ -549,7 +579,7 @@
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="DefaultObject.h">
       <Filter>MainGame\TaeKyung\Default</Filter>
@@ -558,10 +588,7 @@
       <Filter>MainGame\Scene\Stage\Test</Filter>
     </ClInclude>
     <ClInclude Include="PlayerAnim.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
@@ -586,9 +613,6 @@
     </ClInclude>
     <ClInclude Include="WallSlideState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="TalkScene.h">
-      <Filter>MainGame\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

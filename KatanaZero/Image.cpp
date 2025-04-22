@@ -150,13 +150,13 @@ HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transC
     return S_OK;   // S_OK, E_FAIL
 }
 
-void Image::Render(HDC hdc, int destX, int destY)
+void Image::Render(HDC hdc, int destX, int destY, float Scale)
 {
     if (isTransparent)
     {
         GdiTransparentBlt(hdc,
             destX, destY,
-            imageInfo->width, imageInfo->height,
+            imageInfo->width * Scale, imageInfo->height * Scale,
             imageInfo->hMemDC,
             0, 0,
             imageInfo->width, imageInfo->height,
@@ -167,8 +167,8 @@ void Image::Render(HDC hdc, int destX, int destY)
         BitBlt(
             hdc,                // 복사 목적지 DC
             destX, destY,       // 복사 목적지 위치
-            imageInfo->width,   // 원본에서 복사될 가로크기
-            imageInfo->height,  // 원본에서 복사될 세로크기
+            imageInfo->width * Scale,   // 원본에서 복사될 가로크기
+            imageInfo->height * Scale,  // 원본에서 복사될 세로크기
             imageInfo->hMemDC,  // 원본 DC
             0, 0,               // 원본 복사 시작 위치
             SRCCOPY             // 복사 옵션
@@ -227,14 +227,14 @@ void Image::Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip)
 }
 
 void Image::FrameRender(HDC hdc, int destX, int destY, 
-    int frameX, int frameY, bool isFlip, bool isCenter)
+    int frameX, int frameY, bool isFlip, bool isCenter, float Scale)
 {
-    int x = destX;
-	int y = destY;
+    int x = destX * Scale;
+	int y = destY * Scale;
 	if (isCenter)
 	{
-        x = destX - (imageInfo->frameWidth / 2);
-        y = destY - (imageInfo->frameHeight / 2);
+        x = destX - ((imageInfo->frameWidth * Scale) / 2);
+        y = destY - ((imageInfo->frameHeight * Scale) / 2);
 	}
 
     imageInfo->currFrameX = frameX;
@@ -253,8 +253,7 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
 
         GdiTransparentBlt(hdc,
             x, y,
-            imageInfo->frameWidth, imageInfo->frameHeight,
-
+            imageInfo->frameWidth * Scale, imageInfo->frameHeight * Scale,
             imageInfo->hTempDC,
             0, 0,
             imageInfo->frameWidth, imageInfo->frameHeight,
@@ -264,8 +263,7 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
     {
         GdiTransparentBlt(hdc,
             x, y,
-            imageInfo->frameWidth, imageInfo->frameHeight,
-
+            imageInfo->frameWidth * Scale, imageInfo->frameHeight * Scale,
             imageInfo->hMemDC,
             imageInfo->frameWidth * imageInfo->currFrameX,
             imageInfo->frameHeight * imageInfo->currFrameY,
@@ -277,8 +275,8 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
         BitBlt(
             hdc,
             x, y,
-            imageInfo->frameWidth,
-            imageInfo->frameHeight,
+            imageInfo->frameWidth * Scale,
+            imageInfo->frameHeight * Scale,
             imageInfo->hMemDC,
             imageInfo->frameWidth * imageInfo->currFrameX, 
             imageInfo->frameHeight * imageInfo->currFrameY,

@@ -196,3 +196,25 @@ inline float SoftStartEnd(float t)
 		? 2 * t * t
 		: 1 - 2 * (1 - t) * (1 - t);
 }
+
+inline vector<string> GetFileNames(const string& InFolderPath)
+{
+	vector<string> files;
+
+	WIN32_FIND_DATAA findData;
+	HANDLE hFind = FindFirstFileA(InFolderPath.c_str(), &findData);
+
+	if (hFind == INVALID_HANDLE_VALUE)
+		return files;
+
+	do
+	{
+		if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			files.push_back(findData.cFileName);
+
+	} while (FindNextFileA(hFind, &findData));
+
+	FindClose(hFind);
+
+	return files;
+}

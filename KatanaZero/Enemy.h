@@ -1,44 +1,71 @@
 #pragma once
 #include "GameObject.h"
+#include "config.h"
+#include "EnemyState.h"
 
-class Missile;
-class Tank;
-class Image;
-class MissileManager;
-class Enemy : public GameObject	// is-a
+enum class EType
 {
-private:
-	FPOINT pos;
-	float moveSpeed;		// 5.0f (초당 이동속도) 물리에서의 속도 : 거리와 시간
-	float angle;
-	bool isAlive;
-	int size;
-	Tank* target;
-	std::unique_ptr<Tank> target2;
-	Image* image;
-	int animationFrame;
-	int elapsedFrame;
-	float elapsedTime;
-	MissileManager* missileManager;
-	Missile* missile;
-
-public:
-	void Init(float posX = 0.0f, float posY = 0.0f);		
-	void Release();		
-	void Update();		
-	void Render(HDC hdc);
-
-	void Move();
-
-	inline void SetIsAlive(bool isAlive) { this->isAlive = isAlive; }
-	inline bool GetIsAlive() { return isAlive;
-	}
-	inline void SetTarget(Tank* target) { this->target = target; }
-	inline FPOINT GetPos() { return pos; }
-	inline int GetSize() { return size; }
-
-	Enemy();
-	~Enemy();
-
+	Grunt,
+	Pomp,
+	Gangster,
+	SheildCop,
+	None
 };
 
+class GPImage;
+class Enemy : public GameObject
+{
+protected:
+	EnemyState* eState;				// 상태패턴용 클래스, delete 했고
+	GPImage* image;					// GDI+ 이미지, delete 했고
+	vector<GPImage*> images;		// 한 캐릭터에 필요한 모든 이미지, 등록해놓고 불러오기 용, delete 했고
+	float Speed;					// 이동속도
+	int currFrame;					// 애니메이션
+	float frameTimer;				// 애니메이션 업데이트타임
+	bool bFlip;						// 뒤집기
+	int dir;
+	float detectRange;
+	float attackRange;
+	EType eType;
+	int targetFloor;
+	bool bReachedTargetFloor;
+
+	// Jump
+	float Gravity;
+	float dY;
+	bool bJump;
+	bool bFalling;
+	bool bDown;
+	bool bDead{ false };
+	
+public:
+	Enemy();
+	virtual ~Enemy();
+	virtual HRESULT Init(FPOINT InPos);
+	virtual void InitImages();
+	virtual void InitRigidBodySetting();
+	virtual void Release();
+	virtual void Update();
+	virtual void Render(HDC hdc);
+	virtual void MakeSnapShot(void* out);
+	EnemyState* GetState() const { return eState; }
+	int GetMaxAttackFrame() const;
+	int GetCurrFrame() const { return currFrame; }
+	EType GetEnemyType() const { return eType; }
+	int GetDir() const { return dir; }
+	void SetDir(int InDir) { dir = InDir; }
+	float GetSpeed() const { return Speed; }
+	GPImage* GetImage() const { return image; }
+	void SetTargetFloor(int floor) { targetFloor = floor; }
+	int GetTargetFloor() const { return targetFloor; }
+	void SetReachedTargetFloor(bool value) { bReachedTargetFloor = value; }
+	bool HasReachedTargetFloor() const { return bReachedTargetFloor; }
+
+	void UpdateAnimation();
+	void ChangeState(EnemyState* newState);
+	void ChangeAnimation(EImageType newImage);
+	virtual bool Detecting();
+	virtual bool IsInAttackRange();
+	virtual bool IsInSameFloor();
+	virtual bool IsOnDownLine();
+};

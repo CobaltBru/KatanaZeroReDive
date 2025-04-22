@@ -1,6 +1,6 @@
 #include "IdleState.h"
 #include "Player.h" 
-
+#include "RigidBody.h"
 
 
 PlayerState* IdleState::GetInput(Player* player)
@@ -19,6 +19,11 @@ PlayerState* IdleState::GetInput(Player* player)
     }
     if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
         return player->GetStates()->Jump;
+    if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
+    {
+        player->GetRigidBody()->SetDown(true);
+        return player->GetStates()->Fall;
+    }
 
     return nullptr;
 }

@@ -25,7 +25,7 @@
 #include "EffectManager.h"
 
 #include "Player.h"
-
+#include "DefaultObject.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -58,32 +58,24 @@ HRESULT Stage1Scene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
+
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-
 
 	if (FAILED(InitImage()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-	
-	Background* background = new Background();
-	background->Init("TestBg");
-	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	Player* player = new Player();
-	player->Init();
-	ObjectManager->AddGameObject(EObjectType::GameObject, player);
-
-	/*if (FAILED(InitObject()))
+	if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
-	}*/
+	}
 	if (FAILED(InitEffects()))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
@@ -98,63 +90,21 @@ HRESULT Stage1Scene::Init()
 HRESULT Stage1Scene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
-	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
 
-	//zero
-	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 440, 32, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroruntoidle", L"Image/zero_run_to_idle.bmp", 270, 38, 5, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerowallgrab", L"Image/zero_wallgrab.bmp", 48, 38, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroidletowalk", L"Image/zero_idle_to_walk.bmp", 180, 38, 4, 1, true, RGB(255, 255, 255));
+	InitBackgroundImage();
+
 	return S_OK;
 }
 
 HRESULT Stage1Scene::InitObject()
 {
-	// 씬 초기에 필요한 오브젝트 생성
+	Background* background = new Background();
+	background->Init("black",0.f);
+	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	/**/
-	// 테스트 코드 태경
-	{
-		Background* background = new Background();
-		background->Init("TestBg");
-		ObjectManager->AddGameObject(EObjectType::GameObject, background);
-
-		//Player* player = new Player();
-		//player->Init();
-		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
-
-		/*TaeKyungObject* taekyung = new TaeKyungObject();
-		taekyung->Init({ 500.f,550.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
-
-		TestObject* testObject = new TestObject();
-		testObject->Init("rocket", { 1000.f,300.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
-		
-		{
-		HeadHunter* headhunter = new HeadHunter();
-		headhunter->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
-
-		//해영 테스트
-		{
-			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
-		}
-	
-	}
-	
+	LoadBackground();
 	return S_OK;
 }
 
@@ -178,34 +128,81 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");	
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
+}
+
+void Stage1Scene::InitBackgroundImage()
+{
+	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
+
+	if (backgrounds.empty())
+		return;
+
+	for (int i = 0; i < backgrounds.size(); ++i)
 	{
-		// 인자 : 쉐이크 강도, 지속시간
-		ScrollManager->CameraShake(5.f, 1.f);
+		int dotPos = backgrounds[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? backgrounds[i].substr(0, dotPos) : backgrounds[i];
+
+		wstring wsPath = L"Image/Background/";
+		wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
 	}
+}
+
+void Stage1Scene::LoadBackground()
+{
+	HANDLE hFile = CreateFile(
+		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("경고"), MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	while (true)
+	{
+		int Size;
+		float ScrollPer;
+		FPOINT Pos;
+		ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
+		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
+
+		char* buffer = new char[Size + 1];
+		ReadFile(hFile, buffer, Size, &dwByte, NULL);
+		buffer[Size] = '\0';
+		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+
+		string BackgroundName = buffer;
+
+		delete[] buffer;
+
+		if (dwByte == 0)
+			break;
+
+		Background* BackgroundObj = new Background();
+		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
+		BackgroundObj->SetPos(Pos);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+	}
+
+	CloseHandle(hFile);
+}
+
+void Stage1Scene::LoadObject()
+{
+
 }
 
 void Stage1Scene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
-	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
 	fxManager->Update();
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
-	{
-		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
-	}
-
-	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
-	{
-		snapShotManager->StartReplay(); // 리플레이
-	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
-	
 	ScrollManager->Update();
 
 	TestCode();

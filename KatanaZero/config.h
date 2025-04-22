@@ -145,6 +145,19 @@ struct FLineResult
 	bool IsLeft;
 };
 
+struct FloorZone
+{
+	float TopY;
+	float BottomY;
+
+	bool Contains(float y)
+	{
+		return (y > TopY && y <= BottomY);
+	}
+};
+
+
+
 //왼쪽인지 오른쪽인지, Pos, ColliderOffset, ColliderSize, ClassName, 이미지이름
 struct FObjectData
 {
@@ -179,3 +192,6 @@ extern IDXGISwapChain* g_pSwapChain;
 extern bool                     g_SwapChainOccluded;
 extern UINT                     g_ResizeWidth, g_ResizeHeight;
 extern ID3D11RenderTargetView* g_mainRenderTargetView;
+
+// 층 구조
+extern vector<FloorZone> FloorZones;

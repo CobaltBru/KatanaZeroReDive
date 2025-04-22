@@ -18,6 +18,7 @@ public:
 	virtual void MakeSnapShot(void* out);
 
 	FPOINT GetPos() const { return Pos; }
+	FPOINT* GetPPos() { return &Pos; }
 	FPOINT GetSpawnPos() { return spawnPos; }
 	bool IsDead() const { return bDead; }
 
@@ -25,13 +26,13 @@ public:
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
 	void SetDead(bool InDead) { bDead = InDead; }
 
+	int GetFloorIndex() const;
+
 protected:
 	FPOINT Pos;
 
 	FPOINT spawnPos;
 	bool bDead;
-
-	
 
 	//테스트코드 태경
 public:

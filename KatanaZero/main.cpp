@@ -35,6 +35,12 @@ uniform_int_distribution<int> uid;
 //// DirectX
 // Forward declarations of helper functions
 
+vector<FloorZone> FloorZones = {
+	{ 0.f, 260.f },
+	{ 260.f, 340.f },
+	{ 340.f, 425.f },
+};
+
 // Init
 
 RECT GetRect(int left, int top, int width, int height);
@@ -65,7 +71,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// 누수 난 메모리 블럭 추적
 	//_CrtSetBreakAlloc(9101443);
 #endif
-	
+	SetProcessDPIAware();
 	g_hInstance = hInstance;
 
 	WNDCLASSEX wndClass;

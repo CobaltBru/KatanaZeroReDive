@@ -13,6 +13,7 @@ public:
 
 	FPOINT GetScroll() const { return Scroll; }
 	FPOINT GetScrollOffset() const { return ScrollOffset; }
+	float GetScale() const { return Scale; }
 
 	void SetScroll(FPOINT InScroll) {
 		ScrollOffset.x += InScroll.x;
@@ -41,6 +42,8 @@ public:
 
 	void SetFocus(bool InbFocus) { bFocus = InbFocus; }
 	bool IsFocus() const { return bFocus; }
+
+	void ScaleUpdate();
 private:
 	FPOINT Scroll;
 	FPOINT ScrollOffset;
@@ -51,5 +54,7 @@ private:
 	float Intensity;
 	float CurrentTime;
 	float ShakeSeconds;
+
+	float Scale;
 };
 

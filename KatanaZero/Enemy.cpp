@@ -1,119 +1,211 @@
 #include "Enemy.h"
-#include "CommonFunction.h"
-#include "Tank.h"
-#include "Image.h"
-#include "MissileManager.h"
-#include "Missile.h"
-
-/*
-	STL (Standard Template Library) : Vector
-	동적배열을 제공하는 표준 템플릿 라이브러리 컨테이너
-	배열과 흡사하지만 크기가 자동으로 조절된다.
-
-	장점 : 임의접근 : 인덱스를 사용해서 O(1) 시간복잡도로 
-	원소에 접근이 가능하다.
-
-	단점 : 배열과 같다. 중간에 원소를 삽입, 삭제 할 때 비용이 
-	시간복잡도 O(n) 가 많이 든다.
-*/
-
-void Enemy::Init(float posX, float posY)
-{
-	pos = { posX, posY };
-	moveSpeed = 5.0f;		// 초당 5픽셀
-	angle = -90.0f;
-	isAlive = true;
-	size = 30;
-	animationFrame = 0;
-	elapsedFrame = 0;
-	elapsedTime = 0.0f;
-
-	image = ImageManager::GetInstance()->AddImage(
-		"Normal_Enemy", TEXT("Image/ufo.bmp"), 530, 32, 10, 1,
-		true, RGB(255, 0, 255));
-
-	//image = new Image();
-	//image->Init(TEXT("Image/ufo.bmp"), 530, 32, 10, 1,
-	//	true, RGB(255, 0, 255));
-
-	missileManager = new MissileManager();
-	missileManager->Init();
-
-	missile = new Missile();
-	missile->Init();
-	missile->SetPos(pos);
-	missile->SetAngle(-135);
-	missile->SetIsActived(true);
-}
-
-void Enemy::Release()
-{
-	if (missile)
-	{
-		missile->Release();
-		delete missile;
-		missile = nullptr;
-	}
-
-	if (missileManager)
-	{
-		missileManager->Release();
-		delete missileManager;
-		missileManager = nullptr;
-	}
-}
-
-void Enemy::Update()
-{
-	if (isAlive)
-	{
-		Move();
-		//elapsedFrame++;
-
-		elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
-		if (elapsedTime > 0.1f)
-		{
-			animationFrame++;
-			if (animationFrame >= image->GetMaxFrameX())
-			{
-				animationFrame = 0;
-			}
-			elapsedTime = 0.0f;
-		}
-	}
-
-	if (missile)
-		missile->Update();
-
-}
-
-void Enemy::Render(HDC hdc)
-{
-	if (isAlive)
-	{
-		image->FrameRender(hdc, pos.x, pos.y, animationFrame, 0);
-		//RenderRectAtCenter(hdc, pos.x, pos.y, size, size);
-	}
-
-	if (missile)
-		missile->Render(hdc);
-}
-
-void Enemy::Move()
-{
-	if (target)
-	{
-		angle = GetAngle(pos, target->GetPos());
-
-		pos.x += cosf(angle) * moveSpeed;
-		pos.y -= sinf(angle) * moveSpeed;
-	}
-}
+#include "GPImage.h"
+#include "RigidBody.h"
+#include "Collider.h"
+#include "CollisionManager.h"
+#include "SnapShotManager.h"
+#include "TaeKyungObject.h"
+#include "RenderManager.h"
 
 Enemy::Enemy()
+	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
+	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
+	bReachedTargetFloor(false)
 {
 }
 
 Enemy::~Enemy()
 {
+}
+
+HRESULT Enemy::Init(FPOINT InPos)
+{
+	return E_NOTIMPL;
+}
+
+void Enemy::InitImages()
+{
+}
+
+void Enemy::InitRigidBodySetting()
+{
+	if (ObjectRigidBody == nullptr)
+		return;
+
+	// 탄성 적용안함  0 ~ 1 사이
+	ObjectRigidBody->SetElasticity(0.3f);
+
+	// 중력 적용
+	ObjectRigidBody->SetGravityVisible(true);
+	// 저항 
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
+	//무게
+	ObjectRigidBody->SetMass(1.f);
+	//최대 속도
+	ObjectRigidBody->SetMaxVelocity({ 100.f,400.f });
+	//마찰
+	ObjectRigidBody->SetFriction(50.f);
+
+	//밑으로 내려가고 싶을 때
+	//ObjectRigidBody->SetDown(true);
+}
+
+void Enemy::Release()
+{
+	if (ObjectRigidBody != nullptr)
+	{
+		delete ObjectRigidBody;
+		ObjectRigidBody = nullptr;
+	}
+	if (eState)
+	{
+		delete eState;
+		eState = nullptr;
+	}
+	image = nullptr;
+	for (auto& img : images)
+	{
+		if (img)
+		{
+			img->Release();
+			delete img;
+			img = nullptr;
+		}
+	}
+	images.clear();
+}
+
+void Enemy::Update()
+{
+	if (eState)
+	{
+		eState->Update(*this);
+		EnemyState* newState = eState->CheckTransition(this);
+		if (newState && newState != eState)
+		{
+			ChangeState(newState);
+		}
+	}
+		
+	UpdateAnimation();
+
+	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+}
+
+void Enemy::Render(HDC hdc)
+{
+	if (image)
+	{
+		Gdiplus::Graphics graphics(hdc);
+		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 1.f, 1.f);
+	}
+}
+
+void Enemy::MakeSnapShot(void* out)
+{
+	EnemySnapShot* eSnapShot = static_cast<EnemySnapShot*>(out);
+	eSnapShot->pos = this->GetPos();
+	eSnapShot->ID = 0;
+	eSnapShot->animFrame = currFrame;
+	eSnapShot->isDead = this->bDead;
+}
+
+int Enemy::GetMaxAttackFrame() const
+{
+	if (image == nullptr) return 0;
+	return images[(int)EImageType::Attack]->getMaxFrame();
+}
+
+void Enemy::UpdateAnimation()
+{
+	if (image == nullptr) return;
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	frameTimer += dt;
+	if (frameTimer > 0.1f)
+	{
+		currFrame++;
+		if (currFrame >= image->getMaxFrame())
+		{
+			currFrame = 0;
+		}
+		frameTimer = 0.f;
+	}
+	if (dir == -1)
+	{
+		bFlip = true;
+	}
+	else if(dir == 1)
+	{
+		bFlip = false;
+	}
+}
+
+void Enemy::ChangeState(EnemyState* newState)
+{
+	if (eState)
+	{
+		eState->Exit(*this);
+		delete eState;
+	}
+	eState = newState;
+	if (eState)
+	{
+		eState->Enter(*this);
+	}
+		
+}
+
+void Enemy::ChangeAnimation(EImageType newImage)
+{
+	if (image == nullptr) return;
+	currFrame = 0;
+	if (image == images[(int)newImage]) return;
+	image = images[(int)newImage];
+}
+
+bool Enemy::Detecting()
+{
+	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	
+	float dx = playerPos.x - Pos.x;
+	float dist = fabs(dx);
+
+	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	{
+		return dist < detectRange;
+	}
+
+	return false;
+}
+
+bool Enemy::IsInAttackRange()
+{
+	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	float dx = playerPos.x - Pos.x;
+	float dist = fabs(dx);
+
+	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	{
+		return dist < attackRange;
+	}
+
+	return false;
+}
+
+bool Enemy::IsInSameFloor()
+{
+	auto player = SnapShotManager::GetInstance()->GetPlayer();
+	if (player.empty()) return true;
+
+	int myFloor = this->GetFloorIndex();
+	int playerFloor = player.front()->GetFloorIndex();
+
+	return myFloor == playerFloor;
+}
+
+bool Enemy::IsOnDownLine()
+{
+	return GetRigidBody()->GetResult().LineType == ELineType::DownLine;
 }

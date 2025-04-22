@@ -29,6 +29,7 @@ inline T* Singleton<T>::GetInstance()
 	{
 		instance = new T;
 	}
+
 	return instance;
 }
 
