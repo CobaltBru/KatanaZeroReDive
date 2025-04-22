@@ -279,12 +279,6 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>2D Framework\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="UIGame.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleTestObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
@@ -347,6 +341,15 @@
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>MainGame\Scene\Stage\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="TalkScene.cpp">
+      <Filter>MainGame\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -583,6 +586,9 @@
     </ClInclude>
     <ClInclude Include="WallSlideState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="TalkScene.h">
+      <Filter>MainGame\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

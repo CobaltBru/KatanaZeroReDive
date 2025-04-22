@@ -52,10 +52,7 @@ void HomeScene::Release()
 	if (RenderManager != nullptr)
 		RenderManager->Release();
 	
-	
-
 	ScrollManager::GetInstance()->Release();
-
 	ObjectManager = nullptr;
 	RenderManager = nullptr;
 }
@@ -83,11 +80,11 @@ void HomeScene::Update()
 		timerStart = false;
 		sceneChangeTimer = 0;
 	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+	if (KeyManager::GetInstance()->IsOnceKeyUp('W'))
 	{
 		if (cursor - 1 >= 0)--cursor;
 	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
+	if (KeyManager::GetInstance()->IsOnceKeyUp('S'))
 	{
 		if (cursor + 1 < 3)++cursor;
 	}
