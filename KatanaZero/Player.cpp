@@ -283,6 +283,6 @@ void Player::UpdateCollision()
 		Normalize(PEDir);
 
 		// knock enemy
-		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
 	}
 }

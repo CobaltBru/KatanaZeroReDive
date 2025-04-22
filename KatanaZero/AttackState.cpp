@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "RigidBody.h"
 #include "Image.h"
+#include "CommonFunction.h"
+
 
 PlayerState* AttackState::GetInput(Player* player)
 {
@@ -34,10 +36,13 @@ void AttackState::Enter(Player* player)
 	if (player->GetPos().x > g_ptMouse.x) player->SetDirection(EDirection::Left);
 	if (player->GetPos().x < g_ptMouse.x) player->SetDirection(EDirection::Right);
 
-	if (player->GetDirection() == EDirection::Left)
-		player->GetRigidBody()->AddVelocity({ -300.f, -200.f });
-	else
-		player->GetRigidBody()->AddVelocity({ 300.f, -200.f });
+	// direction from player to mouse point
+	FPOINT attackDir = { 0.f, 0.f };
+	attackDir.x = g_ptMouse.x - player->GetPos().x;
+	attackDir.y = g_ptMouse.y - player->GetPos().y;
+	Normalize(attackDir);
+
+	player->GetRigidBody()->AddVelocity(attackDir * 100.f);
 }
 
 void AttackState::Update(Player* player)

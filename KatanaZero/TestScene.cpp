@@ -25,6 +25,8 @@
 #include "EffectManager.h"
 
 #include "Player.h"
+#include "SimpleTestObject.h"
+
 
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -69,13 +71,6 @@ HRESULT TestScene::Init()
 		MessageBox(g_hWnd, TEXT("TestScene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-
-	// 자은 테스트 코드
-	Background* background = new Background();
-	background->Init("TestBg");
-	ObjectManager->AddGameObject(EObjectType::GameObject, background);
-
-
 
 	if (FAILED(InitObject()))
 	{
