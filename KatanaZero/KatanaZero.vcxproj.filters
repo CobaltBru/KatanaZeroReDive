@@ -381,6 +381,7 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ScenePsych.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -627,7 +628,8 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="TalkScene.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>MainGame\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="ScenePsych.h" />
   </ItemGroup>
 </Project>

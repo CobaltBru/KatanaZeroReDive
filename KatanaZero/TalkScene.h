@@ -6,6 +6,7 @@ class RenderManager;
 class Animation;
 class Token;
 class GPImage;
+class ScenePsych;
 class TalkScene : public Scene
 {
 public:
@@ -26,6 +27,10 @@ private:
 	RenderManager* RenderManager;
 
 	Animation* background;
-	
+	Animation* firePlace;
+	ScenePsych* psych;
+	FPOINT pos;
+	FPOINT psychPos;
+	FPOINT playerPos;
 };
 

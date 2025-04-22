@@ -54,7 +54,10 @@ private:
 	bool isStart;
 	bool isOn;
 	bool isMove;
-
+	
+	bool isMoveComplete;
+	bool isComplete;
+	bool loopflag;
 public:
 	virtual ~Animation() = default;
 	void Init(Image* image, int frameX);
@@ -75,5 +78,9 @@ public:
 	void setAniTask(initializer_list<pair<int, float>> lst);
 	void setAniTask(std::vector < pair<int, float>>& lst);
 	virtual void Release() override;
+	void setloopFlag(bool flag);
+
+	inline bool getAniComplete() { return isComplete; }
+	inline bool getMoveComPlete() { return isMoveComplete; }
 };
 

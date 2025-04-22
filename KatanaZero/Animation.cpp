@@ -19,6 +19,16 @@ void Animation::Init(Image* image, int frameX)
 	timer = 0;
 	isStart = false;
 	isOn = false;
+	isMoveComplete = false;
+	isComplete = false;
+	loopflag = true;
+
+	moveTask.dest = { 0,0 };
+	moveTask.duration = 0.f;
+	moveTask.flag = 0.f;
+	moveTask.offset = { 0,0 };
+	moveTask.src = { 0,0 };
+	moveTask.timer = 0.f;
 }
 
 void Animation::Init(GPImage* image, int frameX)
@@ -36,6 +46,16 @@ void Animation::Init(GPImage* image, int frameX)
 	timer = 0;
 	isStart = false;
 	isOn = false;
+	isMoveComplete = false;
+	isComplete = false;
+	loopflag = true;
+
+	moveTask.dest = { 0,0 };
+	moveTask.duration = 0.f;
+	moveTask.flag = 0.f;
+	moveTask.offset = { 0,0 };
+	moveTask.src = { 0,0 };
+	moveTask.timer = 0.f;
 }
 
 void Animation::Update()
@@ -46,7 +66,18 @@ void Animation::Update()
 		if (timer >= aniTasks[anitaskIdx].second)
 		{
 			anitaskIdx++;
-			if (anitaskIdx >= aniTasks.size())anitaskIdx = 0;
+			if (anitaskIdx >= aniTasks.size())
+			{
+				if (!loopflag)
+				{
+					isComplete = true;
+					setFrame(frameX - 1);
+					Stop();
+					return;
+				}
+				else anitaskIdx = 0;
+				
+			}
 			frameIdx = aniTasks[anitaskIdx].first;
 			timer = 0.f;
 		}
@@ -74,6 +105,7 @@ void Animation::Update()
 			}
 			else if (moveTask.flag & Move_Stop)
 			{
+				isMoveComplete = true;
 				MoveOff();
 			}
 		}
@@ -138,6 +170,7 @@ void Animation::Off()
 void Animation::MoveOn(FPOINT dest, float duration, int flag)
 {
 	isMove = true;
+	isMoveComplete = false;
 	if (flag & POS_Update)
 	{
 		pos.x += moveTask.offset.x;
@@ -190,5 +223,19 @@ void Animation::Release()
 	{
 		delete gpimage;
 		gpimage = nullptr;
+	}
+}
+
+void Animation::setloopFlag(bool flag)
+{
+	if (flag == true)
+	{
+		isComplete = false;
+		loopflag = true;
+	}
+	else
+	{
+		isComplete = false;
+		loopflag = false;
 	}
 }
