@@ -38,13 +38,6 @@ HRESULT Bomb::Init(FPOINT pos, float angle)
 
 void Bomb::Release()
 {
-    if (image)
-    {
-        image->Release();
-        delete image;
-        image = nullptr;
-    }
-
     if (ObjectRigidBody != nullptr)
     {
         delete ObjectRigidBody;
