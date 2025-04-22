@@ -53,7 +53,6 @@ void HomeScene::Release()
 		RenderManager->Release();
 	
 	ScrollManager::GetInstance()->Release();
-
 	ObjectManager = nullptr;
 	RenderManager = nullptr;
 }

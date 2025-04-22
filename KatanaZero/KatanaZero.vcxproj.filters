@@ -103,15 +103,15 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일">
+    <Filter Include="?��?�� ?��?��">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="소스 파일">
+    <Filter Include="?��?�� ?��?��">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
+    <Filter Include="리소?�� ?��?��">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -133,11 +133,17 @@
     <Filter Include="MainGame\Player\PlayerState">
       <UniqueIdentifier>{668b3759-4f92-469d-83e3-66cbd1c2d9e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{0cea3ea6-e9f6-4ea3-ac64-8c0f680ce951}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{5d12cf9f-d83d-4d2f-a54c-967a509fbc21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{9fe14f5f-c762-4063-a6fe-dfe8d08b8d67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>2D Framework\Timer</Filter>
     </ClCompile>
@@ -285,12 +291,6 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>2D Framework\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="UIGame.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleTestObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
@@ -324,9 +324,6 @@
     <ClCompile Include="GoPopUp.cpp">
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultObject.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
@@ -338,9 +335,6 @@
     </ClCompile>
     <ClCompile Include="AttackState.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="IdleState.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
@@ -363,14 +357,32 @@
     <ClCompile Include="TestScene.cpp">
       <Filter>MainGame\Scene\Stage\Test</Filter>
     </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>2D Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="TalkScene.cpp">
+      <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UIGame.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonFunction.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="MainGame.h">
       <Filter>MainGame</Filter>
     </ClInclude>
@@ -569,17 +581,11 @@
     <ClInclude Include="GoPopUp.h">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Factory.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DefaultObject.h">
       <Filter>MainGame\TaeKyung\Default</Filter>
     </ClInclude>
     <ClInclude Include="TestScene.h">
       <Filter>MainGame\Scene\Stage\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerAnim.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
@@ -605,8 +611,23 @@
     <ClInclude Include="WallSlideState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
+    <ClInclude Include="CommonFunction.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAnim.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="RigidBody.h">
-      <Filter>2D Framework\Physics</Filter>
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TalkScene.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

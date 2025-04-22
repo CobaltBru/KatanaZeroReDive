@@ -6,6 +6,7 @@
 #include "TestScene.h"
 #include "MapTool.h"
 
+#include "TalkScene.h"
 #include "HomeScene.h"
 #include "LoadingScene.h"
 #include "SoundManager.h"
@@ -32,13 +33,13 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-
+	SceneManager::GetInstance()->AddScene("Talk", new TalkScene());
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Home","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
