@@ -9,7 +9,7 @@ using namespace std;
 
 // 맵툴에 필요한 모든 오브젝트
 static unordered_map<string, function<GameObject* ()>> ObjectInfo = {
-	{"SimpleTestObject", []() {return new SimpleTestObject(); } }
+	{"SimpleTestObject", []() {return new SimpleTestObject(); } },
 };
 
 GameObject* CreateObject(string ClassName)
