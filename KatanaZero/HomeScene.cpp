@@ -80,12 +80,12 @@ void HomeScene::Update()
 		timerStart = false;
 		sceneChangeTimer = 0;
 	}
-	if (KeyManager::GetInstance()->IsOnceKeyUp('W'))
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
 		if (cursor - 1 >= 0)
 			--cursor;
 	}
-	if (KeyManager::GetInstance()->IsOnceKeyUp('S'))
+	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
 	{
 		if (cursor + 1 < 3)
 			++cursor;
