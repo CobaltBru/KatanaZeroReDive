@@ -80,6 +80,18 @@ void MapTool::Update()
 	ScrollManager->Update();
 	LineManager->Update();
 
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+	{
+		//기본을 무조건 32x32로 한다는 뜻
+		const float TILEX = 32;
+		const float TILEY = 32;
+
+		int CurrentTileX = g_ptMouse.x / TILEX;
+		int CurrentTileY = g_ptMouse.y / TILEY;
+		
+	}
+
+
 	ImGuiManager::GetInstance()->Update();
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))

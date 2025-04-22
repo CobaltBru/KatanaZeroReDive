@@ -1,9 +1,15 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "ImGuiManager.h"
 
 #undef new
 #include "Reference/Headers/Imgui/imgui_impl_win32.h"
 #include "Reference/Headers/Imgui/imgui_impl_dx11.h"
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "Reference/Headers/Imgui/stb_image.h"
 
 #include <fstream>
 #include "CommonFunction.h"
@@ -76,6 +82,7 @@ void ImGuiManager::Init()
 	// Init
 	LoadFont();
 	InitBackground();
+	InitTile();
 }
 
 void ImGuiManager::Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager)
@@ -310,10 +317,16 @@ void ImGuiManager::Tile()
 		if (ImGui::CollapsingHeader("Tile"))
 		{
 			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
-			ImGui::ListBox("TileList", &Tile_current, BackgroundList, BackGroundMap.size(), 4);
+			ImGui::ListBox("TileList", &Tile_current, TileList.data(), TileList.size(), 4);
+
+			DrawTile();
 		}
 
 		ImGui::EndTabItem();
+	}
+	else
+	{
+		Tile_current = -1;
 	}
 }
 
@@ -863,6 +876,70 @@ void ImGuiManager::LoadFloor()
 	}
 }
 
+bool ImGuiManager::LoadTextureFromMemory(const void* data, size_t data_size, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
+{
+	// Load from disk into a raw RGBA buffer
+	int image_width = 0;
+	int image_height = 0;
+	unsigned char* image_data = stbi_load_from_memory((const unsigned char*)data, (int)data_size, &image_width, &image_height, NULL, 4);
+	if (image_data == NULL)
+		return false;
+
+	// Create texture
+	D3D11_TEXTURE2D_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Width = image_width;
+	desc.Height = image_height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = 0;
+
+	ID3D11Texture2D* pTexture = NULL;
+	D3D11_SUBRESOURCE_DATA subResource;
+	subResource.pSysMem = image_data;
+	subResource.SysMemPitch = desc.Width * 4;
+	subResource.SysMemSlicePitch = 0;
+	g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+
+	// Create texture view
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(srvDesc));
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = desc.MipLevels;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
+	pTexture->Release();
+
+	*out_width = image_width;
+	*out_height = image_height;
+	stbi_image_free(image_data);
+
+	return true;
+}
+
+bool ImGuiManager::LoadTextureFromFile(const char* file_name, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
+{
+	FILE* f = fopen(file_name, "rb");
+	if (f == NULL)
+		return false;
+	fseek(f, 0, SEEK_END);
+	size_t file_size = (size_t)ftell(f);
+	if (file_size == -1)
+		return false;
+	fseek(f, 0, SEEK_SET);
+	void* file_data = IM_ALLOC(file_size);
+	fread(file_data, 1, file_size, f);
+	fclose(f);
+	bool ret = LoadTextureFromMemory(file_data, file_size, out_srv, out_width, out_height);
+	IM_FREE(file_data);
+	return ret;
+}
+
 //vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
 //{
 //	vector<string> files;
@@ -987,6 +1064,43 @@ void ImGuiManager::DestroyAllBackGround()
 	for (int i = 0; i < BackGroundName.size(); ++i)
 		delete[] BackGroundName[i];
 	BackGroundName.clear();
+}
+
+void ImGuiManager::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		const int size = nameOnly.size() + 1;
+		char* temp = new char[size];
+		strcpy_s(temp, size, nameOnly.c_str());
+
+		TileList.push_back(temp);
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		string path = "Image/Tile/" + Tiles[i];
+
+		int Width = 0;
+		int Height = 0;
+		ID3D11ShaderResourceView* Texture = nullptr;
+		bool ret = LoadTextureFromFile(path.c_str(), &Texture, &Width, &Height);
+		IM_ASSERT(ret);
+		pair<int, int> TextureSize = { Width ,Height };
+		pair<ID3D11ShaderResourceView*, pair<int, int>> info = { Texture ,TextureSize };
+
+		TileTextures.insert({ temp, info });
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
+	}
 }
 
 void ImGuiManager::ObjectTap()
@@ -1297,6 +1411,51 @@ void ImGuiManager::DrawFloor(HDC hdc)
 	DeleteObject(hPen);
 }
 
+void ImGuiManager::DrawTile()
+{
+	if (Tile_current == -1)
+		return;
+
+	auto iter = TileTextures.find(TileList[Tile_current]);
+	if (iter == TileTextures.end())
+		return;
+
+	ID3D11ShaderResourceView* Texture = iter->second.first;
+	int Width = iter->second.second.first;
+	int Height = iter->second.second.second;
+
+	ImVec2 childSize = ImVec2(TILEMAPTOOL_X, Height);
+	ImGui::BeginChild("Image", childSize, true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	ImGui::Image((ImTextureID)(intptr_t)Texture, ImVec2(Width, Height));
+	
+	static ImVec2 selectedTile = ImVec2(-1, -1);
+
+	ImVec2 imagePos = ImGui::GetCursorScreenPos();
+	ImVec2 imageSize = ImVec2((float)Width, (float)Height);
+
+	ImVec2 mousePos = ImGui::GetIO().MousePos;
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) 
+	{
+		ImVec2 localPos = ImVec2(abs(mousePos.x - imagePos.x), abs(mousePos.y - imagePos.y));
+		if (localPos.x >= 0 && localPos.y >= 0 && localPos.x < Width && localPos.y < Height) {
+			int tileX = static_cast<int>(localPos.x) / 32;
+			int tileY = static_cast<int>(localPos.y) / 32;
+			selectedTile = ImVec2((float)tileX, (float)tileY);
+		}		
+	}
+
+	if (selectedTile.x >= 0 && selectedTile.y >= 0) 
+	{																			//이 근본없는 4는 도대체  뭐란말인가
+		ImVec2 rectMin = ImVec2(imagePos.x + selectedTile.x * 32, abs(imagePos.y - Height - 4) + ((Height / 32 - 1) - selectedTile.y) * 32);
+		ImVec2 rectMax = ImVec2(rectMin.x + 32, rectMin.y + 32);
+		draw_list->AddRect(rectMin, rectMax, IM_COL32(255, 0, 0, 255)); // 빨간 테두리
+	}
+
+	ImGui::EndChild();
+}
+
 void ImGuiManager::Release()
 {
 	ImGui_ImplDX11_Shutdown();
@@ -1321,6 +1480,10 @@ void ImGuiManager::Release()
 		delete[] FloorName[i];
 	FloorName.clear();
 
+	for (int i = 0; i < TileList.size(); ++i)
+		delete[] TileList[i];
+	TileList.clear();
+	
 
 	ReleaseInstance();
 }

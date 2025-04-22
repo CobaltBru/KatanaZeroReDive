@@ -44,6 +44,7 @@ private:
 	void DestroyBackGround();
 	void DestroyAllBackGround();
 
+	void InitTile();
 
 	void ObjectTap();
 	void ObjectUpdate();
@@ -54,6 +55,8 @@ private:
 	void Floor();
 	void DestroyAllFloor();
 	void DrawFloor(HDC hdc);
+
+	void DrawTile();
 
 	OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
 	OPENFILENAME GetLoadInfo(TCHAR* lpstrFile);
@@ -69,7 +72,8 @@ private:
 	void LoadObject();
 	void LoadFloor();
 
-
+	bool LoadTextureFromMemory(const void* data, size_t data_size, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height);
+	bool LoadTextureFromFile(const char* file_name, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height);
 	
 private:
 	unordered_map<const char*, string> BackGroundMap;
@@ -87,7 +91,28 @@ private:
 	LineManager* lineManager;
 	ObjectManager* objectManager;
 	ScrollManager* scrollManager;
+
+	/*int my_image_width = 0;
+	int my_image_height = 0;*/
+	vector<const char*> TileList;
+	unordered_map<const char*, pair<ID3D11ShaderResourceView*, pair<int, int>>> TileTextures;
+	/*ID3D11ShaderResourceView* my_texture = NULL;*/
 };
 
 
 
+
+
+//// Get the ImGui cursor in screen space
+//ImVec2 display_p0 = ImGui::GetCursorScreenPos();
+//// Get size of the tileset display
+//ImVec2 display_sz = ImGui::GetContentRegionAvail();
+//display_sz.x = (display_sz.x < 50.0f ? 50.0f : display_sz.x);
+//display_sz.y = (display_sz.y < 50.0f ? 50.0f : (display_sz.y > 320.0f ? 320.0f : display_sz.y));
+//ImVec2 display_p1 = ImVec2(display_p0.x + display_sz.x, display_p0.y + display_sz.y);
+//
+//// Draw border and background color
+//ImGuiIO& io = ImGui::GetIO();
+//ImDrawList* draw_list = ImGui::GetWindowDrawList();
+//draw_list->AddRectFilled(display_p0, display_p1, IM_COL32(50, 50, 50, 255));
+//draw_list->AddRect(display_p0, display_p1, IM_COL32(255, 255, 255, 255));
