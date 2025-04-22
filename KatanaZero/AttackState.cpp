@@ -53,7 +53,6 @@ void AttackState::Update(Player* player)
 
 	// render
 	
-
 	if (player->GetFrameIndex() >= ImageManager::GetInstance()->FindImage("zeroattack")->GetMaxFrameX()-1)
 		player->GetInfo()->bIsAttack = false;
 }
