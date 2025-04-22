@@ -36,6 +36,7 @@ private:
 
 	void InitBackgroundImage();
 	void LoadBackground();
+	void LoadObject();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;

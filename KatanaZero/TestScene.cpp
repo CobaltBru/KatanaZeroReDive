@@ -95,7 +95,8 @@ HRESULT TestScene::Init()
 HRESULT TestScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
-	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
 	return S_OK;
@@ -109,7 +110,7 @@ HRESULT TestScene::InitObject()
 	// 테스트 코드 태경
 	{
 		Background* background = new Background();
-		background->Init("TestBg");
+		background->Init("black",0.f);
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 		//Player* player = new Player();

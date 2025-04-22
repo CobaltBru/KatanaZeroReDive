@@ -89,10 +89,8 @@ HRESULT Stage1Scene::Init()
 HRESULT Stage1Scene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
-	ImageManager::GetInstance()->AddImage("blackBg", L"Image/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
 
@@ -102,7 +100,7 @@ HRESULT Stage1Scene::InitImage()
 HRESULT Stage1Scene::InitObject()
 {
 	Background* background = new Background();
-	background->Init("blackBg",0.f);
+	background->Init("black",0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	LoadBackground();
@@ -190,6 +188,11 @@ void Stage1Scene::LoadBackground()
 	}
 
 	CloseHandle(hFile);
+}
+
+void Stage1Scene::LoadObject()
+{
+
 }
 
 void Stage1Scene::Update()

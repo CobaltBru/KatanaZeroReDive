@@ -94,9 +94,10 @@ void MapTool::Render(HDC hdc)
 
 HRESULT MapTool::InitImage()
 {
-	ImageManager::GetInstance()->AddImage("blackBg", L"Image/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
 }
@@ -104,7 +105,7 @@ HRESULT MapTool::InitImage()
 HRESULT MapTool::InitObject()
 {
 	Background* background = new Background();
-	background->Init("blackBg",0.f);
+	background->Init("black",0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	return S_OK;
