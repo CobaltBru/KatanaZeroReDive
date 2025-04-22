@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "SnapShotManager.h"
 #include "ObjectManager.h"
+#include "ScrollManager.h"
 
 HeadHunter::HeadHunter()
 {

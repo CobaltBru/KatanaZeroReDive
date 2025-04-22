@@ -3,13 +3,19 @@
 #include "config.h"
 #include <unordered_map>
 
+
 class GameObject;
+class LineManager;
+class ObjectManager;
+class ScrollManager;
 class ImGuiManager : public Singleton<ImGuiManager>
 {
 public:
 	ImGuiManager();
 	void Init();
+	void Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager);
 	void Update();
+	void APIRender(HDC hdc);
 	void Render();
 	void Release();
 	
@@ -36,6 +42,8 @@ private:
 	void InitBackground();
 	void CreateBackground(int Index);
 	void DestroyBackGround();
+	void DestroyAllBackGround();
+
 
 	void ObjectTap();
 	void ObjectUpdate();
@@ -43,6 +51,9 @@ private:
 	void DestroySelectObject();
 	void DestroyAllObject();
 
+	void Floor();
+	void DestroyAllFloor();
+	void DrawFloor(HDC hdc);
 
 	OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
 	OPENFILENAME GetLoadInfo(TCHAR* lpstrFile);
@@ -50,22 +61,33 @@ private:
 	void SaveLine();
 	void SaveBackGround();
 	void SaveObject();
+	void SaveFloor();
 
 	void LoadFont();
 	void LoadLine();
 	void LoadBackGround();
 	void LoadObject();
+	void LoadFloor();
 
+
+	
 private:
 	unordered_map<const char*, string> BackGroundMap;
 	const char** BackgroundList;
 
 	GameObject* PlayerStartPoint;
-	GameObject* SelectObject;
+	GameObject* selectObject;
 
 	vector<const char*> WorldObjectName;
 	vector<const char*> BackGroundName;
+	vector<const char*> FloorName;
 
 	GameObject* PlayerObject;
+
+	LineManager* lineManager;
+	ObjectManager* objectManager;
+	ScrollManager* scrollManager;
 };
+
+
 
