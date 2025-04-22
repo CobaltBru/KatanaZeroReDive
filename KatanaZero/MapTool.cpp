@@ -97,6 +97,8 @@ void MapTool::Render(HDC hdc)
 
 	LineManager->Render(hdc);
 
+	ImGuiManager::GetInstance()->APIRender(hdc);
+
 	ImGuiManager::GetInstance()->Render();
 }
 

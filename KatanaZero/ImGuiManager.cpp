@@ -24,8 +24,11 @@ static int item_current = -1;
 static int Bg_current = -1;
 static int Object_current = -1;
 static int World_current = -1;
+static int Floor_current = -1;
+
 static vector<GameObject*> WorldObject;
 static vector<Background*> BackgroundObject;
+static vector<FloorZone> FloorZoneObject;
 
 static float Pos[2] = { 0.f,0.f };
 static float ColliderOffset[2] = { 0.f,0.f };
@@ -33,9 +36,9 @@ static float ColliderSize[2] = { 0.f,0.f };
 //!!=========================================================!!
 //! 무조건 두개 다 동기화해야합니다.
 // 오브젝트 리스트 이름
-static const char* Objectnames[] = { "StartPoint", "SimpleTestObject"};
+static const char* Objectnames[] = { "StartPoint", "SimpleTestObject" };
 // 오브젝트 이미지 이름
-static const char* ObjectImagenames[] = { "TestPlayer", "rocket"};
+static const char* ObjectImagenames[] = { "TestPlayer", "rocket" };
 //! 무조건 두개 다 동기화해야합니다.
 //!!=========================================================!!
 static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
@@ -43,7 +46,7 @@ static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
 
 
 ImGuiManager::ImGuiManager()
-	:PlayerStartPoint(nullptr), SelectObject(nullptr), PlayerObject(nullptr), lineManager(nullptr), objectManager(nullptr), scrollManager(nullptr)
+	:PlayerStartPoint(nullptr), selectObject(nullptr), PlayerObject(nullptr), lineManager(nullptr), objectManager(nullptr), scrollManager(nullptr)
 {
 }
 
@@ -91,6 +94,12 @@ void ImGuiManager::Update()
 	ShowGui();
 
 	ImGui::EndFrame();
+}
+
+void ImGuiManager::APIRender(HDC hdc)
+{
+	if (!FloorZoneObject.empty() && Floor_current != -1)
+		DrawFloor(hdc);
 }
 
 void ImGuiManager::Render()
@@ -311,6 +320,9 @@ void ImGuiManager::Object()
 
 		ObjectUpdate();
 
+		// FloorZone
+		Floor();
+
 		//도움말
 		if (ImGui::CollapsingHeader(u8"도움말"))
 		{
@@ -408,6 +420,11 @@ void ImGuiManager::Reset()
 {
 	DestroyAllObject();
 	DestroyAllBackGround();
+
+	for (int i = 0; i < FloorName.size(); ++i)
+		delete[] FloorName[i];
+	FloorName.clear();
+
 
 	lineManager = nullptr;
 	objectManager = nullptr;
@@ -564,6 +581,42 @@ void ImGuiManager::SaveObject()
 	}
 }
 
+void ImGuiManager::SaveFloor()
+{
+	TCHAR lpstrFile[MAX_PATH] = L"";
+	OPENFILENAME ofn = GetSaveInfo(lpstrFile);
+
+	TCHAR szOldDir[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, szOldDir);
+
+	if (GetSaveFileName(&ofn))
+	{
+		SetCurrentDirectory(szOldDir);
+		HANDLE hFile = CreateFile(
+			ofn.lpstrFile, GENERIC_WRITE, 0, NULL,
+			CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			MessageBox(g_hWnd, L"SaveObject Failed.", TEXT("경고"), MB_OK);
+			return;
+		}
+
+		DWORD dwByte = 0;
+
+		for (auto& iter : FloorZoneObject)
+		{
+			FloorZone fz;
+			fz.TopY = iter.TopY;
+			fz.BottomY = iter.BottomY;
+
+			WriteFile(hFile, &fz, sizeof(FloorZone), &dwByte, NULL);
+		}
+
+		CloseHandle(hFile);
+		MessageBox(g_hWnd, L"Floor 저장 성공", TEXT("성공"), MB_OK);
+	}
+}
+
 void ImGuiManager::LoadFont()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -597,8 +650,8 @@ void ImGuiManager::LoadLine()
 		size_t pos = fullPath.find(key);
 		std::wstring relativePath;
 		relativePath = fullPath.substr(pos);
-		
-		if (SUCCEEDED(lineManager->LoadFile(ofn.lpstrFile)))	
+
+		if (SUCCEEDED(lineManager->LoadFile(ofn.lpstrFile)))
 			MessageBox(g_hWnd, L"라인 불러오기 성공", TEXT("성공"), MB_OK);
 	}
 }
@@ -748,6 +801,53 @@ void ImGuiManager::LoadObject()
 	}
 }
 
+void ImGuiManager::LoadFloor()
+{
+	DestroyAllFloor();
+
+	TCHAR lpstrFile[MAX_PATH] = L"";
+	OPENFILENAME ofn = GetLoadInfo(lpstrFile);
+
+	TCHAR szOldDir[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, szOldDir);
+
+	if (GetOpenFileName(&ofn))
+	{
+		SetCurrentDirectory(szOldDir);
+
+		HANDLE hFile = CreateFile(
+			ofn.lpstrFile, GENERIC_READ, 0, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("경고"), MB_OK);
+			return;
+		}
+
+		DWORD dwByte = 0;
+
+		while (true)
+		{
+			FloorZone fz;
+			ZeroMemory(&fz, sizeof(FloorZone));
+
+			ReadFile(hFile, &fz, sizeof(FloorZone), &dwByte, NULL);
+
+			if (dwByte == 0)
+				break;
+
+			FloorZoneObject.push_back(fz);
+
+			char* name = new char[6];
+			strcpy_s(name, 6, "Floor");
+			FloorName.push_back(name);
+		}
+
+		CloseHandle(hFile);
+		MessageBox(g_hWnd, L"Floor 불러오기 성공", TEXT("성공"), MB_OK);
+	}
+}
+
 //vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
 //{
 //	vector<string> files;
@@ -894,7 +994,7 @@ void ImGuiManager::ObjectTap()
 			static_cast<DefaultObject*>(PlayerStartPoint)->Init(ObjectImagenames[Object_current], { 0.f,0.f }, false, ERenderGroup::NonAlphaBlend, Objectnames[Object_current]);
 			objectManager->AddGameObject(EObjectType::GameObject, PlayerStartPoint);
 
-			SelectObject = PlayerStartPoint;
+			selectObject = PlayerStartPoint;
 		}
 	}
 	// 그 외 오브젝트들
@@ -904,7 +1004,7 @@ void ImGuiManager::ObjectTap()
 		Object->Init(ObjectImagenames[Object_current], { 0.f,0.f }, false, ERenderGroup::NonAlphaBlend, Objectnames[Object_current]);
 		objectManager->AddGameObject(EObjectType::GameObject, Object);
 
-		SelectObject = Object;
+		selectObject = Object;
 	}
 
 	Object_current = -1;
@@ -913,20 +1013,20 @@ void ImGuiManager::ObjectTap()
 
 void ImGuiManager::ObjectUpdate()
 {
-	if (SelectObject != nullptr)
+	if (selectObject != nullptr)
 	{
 		const FPOINT Scroll = scrollManager->GetScroll();
-		SelectObject->SetPos({ (float)g_ptMouse.x - Scroll.x,(float)g_ptMouse.y - Scroll.y });
+		selectObject->SetPos({ (float)g_ptMouse.x - Scroll.x,(float)g_ptMouse.y - Scroll.y });
 		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
 		{
-			DefaultObject* worldObj = static_cast<DefaultObject*>(SelectObject);
+			DefaultObject* worldObj = static_cast<DefaultObject*>(selectObject);
 			WorldObject.push_back(worldObj);
 			char* Name = new char[worldObj->GetName().size() + 1];
 			strcpy_s(Name, worldObj->GetName().size() + 1, worldObj->GetName().c_str());
 
 			WorldObjectName.push_back(Name);
 
-			SelectObject = nullptr;
+			selectObject = nullptr;
 
 			World_current = WorldObjectName.size() - 1;
 		}
@@ -1069,13 +1169,13 @@ void ImGuiManager::WorldObjectUpdate()
 
 void ImGuiManager::DestroySelectObject()
 {
-	if (SelectObject != nullptr)
+	if (selectObject != nullptr)
 	{
-		if (PlayerStartPoint != nullptr && PlayerStartPoint == SelectObject)
+		if (PlayerStartPoint != nullptr && PlayerStartPoint == selectObject)
 			PlayerStartPoint = nullptr;
 
-		SelectObject->SetDead(true);
-		SelectObject = nullptr;
+		selectObject->SetDead(true);
+		selectObject = nullptr;
 	}
 }
 
@@ -1098,6 +1198,90 @@ void ImGuiManager::DestroyAllObject()
 	World_current = -1;
 }
 
+void ImGuiManager::Floor()
+{
+	ImGui::SeparatorText(u8"FloorZone");
+
+	ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+	if (ImGui::Button(u8"추가"))
+	{
+		char* name = new char[6];
+		strcpy_s(name, 6, "Floor");
+		FloorName.push_back(name);
+
+		FloorZone fz;
+		ZeroMemory(&fz, sizeof(FloorZone));
+		FloorZoneObject.push_back(fz);
+
+		Floor_current = -1;
+	}
+	ImGui::SameLine();
+	ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+	ImGui::ListBox("FloorList", &Floor_current, FloorName.data(), FloorName.size(), 4);
+
+	static float FloorZone[2] = { 0.f,0.f };
+	if (Floor_current != -1)
+	{
+		FloorZone[0] = FloorZoneObject[Floor_current].TopY;
+		FloorZone[1] = FloorZoneObject[Floor_current].BottomY;
+		ImGui::PushItemWidth(TILEMAPTOOL_X * 0.7f);
+		ImGui::DragFloat2("Top / Bottom", FloorZone);
+		FloorZoneObject[Floor_current].TopY = FloorZone[0];
+		FloorZoneObject[Floor_current].BottomY = FloorZone[1];
+
+		if (ImGui::Button(u8"삭제"))
+		{
+			FloorZoneObject.erase(FloorZoneObject.begin() + Floor_current);
+
+			delete[] FloorName[Floor_current];
+			FloorName.erase(FloorName.begin() + Floor_current);
+			Floor_current = -1;
+		}
+	}
+	if (!FloorZoneObject.empty())
+	{
+		if (ImGui::Button(u8"저장"))
+		{
+			SaveFloor();
+		}
+		ImGui::SameLine();
+	}
+	if (ImGui::Button(u8"불러 오기"))
+	{
+		LoadFloor();
+		Floor_current = -1;
+	}
+}
+
+void ImGuiManager::DestroyAllFloor()
+{
+	FloorZoneObject.clear();
+
+	for (int i = 0; i < FloorName.size(); ++i)
+		delete[] FloorName[i];
+	FloorName.clear();
+}
+
+void ImGuiManager::DrawFloor(HDC hdc)
+{
+	HPEN hPen = nullptr;
+
+	hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 255));
+
+	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // 현재 DC에 펜을 설정		
+
+	MoveToEx(hdc, 0, FloorZoneObject[Floor_current].TopY, nullptr);
+	LineTo(hdc, WINSIZE_X, FloorZoneObject[Floor_current].TopY);
+
+	MoveToEx(hdc, 0, FloorZoneObject[Floor_current].BottomY, nullptr);
+	LineTo(hdc, WINSIZE_X, FloorZoneObject[Floor_current].BottomY);
+
+	// 사용한 펜을 원래대로 복원
+	SelectObject(hdc, hOldPen);
+	// 펜 메모리 해제
+	DeleteObject(hPen);
+}
+
 void ImGuiManager::Release()
 {
 	ImGui_ImplDX11_Shutdown();
@@ -1117,6 +1301,11 @@ void ImGuiManager::Release()
 	for (int i = 0; i < BackGroundName.size(); ++i)
 		delete[] BackGroundName[i];
 	BackGroundName.clear();
+
+	for (int i = 0; i < FloorName.size(); ++i)
+		delete[] FloorName[i];
+	FloorName.clear();
+
 
 	ReleaseInstance();
 }

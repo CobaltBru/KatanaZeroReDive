@@ -15,6 +15,7 @@ public:
 	void Init();
 	void Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager);
 	void Update();
+	void APIRender(HDC hdc);
 	void Render();
 	void Release();
 	
@@ -50,27 +51,36 @@ private:
 	void DestroySelectObject();
 	void DestroyAllObject();
 
+	void Floor();
+	void DestroyAllFloor();
+	void DrawFloor(HDC hdc);
+
 	OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
 	OPENFILENAME GetLoadInfo(TCHAR* lpstrFile);
 
 	void SaveLine();
 	void SaveBackGround();
 	void SaveObject();
+	void SaveFloor();
 
 	void LoadFont();
 	void LoadLine();
 	void LoadBackGround();
 	void LoadObject();
+	void LoadFloor();
 
+
+	
 private:
 	unordered_map<const char*, string> BackGroundMap;
 	const char** BackgroundList;
 
 	GameObject* PlayerStartPoint;
-	GameObject* SelectObject;
+	GameObject* selectObject;
 
 	vector<const char*> WorldObjectName;
 	vector<const char*> BackGroundName;
+	vector<const char*> FloorName;
 
 	GameObject* PlayerObject;
 
