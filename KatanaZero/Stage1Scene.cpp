@@ -258,7 +258,6 @@ void Stage1Scene::LoadFloor()
 
 	DWORD dwByte = 0;
 
-
 	vector<FloorZone> FloorZones;
 	while (true)
 	{

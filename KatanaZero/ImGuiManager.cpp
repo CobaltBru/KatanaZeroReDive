@@ -1240,7 +1240,7 @@ void ImGuiManager::Floor()
 	}
 	if (!FloorZoneObject.empty())
 	{
-		if (ImGui::Button(u8"저장"))
+		if (ImGui::Button(u8"저 장"))
 		{
 			SaveFloor();
 		}
