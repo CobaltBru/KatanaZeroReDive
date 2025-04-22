@@ -23,6 +23,11 @@ HRESULT Enemy::Init(FPOINT InPos)
 	return E_NOTIMPL;
 }
 
+HRESULT Enemy::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	return E_NOTIMPL;
+}
+
 void Enemy::InitImages()
 {
 }

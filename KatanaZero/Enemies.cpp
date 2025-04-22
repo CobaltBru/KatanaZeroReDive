@@ -7,6 +7,7 @@
 #include "SnapShotManager.h"
 #include "RenderManager.h"
 #include "EnemyState.h"
+#include "ScrollManager.h"
 
 HRESULT Grunt::Init(FPOINT InPos)
 {
@@ -22,6 +23,30 @@ HRESULT Grunt::Init(FPOINT InPos)
 	attackRange = 40.f;
 	attackDuration = 0.8f;
 	eType = EType::Grunt;
+	InitRigidBodySetting();
+	return S_OK;
+}
+
+HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImages();
+	eState = new EIDLE();
+	Pos = InPos;
+	Speed = 50.f;
+	detectRange = 50.f;
+	attackRange = 40.f;
+	attackDuration = 0.8f;
+	eType = EType::Grunt;
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+	ObjectCollider->SetPos(Pos);
+
+	RenderGroup = InRenderGroup;
+	bFlip = InFlip;
+
+	ObjectRigidBody = new RigidBody(this);
+	
 	InitRigidBodySetting();
 	return S_OK;
 }
@@ -59,6 +84,30 @@ HRESULT Pomp::Init(FPOINT InPos)
 	return S_OK;
 }
 
+HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImages();
+	eState = new EIDLE();
+	Pos = InPos;
+	Speed = 70.f;
+	detectRange = 80.f;
+	attackRange = 40.f;
+	attackDuration = 0.5f;
+	eType = EType::Pomp;
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+	ObjectCollider->SetPos(Pos);
+
+	RenderGroup = InRenderGroup;
+	bFlip = InFlip;
+
+	ObjectRigidBody = new RigidBody(this);
+
+	InitRigidBodySetting();
+	return S_OK;
+}
+
 void Pomp::InitImages()
 {
 	images.resize((int)EImageType::End);
@@ -92,6 +141,30 @@ HRESULT Gangster::Init(FPOINT InPos)
 	return S_OK;
 }
 
+HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImages();
+	eState = new EIDLE();
+	Pos = InPos;
+	Speed = 40.f;
+	detectRange = 200.f;
+	attackRange = 150.f;
+	attackDuration = 0.2f;
+	eType = EType::Gangster;
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+	ObjectCollider->SetPos(Pos);
+
+	RenderGroup = InRenderGroup;
+	bFlip = InFlip;
+
+	ObjectRigidBody = new RigidBody(this);
+
+	InitRigidBodySetting();
+	return S_OK;
+}
+
 void Gangster::InitImages()
 {
 	images.resize((int)EImageType::End);
@@ -117,10 +190,35 @@ HRESULT ShieldCop::Init(FPOINT InPos)
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 20.f;
-	detectRange = 50.f;
+	Speed = 40.f;
+	detectRange = 100.f;
+	attackRange = 60.f;
 	attackDuration = 1.f;
 	eType = EType::ShieldCop;
+	InitRigidBodySetting();
+	return S_OK;
+}
+
+HRESULT ShieldCop::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImages();
+	eState = new EIDLE();
+	Pos = InPos;
+	Speed = 40.f;
+	detectRange = 100.f;
+	attackRange = 60.f;
+	attackDuration = 1.f;
+	eType = EType::ShieldCop;
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+	ObjectCollider->SetPos(Pos);
+
+	RenderGroup = InRenderGroup;
+	bFlip = InFlip;
+
+	ObjectRigidBody = new RigidBody(this);
+
 	InitRigidBodySetting();
 	return S_OK;
 }

@@ -44,6 +44,7 @@ public:
 	Enemy();
 	virtual ~Enemy();
 	virtual HRESULT Init(FPOINT InPos);
+	virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup);
 	virtual void InitImages();
 	virtual void InitRigidBodySetting();
 	virtual void Release();
