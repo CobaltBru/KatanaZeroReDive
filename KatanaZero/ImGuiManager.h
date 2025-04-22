@@ -41,6 +41,8 @@ private:
 	void InitBackground();
 	void CreateBackground(int Index);
 	void DestroyBackGround();
+	void DestroyAllBackGround();
+
 
 	void ObjectTap();
 	void ObjectUpdate();

@@ -407,12 +407,11 @@ void ImGuiManager::CleanupRenderTarget()
 void ImGuiManager::Reset()
 {
 	DestroyAllObject();
+	DestroyAllBackGround();
 
 	lineManager = nullptr;
 	objectManager = nullptr;
 	scrollManager = nullptr;
-
-	BackgroundObject.clear();
 }
 
 OPENFILENAME ImGuiManager::GetSaveInfo(TCHAR* lpstrFile)
@@ -606,6 +605,8 @@ void ImGuiManager::LoadLine()
 
 void ImGuiManager::LoadBackGround()
 {
+	DestroyAllBackGround();
+
 	TCHAR lpstrFile[MAX_PATH] = L"";
 	OPENFILENAME ofn = GetLoadInfo(lpstrFile);
 
@@ -856,7 +857,21 @@ void ImGuiManager::DestroyBackGround()
 	BackgroundObject[Bg_current]->SetDead(true);
 
 	BackgroundObject.erase(BackgroundObject.begin() + Bg_current);
+
+	delete[] BackGroundName[Bg_current];
 	BackGroundName.erase(BackGroundName.begin() + Bg_current);
+}
+
+void ImGuiManager::DestroyAllBackGround()
+{
+	for (auto& iter : BackgroundObject)
+		iter->SetDead(true);
+
+	BackgroundObject.clear();
+
+	for (int i = 0; i < BackGroundName.size(); ++i)
+		delete[] BackGroundName[i];
+	BackGroundName.clear();
 }
 
 void ImGuiManager::ObjectTap()
