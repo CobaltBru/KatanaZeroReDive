@@ -2,6 +2,7 @@
 #include "Collider.h"
 #include "Image.h"
 #include "CollisionManager.h"
+#include "RigidBody.h"
 
 Bomb::Bomb()
 {
@@ -30,6 +31,8 @@ HRESULT Bomb::Init(FPOINT pos, float angle)
     CollisionManager::GetInstance()->AddCollider(BombCollider, ECollisionGroup::Bullet);
     BombCollider->SetPos(Pos);
 
+    ObjectRigidBody = new RigidBody(this);
+
     return S_OK; 
 }
 
@@ -41,11 +44,20 @@ void Bomb::Release()
         delete image;
         image = nullptr;
     }
+
+    if (ObjectRigidBody != nullptr)
+    {
+        delete ObjectRigidBody;
+        ObjectRigidBody = nullptr;
+    }
 }
 
 void Bomb::Update()
-{
-    Pos.x += 1;
+{    
+    //ObjectRigidBody->Update();
+    //ObjectRigidBody->AddForce({200,200});
+
+    //ObjectRigidBody->AddVelocity({ 200,200 });
     if (KeyManager::GetInstance()->IsStayKeyDown('L'))
     {
         BombCollider->SetHit(true);

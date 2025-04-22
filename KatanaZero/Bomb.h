@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
+class RigidBody;
 class Collider;
 class Image;
 class Bomb : public GameObject
