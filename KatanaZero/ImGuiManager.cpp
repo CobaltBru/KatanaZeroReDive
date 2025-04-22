@@ -25,6 +25,7 @@ static int Bg_current = -1;
 static int Object_current = -1;
 static int World_current = -1;
 static int Floor_current = -1;
+static int Tile_current = -1;
 
 static vector<GameObject*> WorldObject;
 static vector<Background*> BackgroundObject;
@@ -308,9 +309,9 @@ void ImGuiManager::Tile()
 		//Tile
 		if (ImGui::CollapsingHeader("Tile"))
 		{
-
+			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+			ImGui::ListBox("TileList", &Tile_current, BackgroundList, BackGroundMap.size(), 4);
 		}
-
 
 		ImGui::EndTabItem();
 	}
