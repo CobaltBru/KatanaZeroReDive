@@ -12,28 +12,40 @@ enum class State
     RoundLazer,
     Dash,
     DashDown,
-    Run,
-    Faint
+    Machine,
+    Faint,
+    Die
 };
 
-
+class RigidBody;
+class Bomb;
 class Lazer;
 class Image;
 class Bullet1;
 class HeadHunter : public GameObject
 {
 private:
-    FPOINT pos;
+   
     FPOINT firePos;
+    FPOINT wallPos;
 
     bool isFlip;
     bool isAttacked;
     bool isDead;
+    bool isLeft;
+    bool bCanSpawnBomb;
 
+    FPOINT jumpDist1;
+    FPOINT jumpDist2;
+    FPOINT jumpDist3;
     float angle;
-    float weaponAngle;
+    float weaponAngle; // 레이저 각도
+    float dAngle; // 
     float timer;
-    float indexTimer;
+    float moveTimer;
+    float bulletTimer;
+
+
     int hp;
     int wave;
     int bulletWave;
@@ -48,7 +60,10 @@ private:
     Image* image;
     State state;
     Lazer* lazer;
-    Bullet1* bullet;
+    std::vector<Bullet1*> bullets;
+    std::vector<Bomb*> bombs;
+    
+    RigidBody* ObjectRigidBody;
 
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;
@@ -57,12 +72,14 @@ public:
     HeadHunter();
     virtual ~HeadHunter();
 
-    virtual HRESULT Init();
+    virtual HRESULT Init(FPOINT InPos);
     virtual void Release();
     virtual void Update();
     virtual void Render(HDC hdc);
 
     void SetState(State state) { this->state = state; }
+
+    void Collision();
 
     void Idle();
     void GroundLazer();
@@ -74,13 +91,16 @@ public:
     void Dash();
     void DashDown();
     void Faint();
-    void Run();
+    void Machine();
+    void Die();
 
+    void SpawnBullet(FPOINT firePos, float angle);
+    void SpawnBomb(FPOINT firePos, float angle);
 
     void ChangeState(State newState);
-    void PlayAnimation(string key);
     void CheckPlayerPos();
-    void NextWave();
-
+    void RandomLoop();
+    void IsLeft();
+    void IsAttacked();
 };
 

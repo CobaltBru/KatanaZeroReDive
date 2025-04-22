@@ -143,7 +143,7 @@ HRESULT Stage1Scene::InitObject()
 		
 		{
 		HeadHunter* headhunter = new HeadHunter();
-		headhunter->Init();
+		headhunter->Init({450,360});
 		ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}
 
