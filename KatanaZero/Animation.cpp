@@ -4,8 +4,9 @@
 #include "RenderManager.h"
 #include "CommonFunction.h"
 
-void Animation::Init(Image* image, int frameX)
+void Animation::Init(Image* image, int frameX, float scale)
 {
+	this->scale = scale;
 	imageFlag = false;
 	this->image = image;
 	this->frameX = frameX;
@@ -31,8 +32,9 @@ void Animation::Init(Image* image, int frameX)
 	moveTask.timer = 0.f;
 }
 
-void Animation::Init(GPImage* image, int frameX)
+void Animation::Init(GPImage* image, int frameX, float scale)
 {
+	this->scale = scale;
 	imageFlag = true;
 	this->gpimage = image;
 	this->frameX = frameX;
@@ -120,19 +122,19 @@ void Animation::Render(HDC hdc)
 	{
 		if (!imageFlag)
 			image->SourFrameRenderWidth(hdc, pos.x + moveTask.offset.x, pos.y + moveTask.offset.y,
-				frameIdx, 0, sStart, sEnd, flip, anker);
+				frameIdx, 0, sStart, sEnd, flip, anker, scale);
 		else
 		{
 			Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
 			if (!anker)
 			{
-				gpimage->RenderFrame(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
-					frameIdx, flip);
+				gpimage->RenderFrameScale(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
+					frameIdx, flip , 1.0f, scale);
 			}
 			else
 			{
-				gpimage->Middle_RenderFrame(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
-					frameIdx, flip, 1.0f);
+				gpimage->Middle_RenderFrameScale(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
+					frameIdx, flip, 1.0f, scale);
 			}
 			delete pGraphics;
 		}

@@ -33,6 +33,7 @@ private:
 	Image* image;
 	GPImage* gpimage;
 	FPOINT pos;
+	float scale;
 	//idx, time
 	std::vector<pair<int,float>> aniTasks;
 	Task moveTask;
@@ -60,8 +61,8 @@ private:
 	bool loopflag;
 public:
 	virtual ~Animation() = default;
-	void Init(Image* image, int frameX);
-	void Init(GPImage* image, int frameX);
+	void Init(Image* image, int frameX , float scale = 1.0f);
+	void Init(GPImage* image, int frameX , float scale = 1.0f);
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 
@@ -81,6 +82,7 @@ public:
 	void setloopFlag(bool flag);
 
 	inline bool getAniComplete() { return isComplete; }
-	inline bool getMoveComPlete() { return isMoveComplete; }
+	inline bool getMoveComplete() { return isMoveComplete; }
+	inline FPOINT getCurrentPos() { return { pos.x + moveTask.offset.x,pos.y + moveTask.offset.y }; }
 };
 

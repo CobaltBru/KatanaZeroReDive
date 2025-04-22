@@ -7,6 +7,8 @@ class Animation;
 class Token;
 class GPImage;
 class ScenePsych;
+class ScenePlayer;
+class ScrollManager;
 class TalkScene : public Scene
 {
 public:
@@ -29,6 +31,7 @@ private:
 	Animation* background;
 	Animation* firePlace;
 	ScenePsych* psych;
+	ScenePlayer* player;
 	FPOINT pos;
 	FPOINT psychPos;
 	FPOINT playerPos;

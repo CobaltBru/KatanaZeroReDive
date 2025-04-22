@@ -13,6 +13,7 @@
 #include "ChatManager.h"
 
 #include "ScenePsych.h"
+#include "ScenePlayer.h"
 
 TalkScene::TalkScene() :
 	ObjectManager(nullptr), RenderManager(nullptr)
@@ -59,7 +60,7 @@ void TalkScene::Update()
 {
 	ObjectManager->Update();
 
-	if (KeyManager::GetInstance()->IsStayKeyDown('W'))
+	/*if (KeyManager::GetInstance()->IsStayKeyDown('W'))
 	{
 		pos.y -= 1;
 	}
@@ -74,7 +75,7 @@ void TalkScene::Update()
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 	{
 		pos.x += 1;
-	}
+	}*/
 	//firePlace->setPos(pos, false, false);
 }
 
@@ -115,10 +116,18 @@ HRESULT TalkScene::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, firePlace);
 
 	psych = new ScenePsych();
-	psych->Init();
 	psychPos = { 865.f,637.f };
 	psych->SetPos(psychPos);
+	psych->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, psych);
+
+	player = new ScenePlayer();
+	playerPos = { 695.f,640.f };
+	player->SetPos(playerPos);
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+	
+	
 
 	return S_OK;
 }

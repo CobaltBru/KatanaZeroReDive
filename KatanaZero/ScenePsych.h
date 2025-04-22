@@ -26,7 +26,10 @@ private:
 	Animation walk_ch;
 	Animation inject;
 	TASK currentTask;
+	
 
+	Animation* MoveList[8];
+	int moveIdx = 0;
 	float timer;
 public:
 	ScenePsych();
@@ -37,7 +40,9 @@ public:
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 
+	void Move();
 
+	void MoveFunc();
 
 };
 

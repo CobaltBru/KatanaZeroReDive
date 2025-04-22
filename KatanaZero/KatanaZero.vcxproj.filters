@@ -382,6 +382,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ScenePsych.cpp" />
+    <ClCompile Include="ScenePlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -631,5 +632,6 @@
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
     <ClInclude Include="ScenePsych.h" />
+    <ClInclude Include="ScenePlayer.h" />
   </ItemGroup>
 </Project>
