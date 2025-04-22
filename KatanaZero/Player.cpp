@@ -98,6 +98,11 @@ void Player::Release()
 		delete states;
 		states = nullptr;
 	}
+	if (info)
+	{
+		delete info;
+		info = nullptr;
+	}
 }
 
 void Player::Update()
