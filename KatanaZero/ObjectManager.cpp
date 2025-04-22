@@ -37,6 +37,6 @@ void ObjectManager::Release()
 		}
 		GameObjectList[i].clear();
 	}
-	
+	player = nullptr;
 	ReleaseInstance();
 }

@@ -162,12 +162,7 @@ HRESULT TestScene::InitObject()
 			ObjectManager->AddGameObject(EObjectType::GameObject, gangster);
 			ObjectManager->AddGameObject(EObjectType::GameObject, shieldcop);
 
-			snapShotManager->AddGameObject(EObjectClassType::Player, player);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, grunt);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, pomp);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, gangster);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, shieldcop);
+			
 		}
 
 		// 지수 테스트

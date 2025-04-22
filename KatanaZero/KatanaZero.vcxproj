@@ -188,6 +188,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="ReplayObjects.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RunState.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="ReplayObjects.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RunState.h" />
     <ClInclude Include="Scene.h" />

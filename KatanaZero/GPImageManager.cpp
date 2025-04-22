@@ -1,20 +1,17 @@
 #include "GPImageManager.h"
 void GPImageManager::Init()
 {
-    // GPImage의 static 리소스(pens) 초기화
-    GPImage::Init();
 }
 
 void GPImageManager::Release()
 {
-    // GPImage static 펜 해제
-    GPImage::ReleaseLast();
 
     // 등록된 이미지 모두 해제
     for (auto& kv : mapImages) {
         if (kv.second) {
             kv.second->Release();
             delete kv.second;
+            kv.second = nullptr;
         }
     }
     mapImages.clear();

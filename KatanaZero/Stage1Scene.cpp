@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "GPImageManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -60,7 +61,9 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
+	GPImageManager::GetInstance()->Init();
+
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/HY1Line.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
 		return E_FAIL;
@@ -156,7 +159,7 @@ void Stage1Scene::InitBackgroundImage()
 void Stage1Scene::LoadBackground()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1BG.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -198,7 +201,7 @@ void Stage1Scene::LoadBackground()
 void Stage1Scene::LoadObject()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1Object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -240,6 +243,8 @@ void Stage1Scene::LoadObject()
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+
+		
 	}
 
 	CloseHandle(hFile);
@@ -248,7 +253,7 @@ void Stage1Scene::LoadObject()
 void Stage1Scene::LoadFloor()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1Floor.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -281,6 +286,9 @@ void Stage1Scene::Update()
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
+		snapShotManager->StartReplay();
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	ScrollManager->Update();
@@ -299,6 +307,7 @@ void Stage1Scene::Render(HDC hdc)
 
 void Stage1Scene::Release()
 {
+	GPImageManager::GetInstance()->Release();
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
 	if (CollisionManager != nullptr)

@@ -125,16 +125,18 @@ void Effect::Render(HDC hdc)
 void Effect::MakeSnapShot(void* out)
 {
 	EffectSnapShot* fxSnapShot = static_cast<EffectSnapShot*>(out);
-	fxSnapShot->pos = this->pos;
+	fxSnapShot->startpos = this->start;
+	fxSnapShot->destpos = this->end;
+	fxSnapShot->angle = this->angle;
+	fxSnapShot->bFlip = this->bFlip;
+	fxSnapShot->effectKey = 
 	fxSnapShot->animFrame = this->currFrameX;
 	fxSnapShot->isActive = bActive;
 }
 
 void Effect::ApplySnapShot(const EffectSnapShot& fxSnapShot)
 {
-	this->pos = fxSnapShot.pos;
-	this->bActive = fxSnapShot.isActive;
-	this->currFrameX = fxSnapShot.animFrame;
+	
 }
 
 void Effect::Activefx(FPOINT pos, float angle, bool bFlip)

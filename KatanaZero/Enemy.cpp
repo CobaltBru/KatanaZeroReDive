@@ -11,7 +11,7 @@
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
 	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
-	bReachedTargetFloor(false), attackDuration(0.f), meleeAttackRange(0.f)
+	bReachedTargetFloor(false), attackDuration(0.f), meleeAttackRange(0.f), currAnimKey("")
 {
 }
 
@@ -74,8 +74,6 @@ void Enemy::Release()
 	{
 		if (img)
 		{
-			img->Release();
-			delete img;
 			img = nullptr;
 		}
 	}
@@ -111,9 +109,10 @@ void Enemy::MakeSnapShot(void* out)
 {
 	EnemySnapShot* eSnapShot = static_cast<EnemySnapShot*>(out);
 	eSnapShot->pos = this->GetPos();
-	eSnapShot->ID = 0;
+	eSnapShot->animKey = currAnimKey;
 	eSnapShot->animFrame = currFrame;
 	eSnapShot->isDead = this->bDead;
+	eSnapShot->bFlip = this->bFlip;
 }
 
 int Enemy::GetMaxAttackFrame() const
@@ -167,13 +166,14 @@ void Enemy::ChangeAnimation(EImageType newImage)
 	currFrame = 0;
 	if (image == images[(int)newImage]) return;
 	image = images[(int)newImage];
+	SetAnimKey(newImage);
 }
 
 bool Enemy::Detecting()
 {
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
-	int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
+	int playerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
 	int myFloor = this->GetFloorIndex(g_FloorZones);
 	
 	float dx = playerPos.x - Pos.x;
@@ -189,8 +189,8 @@ bool Enemy::Detecting()
 
 bool Enemy::IsInAttackRange()
 {
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
 	float dx = playerPos.x - Pos.x;
 	float dist = fabs(dx);
 
@@ -204,8 +204,8 @@ bool Enemy::IsInAttackRange()
 
 bool Enemy::IsInMeleeAttackRange()
 {
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
 	float dx = playerPos.x - Pos.x;
 	float dist = fabs(dx);
 
@@ -220,10 +220,10 @@ bool Enemy::IsInMeleeAttackRange()
 bool Enemy::IsInSameFloor()
 {
 	auto player = SnapShotManager::GetInstance()->GetPlayer();
-	if (player.empty()) return true;
+	if (!player) return true;
 
 	int myFloor = this->GetFloorIndex(g_FloorZones);
-	int playerFloor = player.front()->GetFloorIndex(g_FloorZones);
+	int playerFloor = player->GetFloorIndex(g_FloorZones);
 
 	return myFloor == playerFloor;
 }

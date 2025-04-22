@@ -20,8 +20,11 @@ struct EnemySnapShot
 
 struct EffectSnapShot
 {
-	FPOINT pos;
+	FPOINT startpos;
+	FPOINT destpos;
 	int animFrame;
+	float angle;
+	bool bFlip;
 	bool isActive;
 	string effectKey;
 };
@@ -39,10 +42,3 @@ struct SnapShot
 	ScrollSnapShot scroll;
 };
 
-class ReplayEnemy
-{
-private:
-	GPImage* image;
-	EnemySnapShot eSnapShot;
-
-};

@@ -19,6 +19,7 @@ protected:
 	EnemyState* eState;				// 상태패턴용 클래스, delete 했고
 	GPImage* image;					// GDI+ 이미지, delete 했고
 	vector<GPImage*> images;		// 한 캐릭터에 필요한 모든 이미지, 등록해놓고 불러오기 용, delete 했고
+	string currAnimKey;
 	float Speed;					// 이동속도
 	int currFrame;					// 애니메이션
 	float frameTimer;				// 애니메이션 업데이트타임
@@ -67,6 +68,7 @@ public:
 	void UpdateAnimation();
 	void ChangeState(EnemyState* newState);
 	void ChangeAnimation(EImageType newImage);
+	virtual void SetAnimKey(EImageType newImage) {};
 	virtual bool Detecting();
 	virtual bool IsInAttackRange();
 	virtual bool IsInMeleeAttackRange();

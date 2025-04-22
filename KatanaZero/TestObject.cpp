@@ -29,8 +29,8 @@ void TestObject::Update()
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	elapsedTime += dt;
 
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return;
-	GameObject* player = SnapShotManager::GetInstance()->GetPlayer().front();
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return;
+	GameObject* player = SnapShotManager::GetInstance()->GetPlayer();
 	FPOINT pos = player->GetPos();
 
 	float dx = fabs(pos.x - this->GetPos().x);
@@ -121,7 +121,7 @@ void TestObject::MakeSnapShot(void* out)
 {
 	EnemySnapShot* eSnapShot = static_cast<EnemySnapShot*>(out);
 	eSnapShot->pos = this->GetPos();
-	eSnapShot->ID = 0;
+	
 	eSnapShot->animFrame = 0;
 	eSnapShot->isDead = false;
 }

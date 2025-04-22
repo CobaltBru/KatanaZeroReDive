@@ -113,7 +113,7 @@ void EffectManager::RegisterEffect()
     {
         if (iter->second)
         {
-            SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, iter->second);
+            //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, iter->second);
         }
     }
 }

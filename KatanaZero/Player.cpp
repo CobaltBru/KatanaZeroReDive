@@ -19,6 +19,8 @@
 #include "WallSlideState.h"
 #include "CommonFunction.h"
 
+#include "SnapShotManager.h"
+
 
 Player::Player()
 {	

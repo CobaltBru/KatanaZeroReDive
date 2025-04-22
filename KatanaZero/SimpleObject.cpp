@@ -10,6 +10,8 @@
 #include "SimpleTestObject.h"
 #include "CommonFunction.h"
 
+#include "SnapShotManager.h"
+
 SimpleObject::SimpleObject()
 	:Image(nullptr), ScrollSpeed(0.f), bWall(false)
 {
@@ -85,6 +87,14 @@ void SimpleObject::Render(HDC hdc)
 		scroll = Scroll;
 		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0,false,true, ScrollManager::GetInstance()->GetScale());
 	}
+}
+
+void SimpleObject::MakeSnapShot(void* out)
+{
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->pos = this->Pos;
+	pSnapShot->animFrame = 0;
+	pSnapShot->bFlip = this->bFlip;
 }
 
 void SimpleObject::Collision()

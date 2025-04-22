@@ -22,7 +22,7 @@ public:
 	FPOINT GetPos() const { return Pos; }
 	FPOINT* GetPPos() { return &Pos; }
 	FPOINT GetSpawnPos() { return spawnPos; }
-	bool IsDead() const { return bDead; }
+	virtual bool IsDead() const { return bDead; }
 
 	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }

@@ -96,9 +96,9 @@ void ERun::Enter(Enemy& enemy)
 
 void ERun::Update(Enemy& enemy)
 {
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return;
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return;
 
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
 	FPOINT pos = enemy.GetPos();
 
 	float dx = playerPos.x - pos.x;
@@ -335,7 +335,7 @@ EnemyState* ShieldCopAttack::CheckTransition(Enemy* enemy)
 void EFindSlope::Enter(Enemy& enemy)
 {
 	state = "FindSlope";
-	auto player = SnapShotManager::GetInstance()->GetPlayer().front();
+	auto player = SnapShotManager::GetInstance()->GetPlayer();
 	int targetFloor = player->GetFloorIndex(g_FloorZones);
 	FPOINT playerPos = player->GetPos();
 	pair<FPOINT, FPOINT> slope = LineManager::GetInstance()->FindNearestSlope(playerPos, enemy.GetFloorIndex(g_FloorZones), targetFloor);
@@ -360,7 +360,7 @@ void EFindSlope::Update(Enemy& enemy)
 
 void EFindSlope::Exit(Enemy& enemy)
 {
-	int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+	int playerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
 	enemy.SetTargetFloor(playerFloor);
 	enemy.SetReachedTargetFloor(false);
 }
@@ -372,7 +372,7 @@ EnemyState* EFindSlope::CheckTransition(Enemy* enemy)
 
 	if (dist < 3.f)
 	{
-		int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+		int playerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
 		return new ERunOnSlope(slopeEntry, slopeExit, playerFloor);
 	}
 
@@ -417,7 +417,7 @@ void ERunOnSlope::Exit(Enemy& enemy)
 
 EnemyState* ERunOnSlope::CheckTransition(Enemy* enemy)
 {
-	int currPlayerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
+	int currPlayerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
 	if (currPlayerFloor != targetFloor)
 	{
 		return new ERun();
