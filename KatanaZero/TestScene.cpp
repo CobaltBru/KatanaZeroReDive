@@ -25,7 +25,6 @@
 #include "EffectManager.h"
 
 #include "Player.h"
-#include "SimpleObject.h"
 
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -71,6 +70,13 @@ HRESULT TestScene::Init()
 		return E_FAIL;
 	}
 
+	// 자은 테스트 코드
+	Background* background = new Background();
+	background->Init("TestBg");
+	ObjectManager->AddGameObject(EObjectType::GameObject, background);
+
+
+
 	if (FAILED(InitObject()))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene InitObject Failed."), TEXT("실패"), MB_OK);
@@ -99,7 +105,6 @@ HRESULT TestScene::InitImage()
 	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerofall", L"Image/zero_fall.bmp", 176, 50, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));
@@ -119,11 +124,16 @@ HRESULT TestScene::InitObject()
 
 	/**/
 	// 테스트 코드 태경
+	Player* player = new Player();
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+
 	{
 		Background* background = new Background();
 		background->Init("black",0.f);
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
+		
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
@@ -132,15 +142,6 @@ HRESULT TestScene::InitObject()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
-		/*SimpleObject* simpleObject = new SimpleObject();
-		simpleObject->Init({ 300.f,300.f });
-		ObjectManager->AddGameObject(EObjectType::GameObject, simpleObject);*/
-
-		// 자은
-		Player* player = new Player();
-		player->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, player);
-		
 		{
 			HeadHunter* headhunter = new HeadHunter();
 			headhunter->Init({300,360});
@@ -169,7 +170,9 @@ HRESULT TestScene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
 		GoPopUp* goPopUp = new GoPopUp();
+		
 		goPopUp->Init();
+		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
 	}
 	return S_OK;
@@ -207,7 +210,10 @@ void TestScene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+	testDestPos = { Scroll.x + 1600,Scroll.y + 500.f };
 	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+	//testDestPos.y +=1.f;
 	fxManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
 	{
