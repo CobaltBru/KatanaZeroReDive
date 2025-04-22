@@ -201,6 +201,7 @@
     <ClCompile Include="GPImage.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
+    <ClCompile Include="TalkScene.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TimeLineBuffer.cpp" />
@@ -283,6 +284,7 @@
     <ClInclude Include="GPImage.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TaeKyungObject.h" />
+    <ClInclude Include="TalkScene.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TimeLineBuffer.h" />

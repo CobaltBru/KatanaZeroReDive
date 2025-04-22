@@ -12,8 +12,10 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 void WallSlideState::Enter(Player* player)
 {
+
 }
 
 void WallSlideState::Update(Player* player)
 {
+
 }

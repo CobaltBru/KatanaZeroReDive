@@ -36,7 +36,6 @@ private:
 	void CollisionLine();
 private:
 	GameObject* Owner;
-
 	
 	FPOINT Velocity;		// 속도 (속력, 방향)
 	FPOINT MaxVelocity;		// 최대 속도

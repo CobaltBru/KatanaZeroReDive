@@ -8,6 +8,7 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "RigidBody.h"
+#include "ScrollManager.h"
 
 HeadHunter::HeadHunter()
 {
