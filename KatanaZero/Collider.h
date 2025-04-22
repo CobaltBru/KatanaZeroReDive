@@ -23,6 +23,7 @@ public:
 
 	GameObject* GetOwner() const { return Owner; }
 	FPOINT GetPos() const { return Pos; }
+	FPOINT GetPivot() const { return PivotPos; }
 	FPOINT GetSize() const { return Size; }
 	EColliderType GetColliderType() const { return ColliderType; }
 	bool IsDead() const { return bDead; }
@@ -39,6 +40,7 @@ public:
 	void SetHitDelayTime(float hitDelayTime) { HitDelayTime = hitDelayTime; }
 	void SetDead(bool bDead) { this->bDead = bDead; }
 	void SetPos(FPOINT InPos) { Pos = InPos; }
+	void SetDebugDraw(bool InDraw) { bDebugDraw = InDraw; }
 private:
 	void DrawRectLine(HDC hdc, FPOINT HalfSize);
 private:

@@ -2,8 +2,8 @@
 #include "CommonFunction.h"
 #include "Image.h"
 #include "Timer.h"
-#include "TilemapTool.h"
 #include "Stage1Scene.h"
+#include "TestScene.h"
 #include "MapTool.h"
 
 #include "HomeScene.h"
@@ -40,15 +40,13 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-
-	//SceneManager::GetInstance()->AddScene("타일맵툴", new TilemapTool());
+	
+	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-
-	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
-	//SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Test","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -180,6 +178,8 @@ HRESULT MainGame::InitSound()
 	if (FAILED(SoundManager::GetInstance()->AddSound("Katana ZeroTest", "Sound/Katana ZeroTest.wav")))
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("EffectTest", "Sound/EffectTest.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
 		return E_FAIL;
 
 	return S_OK;

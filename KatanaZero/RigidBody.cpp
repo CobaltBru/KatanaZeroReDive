@@ -64,6 +64,7 @@ void RigidBody::Update()
 	}
 
 	Move();
+
 	CollisionLine();
 
 	Force = { 0.f,0.f };

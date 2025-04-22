@@ -1776,7 +1776,7 @@ static int stbtt__GetGlyphShapeTT(const stbtt_fontinfo *info, int glyph_index, s
             start_off = !(flags & 1);
             if (start_off) {
                // if we start off with an off-curve point, then when we need to find a point on the curve
-               // where we can start, and we need to save some state for when we wraparound.
+               // where we can start, and we need to save some EState for when we wraparound.
                scx = x;
                scy = y;
                if (!(vertices[off+i+1].type & 1)) {
@@ -2491,7 +2491,7 @@ static stbtt_int32  stbtt__GetGlyphClass(stbtt_uint8 *classDefTable, int glyph)
          return -1; // Unsupported definition type, return an error.
    }
 
-   // "All glyphs not assigned to a class fall into class 0". (OpenType spec)
+   // "All glyphs not assigned to a class Fall into class 0". (OpenType spec)
    return 0;
 }
 
@@ -2950,7 +2950,7 @@ static void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e,
          float scan_y = y + 0.5f;
          stbtt__active_edge **step = &active;
 
-         // update all active edges;
+         // Update all active edges;
          // remove all active edges that terminate before the center of this scanline
          while (*step) {
             stbtt__active_edge * z = *step;
@@ -3330,7 +3330,7 @@ static void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e,
       STBTT_memset(scanline , 0, result->w*sizeof(scanline[0]));
       STBTT_memset(scanline2, 0, (result->w+1)*sizeof(scanline[0]));
 
-      // update all active edges;
+      // Update all active edges;
       // remove all active edges that terminate before the top of this scanline
       while (*step) {
          stbtt__active_edge * z = *step;

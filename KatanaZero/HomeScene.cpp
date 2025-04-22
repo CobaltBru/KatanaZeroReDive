@@ -9,11 +9,11 @@
 #include "ScrollManager.h"
 #include "GPImage.h"
 #include "Image.h"
-
+#include "SoundManager.h"
 #include "ChatManager.h"
 
 HomeScene::HomeScene():
-	ObjectManager(nullptr), RenderManager(nullptr)
+	ObjectManager(nullptr), RenderManager(nullptr), wall(nullptr)
 {
 	timerStart = false;
 	sceneChangeTimer = 0;
@@ -40,6 +40,8 @@ HRESULT HomeScene::Init()
 		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
+
+	SoundManager::GetInstance()->PlayBGM("HomeOST");
 	return S_OK;
 }
 
@@ -50,12 +52,7 @@ void HomeScene::Release()
 	if (RenderManager != nullptr)
 		RenderManager->Release();
 	
-	if (wall)
-	{
-		wall->Release();
-		delete wall;
-		wall = nullptr;
-	}
+	
 
 	ScrollManager::GetInstance()->Release();
 
@@ -80,15 +77,12 @@ void HomeScene::Update()
 	if (sceneChangeTimer >= 2.1f)
 	{
 		if(cursor == 0)
-			SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+			SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 		else if(cursor == 2)
 			PostMessage(g_hWnd, WM_CLOSE, 0, 0);
 		timerStart = false;
 		sceneChangeTimer = 0;
 	}
-	if(wall)
-		wall->Update();
-
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
 		if (cursor - 1 >= 0)--cursor;
@@ -104,8 +98,6 @@ void HomeScene::Render(HDC hdc)
 	
 	RenderManager->Render(hdc);
 	SelectBox(hdc, { selectBoxPos });
-	if(wall)
-		wall->Render(hdc);
 }
 
 HRESULT HomeScene::InitImage()
@@ -267,7 +259,7 @@ HRESULT HomeScene::InitObject()
 	wall->Init(tmp, 1);
 	wall->setPos({ 0.f,WINSIZE_Y }, false, false);
 	wall->setAniTask({ {0,10.f} });
-	//ObjectManager->AddGameObject(EObjectType::GameObject, wall);
+	ObjectManager->AddGameObject(EObjectType::GameObject, wall);
 
 	
 	return S_OK;

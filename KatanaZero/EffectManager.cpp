@@ -22,6 +22,13 @@ void EffectManager::Release()
         }
     }
     mapFx.clear();
+
+    for (auto& iter : activeFx)
+    {
+        delete iter;
+    }
+    activeFx.clear();
+
     ReleaseInstance();
 }
 

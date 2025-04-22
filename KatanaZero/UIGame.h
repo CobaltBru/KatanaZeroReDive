@@ -44,12 +44,12 @@ private:
 	float timer = 0.f;
 
 public:
-	void init();
+	virtual HRESULT Init() override;
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 	virtual void Release() override;
 
-	virtual void EventPlayerState(const PlayerState& ps) override;
+	virtual void EventPlayerState(const ObsPlayerState& ps) override;
 	virtual void TimerUIEvent(const float t) override;
 };
 

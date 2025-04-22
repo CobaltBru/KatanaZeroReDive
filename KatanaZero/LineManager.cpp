@@ -15,7 +15,7 @@ void LineManager::Init()
 void LineManager::Update()
 {
 	// 테스트 코드
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+	/*if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
 	{
 		if (CurrentEditState == ELineEditState::Create || CurrentEditState == ELineEditState::Adjust)
 		{
@@ -24,7 +24,7 @@ void LineManager::Update()
 		}
 		else if (CurrentEditState == ELineEditState::Eraser)
 			DestroyLine();
-	}
+	}*/
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('1'))
 		CurrentEditState = ELineEditState::Create;
@@ -133,6 +133,47 @@ void LineManager::DestroyAllLine()
 
 		LineList[i].clear();
 	}
+}
+
+bool LineManager::CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance)
+{
+	if (LineList[(int)ELineType::Normal].empty() && LineList[(int)ELineType::DownLine].empty())
+		return false;
+
+	const float HalfTolerance = tolerance * 0.5f;
+	const float ObjectBottom = InPos.y + HalfTolerance;
+
+	Line* Target = nullptr;
+
+	float MinY = FLT_MAX;
+	for (int i = 0; i < (int)ELineType::DownLine + 1; ++i)
+	{
+		for (auto& iter : LineList[i])
+		{
+			if (InPos.x >= iter->GetLine().LeftPoint.x && InPos.x <= iter->GetLine().RightPoint.x)
+			{
+				float x1 = iter->GetLine().LeftPoint.x;
+				float y1 = iter->GetLine().LeftPoint.y;
+
+				float x2 = iter->GetLine().RightPoint.x;
+				float y2 = iter->GetLine().RightPoint.y;
+
+				float dY = ((y2 - y1) / (x2 - x1)) * (InPos.x - x1) + y1;
+
+				if (MinY > abs(dY - ObjectBottom))
+				{
+					MinY = abs(dY - ObjectBottom);
+					OutResult.OutPos.y = dY - HalfTolerance;
+					Target = iter;
+				}
+			}
+		}
+	}
+
+	if (Target == nullptr)
+		return false;
+
+	return true;
 }
 
 bool LineManager::CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, float tolerance, bool IsDown)
@@ -394,7 +435,6 @@ bool LineManager::CollisionWallLine(FPOINT InPos, FPOINT InLastPos, FLineResult&
 					Target = iter;
 
 					OutResult.IsLeft = true;
-
 				}
 			}
 		}

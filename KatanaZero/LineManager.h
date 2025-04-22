@@ -22,6 +22,8 @@ public:
 	void Render(HDC hdc);
 	void Release();
 
+	ELineEditState GetCurrentEditState() const { return CurrentEditState; }
+
 	void SetLineType(ELineType InLineType) { CurrentLineType = InLineType; }
 	void SetLineEditState(ELineEditState InLineEditState) { CurrentEditState = InLineEditState; }
 	void AddLine(float InX, float InY);
@@ -29,6 +31,7 @@ public:
 	void DestroyLine();
 	void DestroyAllLine();
 
+	bool CollisionLine(FPOINT InPos, FLineResult& OutResult, float tolerance = 3.f);
 	bool CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, float tolerance = 3.f, bool IsDown = false);
 	bool CollisionLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, bool IsGround, float tolerance = 3.f, bool IsDown = false);
 	bool CollisionWallLine(FPOINT InPos, FPOINT InLastPos, FLineResult& OutResult, FPOINT InSize);
@@ -37,7 +40,7 @@ public:
 
 	HRESULT SaveFile(LPCWSTR InSavePath);
 	HRESULT LoadFile(LPCWSTR InLoadPath);
-	
+
 	void CreateLine(int InX, int InY);
 	void AdjustLine(float InX, float InY);
 
