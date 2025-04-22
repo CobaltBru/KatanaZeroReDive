@@ -107,6 +107,7 @@ HRESULT Stage1Scene::InitObject()
 
 	LoadBackground();
 	LoadObject();
+	LoadFloor();
 
 	return S_OK;
 }
@@ -239,6 +240,37 @@ void Stage1Scene::LoadObject()
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+	}
+
+	CloseHandle(hFile);
+}
+
+void Stage1Scene::LoadFloor()
+{
+	HANDLE hFile = CreateFile(
+		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("°æ°í"), MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+
+	vector<FloorZone> FloorZones;
+	while (true)
+	{
+		FloorZone fz;
+		ZeroMemory(&fz, sizeof(FloorZone));
+
+		ReadFile(hFile, &fz, sizeof(FloorZone), &dwByte, NULL);
+
+		if (dwByte == 0)
+			break;
+
+		FloorZones.push_back(fz);
 	}
 
 	CloseHandle(hFile);
