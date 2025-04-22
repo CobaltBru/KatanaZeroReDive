@@ -581,9 +581,6 @@
     <ClInclude Include="PlayerAnim.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
@@ -607,6 +604,9 @@
     </ClInclude>
     <ClInclude Include="WallSlideState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>2D Framework\Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

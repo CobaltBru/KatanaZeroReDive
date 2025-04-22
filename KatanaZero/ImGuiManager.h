@@ -3,12 +3,17 @@
 #include "config.h"
 #include <unordered_map>
 
+
 class GameObject;
+class LineManager;
+class ObjectManager;
+class ScrollManager;
 class ImGuiManager : public Singleton<ImGuiManager>
 {
 public:
 	ImGuiManager();
 	void Init();
+	void Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager);
 	void Update();
 	void Render();
 	void Release();
@@ -43,7 +48,6 @@ private:
 	void DestroySelectObject();
 	void DestroyAllObject();
 
-
 	OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
 	OPENFILENAME GetLoadInfo(TCHAR* lpstrFile);
 
@@ -67,5 +71,11 @@ private:
 	vector<const char*> BackGroundName;
 
 	GameObject* PlayerObject;
+
+	LineManager* lineManager;
+	ObjectManager* objectManager;
+	ScrollManager* scrollManager;
 };
+
+
 

@@ -137,9 +137,9 @@ void Player::Render(HDC hdc)
 	if (image != nullptr)
 	{		
 		if (dir == EDirection::Left)		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true);	
+			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
 		else		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);		
+			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
 		// update frame index
 		if (frameTimer > switchTime)

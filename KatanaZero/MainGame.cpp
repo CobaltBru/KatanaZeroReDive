@@ -9,26 +9,17 @@
 #include "HomeScene.h"
 #include "LoadingScene.h"
 #include "SoundManager.h"
+
 #include "ScreenEffectManager.h"
 #include "SnapShotManager.h"
 #include "ScrollManager.h"
+#include "ObjectManager.h"
+#include "RenderManager.h"
+#include "CollisionManager.h"
+#include "EffectManager.h"
 
-//static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
-//{
-//	int width = rect.right - rect.left;
-//	int height = rect.bottom - rect.top;
-//
-//	int amplitude = 40;
-//	float cycle = 10.0f;
-//	float speed = 10.0f;
-//
-//	for (int y = 0; y < height; y++)
-//	{
-//		int offset = (int)(amplitude * sin((y / cycle) + time * speed));
-//		BitBlt(hdcDest, rect.left + offset, rect.top + y, width, 1,
-//			hdcSource, rect.left, rect.top + y, SRCCOPY);
-//	}
-//}
+
+
 HRESULT MainGame::Init()
 {
 	ImageManager::GetInstance()->Init();
@@ -41,19 +32,16 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-	
+
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Test","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
-	//testDraw.AddImage(L"Image/dragon_idle.png",12,1);
-	testDraw.AddImage(L"Image/UI/Home/spr_titlegraphic_0.png",1,1);
-	tmpTimer = 0;
 
 	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
 	if (nFontsAdded == 0)
@@ -69,16 +57,15 @@ HRESULT MainGame::Init()
 	{
 		MessageBox(NULL, L"폰트 생성 실패", L"Error", MB_OK);
 	}
-	
+
 	if (FAILED(backBuffer->Init(WINSIZE_X, WINSIZE_Y)))
 	{
-		MessageBox(g_hWnd, 
+		MessageBox(g_hWnd,
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
-	return S_OK;
 
-	
+	return S_OK;
 }
 
 void MainGame::Release()
@@ -89,8 +76,17 @@ void MainGame::Release()
 		delete backBuffer;
 		backBuffer = nullptr;
 	}
-	testDraw.Release();
+
 	ReleaseDC(g_hWnd, hdc);
+
+	//ScreenEffectManager::GetInstance()->Release();
+	//SnapShotManager::GetInstance()->Release();
+	//ScrollManager::GetInstance()->Release();
+	//ObjectManager::GetInstance()->Release();
+	//RenderManager::GetInstance()->Release();
+	//CollisionManager::GetInstance()->Release();
+	//EffectManager::GetInstance()->Release();
+
 
 	SceneManager::GetInstance()->Release();
 	KeyManager::GetInstance()->Release();
@@ -106,14 +102,7 @@ void MainGame::Update()
 	SceneManager::GetInstance()->Update();
 	SoundManager::GetInstance()->Update();
 
-	InvalidateRect(g_hWnd, NULL, false); 
-	/*tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
-	if (tmpTimer > 0.1f)
-	{
-		frameIdx++;
-		tmpTimer -= 0.1f;
-		if (frameIdx >= 12) frameIdx = 0;
-	}*/
+	InvalidateRect(g_hWnd, NULL, false);
 }
 
 void MainGame::Render()
@@ -129,30 +118,7 @@ void MainGame::Render()
 	TimerManager::GetInstance()->Render(hBackBufferDC);
 	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
 	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
-	testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
-	/*testDraw.Render(pGraphics, {140,100}, 0.5f);
-	testDraw.Render(pGraphics, { 160,100 }, 0.7f);
-	testDraw.Render(pGraphics, { 180,100 }, 0.9f);
-	testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
-	// 백버퍼에 있는 내용을 메인 hdc에 복사
-	/*testDraw.RenderAll(pGraphics, { 0,0 }, 0, 0, false,
-		1.0f, 1.0f, 1.0f, 1.0f, 1.f, 1.f);*/
-	/*testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
-		1.0f, 1.0f, 0.5f, 0.5f, 1.0f, 1.0f);*/
-	/*testDraw.RenderAll(pGraphics, { 100,100 });
-	testDraw.RenderAll(pGraphics, { 130,100 });
-	testDraw.RenderAll(pGraphics, { 160,100 });
-	testDraw.RenderAll(pGraphics, { 190,100 });
-	testDraw.RenderAll(pGraphics, { 220,100 });
-	testDraw.RenderAll(pGraphics, { 250,100 });
-	testDraw.RenderAll(pGraphics, { 280,100 });
-	testDraw.RenderAll(pGraphics, { 310,100 });
-	testDraw.RenderAll(pGraphics, { 340,100 });
-	testDraw.RenderAll(pGraphics, { 370,100 });*/
 
-	//화면 왜곡
-	/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
-	RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/
 	delete pGraphics;
 	backBuffer->Render(hdc);
 }
@@ -193,3 +159,57 @@ MainGame::MainGame()
 MainGame::~MainGame()
 {
 }
+
+//testDraw.AddImage(L"Image/dragon_idle.png",12,1);
+//testDraw.AddImage(L"Image/UI/Home/spr_titlegraphic_0.png",1,1);
+// testDraw.Release();
+// tmpTimer = 0;
+//static void RenderWaveEffect(HDC hdcDest, HDC hdcSource, const RECT& rect, float time)
+//{
+//	int width = rect.right - rect.left;
+//	int height = rect.bottom - rect.top;
+//
+//	int amplitude = 40;
+//	float cycle = 10.0f;
+//	float speed = 10.0f;
+//
+//	for (int y = 0; y < height; y++)
+//	{
+//		int offset = (int)(amplitude * sin((y / cycle) + time * speed));
+//		BitBlt(hdcDest, rect.left + offset, rect.top + y, width, 1,
+//			hdcSource, rect.left, rect.top + y, SRCCOPY);
+//	}
+//}
+
+/*tmpTimer += TimerManager::GetInstance()->GetDeltaTime();
+	if (tmpTimer > 0.1f)
+	{
+		frameIdx++;
+		tmpTimer -= 0.1f;
+		if (frameIdx >= 12) frameIdx = 0;
+	}*/
+
+	//testDraw.RenderRect(pGraphics, { 200,100 }, 100, 100, GPImage::Pcolor::GREEN);
+		/*testDraw.Render(pGraphics, {140,100}, 0.5f);
+		testDraw.Render(pGraphics, { 160,100 }, 0.7f);
+		testDraw.Render(pGraphics, { 180,100 }, 0.9f);
+		testDraw.Render(pGraphics, { 200,100 }, 1.0f);*/
+		// 백버퍼에 있는 내용을 메인 hdc에 복사
+		/*testDraw.RenderAll(pGraphics, { 0,0 }, 0, 0, false,
+			1.0f, 1.0f, 1.0f, 1.0f, 1.f, 1.f);*/
+			/*testDraw.RenderAll(pGraphics, { 200,100 }, frameIdx, frameIdx * 30, true,
+				1.0f, 1.0f, 0.5f, 0.5f, 1.0f, 1.0f);*/
+				/*testDraw.RenderAll(pGraphics, { 100,100 });
+				testDraw.RenderAll(pGraphics, { 130,100 });
+				testDraw.RenderAll(pGraphics, { 160,100 });
+				testDraw.RenderAll(pGraphics, { 190,100 });
+				testDraw.RenderAll(pGraphics, { 220,100 });
+				testDraw.RenderAll(pGraphics, { 250,100 });
+				testDraw.RenderAll(pGraphics, { 280,100 });
+				testDraw.RenderAll(pGraphics, { 310,100 });
+				testDraw.RenderAll(pGraphics, { 340,100 });
+				testDraw.RenderAll(pGraphics, { 370,100 });*/
+
+				//화면 왜곡
+				/*RECT effectRect = { WINSIZE_X / 4.f, WINSIZE_Y / 4.f, WINSIZE_X * (3.f / 4.f), WINSIZE_Y * (3.f / 4.f) };
+				RenderWaveEffect(hBackBufferDC, hBackBufferDC, effectRect, tmpTimer);*/
