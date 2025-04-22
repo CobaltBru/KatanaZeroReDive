@@ -28,7 +28,7 @@ public:
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
 	void SetDead(bool InDead) { bDead = InDead; }
 
-	int GetFloorIndex() const;
+	int GetFloorIndex(vector<FloorZone> fz) const;
 
 protected:
 	FPOINT Pos;

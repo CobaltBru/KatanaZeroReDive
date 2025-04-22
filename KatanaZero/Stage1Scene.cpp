@@ -271,6 +271,7 @@ void Stage1Scene::LoadFloor()
 
 		FloorZones.push_back(fz);
 	}
+	g_FloorZones = FloorZones;
 
 	CloseHandle(hFile);
 }

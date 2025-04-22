@@ -308,9 +308,9 @@ void EFindSlope::Enter(Enemy& enemy)
 {
 	state = "FindSlope";
 	auto player = SnapShotManager::GetInstance()->GetPlayer().front();
-	int targetFloor = player->GetFloorIndex();
+	int targetFloor = player->GetFloorIndex(g_FloorZones);
 	FPOINT playerPos = player->GetPos();
-	pair<FPOINT, FPOINT> slope = LineManager::GetInstance()->FindNearestSlope(playerPos, enemy.GetFloorIndex(), targetFloor);
+	pair<FPOINT, FPOINT> slope = LineManager::GetInstance()->FindNearestSlope(playerPos, enemy.GetFloorIndex(g_FloorZones), targetFloor);
 	slopeEntry = slope.first;
 	slopeExit = slope.second;
 	int a = 1;
@@ -332,7 +332,7 @@ void EFindSlope::Update(Enemy& enemy)
 
 void EFindSlope::Exit(Enemy& enemy)
 {
-	int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex();
+	int playerFloor = SnapShotManager::GetInstance()->GetPlayer().front()->GetFloorIndex(g_FloorZones);
 	enemy.SetTargetFloor(playerFloor);
 	enemy.SetReachedTargetFloor(false);
 }

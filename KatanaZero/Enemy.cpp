@@ -214,8 +214,8 @@ bool Enemy::IsInSameFloor()
 	auto player = SnapShotManager::GetInstance()->GetPlayer();
 	if (player.empty()) return true;
 
-	int myFloor = this->GetFloorIndex();
-	int playerFloor = player.front()->GetFloorIndex();
+	int myFloor = this->GetFloorIndex(g_FloorZones);
+	int playerFloor = player.front()->GetFloorIndex(g_FloorZones);
 
 	return myFloor == playerFloor;
 }

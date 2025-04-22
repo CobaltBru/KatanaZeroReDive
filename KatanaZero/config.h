@@ -194,4 +194,4 @@ extern UINT                     g_ResizeWidth, g_ResizeHeight;
 extern ID3D11RenderTargetView* g_mainRenderTargetView;
 
 // Ãþ ±¸Á¶
-extern vector<FloorZone> FloorZones;
+extern vector<FloorZone> g_FloorZones;

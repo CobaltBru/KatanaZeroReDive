@@ -44,11 +44,11 @@ void Line::Render(HDC hdc)
 	DeleteObject(hPen);
 }
 
-int Line::GetFloorIndex(FPOINT linePoint) const
+int Line::GetFloorIndex(vector<FloorZone> fz, FPOINT linePoint) const
 {
-	for (int i = 0; i < FloorZones.size(); ++i)
+	for (int i = 0; i < fz.size(); ++i)
 	{
-		if (FloorZones[i].Contains(linePoint.y))
+		if (fz[i].Contains(linePoint.y))
 			return i;
 	}
 	return -1;
