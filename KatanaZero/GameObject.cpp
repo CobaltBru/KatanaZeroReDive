@@ -1,11 +1,17 @@
 #include "GameObject.h"
 
+
 HRESULT GameObject::Init()
 {
 	return S_OK;
 }
 
 HRESULT GameObject::Init(FPOINT Pos)
+{
+	return S_OK;
+}
+
+HRESULT GameObject::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
 {
 	return S_OK;
 }
