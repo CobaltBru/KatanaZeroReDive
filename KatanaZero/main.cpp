@@ -65,7 +65,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// 누수 난 메모리 블럭 추적
 	//_CrtSetBreakAlloc(101525);
 #endif
-	
+	SetProcessDPIAware();
 	g_hInstance = hInstance;
 
 	WNDCLASSEX wndClass;
