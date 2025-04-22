@@ -17,6 +17,7 @@ enum class State
     Die
 };
 
+class Player;
 class RigidBody;
 class Bomb;
 class Lazer;
@@ -60,6 +61,7 @@ private:
     Image* image;
     State state;
     Lazer* lazer;
+    GameObject* player;
     std::vector<Bullet1*> bullets;
     std::vector<Bomb*> bombs;
     

@@ -57,7 +57,7 @@ HRESULT TestScene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/headhunter_test.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -141,16 +141,18 @@ HRESULT TestScene::InitObject()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
-		{
-			HeadHunter* headhunter = new HeadHunter();
-			headhunter->Init({300,360});
-			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
+		
 
 		//해영 테스트
 		{
-			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
+			snapShotManager->AddGameObject(EObjectClassType::Player, player);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
+		}
+
+		{
+			HeadHunter* headhunter = new HeadHunter();
+			headhunter->Init({ 300,360 });
+			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}
 
 	}
