@@ -29,10 +29,13 @@ bool KeyManager::IsOnceKeyDown(int key)
         3. 0x8000 -> 이전 프레임에 누른적이 없고 호출시점에는 눌려있는 상태 // Pressed
         4. 0x8001 -> 이전 프레임에 누른적이 있고 호출시점에도 눌렸있는 상태 // Held
     */
-    if (GetAsyncKeyState(key) & 0x8000 && keyDown[key] == false)
+    if (GetAsyncKeyState(key) & 0x8000)
     {
-        keyDown[key] = true;
-        return true;       
+        if (keyDown[key] == false)
+        {
+            keyDown[key] = true;
+            return true;
+        }        
     }
     else
     {

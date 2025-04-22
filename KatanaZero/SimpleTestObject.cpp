@@ -33,6 +33,28 @@ HRESULT SimpleTestObject::Init(FPOINT InPos)
 	return S_OK;
 }
 
+HRESULT SimpleTestObject::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	Image = ImageManager::GetInstance()->FindImage(InImageKey);
+	Pos = InPos;
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+
+	ObjectCollider->SetPos(Pos);
+
+	RenderGroup = InRenderGroup;
+	bFlip = InFlip;
+
+	ObjectRigidBody = new RigidBody(this);
+
+	InitRegidBodySetting();
+
+	ScrollSpeed = 300.f;
+
+	return S_OK;
+}
+
 void SimpleTestObject::Update()
 {
 	LastPos = Pos;
@@ -42,7 +64,7 @@ void SimpleTestObject::Update()
 	Collision();
 
 	//렌더그룹 추가 (해당에서 조건을 달아서  Render를 호출할지 안할지도 설정 가능)
-	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+	RenderManager::GetInstance()->AddRenderGroup(RenderGroup, this);
 }
 
 void SimpleTestObject::Render(HDC hdc)

@@ -13,7 +13,6 @@ protected:
 	float frameTimer;
 
 	RECT rc;
-
 public:
 	Pawn();
 	virtual ~Pawn() {};

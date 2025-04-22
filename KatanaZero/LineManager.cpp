@@ -571,6 +571,8 @@ HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
+		CloseHandle(hFile);
+		DWORD error = GetLastError();
 		MessageBox(g_hWnd, L"LineManager LoadFile Failed.", TEXT("°æ°í"), MB_OK);
 		return E_FAIL;
 	}
