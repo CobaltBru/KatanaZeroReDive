@@ -440,7 +440,7 @@ void ImGui::BulletTextV(const char* fmt, va_list args)
 // Because we handle so many cases (keyboard/gamepad navigation, drag and drop) and many specific behavior (via ImGuiButtonFlags_),
 // this code is a little complex.
 // By far the most common path is interacting with the Mouse using the default ImGuiButtonFlags_PressedOnClickRelease button behavior.
-// See the series of events below and the corresponding state reported by dear imgui:
+// See the series of events below and the corresponding EState reported by dear imgui:
 //------------------------------------------------------------------------------------------------------------------------------------------------
 // with PressedOnClickRelease:             return-value  IsItemHovered()  IsItemActive()  IsItemActivated()  IsItemDeactivated()  IsItemClicked()
 //   Frame N+0 (mouse is outside bb)        -             -                -               -                  -                    -
@@ -4394,8 +4394,8 @@ static bool InputTextFilterCharacter(ImGuiContext* ctx, unsigned int* p_char, Im
 }
 
 // Find the shortest single replacement we can make to get from old_buf to new_buf
-// Note that this doesn't directly alter state->TextA, state->TextLen. They are expected to be made valid separately.
-// FIXME: Ideally we should transition toward (1) making InsertChars()/DeleteChars() update undo-stack (2) discourage (and keep reconcile) or obsolete (and remove reconcile) accessing buffer directly.
+// Note that this doesn't directly alter EState->TextA, EState->TextLen. They are expected to be made valid separately.
+// FIXME: Ideally we should transition toward (1) making InsertChars()/DeleteChars() Update undo-stack (2) discourage (and keep reconcile) or obsolete (and remove reconcile) accessing buffer directly.
 static void InputTextReconcileUndoState(ImGuiInputTextState* state, const char* old_buf, int old_length, const char* new_buf, int new_length)
 {
     const int shorter_length = ImMin(old_length, new_length);
@@ -4520,7 +4520,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
             return false;
         }
         draw_window = g.CurrentWindow; // Child window
-        draw_window->DC.NavLayersActiveMaskNext |= (1 << draw_window->DC.NavLayerCurrent); // This is to ensure that EndChild() will display a navigation highlight so we can "enter" into it.
+        draw_window->DC.NavLayersActiveMaskNext |= (1 << draw_window->DC.NavLayerCurrent); // This is to ensure that EndChild() will display a navigation highlight so we can "Enter" into it.
         draw_window->DC.CursorPos += style.FramePadding;
         inner_size.x -= draw_window->ScrollbarSizes.x;
     }
@@ -4540,7 +4540,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
     if (hovered && g.NavHighlightItemUnderNav)
         hovered = false;
 
-    // We are only allowed to access the state if we are already the active widget.
+    // We are only allowed to access the EState if we are already the active widget.
     ImGuiInputTextState* state = GetInputTextState(id);
 
     if (g.LastItemData.ItemFlags & ImGuiItemFlags_ReadOnly)
@@ -4563,7 +4563,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
     float scroll_y = is_multiline ? draw_window->Scroll.y : FLT_MAX;
 
     const bool init_reload_from_user_buf = (state != NULL && state->WantReloadUserBuf);
-    const bool init_changed_specs = (state != NULL && state->Stb->single_line != !is_multiline); // state != NULL means its our state.
+    const bool init_changed_specs = (state != NULL && state->Stb->single_line != !is_multiline); // EState != NULL means its our EState.
     const bool init_make_active = (user_clicked || user_scroll_finish || input_requested_by_nav);
     const bool init_state = (init_make_active || user_scroll_active);
     if (init_reload_from_user_buf)
@@ -4581,11 +4581,11 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
     }
     else if ((init_state && g.ActiveId != id) || init_changed_specs)
     {
-        // Access state even if we don't own it yet.
+        // Access EState even if we don't own it yet.
         state = &g.InputTextState;
         state->CursorAnimReset();
 
-        // Backup state of deactivating item so they'll have a chance to do a write to output buffer on the same frame they report IsItemDeactivatedAfterEdit (#4714)
+        // Backup EState of deactivating item so they'll have a chance to do a write to output buffer on the same frame they report IsItemDeactivatedAfterEdit (#4714)
         InputTextDeactivateHook(state->ID);
 
         // Take a copy of the initial buffer value.
@@ -4676,8 +4676,8 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
         // Read-only mode always ever read from source buffer. Refresh TextLen when active.
         if (is_readonly && state != NULL)
             state->TextLen = (int)ImStrlen(buf);
-        //if (is_readonly && state != NULL)
-        //    state->TextA.clear(); // Uncomment to facilitate debugging, but we otherwise prefer to keep/amortize th allocation.
+        //if (is_readonly && EState != NULL)
+        //    EState->TextA.clear(); // Uncomment to facilitate debugging, but we otherwise prefer to keep/amortize th allocation.
     }
     if (state != NULL)
         state->TextSrc = is_readonly ? buf : state->TextA.Data;
@@ -4737,7 +4737,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
                 const bool is_bol = (state->Stb->cursor == 0) || ImStb::STB_TEXTEDIT_GETCHAR(state, state->Stb->cursor - 1) == '\n';
                 if (STB_TEXT_HAS_SELECTION(state->Stb) || !is_bol)
                     state->OnKeyPressed(STB_TEXTEDIT_K_WORDLEFT);
-                //state->OnKeyPressed(STB_TEXTEDIT_K_WORDRIGHT | STB_TEXTEDIT_K_SHIFT);
+                //EState->OnKeyPressed(STB_TEXTEDIT_K_WORDRIGHT | STB_TEXTEDIT_K_SHIFT);
                 if (!STB_TEXT_HAS_SELECTION(state->Stb))
                     ImStb::stb_textedit_prep_selection_at_cursor(state->Stb);
                 state->Stb->cursor = ImStb::STB_TEXTEDIT_MOVEWORDRIGHT_MAC(state, state->Stb->cursor);
@@ -4933,7 +4933,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
             // Cut, Copy
             if (g.PlatformIO.Platform_SetClipboardTextFn != NULL)
             {
-                // SetClipboardText() only takes null terminated strings + state->TextSrc may point to read-only user buffer, so we need to make a copy.
+                // SetClipboardText() only takes null terminated strings + EState->TextSrc may point to read-only user buffer, so we need to make a copy.
                 const int ib = state->HasSelection() ? ImMin(state->Stb->select_start, state->Stb->select_end) : 0;
                 const int ie = state->HasSelection() ? ImMax(state->Stb->select_start, state->Stb->select_end) : state->TextLen;
                 g.TempBuffer.reserve(ie - ib + 1);
@@ -5014,7 +5014,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
         }
 
         // FIXME-OPT: We always reapply the live buffer back to the input buffer before clearing ActiveId,
-        // even though strictly speaking it wasn't modified on this frame. Should mark dirty state from the stb_textedit callbacks.
+        // even though strictly speaking it wasn't modified on this frame. Should mark dirty EState from the stb_textedit callbacks.
         // If we do that, need to ensure that as special case, 'validated == true' also writes back.
         // This also allows the user to use InputText() without maintaining any user-side storage.
         // (please note that if you use this property along ImGuiInputTextFlags_CallbackResize you can end up with your temporary string object
@@ -5095,7 +5095,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
                     if (callback_data.SelectionEnd != utf8_selection_end || buf_dirty)      { state->Stb->select_end = (callback_data.SelectionEnd == callback_data.SelectionStart) ? state->Stb->select_start : callback_data.SelectionEnd; }
                     if (buf_dirty)
                     {
-                        // Callback may update buffer and thus set buf_dirty even in read-only mode.
+                        // Callback may Update buffer and thus set buf_dirty even in read-only mode.
                         IM_ASSERT(callback_data.BufTextLen == (int)ImStrlen(callback_data.Buf)); // You need to maintain BufTextLen if you change the text!
                         InputTextReconcileUndoState(state, state->CallbackTextBackup.Data, state->CallbackTextBackup.Size - 1, callback_data.Buf, callback_data.BufTextLen);
                         state->TextLen = callback_data.BufTextLen;  // Assume correct length and valid UTF-8 from user, saves us an extra strlen()
@@ -5366,7 +5366,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
             if (flags & ImGuiInputTextFlags_ElideLeft)
                 draw_pos.x = ImMin(draw_pos.x, frame_bb.Max.x - CalcTextSize(buf_display, NULL).x - style.FramePadding.x);
 
-            const ImVec2 draw_scroll = /*state ? ImVec2(state->Scroll.x, 0.0f) :*/ ImVec2(0.0f, 0.0f); // Preserve scroll when inactive?
+            const ImVec2 draw_scroll = /*EState ? ImVec2(EState->Scroll.x, 0.0f) :*/ ImVec2(0.0f, 0.0f); // Preserve scroll when inactive?
             ImU32 col = GetColorU32(is_displaying_hint ? ImGuiCol_TextDisabled : ImGuiCol_Text);
             draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos - draw_scroll, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
         }
@@ -5429,7 +5429,7 @@ void ImGui::DebugNodeInputTextState(ImGuiInputTextState* state)
     Text("(Internal Buffer: TextA Size: %d, Capacity: %d)", state->TextA.Size, state->TextA.Capacity);
     Text("has_preferred_x: %d (%.2f)", stb_state->has_preferred_x, stb_state->preferred_x);
     Text("undo_point: %d, redo_point: %d, undo_char_point: %d, redo_char_point: %d", undo_state->undo_point, undo_state->redo_point, undo_state->undo_char_point, undo_state->redo_char_point);
-    if (BeginChild("undopoints", ImVec2(0.0f, GetTextLineHeight() * 10), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeY)) // Visualize undo state
+    if (BeginChild("undopoints", ImVec2(0.0f, GetTextLineHeight() * 10), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeY)) // Visualize undo EState
     {
         PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
         for (int n = 0; n < IMSTB_TEXTEDIT_UNDOSTATECOUNT; n++)
@@ -6519,7 +6519,7 @@ bool ImGui::TreeNodeUpdateNextOpen(ImGuiID storage_id, ImGuiTreeNodeFlags flags)
         }
         else
         {
-            // We treat ImGuiCond_Once and ImGuiCond_FirstUseEver the same because tree node state are not saved persistently.
+            // We treat ImGuiCond_Once and ImGuiCond_FirstUseEver the same because tree node EState are not saved persistently.
             const int stored_value = storage->GetInt(storage_id, -1);
             if (stored_value == -1)
             {
@@ -6885,7 +6885,7 @@ float ImGui::GetTreeNodeToLabelSpacing()
     return g.FontSize + (g.Style.FramePadding.x * 2.0f);
 }
 
-// Set next TreeNode/CollapsingHeader open state.
+// Set next TreeNode/CollapsingHeader open EState.
 void ImGui::SetNextItemOpen(bool is_open, ImGuiCond cond)
 {
     ImGuiContext& g = *GImGui;
@@ -6920,7 +6920,7 @@ bool ImGui::CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags)
 // p_visible == NULL                        : regular collapsing header
 // p_visible != NULL && *p_visible == true  : show a small close button on the corner of the header, clicking the button will set *p_visible = false
 // p_visible != NULL && *p_visible == false : do not show the header at all
-// Do not mistake this with the Open state of the header itself, which you can adjust with SetNextItemOpen() or ImGuiTreeNodeFlags_DefaultOpen.
+// Do not mistake this with the Open EState of the header itself, which you can adjust with SetNextItemOpen() or ImGuiTreeNodeFlags_DefaultOpen.
 bool ImGui::CollapsingHeader(const char* label, bool* p_visible, ImGuiTreeNodeFlags flags)
 {
     ImGuiWindow* window = GetCurrentWindow();
@@ -7138,9 +7138,9 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
     if (disabled_item && !disabled_global)
         EndDisabled();
 
-    // Selectable() always returns a pressed state!
+    // Selectable() always returns a pressed EState!
     // Users of BeginMultiSelect()/EndMultiSelect() scope: you may call ImGui::IsItemToggledSelection() to retrieve
-    // selection toggle, only useful if you need that state updated (e.g. for rendering purpose) before reaching EndMultiSelect().
+    // selection toggle, only useful if you need that EState updated (e.g. for rendering purpose) before reaching EndMultiSelect().
     IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags);
     return pressed; //-V1020
 }
@@ -7628,7 +7628,7 @@ ImGuiMultiSelectIO* ImGui::BeginMultiSelect(ImGuiMultiSelectFlags flags, int sel
             request_clear = true;
     }
 
-    // Box-select handling: update active state.
+    // Box-select handling: Update active EState.
     ImGuiBoxSelectState* bs = &g.BoxSelectState;
     if (flags & (ImGuiMultiSelectFlags_BoxSelect1d | ImGuiMultiSelectFlags_BoxSelect2d))
     {
@@ -7690,7 +7690,7 @@ ImGuiMultiSelectIO* ImGui::EndMultiSelect()
     if (ms->IsFocused)
     {
         // We currently don't allow user code to modify RangeSrcItem by writing to BeginIO's version, but that would be an easy change here.
-        if (ms->IO.RangeSrcReset || (ms->RangeSrcPassedBy == false && ms->IO.RangeSrcItem != ImGuiSelectionUserData_Invalid)) // Can't read storage->RangeSrcItem here -> we want the state at begining of the scope (see tests for easy failure)
+        if (ms->IO.RangeSrcReset || (ms->RangeSrcPassedBy == false && ms->IO.RangeSrcItem != ImGuiSelectionUserData_Invalid)) // Can't read storage->RangeSrcItem here -> we want the EState at begining of the scope (see tests for easy failure)
         {
             IMGUI_DEBUG_LOG_SELECTION("[selection] EndMultiSelect: Reset RangeSrcItem.\n"); // Will set be to NavId.
             storage->RangeSrcItem = ImGuiSelectionUserData_Invalid;
@@ -7847,7 +7847,7 @@ void ImGui::MultiSelectItemHeader(ImGuiID id, bool* p_selected, ImGuiButtonFlags
 // - Box-select toggle handling.
 // - Right-click handling.
 // - Altering selection based on Ctrl/Shift modifiers, both for keyboard and mouse.
-// - Record current selection state for RangeSrc
+// - Record current selection EState for RangeSrc
 // This is all rather complex, best to run and refer to "widgets_multiselect_xxx" tests in imgui_test_suite.
 void ImGui::MultiSelectItemFooter(ImGuiID id, bool* p_selected, bool* p_pressed)
 {
@@ -7900,7 +7900,7 @@ void ImGui::MultiSelectItemFooter(ImGuiID id, bool* p_selected, bool* p_pressed)
             if (is_shift)
                 pressed = true;
             else if (!is_ctrl)
-                apply_to_range_src = true; // Since if (pressed) {} main block is not running we update this
+                apply_to_range_src = true; // Since if (pressed) {} main block is not running we Update this
         }
     }
 
@@ -8000,13 +8000,13 @@ void ImGui::MultiSelectItemFooter(ImGuiID id, bool* p_selected, bool* p_pressed)
             if ((flags & ImGuiMultiSelectFlags_NoAutoSelect) == 0)
             {
                 // Shift+Arrow always select
-                // Ctrl+Shift+Arrow copy source selection state (already stored by BeginMultiSelect() in storage->RangeSelected)
+                // Ctrl+Shift+Arrow copy source selection EState (already stored by BeginMultiSelect() in storage->RangeSelected)
                 range_selected = (is_ctrl && storage->RangeSelected != -1) ? (storage->RangeSelected != 0) : true;
             }
             else
             {
-                // Shift+Arrow copy source selection state
-                // Shift+Click always copy from target selection state
+                // Shift+Arrow copy source selection EState
+                // Shift+Click always copy from target selection EState
                 if (ms->IsKeyboardSetRange)
                     range_selected = (storage->RangeSelected != -1) ? (storage->RangeSelected != 0) : true;
                 else
@@ -8028,11 +8028,11 @@ void ImGui::MultiSelectItemFooter(ImGuiID id, bool* p_selected, bool* p_pressed)
         MultiSelectAddSetRange(ms, range_selected, range_direction, storage->RangeSrcItem, item_data);
     }
 
-    // Update/store the selection state of the Source item (used by CTRL+SHIFT, when Source is unselected we perform a range unselect)
+    // Update/store the selection EState of the Source item (used by CTRL+SHIFT, when Source is unselected we perform a range unselect)
     if (storage->RangeSrcItem == item_data)
         storage->RangeSelected = selected ? 1 : 0;
 
-    // Update/store the selection state of focused item
+    // Update/store the selection EState of focused item
     if (g.NavId == id)
     {
         storage->NavIdItem = item_data;
@@ -9904,7 +9904,7 @@ static ImGuiTabItem* ImGui::TabBarScrollingButtons(ImGuiTabBar* tab_bar)
                 tab_to_scroll_to = &tab_bar->Tabs[(target_order >= 0 && target_order < tab_bar->Tabs.Size) ? target_order : selected_order];
 
                 // Cross through buttons
-                // (even if first/last item is a button, return it so we can update the scroll)
+                // (even if first/last item is a button, return it so we can Update the scroll)
                 if (tab_to_scroll_to->Flags & ImGuiTabItemFlags_Button)
                 {
                     target_order += select_dir;
@@ -10367,7 +10367,7 @@ void ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
     if (bb.GetWidth() <= 1.0f)
         return;
 
-    // In Style V2 we'll have full override of all colors per state (e.g. focused, selected)
+    // In Style V2 we'll have full override of all colors per EState (e.g. focused, selected)
     // But right now if you want to alter text color of tabs this is what you need to do.
 #if 0
     const float backup_alpha = g.Style.Alpha;
@@ -10379,7 +10379,7 @@ void ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
     ImRect text_pixel_clip_bb(bb.Min.x + frame_padding.x, bb.Min.y + frame_padding.y, bb.Max.x - frame_padding.x, bb.Max.y);
     ImRect text_ellipsis_clip_bb = text_pixel_clip_bb;
 
-    // Return clipped state ignoring the close button
+    // Return clipped EState ignoring the close button
     if (out_text_clipped)
     {
         *out_text_clipped = (text_ellipsis_clip_bb.Min.x + label_size.x) > text_pixel_clip_bb.Max.x;

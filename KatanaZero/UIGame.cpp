@@ -1,11 +1,11 @@
 #include "UIGame.h"
 #include "Image.h"
 #include "RenderManager.h"
-void UIGame::init()
+HRESULT UIGame::Init()
 {
 	
 	Image* image = nullptr;
-
+	timer = 0.f;
 	//battery
 	{
 		batteryPos = { 2.f,5.f };
@@ -104,6 +104,8 @@ void UIGame::init()
 		rightItem = "UIHand";
 	}
 	hud = ImageManager::GetInstance()->AddImage("UIhud", L"Image/UI/spr_hud.bmp", 640 * (UISCALE), 23 * (UISCALE), true, RGB(255, 0, 255));
+
+	return S_OK;
 }
 
 void UIGame::Update()
@@ -180,7 +182,7 @@ void UIGame::Release()
 {
 }
 
-void UIGame::EventPlayerState(const PlayerState& ps)
+void UIGame::EventPlayerState(const ObsPlayerState& ps)
 {
 	batteryGage = ps.battery;
 	if (leftItem != ps.leftItem)

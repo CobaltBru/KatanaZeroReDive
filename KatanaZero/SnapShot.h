@@ -4,14 +4,14 @@
 struct PlayerSnapShot
 {
 	FPOINT pos;
-	//State state; -> 현재 애니메이션 정보
+	//State EState; -> 현재 애니메이션 정보
 	int animFrame;
 };
 
 struct EnemySnapShot
 {
 	FPOINT pos;
-	//State state;
+	//State EState;
 	int animFrame;
 	int ID;
 	bool isDead;
@@ -20,7 +20,7 @@ struct EnemySnapShot
 struct EffectSnapShot
 {
 	FPOINT pos;
-	//State state;
+	//State EState;
 	int animFrame;
 	//float alpha;
 	//int ID;

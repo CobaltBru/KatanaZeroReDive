@@ -15,7 +15,7 @@
 // widget; you implement display, word-wrapping, and low-level string
 // insertion/deletion, and stb_textedit will map user inputs into
 // insertions & deletions, plus updates to the cursor position,
-// selection state, and undo state.
+// selection EState, and undo EState.
 //
 // It is intended for use in games and other systems that need to build
 // their own custom widgets and which do not have heavy text-editing
@@ -82,7 +82,7 @@
 //   If you do not define STB_TEXTEDIT_IMPLEMENTATION before including this,
 //   it will operate in "header file" mode. In this mode, it declares a
 //   single public symbol, STB_TexteditState, which encapsulates the current
-//   state of a text widget (except for the string, which you will store
+//   EState of a text widget (except for the string, which you will store
 //   separately).
 //
 //   To compile in this mode, you must define STB_TEXTEDIT_CHARTYPE to a
@@ -180,7 +180,7 @@
 //
 // Keyboard input must be encoded as a single integer value; e.g. a character code
 // and some bitflags that represent shift states. to simplify the interface, SHIFT must
-// be a bitflag, so we can test the shifted state of cursor movements to allow selection,
+// be a bitflag, so we can test the shifted EState of cursor movements to allow selection,
 // i.e. (STB_TEXTEDIT_K_RIGHT|STB_TEXTEDIT_K_SHIFT) should be shifted right-arrow.
 //
 // You can encode other things, such as CONTROL or ALT, in additional bits, and
@@ -198,35 +198,35 @@
 // to traverse the entire layout incrementally. You need to compute word-wrapping
 // here.
 //
-// Each textfield keeps its own insert mode state, which is not how normal
-// applications work. To keep an app-wide insert mode, update/copy the
+// Each textfield keeps its own insert mode EState, which is not how normal
+// applications work. To keep an app-wide insert mode, Update/copy the
 // "insert_mode" field of STB_TexteditState before/after calling API functions.
 //
 // API
 //
-//    void stb_textedit_initialize_state(STB_TexteditState *state, int is_single_line)
+//    void stb_textedit_initialize_state(STB_TexteditState *EState, int is_single_line)
 //
-//    void stb_textedit_click(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, float x, float y)
-//    void stb_textedit_drag(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, float x, float y)
-//    int  stb_textedit_cut(STB_TEXTEDIT_STRING *str, STB_TexteditState *state)
-//    int  stb_textedit_paste(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXTEDIT_CHARTYPE *text, int len)
-//    void stb_textedit_key(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXEDIT_KEYTYPE key)
-//    void stb_textedit_text(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXTEDIT_CHARTYPE *text, int text_len)
+//    void stb_textedit_click(STB_TEXTEDIT_STRING *str, STB_TexteditState *EState, float x, float y)
+//    void stb_textedit_drag(STB_TEXTEDIT_STRING *str, STB_TexteditState *EState, float x, float y)
+//    int  stb_textedit_cut(STB_TEXTEDIT_STRING *str, STB_TexteditState *EState)
+//    int  stb_textedit_paste(STB_TEXTEDIT_STRING *str, STB_TexteditState *EState, STB_TEXTEDIT_CHARTYPE *text, int len)
+//    void stb_textedit_key(STB_TEXTEDIT_STRING *str, STB_TexteditState *EState, STB_TEXEDIT_KEYTYPE key)
+//    void stb_textedit_text(STB_TEXTEDIT_STRING *str, STB_TexteditState *EState, STB_TEXTEDIT_CHARTYPE *text, int text_len)
 //
 //    Each of these functions potentially updates the string and updates the
-//    state.
+//    EState.
 //
 //      initialize_state:
-//          set the textedit state to a known good default state when initially
+//          set the textedit EState to a known good default EState when initially
 //          constructing the textedit.
 //
 //      click:
-//          call this with the mouse x,y on a mouse down; it will update the cursor
+//          call this with the mouse x,y on a mouse down; it will Update the cursor
 //          and reset the selection start/end to the cursor point. the x,y must
 //          be relative to the text widget, with (0,0) being the top left.
 //
 //      drag:
-//          call this with the mouse x,y on a mouse drag/up; it will update the
+//          call this with the mouse x,y on a mouse drag/up; it will Update the
 //          cursor and the selection end point
 //
 //      cut:
@@ -254,7 +254,7 @@
 //          call this to text inputs sent to the textfield.
 //
 //
-//   When rendering, you can read the cursor position and selection state from
+//   When rendering, you can read the cursor position and selection EState from
 //   the STB_TexteditState.
 //
 //
@@ -291,8 +291,8 @@
 //     STB_TexteditState
 //
 // Definition of STB_TexteditState which you should store
-// per-textfield; it includes cursor position, selection state,
-// and undo state.
+// per-textfield; it includes cursor position, selection EState,
+// and undo EState.
 //
 
 #ifndef IMSTB_TEXTEDIT_UNDOSTATECOUNT
@@ -344,8 +344,8 @@ typedef struct STB_TexteditState
    // can drag in either direction)
 
    unsigned char insert_mode;
-   // each textfield keeps its own insert mode state. to keep an app-wide
-   // insert mode, copy this value in/out of the app state
+   // each textfield keeps its own insert mode EState. to keep an app-wide
+   // insert mode, copy this value in/out of the app EState
 
    int row_count_per_page;
    // page size in number of row.
@@ -456,7 +456,7 @@ static int stb_text_locate_coord(IMSTB_TEXTEDIT_STRING *str, float x, float y)
          }
          prev_x += w;
       }
-      // shouldn't happen, but if it does, fall through to end-of-line case
+      // shouldn't happen, but if it does, Fall through to end-of-line case
    }
 
    // if the last character is a newline, return that. otherwise return 'after' the last character
@@ -577,7 +577,7 @@ static void stb_textedit_find_charpos(StbFindState *find, IMSTB_TEXTEDIT_STRING 
 
 #define STB_TEXT_HAS_SELECTION(s)   ((s)->select_start != (s)->select_end)
 
-// make the selection/cursor state valid if client altered the string
+// make the selection/cursor EState valid if client altered the string
 static void stb_textedit_clamp(IMSTB_TEXTEDIT_STRING *str, STB_TexteditState *state)
 {
    int n = STB_TEXTEDIT_STRINGLEN(str);
@@ -698,7 +698,7 @@ static int stb_textedit_move_to_word_next( IMSTB_TEXTEDIT_STRING *str, int c )
 
 #endif
 
-// update selection and cursor to match each other
+// Update selection and cursor to match each other
 static void stb_textedit_prep_selection_at_cursor(STB_TexteditState *state)
 {
    if (!STB_TEXT_HAS_SELECTION(state))
@@ -1149,7 +1149,7 @@ static void stb_textedit_flush_redo(StbUndoState *state)
 static void stb_textedit_discard_undo(StbUndoState *state)
 {
    if (state->undo_point > 0) {
-      // if the 0th undo state has characters, clean those up
+      // if the 0th undo EState has characters, clean those up
       if (state->undo_rec[0].char_storage >= 0) {
          int n = state->undo_rec[0].insert_length, i;
          // delete n characters from all other records
@@ -1173,7 +1173,7 @@ static void stb_textedit_discard_redo(StbUndoState *state)
    int k = IMSTB_TEXTEDIT_UNDOSTATECOUNT-1;
 
    if (state->redo_point <= k) {
-      // if the k'th undo state has characters, clean those up
+      // if the k'th undo EState has characters, clean those up
       if (state->undo_rec[k].char_storage >= 0) {
          int n = state->undo_rec[k].insert_length, i;
          // move the remaining redo character data to the end of the buffer
@@ -1386,7 +1386,7 @@ static void stb_text_makeundo_replace(IMSTB_TEXTEDIT_STRING *str, STB_TexteditSt
    }
 }
 
-// reset the state to default
+// reset the EState to default
 static void stb_textedit_clear_state(STB_TexteditState *state, int is_single_line)
 {
    state->undostate.undo_point = 0;

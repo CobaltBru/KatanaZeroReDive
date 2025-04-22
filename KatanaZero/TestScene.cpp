@@ -87,7 +87,7 @@ HRESULT TestScene::Init()
 		MessageBox(g_hWnd, TEXT("TestScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-
+	
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
 	return S_OK;
@@ -98,7 +98,22 @@ HRESULT TestScene::InitImage()
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("TestBg", L"Image/TestBg.bmp", 1639, 824, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 880, 64, 10, 1, true, RGB(255, 255, 255));
+	//zero
+	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerowalk", L"Image/zero_walk.bmp", 440, 32, 10, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroruntoidle", L"Image/zero_run_to_idle.bmp", 270, 38, 5, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerowallgrab", L"Image/zero_wallgrab.bmp", 48, 38, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroidletowalk", L"Image/zero_idle_to_walk.bmp", 180, 38, 4, 1, true, RGB(255, 255, 255));
+
+	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 	return S_OK;
 }
 
@@ -113,9 +128,9 @@ HRESULT TestScene::InitObject()
 		background->Init("TestBg");
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-		//Player* player = new Player();
-		//player->Init();
-		//ObjectManager->AddGameObject(EObjectType::GameObject, player);
+		Player* player = new Player();
+		player->Init();
+		ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
@@ -149,7 +164,7 @@ HRESULT TestScene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, chatManager);
 		*/
 		UIGame* ui = new UIGame();
-		ui->init();
+		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
 		GoPopUp* goPopUp = new GoPopUp();
