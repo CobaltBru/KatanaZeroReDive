@@ -37,6 +37,30 @@ HRESULT SimpleObject::Init(FPOINT InPos, string InImageName)
 	return S_OK;
 }
 
+HRESULT SimpleObject::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	Image = ImageManager::GetInstance()->FindImage(InImageKey);
+	Pos = InPos;
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+
+	ObjectCollider->SetPos(Pos);
+
+	RenderGroup = InRenderGroup;
+	bFlip = InFlip;
+
+	ObjectRigidBody = new RigidBody(this);
+
+	InitRegidBodySetting();
+
+	InitOffset();
+
+	ScrollSpeed = 300.f;
+
+	return S_OK;
+}
+
 void SimpleObject::Update()
 {
 	LastPos = Pos;
