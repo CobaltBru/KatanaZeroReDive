@@ -26,6 +26,9 @@
 
 #include "Player.h"
 
+#include "Enemy.h"
+#include "Enemies.h"
+
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
@@ -57,7 +60,7 @@ HRESULT TestScene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/TestSceneLineData2.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -141,20 +144,39 @@ HRESULT TestScene::InitObject()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
-		{
-			HeadHunter* headhunter = new HeadHunter();
-			headhunter->Init({300,360});
-			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
 
 		//해영 테스트
 		{
-			//snapShotManager->AddGameObject(EObjectClassType::Player, taekyung);
+			Grunt* grunt = new Grunt();
+			grunt->Init({ 800.f, 300.f });
+			Pomp* pomp = new Pomp();
+			pomp->Init({ 500.f, 300.f });
+			Gangster* gangster = new Gangster();
+			gangster->Init({ 100.f, 300.f });
+			ShieldCop* shieldcop = new ShieldCop();
+			shieldcop->Init({ 200.f, 300.f });
+			ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
+			ObjectManager->AddGameObject(EObjectType::GameObject, pomp);
+			ObjectManager->AddGameObject(EObjectType::GameObject, gangster);
+			ObjectManager->AddGameObject(EObjectType::GameObject, shieldcop);
+
+			snapShotManager->AddGameObject(EObjectClassType::Player, player);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
+			snapShotManager->AddGameObject(EObjectClassType::Enemy, grunt);
+			snapShotManager->AddGameObject(EObjectClassType::Enemy, pomp);
+			snapShotManager->AddGameObject(EObjectClassType::Enemy, gangster);
+			snapShotManager->AddGameObject(EObjectClassType::Enemy, shieldcop);
+		}
+
+		// 지수 테스트
+		{
+			HeadHunter* headhunter = new HeadHunter();
+			headhunter->Init({ 300,360 });
+			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}
 
 	}
-	// 테스트 코드 지운
+	// 테스트 코드 지운 사람
 	{
 		/*chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });

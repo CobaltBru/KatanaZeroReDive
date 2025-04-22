@@ -126,7 +126,7 @@ EnemyState* ERun::CheckTransition(Enemy* enemy)
 		case EType::Gangster:
 			return new GangsterAttack();
 			break;
-		case EType::SheildCop:
+		case EType::ShieldCop:
 			return new ShieldCopAttack();
 			break;
 		}

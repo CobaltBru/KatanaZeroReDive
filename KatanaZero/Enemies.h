@@ -18,12 +18,14 @@ public:
 
 class Gangster : public Enemy
 {
+public:
 	virtual HRESULT Init(FPOINT InPos) override;
 	virtual void InitImages() override;
 };
 
-class SheildCop : public Enemy
+class ShieldCop : public Enemy
 {
+public:
 	virtual HRESULT Init(FPOINT InPos) override;
 	virtual void InitImages() override;
 };

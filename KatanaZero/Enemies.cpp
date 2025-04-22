@@ -48,6 +48,7 @@ HRESULT Pomp::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 200.f;
+	detectRange = 100.f;
 	eType = EType::Pomp;
 	InitRigidBodySetting();
 	return S_OK;
@@ -60,11 +61,11 @@ void Pomp::InitImages()
 	{
 		images[i] = new GPImage();
 	}
-	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/Pomp/Pomp_IDLE.png");
-	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/Pomp/Pomp_Walk.png");
-	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/Pomp/Pomp_Run.png");
-	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/Pomp/Pomp_Attack.png");
-	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/Pomp/Pomp_Dead.png");
+	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/Pomp/Pomp_IDLE.png", 8, 1);
+	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/Pomp/Pomp_Walk.png", 10, 1);
+	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/Pomp/Pomp_Run.png", 10, 1);
+	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/Pomp/Pomp_Attack.png", 6, 1);
+	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/Pomp/Pomp_Dead.png", 15, 1);
 	image = images[(int)EImageType::IDLE];
 }
 
@@ -77,6 +78,7 @@ HRESULT Gangster::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 200.f;
+	detectRange = 100.f;
 	eType = EType::Gangster;
 	InitRigidBodySetting();
 	return S_OK;
@@ -89,15 +91,15 @@ void Gangster::InitImages()
 	{
 		images[i] = new GPImage();
 	}
-	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/Gangster/Gangster_IDLE.png");
-	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/Gangster/Gangster_Walk.png");
-	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/Gangster/Gangster_Run.png");
-	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/Gangster/Gangster_MeleeAttack.png");
-	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/Gangster/Gangster_Dead.png");
+	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/Gangster/Gangster_IDLE.png", 8, 1);
+	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/Gangster/Gangster_Walk.png", 8, 1);
+	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/Gangster/Gangster_Run.png", 10, 1);
+	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/Gangster/Gangster_MeleeAttack.png", 6, 1);
+	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/Gangster/Gangster_Dead.png", 14, 1);
 	image = images[(int)EImageType::IDLE];
 }
 
-HRESULT SheildCop::Init(FPOINT InPos)
+HRESULT ShieldCop::Init(FPOINT InPos)
 {
 	InitImages();
 	Pos = InPos;
@@ -106,22 +108,23 @@ HRESULT SheildCop::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 200.f;
-	eType = EType::SheildCop;
+	detectRange = 100.f;
+	eType = EType::ShieldCop;
 	InitRigidBodySetting();
 	return S_OK;
 }
 
-void SheildCop::InitImages()
+void ShieldCop::InitImages()
 {
 	images.resize((int)EImageType::End);
 	for (int i = 0; i < images.size(); i++)
 	{
 		images[i] = new GPImage();
 	}
-	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_IDLE.png");
-	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Walk.png");
-	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Run.png");
-	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Bash.png");
-	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Dead.png");
+	images[(int)EImageType::IDLE]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_IDLE.png", 6, 1);
+	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Walk.png", 10, 1);
+	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Run.png", 10, 1);
+	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Bash.png", 6, 1);
+	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/ShieldCop/ShieldCop_Dead.png", 15, 1);
 	image = images[(int)EImageType::IDLE];
 }
