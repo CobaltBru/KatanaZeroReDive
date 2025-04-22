@@ -124,15 +124,16 @@ HRESULT TestScene::InitObject()
 
 	/**/
 	// 테스트 코드 태경
+	Player* player = new Player();
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+
 	{
 		Background* background = new Background();
 		background->Init("black",0.f);
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-		Player* player = new Player();
-		player->Init();
-		ObjectManager->AddGameObject(EObjectType::GameObject, player);
-
+		
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
@@ -169,7 +170,9 @@ HRESULT TestScene::InitObject()
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
 		GoPopUp* goPopUp = new GoPopUp();
+		
 		goPopUp->Init();
+		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
 	}
 	return S_OK;
@@ -207,7 +210,10 @@ void TestScene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+	testDestPos = { Scroll.x + 1600,Scroll.y + 500.f };
 	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
+	//testDestPos.y +=1.f;
 	fxManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
 	{
