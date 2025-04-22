@@ -7,6 +7,7 @@
 #include "GPImage.h"
 #include "LineManager.h"
 #include "CommonFunction.h"
+#include "EffectManager.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -126,7 +127,10 @@ EnemyState* ERun::CheckTransition(Enemy* enemy)
 			return new PompAttack();
 			break;
 		case EType::Gangster:
-			return new GangsterAttack();
+			if (enemy->IsInMeleeAttackRange())
+				return new GangsterMeleeAttack();	// melee
+			else
+				return new GangsterAttack();		// gun
 			break;
 		case EType::ShieldCop:
 			return new ShieldCopAttack();
@@ -248,11 +252,23 @@ EnemyState* PompAttack::CheckTransition(Enemy* enemy)
 
 void GangsterAttack::Enter(Enemy& enemy)
 {
-	EAttack::Enter(enemy);
+	state = "Attack";
+	enemy.ChangeAnimation(EImageType::GangsterAttack);
+	isAttackFinish = false;
+	enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
 }
 
 void GangsterAttack::Update(Enemy& enemy)
 {
+	if (enemy.GetCurrFrame() == 1)
+	{
+		float offset = (enemy.GetDir() == 1) ? 23.f : -23.f;
+		EffectManager::GetInstance()->Activefx("gangstergun", { enemy.GetPos().x + offset, enemy.GetPos().y - 2.f }, 0.f, false);
+	}
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
+	{
+		isAttackFinish = true;
+	}
 	enemy.GetRigidBody()->Update();
 }
 
@@ -262,6 +278,10 @@ void GangsterAttack::Exit(Enemy& enemy)
 
 EnemyState* GangsterAttack::CheckTransition(Enemy* enemy)
 {
+	if (isAttackFinish && enemy->GetCurrFrame() == enemy->GetMaxAttackFrame() - 1)
+	{
+		return new ERun();
+	}
 	return nullptr;
 }
 
@@ -420,5 +440,32 @@ EnemyState* PompGroggy::CheckTransition(Enemy* enemy)
 {
 	if (bCanStand)
 		return new ERun();
+	return nullptr;
+}
+
+void GangsterMeleeAttack::Enter(Enemy& enemy)
+{
+	EAttack::Enter(enemy);
+}
+
+void GangsterMeleeAttack::Update(Enemy& enemy)
+{
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
+	{
+		isAttackFinish = true;
+	}
+	enemy.GetRigidBody()->Update();
+}
+
+void GangsterMeleeAttack::Exit(Enemy& enemy)
+{
+}
+
+EnemyState* GangsterMeleeAttack::CheckTransition(Enemy* enemy)
+{
+	if (isAttackFinish && enemy->GetCurrFrame() == enemy->GetMaxAttackFrame() - 1)
+	{
+		return new ERun();
+	}
 	return nullptr;
 }

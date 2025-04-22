@@ -7,6 +7,7 @@
 
 void EffectManager::Init()
 {
+    Addfx("gangstergun", L"Image/fx/Gangster_FireFx.png", 6, 1);
 }
 
 void EffectManager::Release()

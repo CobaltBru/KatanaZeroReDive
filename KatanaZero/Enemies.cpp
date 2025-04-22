@@ -84,7 +84,8 @@ HRESULT Gangster::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 40.f;
-	detectRange = 80.f;
+	detectRange = 200.f;
+	attackRange = 150.f;
 	attackDuration = 0.2f;
 	eType = EType::Gangster;
 	InitRigidBodySetting();
@@ -102,6 +103,7 @@ void Gangster::InitImages()
 	images[(int)EImageType::Walk]->AddImage(L"Image/Enemy/Gangster/Gangster_Walk.png", 8, 1);
 	images[(int)EImageType::Run]->AddImage(L"Image/Enemy/Gangster/Gangster_Run.png", 10, 1);
 	images[(int)EImageType::Attack]->AddImage(L"Image/Enemy/Gangster/Gangster_MeleeAttack.png", 6, 1);
+	images[(int)EImageType::GangsterAttack]->AddImage(L"Image/Enemy/Gangster/Gangster_Gun.png", 7, 1);
 	images[(int)EImageType::Dead]->AddImage(L"Image/Enemy/Gangster/Gangster_Dead.png", 14, 1);
 	image = images[(int)EImageType::IDLE];
 }

@@ -8,6 +8,7 @@ enum class EImageType
 	Walk,
 	Run,
 	Attack,
+	GangsterAttack,
 	Dead,
 	End
 };
@@ -103,6 +104,15 @@ public:
 };
 
 class GangsterAttack : public EAttack
+{
+public:
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
+
+class GangsterMeleeAttack : public EAttack
 {
 public:
 	virtual void Enter(Enemy& enemy) override;

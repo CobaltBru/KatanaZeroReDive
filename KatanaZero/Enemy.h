@@ -26,7 +26,7 @@ protected:
 	int dir;
 	float detectRange;
 	float attackRange;
-	float longattackRange;
+	float meleeAttackRange;
 	float attackDuration;
 	EType eType;
 	int targetFloor;
@@ -68,6 +68,7 @@ public:
 	void ChangeAnimation(EImageType newImage);
 	virtual bool Detecting();
 	virtual bool IsInAttackRange();
+	virtual bool IsInMeleeAttackRange();
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
 };
