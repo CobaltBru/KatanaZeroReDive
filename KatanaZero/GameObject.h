@@ -1,6 +1,6 @@
 #pragma once
 #include "config.h"
-
+#include "RenderManager.h"
 
 class Collider;
 class RigidBody;
@@ -12,6 +12,8 @@ public:
 
 	virtual HRESULT Init();
 	virtual HRESULT Init(FPOINT Pos);
+	virtual	HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend);
+
 	virtual void Release();		
 	virtual void Update();		
 	virtual void Render(HDC hdc);
@@ -43,6 +45,8 @@ protected:
 	Collider* ObjectCollider;
 	RigidBody* ObjectRigidBody;
 	FPOINT LastPos;
+	ERenderGroup RenderGroup;
+	bool bFlip;
 
 };
 

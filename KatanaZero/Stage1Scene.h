@@ -32,11 +32,10 @@ protected:
 private:
 	void TestCode();
 
-
-
 	void InitBackgroundImage();
 	void LoadBackground();
 	void LoadObject();
+	void LoadFloor();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;

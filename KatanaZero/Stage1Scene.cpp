@@ -26,6 +26,7 @@
 
 #include "Player.h"
 #include "DefaultObject.h"
+#include "Factory.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -105,6 +106,9 @@ HRESULT Stage1Scene::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	LoadBackground();
+	LoadObject();
+	LoadFloor();
+
 	return S_OK;
 }
 
@@ -193,7 +197,82 @@ void Stage1Scene::LoadBackground()
 
 void Stage1Scene::LoadObject()
 {
+	HANDLE hFile = CreateFile(
+		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("경고"), MB_OK);
+		return;
+	}
 
+	DWORD dwByte = 0;
+
+	while (true)
+	{
+		FObjectData ObjData;
+		ZeroMemory(&ObjData, sizeof(FObjectData));
+
+		ReadFile(hFile, &ObjData.ClsasNameSize, sizeof(int), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.ImageNameSize, sizeof(int), &dwByte, NULL);
+		ObjData.ClassName = new char[ObjData.ClsasNameSize + 1];
+		ObjData.ImageName = new char[ObjData.ImageNameSize + 1];
+
+		ReadFile(hFile, ObjData.ClassName, ObjData.ClsasNameSize, &dwByte, NULL);
+		ReadFile(hFile, ObjData.ImageName, ObjData.ImageNameSize, &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Pos, sizeof(FPOINT), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+
+		ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
+		ObjData.ImageName[ObjData.ImageNameSize] = '\0';
+
+		string ClassName = ObjData.ClassName;
+		string ImageName = ObjData.ImageName;
+
+		delete[] ObjData.ClassName;
+		delete[] ObjData.ImageName;
+
+		if (dwByte == 0)
+			break;
+
+		GameObject* Obj = CreateObject(ClassName);
+		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
+		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+	}
+
+	CloseHandle(hFile);
+}
+
+void Stage1Scene::LoadFloor()
+{
+	HANDLE hFile = CreateFile(
+		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("경고"), MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	vector<FloorZone> FloorZones;
+	while (true)
+	{
+		FloorZone fz;
+		ZeroMemory(&fz, sizeof(FloorZone));
+
+		ReadFile(hFile, &fz, sizeof(FloorZone), &dwByte, NULL);
+
+		if (dwByte == 0)
+			break;
+
+		FloorZones.push_back(fz);
+	}
+
+	CloseHandle(hFile);
 }
 
 void Stage1Scene::Update()
