@@ -18,7 +18,9 @@ HRESULT Grunt::Init(FPOINT InPos)
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 50.f;
-	detectRange = 100.f;
+	detectRange = 50.f;
+	attackRange = 40.f;
+	attackDuration = 0.8f;
 	eType = EType::Grunt;
 	InitRigidBodySetting();
 	return S_OK;
@@ -42,13 +44,16 @@ void Grunt::InitImages()
 HRESULT Pomp::Init(FPOINT InPos)
 {
 	InitImages();
+	eState = new EIDLE();
 	Pos = InPos;
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 200.f;
-	detectRange = 100.f;
+	Speed = 70.f;
+	detectRange = 80.f;
+	attackRange = 40.f;
+	attackDuration = 0.5f;
 	eType = EType::Pomp;
 	InitRigidBodySetting();
 	return S_OK;
@@ -72,13 +77,15 @@ void Pomp::InitImages()
 HRESULT Gangster::Init(FPOINT InPos)
 {
 	InitImages();
+	eState = new EIDLE();
 	Pos = InPos;
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 200.f;
-	detectRange = 100.f;
+	Speed = 40.f;
+	detectRange = 80.f;
+	attackDuration = 0.2f;
 	eType = EType::Gangster;
 	InitRigidBodySetting();
 	return S_OK;
@@ -102,13 +109,15 @@ void Gangster::InitImages()
 HRESULT ShieldCop::Init(FPOINT InPos)
 {
 	InitImages();
+	eState = new EIDLE();
 	Pos = InPos;
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 200.f;
-	detectRange = 100.f;
+	Speed = 20.f;
+	detectRange = 50.f;
+	attackDuration = 1.f;
 	eType = EType::ShieldCop;
 	InitRigidBodySetting();
 	return S_OK;

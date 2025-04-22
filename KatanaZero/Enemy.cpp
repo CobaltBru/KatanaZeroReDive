@@ -10,7 +10,7 @@
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
 	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
-	bReachedTargetFloor(false)
+	bReachedTargetFloor(false), attackDuration(0.f), longattackRange(0.f)
 {
 }
 
@@ -42,7 +42,8 @@ void Enemy::InitRigidBodySetting()
 	//무게
 	ObjectRigidBody->SetMass(1.f);
 	//최대 속도
-	ObjectRigidBody->SetMaxVelocity({ 100.f,400.f });
+	ObjectRigidBody->SetMaxVelocity({ Speed , 400.f });
+	
 	//마찰
 	ObjectRigidBody->SetFriction(50.f);
 
@@ -77,6 +78,7 @@ void Enemy::Release()
 
 void Enemy::Update()
 {
+	UpdateAnimation();
 	if (eState)
 	{
 		eState->Update(*this);
@@ -86,8 +88,6 @@ void Enemy::Update()
 			ChangeState(newState);
 		}
 	}
-		
-	UpdateAnimation();
 
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }

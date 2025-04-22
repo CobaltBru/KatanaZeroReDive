@@ -81,6 +81,7 @@ void ERun::Enter(Enemy& enemy)
 	state = "Run";
 	enemy.ChangeAnimation(EImageType::Run);
 	enemy.GetRigidBody()->SetDown(false);
+	enemy.GetRigidBody()->SetMaxVelocity({ enemy.GetSpeed() * 2.f, 400.f });
 }
 
 void ERun::Update(Enemy& enemy)
@@ -102,6 +103,7 @@ void ERun::Update(Enemy& enemy)
 
 void ERun::Exit(Enemy& enemy)
 {
+	enemy.GetRigidBody()->SetMaxVelocity({ enemy.GetSpeed(), 400.f });
 }
 
 EnemyState* ERun::CheckTransition(Enemy* enemy)
@@ -138,11 +140,16 @@ void EAttack::Enter(Enemy& enemy)
 {
 	state = "Attack";
 	enemy.ChangeAnimation(EImageType::Attack);
-	attacktimer = 0.f;
+	isAttackFinish = false;
+	enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
 }
 
 void EAttack::Update(Enemy& enemy)
 {
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
+	{
+		isAttackFinish = true;
+	}
 	enemy.GetRigidBody()->Update();
 }
 
@@ -181,17 +188,16 @@ EnemyState* EDead::CheckTransition(Enemy* enemy)
 void GruntAttack::Enter(Enemy& enemy)
 {
 	EAttack::Enter(enemy);
-	attackCooldown = 1.f;
-	isAttacking = true;
+	
 }
 
 void GruntAttack::Update(Enemy& enemy)
 {
-	enemy.GetRigidBody()->Update();
-	if (enemy.GetCurrFrame() >= enemy.GetMaxAttackFrame())
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
 	{
-		isAttacking = false;
+		isAttackFinish = true;
 	}
+	enemy.GetRigidBody()->Update();
 }
 
 void GruntAttack::Exit(Enemy& enemy)
@@ -201,16 +207,9 @@ void GruntAttack::Exit(Enemy& enemy)
 
 EnemyState* GruntAttack::CheckTransition(Enemy* enemy)
 {
-	if (!isAttacking)
+	if (isAttackFinish && enemy->GetCurrFrame() == enemy->GetMaxAttackFrame() - 1)
 	{
-		if (enemy->IsInAttackRange())
-		{
-			return new GruntAttack();
-		}
-		else
-		{
-			return new ERun();
-		}
+		return new ERun();
 	}
 	return nullptr;
 }
@@ -218,11 +217,14 @@ EnemyState* GruntAttack::CheckTransition(Enemy* enemy)
 void PompAttack::Enter(Enemy& enemy)
 {
 	EAttack::Enter(enemy);
-	attackCooldown = 1.f;
 }
 
 void PompAttack::Update(Enemy& enemy)
 {
+	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
+	{
+		isAttackFinish = true;
+	}
 	enemy.GetRigidBody()->Update();
 }
 
@@ -232,13 +234,21 @@ void PompAttack::Exit(Enemy& enemy)
 
 EnemyState* PompAttack::CheckTransition(Enemy* enemy)
 {
+	if (enemy->GetCollider()->IsHitted() && enemy->GetCurrFrame() >= 2 && enemy->GetCurrFrame() <= 4)
+	{
+		return new PompGroggy();
+	}
+	if (isAttackFinish && enemy->GetCurrFrame() == enemy->GetMaxAttackFrame() - 1)
+	{
+		return new ERun();
+	}
+
 	return nullptr;
 }
 
 void GangsterAttack::Enter(Enemy& enemy)
 {
 	EAttack::Enter(enemy);
-	attackCooldown = 1.f;
 }
 
 void GangsterAttack::Update(Enemy& enemy)
@@ -258,7 +268,6 @@ EnemyState* GangsterAttack::CheckTransition(Enemy* enemy)
 void ShieldCopAttack::Enter(Enemy& enemy)
 {
 	EAttack::Enter(enemy);
-	attackCooldown = 1.f;
 }
 
 void ShieldCopAttack::Update(Enemy& enemy)
@@ -375,5 +384,41 @@ EnemyState* ERunOnSlope::CheckTransition(Enemy* enemy)
 	{
 		return new ERun();
 	}
+	return nullptr;
+}
+
+void PompGroggy::Enter(Enemy& enemy)
+{
+	state = "Groggy";
+	groggyTimer = 0.f;
+	groggyDuration = 1.5f;
+	bCanStand = false;
+	enemy.ChangeAnimation(EImageType::Dead);
+	enemy.GetRigidBody()->SetMaxVelocity({ enemy.GetSpeed() * 2.f, 400.f });
+	enemy.GetRigidBody()->AddVelocity({ -enemy.GetDir() * enemy.GetSpeed() * 2.f , -200.f});
+}
+
+void PompGroggy::Update(Enemy& enemy)
+{
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	groggyTimer += dt;
+	if (groggyTimer >= groggyDuration)
+	{
+		bCanStand = true;
+	}
+	if (enemy.GetCurrFrame() == enemy.GetImage()->getMaxFrame() - 7)
+		enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
+	enemy.GetRigidBody()->Update();
+}
+
+void PompGroggy::Exit(Enemy& enemy)
+{
+	enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
+}
+
+EnemyState* PompGroggy::CheckTransition(Enemy* enemy)
+{
+	if (bCanStand)
+		return new ERun();
 	return nullptr;
 }

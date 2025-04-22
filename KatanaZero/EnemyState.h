@@ -66,13 +66,7 @@ public:
 class EAttack : public EnemyState
 {
 protected:
-	float attackCooldown{ 0.f };
-	float attacktimer{ 0.f };
-	bool isAttacking{ true };
-	void UpdateCooltime()
-	{
-		attacktimer += TimerManager::GetInstance()->GetDeltaTime();
-	}
+	bool isAttackFinish{ false };
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -91,6 +85,7 @@ public:
 
 class GruntAttack : public EAttack
 {
+
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -144,6 +139,19 @@ private:
 	FPOINT slopeExit;
 public:
 	ERunOnSlope(const FPOINT& entry, const FPOINT& exit);
+	virtual void Enter(Enemy& enemy) override;
+	virtual void Update(Enemy& enemy) override;
+	virtual void Exit(Enemy& enemy) override;
+	virtual EnemyState* CheckTransition(Enemy* enemy) override;
+};
+
+class PompGroggy : public EnemyState
+{
+private:
+	float groggyTimer{ 0.f };
+	float groggyDuration{ 1.f };
+	bool bCanStand{ false };
+public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
 	virtual void Exit(Enemy& enemy) override;

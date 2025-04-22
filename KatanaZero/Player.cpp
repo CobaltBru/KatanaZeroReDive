@@ -52,7 +52,7 @@ HRESULT Player::Init()
 
 	// set player input key
 	playerInput = new PlayerInput();
-	playerInput->Init();
+	//playerInput->Init();
 
 	dir = EDirection::Right;
 

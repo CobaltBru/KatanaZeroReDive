@@ -26,6 +26,8 @@ protected:
 	int dir;
 	float detectRange;
 	float attackRange;
+	float longattackRange;
+	float attackDuration;
 	EType eType;
 	int targetFloor;
 	bool bReachedTargetFloor;
