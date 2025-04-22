@@ -33,8 +33,6 @@ protected:
 	FPOINT spawnPos;
 	bool bDead;
 
-	
-
 	//테스트코드 태경
 public:
 	RigidBody* GetRigidBody() const { return ObjectRigidBody; }

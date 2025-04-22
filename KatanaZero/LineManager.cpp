@@ -37,8 +37,8 @@ void LineManager::Update()
 	//	ResetLinePoint();
 	//}
 
-	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
-	//	ResetLinePoint();
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD0))
+		ResetLinePoint();
 	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD1))
 	//	SetLineType(ELineType::Normal);
 	//if (KeyManager::GetInstance()->IsOnceKeyDown(VK_NUMPAD2))
