@@ -138,7 +138,7 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
     dieIndex = 0;
     random = 0;
 
-    state = State::Idle;
+    state = State::Dash;
 
     {
         image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 50, 12, 1, true, RGB(255, 0, 255));
@@ -335,6 +335,7 @@ void HeadHunter::Collision()
 void HeadHunter::Idle()
 {
     image = ImageManager::GetInstance()->FindImage("Idle");
+    RandomLoop();
     if (frameIndex < image->GetMaxFrameX() - 1)
     {
         if (timer > 0.1f)
@@ -376,14 +377,16 @@ void HeadHunter::GroundLazer()
     if (frameIndex >= image->GetMaxFrameX() - 1)
     {
         frameIndex = image->GetMaxFrameX() - 1;
+        
         lazer->SetIsActive(true);
+        lazer->SetWarningTime(1.0f);
 
 		weaponAngle = -dir * 90;
         firePos = { Pos.x + dir * 100, Pos.y - 17 };
         lazer->GetCollider()->SetPivot({ dir * 470,0});
         lazer->GetCollider()->SetSize({ 1000,50 });
 
-        if (timer > 5.0f)
+        if (timer > 3.5f)
         {
             lazer->SetIsActive(false);
             isFired = false;
@@ -578,7 +581,7 @@ void HeadHunter::VerticalLazer()
         image = ImageManager::GetInstance()->FindImage("VerticalLazer");
         if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            if (timer > 0.1f)
+            if (timer > 0.07f)
             {
                 frameIndex++;
                 timer = 0;
@@ -588,6 +591,7 @@ void HeadHunter::VerticalLazer()
         if (frameIndex >= image->GetMaxFrameX() - 1)
         {   
             lazer->SetIsActive(true);
+            lazer->SetWarningTime(0.1f);
             frameIndex = image->GetMaxFrameX() - 1;
             if (timer > 1.0f)
             {
@@ -603,7 +607,7 @@ void HeadHunter::VerticalLazer()
 
         if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            if (timer > 0.1f)
+            if (timer > 0.07f)
             {
                 frameIndex++;
                 timer = 0;
@@ -612,29 +616,29 @@ void HeadHunter::VerticalLazer()
         
         if (frameIndex >= image->GetMaxFrameX() - 1)
         {
-            frameIndex = -1;
-            if (lazerLoop < 4)
-            {
-                gunWave = 0;
-                lazerLoop++;
-            }
-            else
-            {   
-                lazer->SetIsActive(false);
-                lazerLoop = 0;
-                gunWave = 0;
-                loop = 0;
-                if (rand() % 5 < 3) // rand() 값이 고정적인데 어떡하지 
-                {
-                    
-                    ChangeState(State::RoundLazer);
-                }
-                else
-                {
-                    ChangeState(State::RoundLazer);
-                }
+            frameIndex = image->GetMaxFrameX();
+            if (timer > 0.15f) // 너무 순식간에 이동하는거 같아서 걸어준 시간차
+			{
+				if (lazerLoop < 4)
+				{
+					gunWave = 0;
+					lazerLoop++;
+                    frameIndex = 0;
+                    timer = 0;
+				}
+				else
+				{
+					lazer->SetIsActive(false);
+					lazerLoop = 0;
+					gunWave = 0;
+					loop = 0;
+					ChangeState(State::RoundLazer);
+
+				}
 
             }
+
+
         }
         break;
     }
@@ -662,6 +666,7 @@ void HeadHunter::RoundLazer()
         
         isFlip = true;
         lazer->SetIsActive(true);
+
         if (frameIndex < image->GetMaxFrameX() - 1)
         {
 		    if (timer > 0.1f)
@@ -749,34 +754,18 @@ void HeadHunter::Dash()
     case 1:
         image = ImageManager::GetInstance()->FindImage("Dash");
         
-        //if (timer > 0.002f)
-        //{
-           const FLineResult Result = ObjectRigidBody->GetResult();
-           if (isLeft)
-           {
-               
-               ObjectRigidBody->SetVelocity({ 200.f,0.f });
-               
-                //timer = 0;
+        
+		const FLineResult Result = ObjectRigidBody->GetResult();
 
-                if (Result.LineType == ELineType::Wall) // 벽에 닿거나
-                {
-                    gunWave++;
-                }
-                
-           }
-           if (!isLeft)
-           {
-               //Pos.x -= 5;
-               ObjectRigidBody->AddVelocity({ -200.f,0.f });
-               timer = 0;
-               
-               if (Result.LineType == ELineType::Wall)
-               {
-                   gunWave++;
-               }
+		ObjectRigidBody->SetMaxVelocity({ 1000.f,600.f });
+		ObjectRigidBody->SetVelocity({ dir * 900.f,0.f });
 
-        }
+		if (Result.LineType == ELineType::Wall) // 벽에 닿거나
+		{
+			gunWave++;
+		}
+
+
         break;
 
     case 2:
@@ -789,7 +778,6 @@ void HeadHunter::Dash()
             if (frameIndex >= image->GetMaxFrameX())
             {
                 gunWave = 0;
-                RandomLoop();
                 ChangeState(State::Idle);
             }
         }
@@ -806,8 +794,8 @@ void HeadHunter::DashDown()
     case 0:
         image = ImageManager::GetInstance()->FindImage("Dash");
         const FLineResult Result = ObjectRigidBody->GetResult();
-    
-        ObjectRigidBody->SetVelocity({ 0.f,600.f });
+        ObjectRigidBody->SetMaxVelocity({ 1000.f,1200.f });
+        ObjectRigidBody->SetVelocity({ 0.f,1200.f });
 
         if (Result.LineType == ELineType::Normal)
         {
@@ -954,7 +942,7 @@ void HeadHunter::ChangeState(State newState) {
     state = newState;
 
     isFlip = false;
-
+    loop = 0;
     timer = 0;
     frameIndex = 0;
     gunWave = 0;

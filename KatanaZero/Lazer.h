@@ -11,7 +11,7 @@ private:
     float angle;
     float timer;
     float timer2;
-
+    float warningTime;
     bool isActive;
 
     GPImage* image;
@@ -26,7 +26,7 @@ public:
     virtual void Render(HDC hdc);
 
     void SetIsActive(bool isActive) { this->isActive = isActive; }
-
+    void SetWarningTime(float time) { warningTime = time; }
     void Collision();
 };
 

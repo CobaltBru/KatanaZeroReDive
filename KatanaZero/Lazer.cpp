@@ -20,6 +20,8 @@ HRESULT Lazer::Init()
     timer = 0;
     timer2 = 0;
 
+    warningTime = 1.0f;
+
 	image = new GPImage();
 	image->AddImage(L"Image/HeadHunter/lazer_frame.png", 4, 1);
     
@@ -52,7 +54,7 @@ void Lazer::Update(FPOINT pos, float angle)
     {
         timer += TimerManager::GetInstance()->GetDeltaTime();
         
-        if (timer > 1.0f) // 경고 레이저 1.0f 재생 후 레이저 재생
+        if (timer > warningTime) // 경고 레이저 1.0f 재생 후 레이저 재생 // 처음이후로는 경고 안할거이므로 timer 
         {
             timer2 += TimerManager::GetInstance()->GetDeltaTime();
             if (frameIndex < 3)
@@ -67,7 +69,7 @@ void Lazer::Update(FPOINT pos, float angle)
             {
                 frameIndex = 3;
             }
-
+            
         }
         
         this->angle = angle;
@@ -76,6 +78,7 @@ void Lazer::Update(FPOINT pos, float angle)
     if(!isActive)
     {
         frameIndex = 0;
+        timer = 0;
     }
 }
 

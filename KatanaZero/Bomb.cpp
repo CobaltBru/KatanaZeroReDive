@@ -69,10 +69,10 @@ HRESULT Bomb::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Bullet);
     ObjectCollider->SetPos(Pos);
 
-    ObjectRigidBody = new RigidBody(this); // this = Bomb 자체
+    ObjectRigidBody = new RigidBody(this); 
     ObjectRigidBody->SetMass(1.0f); // 질량
     ObjectRigidBody->SetFriction(0.0f); // 공중에서는 마찰 없음
-    ObjectRigidBody->SetGravityVisible(true);  // 중력 적용
+    ObjectRigidBody->SetGravityVisible(true);  // 중력
     ObjectRigidBody->SetElasticity(3.0f); // 튕기는 정도
 
     // 초기 발사 속도 (포물선)

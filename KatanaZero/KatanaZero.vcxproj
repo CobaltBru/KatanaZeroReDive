@@ -210,6 +210,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="UIGame.cpp" />
     <ClCompile Include="WallSlideState.cpp" />
   </ItemGroup>
@@ -295,6 +296,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="UIGame.h" />
     <ClInclude Include="WallSlideState.h" />
   </ItemGroup>
