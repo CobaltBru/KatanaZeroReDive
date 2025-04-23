@@ -101,18 +101,34 @@ void MapTool::Update()
 		FPOINT TileIndex = ImGuiManager::GetInstance()->GetselectedTile();
 		string key = to_string(CurrentTileX) + to_string(CurrentTileY);
 		if (ImGuiManager::GetInstance()->IsTileEraser())
+		{
 			CurrentTiles.erase(key);
+			CurrentTiles2.erase(key);
+		}			
 		else
 		{
 			auto iter = TileList.find(tileName);
 			if (iter != TileList.end())
 			{
-				CurrentTiles[key].image = iter->second;
-				CurrentTiles[key].tileX = (CurrentTileX * TILEX) + OffsetX;
-				CurrentTiles[key].tileY = (CurrentTileY * TILEY) + OffsetY;
-				CurrentTiles[key].frameX = TileIndex.x;
-				CurrentTiles[key].frameY = iter->second->GetMaxFrameY() - TileIndex.y - 1;
-				CurrentTiles[key].ImageName = tileName;
+				if (CurrentTiles.find(key) == CurrentTiles.end())
+				{
+					CurrentTiles[key].image = iter->second;
+					CurrentTiles[key].tileX = (CurrentTileX * TILEX) + OffsetX;
+					CurrentTiles[key].tileY = (CurrentTileY * TILEY) + OffsetY;
+					CurrentTiles[key].frameX = TileIndex.x;
+					CurrentTiles[key].frameY = iter->second->GetMaxFrameY() - TileIndex.y - 1;
+					CurrentTiles[key].ImageName = tileName;
+				}
+				else
+				{
+					CurrentTiles2[key].image = iter->second;
+					CurrentTiles2[key].tileX = (CurrentTileX * TILEX) + OffsetX;
+					CurrentTiles2[key].tileY = (CurrentTileY * TILEY) + OffsetY;
+					CurrentTiles2[key].frameX = TileIndex.x;
+					CurrentTiles2[key].frameY = iter->second->GetMaxFrameY() - TileIndex.y - 1;
+					CurrentTiles2[key].ImageName = tileName;					
+				}
+				
 			}
 		}
 	}
@@ -136,6 +152,12 @@ void MapTool::Render(HDC hdc)
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale() / 2);
 	}
+	for (auto& iter : CurrentTiles2)
+	{
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+		iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale() / 2);
+	}
+
 
 	RenderManager->RenderNonAlphaBlend(hdc);
 	RenderManager->RenderAlphaBlend(hdc);
@@ -234,6 +256,28 @@ void MapTool::SaveTile()
 			WriteFile(hFile, &td.frameX, sizeof(int), &dwByte, NULL);
 			WriteFile(hFile, &td.frameY, sizeof(int), &dwByte, NULL);
 		}
+		for (auto& iter : CurrentTiles2)
+		{
+			FTileData td;
+			ZeroMemory(&td, sizeof(td));
+			td.tileX = iter.second.tileX;
+			td.tileY = iter.second.tileY;
+			td.frameX = iter.second.frameX;
+			td.frameY = iter.second.frameY;
+			td.KeySize = iter.first.size();
+			td.imageNameSize = iter.second.ImageName.size();
+
+			WriteFile(hFile, &td.KeySize, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.imageNameSize, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, iter.first.c_str(), td.KeySize, &dwByte, NULL);
+			WriteFile(hFile, iter.second.ImageName.c_str(), td.imageNameSize, &dwByte, NULL);
+			WriteFile(hFile, &td.tileX, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.tileY, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.frameX, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.frameY, sizeof(int), &dwByte, NULL);
+		}
+
+
 
 		MessageBox(g_hWnd, L"타일 저장 성공", TEXT("성공"), MB_OK);
 
@@ -244,6 +288,7 @@ void MapTool::SaveTile()
 void MapTool::LoadTile()
 {
 	CurrentTiles.clear();
+	CurrentTiles2.clear();
 
 	TCHAR lpstrFile[MAX_PATH] = L"";
 	OPENFILENAME ofn = GetLoadInfo(lpstrFile, filter);
@@ -298,12 +343,25 @@ void MapTool::LoadTile()
 
 			Image* image = ImageManager::GetInstance()->FindImage(ImageName);
 
-			CurrentTiles[KeyName].image = image;
-			CurrentTiles[KeyName].tileX = td.tileX;
-			CurrentTiles[KeyName].tileY = td.tileY;
-			CurrentTiles[KeyName].frameX = td.frameX;
-			CurrentTiles[KeyName].frameY = td.frameY;
-			CurrentTiles[KeyName].ImageName = ImageName;
+			if (CurrentTiles.find(KeyName) == CurrentTiles.end())
+			{
+				CurrentTiles[KeyName].image = image;
+				CurrentTiles[KeyName].tileX = td.tileX;
+				CurrentTiles[KeyName].tileY = td.tileY;
+				CurrentTiles[KeyName].frameX = td.frameX;
+				CurrentTiles[KeyName].frameY = td.frameY;
+				CurrentTiles[KeyName].ImageName = ImageName;
+			}
+			else
+			{
+				CurrentTiles2[KeyName].image = image;
+				CurrentTiles2[KeyName].tileX = td.tileX;
+				CurrentTiles2[KeyName].tileY = td.tileY;
+				CurrentTiles2[KeyName].frameX = td.frameX;
+				CurrentTiles2[KeyName].frameY = td.frameY;
+				CurrentTiles2[KeyName].ImageName = ImageName;
+			}
+
 		}
 
 		MessageBox(g_hWnd, L"타일 불러오기 성공", TEXT("성공"), MB_OK);
@@ -318,6 +376,7 @@ void MapTool::Release()
 	ImGuiManager::GetInstance()->Reset();
 
 	CurrentTiles.clear();
+	CurrentTiles2.clear();
 
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
