@@ -28,6 +28,7 @@
 #include "SimpleTestObject.h"
 #include "SimpleObject.h"
 #include "Bullet.h"
+#include "Collider.h"
 
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -211,6 +212,15 @@ void TestScene::TestCode()
 	}
 	else  // 슬로우 풀기
 		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
+
+
+	// 라인 트레이스
+	FHitResult HitResult;
+	if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
+	{
+		// 라인 트레이스 맞은 대상의 콜라이더
+		HitResult.HitCollision->SetHit(true);
+	}
 }
 
 void TestScene::Update()
