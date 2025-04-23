@@ -66,7 +66,7 @@ void SimpleTestObject::Update()
 	//렌더그룹 추가 (해당에서 조건을 달아서  Render를 호출할지 안할지도 설정 가능)
 	RenderManager::GetInstance()->AddRenderGroup(RenderGroup, this);
 }
-
+ 
 void SimpleTestObject::Render(HDC hdc)
 {
 	if (Image != nullptr)

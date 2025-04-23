@@ -8,7 +8,7 @@ PlayerState* RunState::GetInput(Player* player)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyUp('A') || KeyManager::GetInstance()->IsOnceKeyUp('D'))
         return player->GetStates()->Idle;
-    if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
+    if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround())
         return player->GetStates()->Jump;
     if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
         return player->GetStates()->Flip;
@@ -26,7 +26,14 @@ void RunState::Enter(Player* player)
 
 void RunState::Update(Player* player)
 {
-    player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+    if (player->GetInfo()->bIsShift)
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerorunshadow"));
+    else
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -300.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 300.f, 0.f });
+
+    if (!player->GetInfo()->bIsShiftChanged) return;
+
 }

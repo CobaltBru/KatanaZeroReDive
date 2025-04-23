@@ -23,4 +23,11 @@ void FallState::Enter(Player* player)
 void FallState::Update(Player* player)
 {
 	//player->GetRigidBody()->AddVelocity({0.f, 10.f});
+
+	if (!player->GetInfo()->bIsShiftChanged) return;
+
+	if (player->GetInfo()->bIsShift)
+		player->SetImage(ImageManager::GetInstance()->FindImage("zerofallshadow"));
+	else
+		player->SetImage(ImageManager::GetInstance()->FindImage("zerofall"));
 }

@@ -18,6 +18,7 @@
 #include "FlipState.h"
 #include "WallSlideState.h"
 #include "CommonFunction.h"
+#include "Bullet.h"
 
 
 Player::Player()
@@ -30,19 +31,37 @@ Player::~Player()
 
 HRESULT Player::Init()
 {
+	InitImage();
+
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 	effectImage = nullptr;
 
 	Pos = FPOINT{ 300.0f, 300.0f };
 	switchTime = 0.02f;
 
+
 	InitPlayerStates();
 	state = states->Idle;
 
 	InitPlayerInfo();
 
-	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.8f, 
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 1.0f },
+		true, 1.f);
+
+	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
+	(float)image->GetFrameWidth(),
+	(float)image->GetFrameHeight()},
+	true, 1.f);*/
+
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, {
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f },
+		true, 1.f);
+
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
 
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
@@ -110,6 +129,18 @@ void Player::Update()
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
 	frameTimer += deltaTime;	
 
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SHIFT))	
+	{
+		info->bIsShift = true;
+		info->bIsShiftChanged = true;
+		// change image, slow motion
+	}
+	else if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SHIFT))
+	{
+		info->bIsShift = false;
+		info->bIsShiftChanged = true;
+	}
+
 	// input
 	PlayerState* newState = state->GetInput(this);	
 	if (newState)
@@ -117,7 +148,10 @@ void Player::Update()
 		state = newState;
 		state->Enter(this);
 	}
+	// update state
 	state->Update(this);
+
+	
 
 	// apply acceleration including gravity
 	UpdateRigidBody();
@@ -138,6 +172,11 @@ void Player::Render(HDC hdc)
 		else		
 			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
+		//if (dir == EDirection::Left)
+		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+		//else
+		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);
+
 		// update frame index
 		if (frameTimer > switchTime)
 		{
@@ -153,9 +192,14 @@ void Player::Render(HDC hdc)
 	if (effectImage != nullptr)
 	{
 		if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true);
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
 		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+		
+		/*if (dir == EDirection::Left)
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+		else
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
 	}
 }
 
@@ -181,6 +225,7 @@ void Player::InitPlayerInfo()
 	info->bIsAttack = false;
 	info->bIsJump = false;
 	info->bIsFlip = false;
+	info->bIsShift = false;
 }
 
 void Player::InitBindState()
@@ -194,9 +239,10 @@ void Player::InitRigidBody()
 	ObjectRigidBody->SetElasticity(0.f);
 	ObjectRigidBody->SetGravityVisible(true);
 	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 800.f });
-	ObjectRigidBody->SetMass(5.f);
-	ObjectRigidBody->SetMaxVelocity({ 200.f, 400.f });
-	ObjectRigidBody->SetFriction(300.f);
+	ObjectRigidBody->SetMass(10.f);
+	//ObjectRigidBody->SetMass(5.f / ScrollManager::GetInstance()->GetScale() * ScrollManager::GetInstance()->GetScale());
+	ObjectRigidBody->SetMaxVelocity({ 600.f, 1000.f });
+	ObjectRigidBody->SetFriction(600.f);
 }
 
 void Player::InitScrollOffset()
@@ -247,6 +293,8 @@ void Player::UpdateRigidBody()
 	const FLineResult lineResult = ObjectRigidBody->GetResult();
 	if (lineResult.LineType == ELineType::Wall)
 	{
+		if (lineResult.IsLeft) dir = EDirection::Left;
+
 		if (ObjectRigidBody->IsGround() == false) 
 			image = ImageManager::GetInstance()->FindImage("zerowallslide");
 		else
@@ -254,7 +302,7 @@ void Player::UpdateRigidBody()
 			image = ImageManager::GetInstance()->FindImage("zeroidle");
 			state = states->Idle;
 		}
-
+		ObjectRigidBody->SetVelocity({ 0.f , 10.f });
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
 		bWall = true;
 		bIsLeft = lineResult.IsLeft;
@@ -270,19 +318,87 @@ void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	
-	// only checking the enemy
-	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy))
+	// player die
+	if (!info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy) ||
+		!info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Bullet))
 	{
 		ObjectCollider->SetHit(true);
 		HitResult.HitCollision->SetHit(true);	// opponent
 
 		// direction from player to enemy
-		FPOINT PEDir;
-		PEDir.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
-		PEDir.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
-		Normalize(PEDir);
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+		//FPOINT PEDir;
+		//PEDir.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
+		//PEDir.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
+		//Normalize(PEDir);
+
+		// die
+		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
+			ObjectRigidBody->AddVelocity(-PEDir * 100.f);
+	}
+
+	// player attack enemy
+	if (info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Enemy))
+	{
+		ObjectCollider->SetHit(true);
+		HitResult.HitCollision->SetHit(true);	// opponent
+
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
 
 		// knock enemy
-		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
+			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
 	}
+
+	// player attack
+	if (info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Bullet))
+	{
+		ObjectCollider->SetHit(true);
+		HitResult.HitCollision->SetHit(true);	// opponent
+
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+
+		// knock enemy
+		if (HitResult.HitCollision->GetOwner())
+		{			
+			BulletTest* bullet = dynamic_cast<BulletTest*>(HitResult.HitCollision->GetOwner());
+			if (bullet)
+			{
+				float angle;
+				if (dir == EDirection::Right) angle = -30.f;
+				else angle = -150.f;
+				bullet->SetAngle(angle);
+			}
+		}
+			
+	}
+}
+
+
+void Player::InitImage()
+{
+	//zero
+	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerofall", L"Image/zero_fall.bmp", 176, 50, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));		
+	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));	
+
+	// shadow
+	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));
+	//ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerorunshadow", L"Image/zero_run_shadow.bmp", 440, 32, 10, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 32, 11, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerofallshadow", L"Image/zero_fall_shadow.bmp", 164, 49, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 41, 7, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroidletorunshadow", L"Image/zero_idle_to_run_shadow.bmp", 184, 34, 4, 1, true, RGB(255, 0, 255));
+
+	// slash
+	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 }

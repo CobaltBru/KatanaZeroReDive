@@ -192,6 +192,8 @@
     <ClCompile Include="RunState.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScenePlayer.cpp" />
+    <ClCompile Include="ScenePsych.cpp" />
     <ClCompile Include="ScrollManager.cpp" />
     <ClCompile Include="SimpleObject.cpp" />
     <ClCompile Include="SimpleTestObject.cpp" />
@@ -277,6 +279,8 @@
     <ClInclude Include="RunState.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScenePlayer.h" />
+    <ClInclude Include="ScenePsych.h" />
     <ClInclude Include="ScrollManager.h" />
     <ClInclude Include="SimpleObject.h" />
     <ClInclude Include="SimpleTestObject.h" />

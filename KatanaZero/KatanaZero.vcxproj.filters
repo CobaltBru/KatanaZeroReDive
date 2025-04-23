@@ -133,13 +133,13 @@
     <Filter Include="MainGame\Player\PlayerState">
       <UniqueIdentifier>{668b3759-4f92-469d-83e3-66cbd1c2d9e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="í—¤ë” íŒŒì¼">
+    <Filter Include="?—¤?” ?ŒŒ?¼">
       <UniqueIdentifier>{0cea3ea6-e9f6-4ea3-ac64-8c0f680ce951}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="?†Œ?Š¤ ?ŒŒ?¼">
       <UniqueIdentifier>{5d12cf9f-d83d-4d2f-a54c-967a509fbc21}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ë¦¬ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="ë¦¬ì†Œ?Š¤ ?ŒŒ?¼">
       <UniqueIdentifier>{9fe14f5f-c762-4063-a6fe-dfe8d08b8d67}</UniqueIdentifier>
     </Filter>
     <Filter Include="MainGame\Tile">
@@ -373,25 +373,27 @@
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="DefaultObject.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="UIGame.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="WorldBackground.cpp" />
     <ClCompile Include="Tile.cpp">
       <Filter>MainGame\Tile</Filter>
     </ClCompile>
     <ClCompile Include="GoalTrigger.cpp" />
+    <ClCompile Include="ScenePsych.cpp" />
+    <ClCompile Include="ScenePlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -623,19 +625,19 @@
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
     <ClInclude Include="CommonFunction.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="PlayerAnim.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="TalkScene.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>MainGame\Scene</Filter>
     </ClInclude>
     <ClInclude Include="WorldBackground.h" />
     <ClInclude Include="Reference\Headers\Imgui\stb_image.h">
@@ -648,5 +650,7 @@
       <Filter>MainGame\Tile</Filter>
     </ClInclude>
     <ClInclude Include="GoalTrigger.h" />
+    <ClInclude Include="ScenePsych.h" />
+    <ClInclude Include="ScenePlayer.h" />
   </ItemGroup>
 </Project>

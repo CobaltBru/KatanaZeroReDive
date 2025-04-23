@@ -4,8 +4,9 @@
 #include "RenderManager.h"
 #include "CommonFunction.h"
 
-void Animation::Init(Image* image, int frameX)
+void Animation::Init(Image* image, int frameX, float scale)
 {
+	this->scale = scale;
 	imageFlag = false;
 	this->image = image;
 	this->frameX = frameX;
@@ -19,10 +20,21 @@ void Animation::Init(Image* image, int frameX)
 	timer = 0;
 	isStart = false;
 	isOn = false;
+	isMoveComplete = false;
+	isComplete = false;
+	loopflag = true;
+
+	moveTask.dest = { 0,0 };
+	moveTask.duration = 0.f;
+	moveTask.flag = 0.f;
+	moveTask.offset = { 0,0 };
+	moveTask.src = { 0,0 };
+	moveTask.timer = 0.f;
 }
 
-void Animation::Init(GPImage* image, int frameX)
+void Animation::Init(GPImage* image, int frameX, float scale)
 {
+	this->scale = scale;
 	imageFlag = true;
 	this->gpimage = image;
 	this->frameX = frameX;
@@ -36,6 +48,16 @@ void Animation::Init(GPImage* image, int frameX)
 	timer = 0;
 	isStart = false;
 	isOn = false;
+	isMoveComplete = false;
+	isComplete = false;
+	loopflag = true;
+
+	moveTask.dest = { 0,0 };
+	moveTask.duration = 0.f;
+	moveTask.flag = 0.f;
+	moveTask.offset = { 0,0 };
+	moveTask.src = { 0,0 };
+	moveTask.timer = 0.f;
 }
 
 void Animation::Update()
@@ -46,7 +68,18 @@ void Animation::Update()
 		if (timer >= aniTasks[anitaskIdx].second)
 		{
 			anitaskIdx++;
-			if (anitaskIdx >= aniTasks.size())anitaskIdx = 0;
+			if (anitaskIdx >= aniTasks.size())
+			{
+				if (!loopflag)
+				{
+					isComplete = true;
+					setFrame(frameX - 1);
+					Stop();
+					return;
+				}
+				else anitaskIdx = 0;
+				
+			}
 			frameIdx = aniTasks[anitaskIdx].first;
 			timer = 0.f;
 		}
@@ -74,6 +107,7 @@ void Animation::Update()
 			}
 			else if (moveTask.flag & Move_Stop)
 			{
+				isMoveComplete = true;
 				MoveOff();
 			}
 		}
@@ -88,19 +122,19 @@ void Animation::Render(HDC hdc)
 	{
 		if (!imageFlag)
 			image->SourFrameRenderWidth(hdc, pos.x + moveTask.offset.x, pos.y + moveTask.offset.y,
-				frameIdx, 0, sStart, sEnd, flip, anker);
+				frameIdx, 0, sStart, sEnd, flip, anker, scale);
 		else
 		{
 			Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
 			if (!anker)
 			{
-				gpimage->RenderFrame(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
-					frameIdx, flip);
+				gpimage->RenderFrameScale(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
+					frameIdx, flip , 1.0f, scale);
 			}
 			else
 			{
-				gpimage->Middle_RenderFrame(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
-					frameIdx, flip, 1.0f);
+				gpimage->Middle_RenderFrameScale(pGraphics, { pos.x + moveTask.offset.x, pos.y + moveTask.offset.y },
+					frameIdx, flip, 1.0f, scale);
 			}
 			delete pGraphics;
 		}
@@ -138,6 +172,7 @@ void Animation::Off()
 void Animation::MoveOn(FPOINT dest, float duration, int flag)
 {
 	isMove = true;
+	isMoveComplete = false;
 	if (flag & POS_Update)
 	{
 		pos.x += moveTask.offset.x;
@@ -190,5 +225,19 @@ void Animation::Release()
 	{
 		delete gpimage;
 		gpimage = nullptr;
+	}
+}
+
+void Animation::setloopFlag(bool flag)
+{
+	if (flag == true)
+	{
+		isComplete = false;
+		loopflag = true;
+	}
+	else
+	{
+		isComplete = false;
+		loopflag = false;
 	}
 }
