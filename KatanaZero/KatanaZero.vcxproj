@@ -176,7 +176,6 @@
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PlayerAnim.cpp" />
     <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PopUpManager.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp" />

@@ -17,14 +17,20 @@ PlayerState* IdleState::GetInput(Player* player)
         player->SetDirection(EDirection::Right);
         return player->GetStates()->Run;
     }
+
     if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround())
         return player->GetStates()->Jump;
+
     if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
     {
         player->GetRigidBody()->SetDown(true);
         return player->GetStates()->Fall;
     }
-
+    if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetInfo()->bIsWall)
+    {
+        player->GetRigidBody()->AddVelocity({ (player->GetDirection() == EDirection::Left ? 100.f : -100.f), -300.f});        
+    }
+    
     return nullptr;
 }
 

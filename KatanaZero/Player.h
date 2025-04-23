@@ -30,6 +30,7 @@ struct playerInfo
 	bool bIsFlip;
 	bool bIsShift;
 	bool bIsShiftChanged;
+	bool bIsWall;
 };
 
 struct playerStates
@@ -52,7 +53,7 @@ private:
 	stateAnimFunc playerAnimFunc;
 
 	bool bIsLeft;
-	bool bWall;
+	
 
 	float scrollSpeed;
 

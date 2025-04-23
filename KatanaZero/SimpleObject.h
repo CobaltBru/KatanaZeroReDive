@@ -41,7 +41,7 @@ private:
 	float ScrollSpeed;
 	FPOINT scroll;
 
-	bool bWall;
+	bool bIsWall;
 	bool bIsLeft;
 };
 

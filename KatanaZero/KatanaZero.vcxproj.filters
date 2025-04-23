@@ -372,9 +372,6 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="UIGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
