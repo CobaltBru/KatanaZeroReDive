@@ -12,7 +12,6 @@ enum class State
     RoundLazer,
     Dash,
     DashDown,
-    Machine,
     Faint,
     Die
 };
@@ -36,6 +35,8 @@ private:
     bool isLeft;
     bool bCanSpawnBomb;
     bool faintStart;
+    bool isFired;
+    bool isFlipLocked;
 
     FPOINT jumpDist1;
     FPOINT jumpDist2;
@@ -57,6 +58,8 @@ private:
     int gunCount;
     int loop;
     int lazerLoop;
+    int deadCount;
+    int dieIndex;
 
     int frameIndex;
     Image* image;
@@ -95,7 +98,6 @@ public:
     void Dash();
     void DashDown();
     void Faint();
-    void Machine();
     void Die();
 
     void SpawnBullet(FPOINT firePos, float angle);

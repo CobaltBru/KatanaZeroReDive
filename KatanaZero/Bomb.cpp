@@ -41,8 +41,8 @@ HRESULT Bomb::Init(FPOINT pos, float angle)
     ObjectRigidBody->SetElasticity(3.0f); // 튕기는 정도
 
     // 초기 발사 속도 (포물선)
-    ObjectRigidBody->SetMaxVelocity({ 300.f, 600.f });
-    ObjectRigidBody->SetVelocity({ +300.f, -600.f }); // → 방향, ↑ 방향 // 나오는 각도를 매번 다르게 하려면? > 지피티야..
+    ObjectRigidBody->SetMaxVelocity({ 300.f, 1000.f });
+    ObjectRigidBody->SetVelocity({ +300.f, -600.f - angle }); // → 방향, ↑ 방향 // 나오는 각도를 매번 다르게 하려면? > 지피티야..
 
     return S_OK; 
 }
