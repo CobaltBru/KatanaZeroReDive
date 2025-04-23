@@ -16,13 +16,12 @@ public:
 
 	string GetName() const { return ClassName; }
 	string GetImageName() const { return ImageName; }
-	bool GetFlip() const { return bFlip; }
 	POINT GetImageSize() const { return { Image->GetFrameWidth(),Image->GetFrameHeight() }; }
+	float GetScale() const { return Scale; }
 
 	void SetFlip(bool InFlip) { bFlip = InFlip; }
 private:
 	Image* Image;
-	bool bFlip;
 	ERenderGroup RenderGroup;
 	string ClassName;
 	string ImageName;

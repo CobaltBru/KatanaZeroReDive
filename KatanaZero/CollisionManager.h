@@ -11,6 +11,8 @@ enum class ECollisionGroup : uint8_t
 	Player,
 	Enemy,
 	Bullet,
+	Item,
+	Projectile,
 	End
 };
 

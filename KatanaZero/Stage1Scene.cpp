@@ -94,6 +94,8 @@ HRESULT Stage1Scene::InitImage()
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
 	InitTile();
@@ -237,6 +239,7 @@ void Stage1Scene::LoadObject()
 		ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 		ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -252,6 +255,7 @@ void Stage1Scene::LoadObject()
 
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
+		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
 	}
 

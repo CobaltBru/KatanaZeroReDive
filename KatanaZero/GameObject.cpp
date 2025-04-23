@@ -47,7 +47,7 @@ int GameObject::GetFloorIndex() const
 }
 
 GameObject::GameObject()
-	:Pos({}), bDead(false), ObjectCollider(nullptr), ObjectRigidBody(nullptr)
+	:Pos({}), bDead(false), ObjectCollider(nullptr), ObjectRigidBody(nullptr), bFlip(false), Scale(1.f)
 {
 }
 
