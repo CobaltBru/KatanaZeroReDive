@@ -128,6 +128,12 @@ void Player::Update()
 	
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
 	frameTimer += deltaTime;	
+	attackTimer += deltaTime;
+
+	if (attackTimer > info->attackCoolTime)
+	{
+		info->bCanAttack = true;
+	 }
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SHIFT))	
 	{
@@ -224,6 +230,9 @@ void Player::InitPlayerInfo()
 	info->bIsJump = false;
 	info->bIsFlip = false;
 	info->bIsShift = false;
+	info->bIsShiftChanged = false;
+	info->bIsWall = false;
+	info->attackCoolTime = .7f;
 }
 
 void Player::InitBindState()

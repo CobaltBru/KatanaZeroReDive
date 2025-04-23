@@ -4,7 +4,7 @@
 
 PlayerState* RunState::GetInput(Player* player)
 {
-    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyUp('A') || KeyManager::GetInstance()->IsOnceKeyUp('D'))
         return player->GetStates()->Idle;
@@ -18,6 +18,7 @@ PlayerState* RunState::GetInput(Player* player)
 
 void RunState::Enter(Player* player)
 {
+    player->SetSwitchTime(0.02f);
     player->SetFrameIndex(0);
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidletorun"));
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -100.f, 0.f });
