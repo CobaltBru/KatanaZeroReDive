@@ -384,9 +384,6 @@
     <ClCompile Include="GPImageManager.cpp">
       <Filter>2D Framework\Image</Filter>
     </ClCompile>
-    <ClCompile Include="SnapShotManager2.cpp">
-      <Filter>2D Framework\SnapShot</Filter>
-    </ClCompile>
     <ClCompile Include="ReplayObjects.cpp">
       <Filter>2D Framework\SnapShot</Filter>
     </ClCompile>
@@ -640,9 +637,6 @@
     </ClInclude>
     <ClInclude Include="GPImageManager.h">
       <Filter>2D Framework\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="SnapShotManager2.h">
-      <Filter>2D Framework\SnapShot</Filter>
     </ClInclude>
     <ClInclude Include="ReplayObjects.h">
       <Filter>2D Framework\SnapShot</Filter>

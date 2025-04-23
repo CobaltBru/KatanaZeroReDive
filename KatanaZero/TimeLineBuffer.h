@@ -22,7 +22,7 @@ public:
 	inline void Clear() { frameBuffer.clear(); }
 
 private:
-	const size_t MAX_SNAPSHOTS = 300;
+	const size_t MAX_SNAPSHOTS = 10000;
 	deque<SnapShot> frameBuffer;
 };
 

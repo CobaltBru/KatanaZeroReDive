@@ -284,6 +284,8 @@ void Stage1Scene::LoadFloor()
 void Stage1Scene::Update()
 {
 	ObjectManager->Update();
+		
+	
 	CollisionManager->Update();
 	fxManager->Update();
 
