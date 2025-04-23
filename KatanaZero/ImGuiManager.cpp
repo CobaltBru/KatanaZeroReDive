@@ -317,14 +317,6 @@ void ImGuiManager::Tile()
 		//Tile
 		if (ImGui::CollapsingHeader("Tile"))
 		{
-			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
-			ImGui::ListBox("TileList", &Tile_current, TileList.data(), TileList.size(), 4);
-			ImGui::SameLine();
-			
-			ImGui::Checkbox(u8"지우개", &TileEraser);
-
-			DrawTile();
-
 			if (ImGui::Button(u8"타일 저장"))
 			{
 				SaveTile();
@@ -334,6 +326,16 @@ void ImGuiManager::Tile()
 			{
 				LoadTile();
 			}
+
+			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+			ImGui::ListBox("TileList", &Tile_current, TileList.data(), TileList.size(), 4);
+			ImGui::SameLine();
+			
+			ImGui::Checkbox(u8"지우개", &TileEraser);
+
+			DrawTile();
+
+			
 		}
 
 		ImGui::EndTabItem();
@@ -1417,13 +1419,15 @@ void ImGuiManager::DrawTile()
 	int Width = iter->second.second.first;
 	int Height = iter->second.second.second;
 
-	ImVec2 childSize = ImVec2(TILEMAPTOOL_X, Height);
+	ImVec2 childSize = ImVec2(TILEMAPTOOL_X, 600.f);
 	ImGui::BeginChild("Image", childSize, true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	ImGui::Image((ImTextureID)(intptr_t)Texture, ImVec2(Width, Height));
 	
 	ImVec2 imagePos = ImGui::GetCursorScreenPos();
+	ImVec2 imagePos2 = ImGui::GetItemRectMin();
 	ImVec2 imageSize = ImVec2((float)Width, (float)Height);
+	float scrollY = ImGui::GetScrollY();
 
 	ImVec2 mousePos = ImGui::GetIO().MousePos;
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -1442,8 +1446,9 @@ void ImGuiManager::DrawTile()
 	}
 
 	if (selectedTile.x >= 0 && selectedTile.y >= 0) 
-	{																			//이 근본없는 4는 도대체  뭐란말인가
-		ImVec2 rectMin = ImVec2(imagePos.x + selectedTile.x * 32, abs(imagePos.y - Height - 4) + ((Height / 32 - 1) - selectedTile.y) * 32);
+	{																			//이 근본없는 4는 도대체 뭐란 말인가			패딩 값인가보오..
+		float offsetY = imagePos2.y >= 0.f ? 0.f : (scrollY + abs(imagePos2.y)) / 2 + 32;
+		ImVec2 rectMin = ImVec2(imagePos.x + selectedTile.x * 32, abs(imagePos.y - Height - 4) + ((Height / 32 - 1) - selectedTile.y) * 32 - offsetY);
 		ImVec2 rectMax = ImVec2(rectMin.x + 32, rectMin.y + 32);
 		draw_list->AddRect(rectMin, rectMax, IM_COL32(255, 0, 0, 255)); // 빨간 테두리
 	}
