@@ -285,14 +285,15 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
     }
 }
 
-void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int frameY, float start, float end, bool isFlip, bool isCenter)
+void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int frameY,
+    float start, float end, bool isFlip, bool isCenter, float Scale)
 {
-    int x = destX;
-    int y = destY;
+    int x = destX * Scale;
+    int y = destY * Scale;
     if (isCenter)
     {
-        x = destX - (imageInfo->frameWidth / 2);
-        y = destY - (imageInfo->frameHeight / 2);
+        x = destX - ((imageInfo->frameWidth * Scale) / 2);
+        y = destY - ((imageInfo->frameHeight * Scale) / 2);
     }
 
     imageInfo->currFrameX = frameX;
@@ -316,7 +317,7 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
 
         GdiTransparentBlt(hdc,
             x + startX, y,
-            endX - startX, imageInfo->frameHeight,
+            (endX - startX) * Scale, imageInfo->frameHeight * Scale,
 
             imageInfo->hTempDC,
             0, 0,
@@ -328,7 +329,7 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
     {
         GdiTransparentBlt(hdc,
             x + startX, y,
-            endX - startX, imageInfo->frameHeight,
+            (endX - startX) * Scale, imageInfo->frameHeight * Scale,
             imageInfo->hMemDC,
             imageInfo->frameWidth * imageInfo->currFrameX + startX,
             imageInfo->frameHeight * imageInfo->currFrameY,
@@ -340,7 +341,7 @@ void Image::SourFrameRenderWidth(HDC hdc, int destX, int destY, int frameX, int 
         BitBlt(
             hdc,
             x + startX, y,
-            endX - startX, imageInfo->frameHeight,
+            (endX - startX)* Scale, imageInfo->frameHeight * Scale,
             imageInfo->hMemDC,
             imageInfo->frameWidth * imageInfo->currFrameX + startX,
             imageInfo->frameHeight * imageInfo->currFrameY,

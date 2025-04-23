@@ -78,7 +78,7 @@ public:
 	void FrameRender(HDC hdc, int destX, int destY,
 		int frameX, int frameY, bool isFlip = false, bool isCenter = true, float Scale = 1.f);
 	void SourFrameRenderWidth(HDC hdc, int destX, int destY,
-		int frameX, int frameY,float start, float end, bool isFlip = false, bool isCenter = true);
+		int frameX, int frameY,float start, float end, bool isFlip = false, bool isCenter = true, float Scale = 1.0f);
 	// 메모리 해제
 	void Release();
 

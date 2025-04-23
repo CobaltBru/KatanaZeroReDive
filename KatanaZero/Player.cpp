@@ -43,7 +43,16 @@ HRESULT Player::Init()
 
 	InitPlayerInfo();
 
-	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.0f, true, 1.0f);
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.8f, 
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 1.0f },
+		true, 1.f);
+
+	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
+	(float)image->GetFrameWidth(),
+	(float)image->GetFrameHeight()},
+	true, 1.f);*/
+
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
 	ObjectRigidBody = new RigidBody(this);
@@ -140,6 +149,11 @@ void Player::Render(HDC hdc)
 		else		
 			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
+		//if (dir == EDirection::Left)
+		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+		//else
+		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);
+
 		// update frame index
 		if (frameTimer > switchTime)
 		{
@@ -155,9 +169,14 @@ void Player::Render(HDC hdc)
 	if (effectImage != nullptr)
 	{
 		if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true);
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
 		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0);
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+		
+		/*if (dir == EDirection::Left)
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+		else
+			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
 	}
 }
 
@@ -196,9 +215,10 @@ void Player::InitRigidBody()
 	ObjectRigidBody->SetElasticity(0.f);
 	ObjectRigidBody->SetGravityVisible(true);
 	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 800.f });
-	ObjectRigidBody->SetMass(5.f);
-	ObjectRigidBody->SetMaxVelocity({ 200.f, 400.f });
-	ObjectRigidBody->SetFriction(300.f);
+	ObjectRigidBody->SetMass(10.f);
+	//ObjectRigidBody->SetMass(5.f / ScrollManager::GetInstance()->GetScale() * ScrollManager::GetInstance()->GetScale());
+	ObjectRigidBody->SetMaxVelocity({ 600.f, 1000.f });
+	ObjectRigidBody->SetFriction(600.f);
 }
 
 void Player::InitScrollOffset()
@@ -249,6 +269,8 @@ void Player::UpdateRigidBody()
 	const FLineResult lineResult = ObjectRigidBody->GetResult();
 	if (lineResult.LineType == ELineType::Wall)
 	{
+		if (lineResult.IsLeft) dir = EDirection::Left;
+
 		if (ObjectRigidBody->IsGround() == false) 
 			image = ImageManager::GetInstance()->FindImage("zerowallslide");
 		else
@@ -256,7 +278,7 @@ void Player::UpdateRigidBody()
 			image = ImageManager::GetInstance()->FindImage("zeroidle");
 			state = states->Idle;
 		}
-
+		ObjectRigidBody->SetVelocity({ 0.f , 10.f });
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
 		bWall = true;
 		bIsLeft = lineResult.IsLeft;
@@ -285,6 +307,7 @@ void Player::UpdateCollision()
 		Normalize(PEDir);
 
 		// knock enemy
-		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
+			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
 	}
 }

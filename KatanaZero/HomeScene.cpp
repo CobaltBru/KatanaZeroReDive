@@ -82,18 +82,17 @@ void HomeScene::Update()
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		if (cursor - 1 >= 0)
-			--cursor;
+		if (cursor - 1 >= 0)--cursor;
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
 	{
-		if (cursor + 1 < 3)
-			++cursor;
+		if (cursor + 1 < 3)++cursor;
 	}
 }
 
 void HomeScene::Render(HDC hdc)
 {
+	
 	RenderManager->Render(hdc);
 	SelectBox(hdc, { selectBoxPos });
 }
@@ -109,6 +108,7 @@ HRESULT HomeScene::InitObject()
 	Background* bg = new Background();
 	bg->Init("BlackBackground");
 	ObjectManager->AddGameObject(EObjectType::GameObject, bg);
+
 
 	Image* tmp = ImageManager::GetInstance()->AddImage("title_bg", L"Image/UI/Home/spr_title_background.bmp",1600,1800,1,1, true, RGB(255, 0, 255));
 	background = new Animation();
