@@ -90,8 +90,8 @@ void MapTool::Update()
 	if (tileName != "" && KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
 	{
 		//기본을 무조건 32x32로 한다는 뜻
-		const float TILEX = 32 * ScrollManager::GetInstance()->GetScale();
-		const float TILEY = 32 * ScrollManager::GetInstance()->GetScale();
+		const float TILEX = 32 * (ScrollManager::GetInstance()->GetScale() / 2);
+		const float TILEY = 32 * (ScrollManager::GetInstance()->GetScale() / 2);
 
 		int CurrentTileX = g_ptMouse.x / TILEX;
 		int CurrentTileY = g_ptMouse.y / TILEY;
@@ -134,7 +134,7 @@ void MapTool::Render(HDC hdc)
 	for (auto& iter : CurrentTiles)
 	{
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-		iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale());
+		iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale() / 2);
 	}
 
 	RenderManager->RenderNonAlphaBlend(hdc);
@@ -156,7 +156,7 @@ HRESULT MapTool::InitImage()
 {
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
 }

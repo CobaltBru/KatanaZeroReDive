@@ -78,7 +78,7 @@ void Tile::Render(HDC hdc)
 		const float screenTop = (iter.second.tileY - (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
 		const float screenBottom = (iter.second.tileY + (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
 		if (screenRight >= 0.f && screenLeft <= WINSIZE_X && screenBottom >= 0.f && screenTop <= WINSIZE_Y)
-			iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale());		
+			iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale() / 2);		
 	}
 }
 
