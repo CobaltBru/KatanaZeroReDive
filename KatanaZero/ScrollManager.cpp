@@ -71,4 +71,5 @@ void ScrollManager::ScaleUpdate()
 	float ScaleX = (float)clientRect.right / BASE_WIDTH;
 	float ScaleY = (float)clientRect.bottom / BASE_HEIGHT;
 	Scale = min(ScaleX, ScaleY);
+	//Scale = 1.f;
 }
