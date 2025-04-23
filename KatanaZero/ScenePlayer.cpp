@@ -63,9 +63,9 @@ HRESULT ScenePlayer::Init()
 	ani[3].Init(tmp, 7, 2.5f);
 	ani[3].setPos(Pos, false, true);
 	ani[3].setAniTask({
-		{0,frameSpeed},{1,frameSpeed},{2,frameSpeed},
+		{0,frameSpeed*80.f},{1,frameSpeed},{2,frameSpeed},
 		{3,frameSpeed},{4,frameSpeed},{5,frameSpeed},
-		{6,frameSpeed*20.f}
+		{6,frameSpeed*50.f}
 		});
 	ani[3].setloopFlag(false);
 	//ÁÖ»çº¹±Í
@@ -221,6 +221,7 @@ void ScenePlayer::InitRigidBodySetting()
 
 void ScenePlayer::setSit()
 {
+	ObjectRigidBody->SetVelocity({ 0.f,0.f });
 	ani[currentState].Off();
 	currentState = PSTATE::P_DOWN;
 	ani[currentState].setPos(Pos, false, true);

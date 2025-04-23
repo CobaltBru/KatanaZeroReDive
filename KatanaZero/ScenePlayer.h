@@ -15,6 +15,7 @@ private:
 	PSTATE currentState;
 	bool flip;
 	bool noMove;
+	
 public:
 	ScenePlayer();
 	virtual ~ScenePlayer() = default;
@@ -34,5 +35,6 @@ public:
 	void ChAnima();
 
 	void sitUP();
+	inline bool isnoMove() { return noMove; }
 };
 

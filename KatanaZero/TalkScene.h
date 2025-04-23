@@ -11,6 +11,7 @@ class ScenePsych;
 class ScenePlayer;
 class ScrollManager;
 class LineManager;
+class ChatManager;
 class TalkScene : public Scene
 {
 public:
@@ -31,7 +32,7 @@ private:
 	RenderManager* RenderManager;
 	CollisionManager* CollisionManager;
 	LineManager* LineManager;
-
+	ChatManager* chatManager;
 	Animation* background;
 	Animation* firePlace;
 	ScenePsych* psych;
@@ -40,5 +41,11 @@ private:
 
 	FPOINT chairPos;
 	FPOINT DoorPos;
+
+	bool inChat;
+	bool badChat;
+	bool chatDone;
+
+	float timer = 0;
 };
 

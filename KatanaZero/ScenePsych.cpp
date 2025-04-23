@@ -10,7 +10,7 @@ ScenePsych::ScenePsych()
 
 HRESULT ScenePsych::Init()
 {
-	
+	moveEnd = false;
 	float frameSpeed = 0.1f; 
 	Image* tmp;
 	//¾É¾ÆÀÖÀ½
@@ -226,5 +226,6 @@ void ScenePsych::MoveFunc()
 		MoveList[moveIdx]->setPos({ Pos.x,Pos.y + 7.f }, true, true);
 		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
+		moveEnd = true;
 	}
 }
