@@ -68,7 +68,9 @@ Image* ImageManager::AddImage(string key,
 	return image;
 }
 
-Image* ImageManager::AddImage(string key, const wchar_t* filePath, bool isTransparent, COLORREF transColor)
+
+
+Image* ImageManager::AddImage(string key, const wchar_t* filePath, bool isTransparent, COLORREF transColor, int FrameWidth, int FramwHeight)
 {
 	Image* image = nullptr;
 	image = FindImage(key);
@@ -76,7 +78,7 @@ Image* ImageManager::AddImage(string key, const wchar_t* filePath, bool isTransp
 
 	image = new Image();
 	if (FAILED(image->Init(filePath,
-		isTransparent, transColor)))
+		isTransparent, transColor, FrameWidth, FramwHeight)))
 	{
 		image->Release();
 		delete image;

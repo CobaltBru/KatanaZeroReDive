@@ -23,7 +23,7 @@ public:
 	void AddRenderGroup(ERenderGroup InRenderGroup, GameObject* InGameObject);
 	void AddRenderGroupFront(ERenderGroup InRenderGroup, GameObject* InGameObject);
 
-private:
+public:
 	void RenderBackGround(HDC hdc);
 	void RenderNonAlphaBlend(HDC hdc);
 	void RenderAlphaBlend(HDC hdc);

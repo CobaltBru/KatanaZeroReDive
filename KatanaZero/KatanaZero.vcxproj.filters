@@ -142,6 +142,9 @@
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{9fe14f5f-c762-4063-a6fe-dfe8d08b8d67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Tile">
+      <UniqueIdentifier>{aca1fe46-5c92-4772-b68f-5109f8071163}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -382,6 +385,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="WorldBackground.cpp" />
+    <ClCompile Include="Tile.cpp">
+      <Filter>MainGame\Tile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -624,15 +630,18 @@
     <ClInclude Include="PlayerAnim.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="TalkScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="WorldBackground.h" />
     <ClInclude Include="Reference\Headers\Imgui\stb_image.h">
       <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>2D Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>MainGame\Tile</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

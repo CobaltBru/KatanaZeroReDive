@@ -2,7 +2,7 @@
 #include "Singleton.h"
 #include "config.h"
 #include <unordered_map>
-
+#include <functional>
 
 class GameObject;
 class LineManager;
@@ -13,7 +13,7 @@ class ImGuiManager : public Singleton<ImGuiManager>
 public:
 	ImGuiManager();
 	void Init();
-	void Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager);
+	void Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager, function<void()> InSaveTileCallBack, function<void()> InLoadTileCallBack);
 	void Update();
 	void APIRender(HDC hdc);
 	void Render();
@@ -33,6 +33,15 @@ public:
 
 	void Reset();
 
+	string GetTileName() { 		
+		if (Tile_current == -1 || TileList.empty())
+			return "";
+		
+		return TileList[Tile_current];
+	}
+
+	FPOINT GetselectedTile() const { return selectedTile; }
+	bool IsTileEraser() const { return TileEraser; }
 private:
 	//vector<string> GetFileNames(const string& InFolderPath);
 
@@ -58,19 +67,22 @@ private:
 
 	void DrawTile();
 
-	OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
-	OPENFILENAME GetLoadInfo(TCHAR* lpstrFile);
+	//OPENFILENAME GetSaveInfo(TCHAR* lpstrFile);
+	//OPENFILENAME GetLoadInfo(TCHAR* lpstrFile);
 
 	void SaveLine();
 	void SaveBackGround();
 	void SaveObject();
 	void SaveFloor();
+	void SaveTile();
 
 	void LoadFont();
 	void LoadLine();
 	void LoadBackGround();
 	void LoadObject();
 	void LoadFloor();
+	void LoadTile();
+
 
 	bool LoadTextureFromMemory(const void* data, size_t data_size, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height);
 	bool LoadTextureFromFile(const char* file_name, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height);
@@ -92,11 +104,14 @@ private:
 	ObjectManager* objectManager;
 	ScrollManager* scrollManager;
 
-	/*int my_image_width = 0;
-	int my_image_height = 0;*/
 	vector<const char*> TileList;
 	unordered_map<const char*, pair<ID3D11ShaderResourceView*, pair<int, int>>> TileTextures;
-	/*ID3D11ShaderResourceView* my_texture = NULL;*/
+	
+	int Tile_current = -1;
+	FPOINT selectedTile;
+	bool TileEraser = false;
+	function<void()> SaveTileCallBack;
+	function<void()> LoadTileCallBack;
 };
 
 

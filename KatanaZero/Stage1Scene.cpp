@@ -27,6 +27,7 @@
 #include "Player.h"
 #include "DefaultObject.h"
 #include "Factory.h"
+#include "Tile.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -95,6 +96,7 @@ HRESULT Stage1Scene::InitImage()
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
+	InitTile();
 
 	return S_OK;
 }
@@ -102,12 +104,20 @@ HRESULT Stage1Scene::InitImage()
 HRESULT Stage1Scene::InitObject()
 {
 	Background* background = new Background();
-	background->Init("black",0.f);
+	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	LoadBackground();
 	LoadObject();
 	LoadFloor();
+
+	Tile* tile = new Tile();
+	if (FAILED(tile->Init(L"Data/Stage1/Stage1Tile.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
 
 	return S_OK;
 }
@@ -129,7 +139,7 @@ void Stage1Scene::TestCode()
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
-		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");	
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
@@ -179,7 +189,7 @@ void Stage1Scene::LoadBackground()
 		ReadFile(hFile, buffer, Size, &dwByte, NULL);
 		buffer[Size] = '\0';
 		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
-		ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);		
+		ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);
 
 		string BackgroundName = buffer;
 
@@ -276,6 +286,25 @@ void Stage1Scene::LoadFloor()
 	}
 
 	CloseHandle(hFile);
+}
+
+void Stage1Scene::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255), 32, 32);
+	}
 }
 
 void Stage1Scene::Update()

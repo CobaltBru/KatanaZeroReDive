@@ -204,6 +204,7 @@
     <ClCompile Include="TalkScene.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TimeLineBuffer.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="TalkScene.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="TimeLineBuffer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />

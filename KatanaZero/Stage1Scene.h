@@ -36,6 +36,8 @@ private:
 	void LoadBackground();
 	void LoadObject();
 	void LoadFloor();
+
+	void InitTile();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;

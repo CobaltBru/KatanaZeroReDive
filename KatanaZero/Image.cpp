@@ -108,7 +108,7 @@ HRESULT Image::Init(const wchar_t* filePath, int width, int height, int maxFrame
     return S_OK;   // S_OK, E_FAIL
 }
 
-HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transColor)
+HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transColor, int FrameWidth, int FrameHeight)
 {
     HDC hdc = GetDC(g_hWnd);
 
@@ -130,10 +130,10 @@ HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transC
     imageInfo->height = bmp.bmHeight;
     imageInfo->loadType = IMAGE_LOAD_TYPE::File;
 
-    imageInfo->maxFrameX = 0;
-    imageInfo->maxFrameY = 0;
-    imageInfo->frameWidth = 0;
-    imageInfo->frameHeight = 0;
+    imageInfo->maxFrameX = FrameWidth == 0 ? 0 : bmp.bmWidth / FrameWidth;
+    imageInfo->maxFrameY = FrameHeight == 0 ? 0 :bmp.bmHeight / FrameHeight;
+    imageInfo->frameWidth = FrameWidth;
+    imageInfo->frameHeight = FrameHeight;
     imageInfo->currFrameX = imageInfo->currFrameY = 0;
 
     ReleaseDC(g_hWnd, hdc);

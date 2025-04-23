@@ -15,7 +15,6 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
-#include "SnapShotManager.h"
 
 // 해영 Enemy 테스트
 #include "Enemy.h"
@@ -23,6 +22,8 @@
 
 #include "Factory.h"
 #include "ImGuiManager.h"
+
+static TCHAR filter[] = L"모든 파일\0*.*\0dat 파일\0*.dat";
 
 MapTool::MapTool()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), ScrollManager(nullptr), LineManager(nullptr)
@@ -49,13 +50,15 @@ HRESULT MapTool::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
-	ImGuiManager::GetInstance()->Init(LineManager, ObjectManager, ScrollManager);
+	ImGuiManager::GetInstance()->Init(LineManager, ObjectManager, ScrollManager, std::bind(&MapTool::SaveTile,this), std::bind(&MapTool::LoadTile, this));
 
 	//if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	//{
 	//	MessageBox(g_hWnd, TEXT("MapTool LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 	//	return E_FAIL;
 	//}
+
+	InitTile();
 
 	if (FAILED(InitImage()))
 	{
@@ -68,6 +71,9 @@ HRESULT MapTool::Init()
 		MessageBox(g_hWnd, TEXT("MapTool InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
+
+
+
 	return S_OK;
 }
 
@@ -80,17 +86,36 @@ void MapTool::Update()
 	ScrollManager->Update();
 	LineManager->Update();
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+	string tileName = ImGuiManager::GetInstance()->GetTileName();
+	if (tileName != "" && KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
 	{
 		//기본을 무조건 32x32로 한다는 뜻
-		const float TILEX = 32;
-		const float TILEY = 32;
+		const float TILEX = 32 * ScrollManager::GetInstance()->GetScale();
+		const float TILEY = 32 * ScrollManager::GetInstance()->GetScale();
 
 		int CurrentTileX = g_ptMouse.x / TILEX;
 		int CurrentTileY = g_ptMouse.y / TILEY;
-		
-	}
+		int OffsetX = TILEX / 2;
+		int OffsetY = TILEX / 2;
 
+		FPOINT TileIndex = ImGuiManager::GetInstance()->GetselectedTile();
+		string key = to_string(CurrentTileX) + to_string(CurrentTileY);
+		if (ImGuiManager::GetInstance()->IsTileEraser())
+			CurrentTiles.erase(key);
+		else
+		{
+			auto iter = TileList.find(tileName);
+			if (iter != TileList.end())
+			{
+				CurrentTiles[key].image = iter->second;
+				CurrentTiles[key].tileX = (CurrentTileX * TILEX) + OffsetX;
+				CurrentTiles[key].tileY = (CurrentTileY * TILEY) + OffsetY;
+				CurrentTiles[key].frameX = TileIndex.x;
+				CurrentTiles[key].frameY = iter->second->GetMaxFrameY() - TileIndex.y - 1;
+				CurrentTiles[key].ImageName = tileName;
+			}
+		}
+	}
 
 	ImGuiManager::GetInstance()->Update();
 
@@ -104,10 +129,23 @@ void MapTool::Update()
 
 void MapTool::Render(HDC hdc)
 {
-	RenderManager->Render(hdc);
+	RenderManager->RenderBackGround(hdc);
+
+	for (auto& iter : CurrentTiles)
+	{
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+		iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale());
+	}
+
+	RenderManager->RenderNonAlphaBlend(hdc);
+	RenderManager->RenderAlphaBlend(hdc);
+	RenderManager->RenderUI(hdc);
+
 	CollisionManager->Render(hdc);
 
 	LineManager->Render(hdc);
+
+	
 
 	ImGuiManager::GetInstance()->APIRender(hdc);
 
@@ -126,16 +164,160 @@ HRESULT MapTool::InitImage()
 HRESULT MapTool::InitObject()
 {
 	Background* background = new Background();
-	background->Init("black",0.f);
+	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
 	return S_OK;
+}
+
+void MapTool::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		Image* image = ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(),true, RGB(255, 0, 255),32,32);
+
+		TileList.insert({ nameOnly,image });
+	}
+}
+
+void MapTool::SaveTile()
+{
+	TCHAR lpstrFile[MAX_PATH] = L"";
+	OPENFILENAME ofn = GetSaveInfo(lpstrFile, filter);
+
+	TCHAR szOldDir[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, szOldDir);
+
+	if (GetSaveFileName(&ofn))
+	{
+		SetCurrentDirectory(szOldDir);
+
+		HANDLE hFile = CreateFile(
+			ofn.lpstrFile, GENERIC_WRITE, 0, NULL,
+			CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			MessageBox(g_hWnd, L"SaveTile Failed.", TEXT("경고"), MB_OK);
+			return;
+		}
+
+		DWORD dwByte = 0;
+
+		for (auto& iter : CurrentTiles)
+		{
+			FTileData td;
+			ZeroMemory(&td, sizeof(td));
+			td.tileX = iter.second.tileX;
+			td.tileY = iter.second.tileY;
+			td.frameX = iter.second.frameX;
+			td.frameY = iter.second.frameY;
+			td.KeySize = iter.first.size();
+			td.imageNameSize = iter.second.ImageName.size();
+			 
+			WriteFile(hFile, &td.KeySize, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.imageNameSize, sizeof(int), &dwByte, NULL);			
+			WriteFile(hFile, iter.first.c_str(), td.KeySize, &dwByte, NULL);
+			WriteFile(hFile, iter.second.ImageName.c_str(), td.imageNameSize, &dwByte, NULL);
+			WriteFile(hFile, &td.tileX, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.tileY, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.frameX, sizeof(int), &dwByte, NULL);
+			WriteFile(hFile, &td.frameY, sizeof(int), &dwByte, NULL);
+		}
+
+		MessageBox(g_hWnd, L"타일 저장 성공", TEXT("성공"), MB_OK);
+
+		CloseHandle(hFile);
+	}
+}
+
+void MapTool::LoadTile()
+{
+	CurrentTiles.clear();
+
+	TCHAR lpstrFile[MAX_PATH] = L"";
+	OPENFILENAME ofn = GetLoadInfo(lpstrFile, filter);
+
+	TCHAR szOldDir[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, szOldDir);
+
+	if (GetOpenFileName(&ofn))
+	{
+		SetCurrentDirectory(szOldDir);
+
+		HANDLE hFile = CreateFile(
+			ofn.lpstrFile, GENERIC_READ, 0, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			MessageBox(g_hWnd, L"LoadTile Failed.", TEXT("경고"), MB_OK);
+			return;
+		}
+
+		DWORD dwByte = 0;
+
+		while (true)
+		{
+			FTileData td;
+			ZeroMemory(&td, sizeof(td));
+
+			ReadFile(hFile, &td.KeySize, sizeof(int), &dwByte, NULL);
+			ReadFile(hFile, &td.imageNameSize, sizeof(int), &dwByte, NULL);
+
+			td.key = new char[td.KeySize + 1];
+			td.imageName = new char[td.imageNameSize + 1];
+
+			ReadFile(hFile, td.key, td.KeySize, &dwByte, NULL);
+			ReadFile(hFile, td.imageName, td.imageNameSize, &dwByte, NULL);
+			ReadFile(hFile, &td.tileX, sizeof(int), &dwByte, NULL);
+			ReadFile(hFile, &td.tileY, sizeof(int), &dwByte, NULL);
+			ReadFile(hFile, &td.frameX, sizeof(int), &dwByte, NULL);
+			ReadFile(hFile, &td.frameY, sizeof(int), &dwByte, NULL);
+
+			td.key[td.KeySize] = '\0';
+			td.imageName[td.imageNameSize] = '\0';
+
+			string KeyName = td.key;
+			string ImageName = td.imageName;
+
+			delete[] td.key;
+			delete[] td.imageName;
+
+			if (dwByte == 0)
+				break;
+
+			Image* image = ImageManager::GetInstance()->FindImage(ImageName);
+
+			CurrentTiles[KeyName].image = image;
+			CurrentTiles[KeyName].tileX = td.tileX;
+			CurrentTiles[KeyName].tileY = td.tileY;
+			CurrentTiles[KeyName].frameX = td.frameX;
+			CurrentTiles[KeyName].frameY = td.frameY;
+			CurrentTiles[KeyName].ImageName = ImageName;
+		}
+
+		MessageBox(g_hWnd, L"타일 불러오기 성공", TEXT("성공"), MB_OK);
+
+		CloseHandle(hFile);
+	}
 }
 
 
 void MapTool::Release()
 {
 	ImGuiManager::GetInstance()->Reset();
+
+	CurrentTiles.clear();
 
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
@@ -153,4 +335,6 @@ void MapTool::Release()
 	RenderManager = nullptr;
 	ScrollManager = nullptr;
 	LineManager = nullptr;
+
+	
 }
