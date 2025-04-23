@@ -6,28 +6,19 @@
 
 PlayerState* WallSlideState::GetInput(Player* player)
 {
-	if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 
-		(KeyManager::GetInstance()->IsOnceKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 
-		(KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsOnceKeyDown('D')))
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		player->GetRigidBody()->AddVelocity({ 100.f, -200.f });
+		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft ==true ? 100.f: -100.f), -200.f});
 		return player->GetStates()->Jump;
 	}
-	if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
-		(KeyManager::GetInstance()->IsOnceKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
-		(KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsOnceKeyDown('A')))
-	{
-		player->GetRigidBody()->AddVelocity({ -100.f, -200.f });
-		return player->GetStates()->Jump;
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+	{		
+		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft == true ? 100.f : -100.f), -200.f });
+		return player->GetStates()->Attack;
 	}
-	//if (player->GetDirection() == EDirection::Left && KeyManager::GetInstance()->IsOnceKeyDown('D'))
-	//{
-	//	return player->GetStates()->Idle;
-	//}
-	//if (player->GetDirection() == EDirection::Right && KeyManager::GetInstance()->IsOnceKeyDown('A'))
-	//{
-	//	return player->GetStates()->Idle;
-	//}
 
 	if (player->GetRigidBody()->IsGround())
 		return player->GetStates()->Idle;
@@ -49,3 +40,27 @@ void WallSlideState::Update(Player* player)
 	else
 		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 }
+
+	//if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 
+	//	(KeyManager::GetInstance()->IsOnceKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 
+	//	(KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsOnceKeyDown('D')))
+	//{
+	//	player->GetRigidBody()->AddVelocity({ 100.f, -200.f });
+	//	return player->GetStates()->Jump;
+	//}
+	//if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
+	//	(KeyManager::GetInstance()->IsOnceKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
+	//	(KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsOnceKeyDown('A')))
+	//{
+	//	player->GetRigidBody()->AddVelocity({ -100.f, -200.f });
+	//	return player->GetStates()->Jump;
+	//}
+
+	//if (player->GetDirection() == EDirection::Left && KeyManager::GetInstance()->IsOnceKeyDown('D'))
+	//{
+	//	return player->GetStates()->Idle;
+	//}
+	//if (player->GetDirection() == EDirection::Right && KeyManager::GetInstance()->IsOnceKeyDown('A'))
+	//{
+	//	return player->GetStates()->Idle;
+	//}

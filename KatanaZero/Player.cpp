@@ -78,7 +78,7 @@ HRESULT Player::Init()
 	//playerAnim = new PlayerAnim;
 	//playerAnim->Init();
 		
-	bWall = false;
+	info->bIsWall = false;
 
 	return S_OK;
 }
@@ -151,8 +151,6 @@ void Player::Update()
 	// update state
 	state->Update(this);
 
-	
-
 	// apply acceleration including gravity
 	UpdateRigidBody();
 
@@ -189,7 +187,7 @@ void Player::Render(HDC hdc)
 			FrameIndex %= image->GetMaxFrameX();	
 	}
 
-	if (effectImage != nullptr)
+	if (effectImage != nullptr && info->bIsAttack)
 	{
 		if (dir == EDirection::Left)
 			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
@@ -295,22 +293,15 @@ void Player::UpdateRigidBody()
 	{
 		if (lineResult.IsLeft) dir = EDirection::Left;
 
-		if (ObjectRigidBody->IsGround() == false) 
-			image = ImageManager::GetInstance()->FindImage("zerowallslide");
-		else
-		{
-			image = ImageManager::GetInstance()->FindImage("zeroidle");
-			state = states->Idle;
-		}
 		ObjectRigidBody->SetVelocity({ 0.f , 10.f });
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-		bWall = true;
+		info->bIsWall = true;
 		bIsLeft = lineResult.IsLeft;
 	}
 	else
 	{
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-		bWall = false;
+		info->bIsWall = false;
 	}
 }
 
@@ -318,6 +309,8 @@ void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	
+	if (info->bIsFlip) return;
+
 	// player die
 	if (!info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy) ||
 		!info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Bullet))
@@ -327,14 +320,10 @@ void Player::UpdateCollision()
 
 		// direction from player to enemy
 		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
-		//FPOINT PEDir;
-		//PEDir.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
-		//PEDir.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
-		//Normalize(PEDir);
 
-		// die
-		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
-			ObjectRigidBody->AddVelocity(-PEDir * 100.f);
+		//// die
+		//if (HitResult.HitCollision->GetOwner()->GetRigidBody())
+		//	ObjectRigidBody->AddVelocity(-PEDir * 100.f);
 	}
 
 	// player attack enemy
@@ -350,7 +339,7 @@ void Player::UpdateCollision()
 			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
 	}
 
-	// player attack
+	// player attack bullet
 	if (info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Bullet))
 	{
 		ObjectCollider->SetHit(true);
@@ -381,7 +370,8 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
+	//ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_roll.bmp", 350, 33, 7, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 46,11, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerofall", L"Image/zero_fall.bmp", 176, 50, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
@@ -393,7 +383,8 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));
 	//ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerorunshadow", L"Image/zero_run_shadow.bmp", 440, 32, 10, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 32, 11, 1, true, RGB(255, 0, 255));
+	//ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 31, 7, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_flip_shadow.bmp", 528, 44, 11, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerofallshadow", L"Image/zero_fall_shadow.bmp", 164, 49, 4, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 41, 7, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));

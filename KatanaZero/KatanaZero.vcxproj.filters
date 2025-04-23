@@ -369,9 +369,7 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>MainGame\TaeKyung\Default</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>MainGame\Player\PlayerState</Filter>
-    </ClCompile>
+
     <ClCompile Include="UIGame.cpp">
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
