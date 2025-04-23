@@ -6,17 +6,20 @@
 #include "ObjectManager.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
+#include "CollisionManager.h"
 #include "ScrollManager.h"
 #include "GPImage.h"
 #include "Image.h"
 #include "SoundManager.h"
 #include "ChatManager.h"
 
+#include "LineManager.h"
+
 #include "ScenePsych.h"
 #include "ScenePlayer.h"
 
 TalkScene::TalkScene() :
-	ObjectManager(nullptr), RenderManager(nullptr)
+	ObjectManager(nullptr), RenderManager(nullptr), LineManager(nullptr),CollisionManager(nullptr)
 {
 }
 
@@ -27,8 +30,17 @@ HRESULT TalkScene::Init()
 	ObjectManager->Init();
 	RenderManager = RenderManager::GetInstance();
 	RenderManager->Init();
+	LineManager = LineManager::GetInstance();
+	LineManager->Init();
+	CollisionManager = CollisionManager::GetInstance();
+	CollisionManager->Init();
 	pos = { 0,0 };
-
+	chairPos = { 695.f,640.f };
+	if (FAILED(LineManager->LoadFile(L"Data/Talk/talkLine.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		return E_FAIL;
+	}
 	
 	if (FAILED(InitImage()))
 	{
@@ -50,7 +62,10 @@ void TalkScene::Release()
 		ObjectManager->Release();
 	if (RenderManager != nullptr)
 		RenderManager->Release();
-
+	if (LineManager != nullptr)
+		LineManager->Release();
+	if (CollisionManager != nullptr)
+		CollisionManager->Release();
 	ScrollManager::GetInstance()->Release();
 	ObjectManager = nullptr;
 	RenderManager = nullptr;
@@ -59,29 +74,25 @@ void TalkScene::Release()
 void TalkScene::Update()
 {
 	ObjectManager->Update();
-
-	/*if (KeyManager::GetInstance()->IsStayKeyDown('W'))
+	CollisionManager->Update();
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
-		pos.y -= 1;
+		FPOINT playerPos = player->GetPos();
+		float fdsa = fabs(playerPos.x - chairPos.x);
+		if (fabs(playerPos.x - chairPos.x) < 15.f)
+		{
+			player->SetPos(chairPos);
+			player->sitUP();
+		}
+		
 	}
-	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
-	{
-		pos.y += 1;
-	}
-	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
-	{
-		pos.x -= 1;
-	}
-	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
-	{
-		pos.x += 1;
-	}*/
-	//firePlace->setPos(pos, false, false);
 }
 
 void TalkScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
+	LineManager->Render(hdc);
+	CollisionManager->Render(hdc);
 }
 
 HRESULT TalkScene::InitImage()
@@ -116,14 +127,12 @@ HRESULT TalkScene::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, firePlace);
 
 	psych = new ScenePsych();
-	psychPos = { 865.f,637.f };
-	psych->SetPos(psychPos);
+	psych->SetPos({ 865.f,637.f });
 	psych->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, psych);
 
 	player = new ScenePlayer();
-	playerPos = { 695.f,640.f };
-	player->SetPos(playerPos);
+	player->SetPos({ 695.f,640.f });
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 	

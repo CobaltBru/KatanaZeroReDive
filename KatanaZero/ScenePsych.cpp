@@ -56,7 +56,7 @@ HRESULT ScenePsych::Init()
 		{6,frameSpeed},{7,frameSpeed},{8,frameSpeed},
 		{9,frameSpeed}
 		});
-	walk.MoveOn({ 215.f,0.f }, 1.5f, Move_Linear | Move_Stop | POS_Update);
+	walk.MoveOn({ 215.f,0.f }, 1.5f, Move_Linear | Move_Stop);
 
 
 	//책상
@@ -86,7 +86,7 @@ HRESULT ScenePsych::Init()
 		{6,frameSpeed},{7,frameSpeed},{8,frameSpeed},
 		{9,frameSpeed}
 		});
-	walk_ch.MoveOn({ -215.f,0.f }, 1.5f, Move_Linear | Move_Stop | POS_Update);
+	walk_ch.MoveOn({ -215.f,0.f }, 1.5f, Move_Linear | Move_Stop);
 
 
 	//주사하기
@@ -132,10 +132,10 @@ void ScenePsych::Release()
 
 void ScenePsych::Update()
 {
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+	/*if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
 		Move();
-	}
+	}*/
 	if (currentTask == TASK::MOVE)
 	{
 		MoveFunc();
@@ -154,7 +154,7 @@ void ScenePsych::Move()
 {
 	currentTask = TASK::MOVE;
 	moveIdx = 1;
-	MoveList[1]->setPos({ Pos.x,Pos.y - 7.f }, true, true);
+	MoveList[1]->setPos({ Pos.x,Pos.y}, true, true);
 	MoveList[1]->On();
 	
 }
@@ -163,49 +163,68 @@ void ScenePsych::MoveFunc()
 {
 	if ((moveIdx == 1) && MoveList[moveIdx]->getAniComplete())
 	{
+		MoveList[moveIdx]->Off();
 		moveIdx = 2;
+		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos({ Pos.x,Pos.y - 7.f }, false, true);
-		MoveList[moveIdx]->MoveOn({ 215.f,0.f }, 1.7f, Move_Linear | Move_Stop | POS_Update);
+		MoveList[moveIdx]->MoveOn({ 215.f,0.f }, 1.7f, Move_Linear | Move_Stop);
+		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 2) && MoveList[moveIdx]->getMoveComplete())
 	{
+		MoveList[moveIdx]->Off();
 		moveIdx = 3;
 		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, false, true);
+		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 3) && MoveList[moveIdx]->getAniComplete())
 	{
+		MoveList[moveIdx]->Off();
 		moveIdx = 4;
+		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, true, true);
-		MoveList[moveIdx]->MoveOn({ -350.f,0.f }, 2.5f, Move_Linear | Move_Stop | POS_Update);
+		MoveList[moveIdx]->MoveOn({ -350.f,0.f }, 2.5f, Move_Linear | Move_Stop);
+		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 4) && MoveList[moveIdx]->getMoveComplete())
 	{
+		MoveList[moveIdx]->Off();
 		moveIdx = 5;
 		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, true, true);
+		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 5) && MoveList[moveIdx]->getAniComplete())
 	{
+		MoveList[moveIdx]->Off();
 		moveIdx = 6;
 		Pos = MoveList[moveIdx -1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, false, true);
 		MoveList[moveIdx]->MoveOn({ 135.f,0.f }, 1.5f, Move_Linear | Move_Stop);
+		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 6) && MoveList[moveIdx]->getMoveComplete())
 	{
+		MoveList[moveIdx]->Off();
 		moveIdx = 7;
 		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, true, true);
+		MoveList[moveIdx]->Start();
 		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 7) && MoveList[moveIdx]->getAniComplete())
 	{
+		MoveList[moveIdx]->Off();
+		Pos = MoveList[moveIdx]->getCurrentPos();
 		moveIdx = 0;
+		MoveList[moveIdx]->setPos({ Pos.x,Pos.y + 7.f }, true, true);
+		MoveList[moveIdx]->Start();
+		MoveList[moveIdx]->On();
 	}
 }
