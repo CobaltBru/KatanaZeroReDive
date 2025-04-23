@@ -14,7 +14,7 @@ PlayerState* WallSlideState::GetInput(Player* player)
 		return player->GetStates()->Jump;
 	}
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
 	{		
 		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft == true ? 100.f : -100.f), -200.f });
 		return player->GetStates()->Attack;
@@ -31,14 +31,13 @@ void WallSlideState::Enter(Player* player)
 
 void WallSlideState::Update(Player* player)
 {
+	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 	player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
 
 	if (!player->GetInfo()->bIsShiftChanged) return;
 
 	if (player->GetInfo()->bIsShift)
-		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslideshadow"));
-	else
-		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
+		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslideshadow"));	
 }
 
 	//if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 

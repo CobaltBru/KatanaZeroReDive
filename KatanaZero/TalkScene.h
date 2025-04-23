@@ -22,7 +22,7 @@ public:
 	virtual void Release() override;
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
-
+	void renderEffect(HDC hdc);
 protected:
 	virtual HRESULT InitImage();
 	virtual HRESULT InitObject();
@@ -47,5 +47,12 @@ private:
 	bool chatDone;
 
 	float timer = 0;
+
+	
+
+	bool drugTimerOn;
+	float drugTimer;
+	bool effectOn;
+	float effectTimer = 0;
 };
 

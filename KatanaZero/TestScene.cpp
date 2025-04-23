@@ -32,11 +32,13 @@
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
+	
 }
 
 HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
+	
 
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
@@ -60,7 +62,7 @@ HRESULT TestScene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-	if (FAILED(LineManager->LoadFile(L"TestLineData.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/playerLine.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
 		return E_FAIL;
@@ -107,7 +109,7 @@ HRESULT TestScene::InitObject()
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
 	BulletTest* newBullet = new BulletTest();
-	newBullet->Init({100.f, 350.f}, 0.f);
+	newBullet->Init({300.f, 700.f}, 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, newBullet);
 
 	//SimpleObject* simpleObject = new SimpleObject();

@@ -29,12 +29,6 @@ PlayerState* AttackState::GetInput(Player* player)
 			player->SetEffectImage(nullptr);
 			return player->GetStates()->WallSlide;
 		}
-		else
-		{
-			player->SetSwitchTime(0.02f);
-			player->SetEffectImage(nullptr);
-			return player->GetStates()->WallSlide;
-		}
 	}
 	
 	return nullptr;
@@ -50,10 +44,12 @@ void AttackState::Enter(Player* player)
 	
 	player->SetImage(ImageManager::GetInstance()->FindImage("zeroattack"));
 	player->SetEffectImage(ImageManager::GetInstance()->FindImage("normalslash"));
+	
 	player->SetEState(EPlayerState::Attack);
 	player->GetInfo()->bIsAttack = true;
+	player->GetInfo()->bCanAttack = false;
+	player->InitAttackTimer();
 
-	
 	if (player->GetPos().x > g_ptMouse.x) player->SetDirection(EDirection::Left);
 	if (player->GetPos().x < g_ptMouse.x) player->SetDirection(EDirection::Right);
 

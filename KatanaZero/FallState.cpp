@@ -10,7 +10,8 @@ PlayerState* FallState::GetInput(Player* player)
 		player->GetRigidBody()->SetDown(false);
 		return player->GetStates()->Idle;
 	}
-
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
+		return player->GetStates()->Attack;
 	return nullptr;
 }
 

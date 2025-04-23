@@ -27,7 +27,7 @@ HRESULT MainGame::Init()
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
 	SoundManager::GetInstance()->Init();
-
+	
 	if (FAILED(InitSound()))
 	{
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("°æ°í"), MB_OK);
@@ -43,7 +43,7 @@ HRESULT MainGame::Init()
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
-
+	
 	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
 	if (nFontsAdded == 0)
 	{
