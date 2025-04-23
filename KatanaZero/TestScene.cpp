@@ -26,7 +26,8 @@
 
 #include "Player.h"
 #include "SimpleTestObject.h"
-
+#include "SimpleObject.h"
+#include "Bullet.h"
 
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -64,7 +65,6 @@ HRESULT TestScene::Init()
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-
 
 	if (FAILED(InitImage()))
 	{
@@ -117,18 +117,29 @@ HRESULT TestScene::InitImage()
 HRESULT TestScene::InitObject()
 {
 	// 씬 초기에 필요한 오브젝트 생성
-
-	/**/
-	// 테스트 코드 태경
+	// 자은
 	Player* player = new Player();
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
+	BulletTest* newBullet = new BulletTest();
+	newBullet->Init({100.f, 350.f}, 0.f);
+	ObjectManager->AddGameObject(EObjectType::GameObject, newBullet);
+
+	//SimpleObject* simpleObject = new SimpleObject();
+	//simpleObject->Init("rocket", { 500.f, 300.f }, { 0.f, 0.f }, { 30.f, 30.f }, false);
+	//ObjectManager->AddGameObject(EObjectType::GameObject, simpleObject);
+
+	SimpleTestObject* simpleTestObject = new SimpleTestObject();
+	simpleTestObject->Init("rocket", { 500.f, 300.f }, { 0.f, 0.f }, { 30.f, 30.f }, false);
+	ObjectManager->AddGameObject(EObjectType::GameObject, simpleTestObject);
+
+	/**/
+	// 테스트 코드 태경
 	{
 		Background* background = new Background();
 		background->Init("black",0.f);
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
-
 		
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
@@ -143,6 +154,7 @@ HRESULT TestScene::InitObject()
 			headhunter->Init({300,360});
 			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}
+
 
 		//해영 테스트
 		{

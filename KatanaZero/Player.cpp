@@ -18,6 +18,7 @@
 #include "FlipState.h"
 #include "WallSlideState.h"
 #include "CommonFunction.h"
+#include "Bullet.h"
 
 
 Player::Player()
@@ -51,7 +52,13 @@ HRESULT Player::Init()
 	(float)image->GetFrameHeight()},
 	true, 1.f);*/
 
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, {
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f },
+		true, 1.f);
+
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
 
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
@@ -126,7 +133,15 @@ void Player::Update()
 		state = newState;
 		state->Enter(this);
 	}
+	// update state
 	state->Update(this);
+
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	{
+		// change image 
+
+		// slow motion
+	}
 
 	// apply acceleration including gravity
 	UpdateRigidBody();
@@ -292,20 +307,58 @@ void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	
-	// only checking the enemy
-	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy))
+	// player die
+	if (!info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy) ||
+		!info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Bullet))
 	{
 		ObjectCollider->SetHit(true);
 		HitResult.HitCollision->SetHit(true);	// opponent
 
 		// direction from player to enemy
-		FPOINT PEDir;
-		PEDir.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
-		PEDir.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
-		Normalize(PEDir);
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+		//FPOINT PEDir;
+		//PEDir.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
+		//PEDir.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
+		//Normalize(PEDir);
+
+		// die
+		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
+			ObjectRigidBody->AddVelocity(-PEDir * 100.f);
+	}
+
+	// player attack enemy
+	if (info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Enemy))
+	{
+		ObjectCollider->SetHit(true);
+		HitResult.HitCollision->SetHit(true);	// opponent
+
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
 
 		// knock enemy
 		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
 			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+	}
+
+	// player attack
+	if (info->bIsAttack && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Bullet))
+	{
+		ObjectCollider->SetHit(true);
+		HitResult.HitCollision->SetHit(true);	// opponent
+
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+
+		// knock enemy
+		if (HitResult.HitCollision->GetOwner())
+		{			
+			BulletTest* bullet = dynamic_cast<BulletTest*>(HitResult.HitCollision->GetOwner());
+			if (bullet)
+			{
+				float angle;
+				if (dir == EDirection::Right) angle = -30.f;
+				else angle = -150.f;
+				bullet->SetAngle(angle);
+			}
+		}
+			
 	}
 }

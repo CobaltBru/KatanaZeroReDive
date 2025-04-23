@@ -71,6 +71,8 @@ private:
 	// switch frame
 	float switchTime;	
 
+	Collider* AttackCollider;
+
 public:
 	Player();
 	virtual ~Player();
@@ -114,6 +116,7 @@ public:
 
 	inline void SetSwitchTime(float time) { switchTime = time; }
 
+	inline Collider* GetAttackCollider() { return AttackCollider; }
 	void InitBindState();
 };
 
