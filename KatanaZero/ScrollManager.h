@@ -13,7 +13,7 @@ public:
 
 	FPOINT GetScroll() const { return Scroll; }
 	FPOINT GetScrollOffset() const { return ScrollOffset; }
-	float GetScale() const { return Scale; }
+	float GetScale() const { return Scale; }		// 1.5는 캐릭터가 예쁜듯하다가도.. 맵은 2.5배가 나은듯 싶다가도..
 
 	void SetScroll(FPOINT InScroll) {
 		ScrollOffset.x += InScroll.x;

@@ -28,6 +28,8 @@ struct playerInfo
 	bool bIsAttack;
 	bool bIsJump;
 	bool bIsFlip;
+	bool bIsShift;
+	bool bIsShiftChanged;
 };
 
 struct playerStates
@@ -71,6 +73,8 @@ private:
 	// switch frame
 	float switchTime;	
 
+	Collider* AttackCollider;
+
 public:
 	Player();
 	virtual ~Player();
@@ -81,6 +85,8 @@ public:
 	void Render(HDC hdc) override;
 	void MakeSnapShot(void* out) override;
 
+	void InitImage();
+	 
 	void InitPlayerStates();
 	void InitPlayerInfo();
 
@@ -114,6 +120,7 @@ public:
 
 	inline void SetSwitchTime(float time) { switchTime = time; }
 
+	inline Collider* GetAttackCollider() { return AttackCollider; }
 	void InitBindState();
 };
 

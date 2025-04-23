@@ -146,6 +146,7 @@
     <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="FlipState.cpp" />
+    <ClCompile Include="GoalTrigger.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
@@ -206,12 +207,14 @@
     <ClCompile Include="TalkScene.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TimeLineBuffer.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
     <ClCompile Include="UIGame.cpp" />
     <ClCompile Include="WallSlideState.cpp" />
+    <ClCompile Include="WorldBackground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -225,6 +228,7 @@
     <ClInclude Include="Enemies.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="FlipState.h" />
+    <ClInclude Include="GoalTrigger.h" />
     <ClInclude Include="GoPopUp.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />
@@ -269,6 +273,7 @@
     <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h" />
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="PlayerState.h" />
+    <ClInclude Include="Reference\Headers\Imgui\stb_image.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RunState.h" />
@@ -291,12 +296,14 @@
     <ClInclude Include="TalkScene.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="TimeLineBuffer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
     <ClInclude Include="UIGame.h" />
     <ClInclude Include="WallSlideState.h" />
+    <ClInclude Include="WorldBackground.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

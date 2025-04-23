@@ -218,3 +218,35 @@ inline vector<string> GetFileNames(const string& InFolderPath)
 
 	return files;
 }
+
+
+inline OPENFILENAME GetSaveInfo(TCHAR* lpstrFile, TCHAR* filter)
+{
+	OPENFILENAME ofn;
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = g_hWndParent;
+	ofn.lpstrFile = lpstrFile;
+	ofn.nMaxFile = 100;
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrDefExt = L"dat";
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	return ofn;
+}
+
+inline OPENFILENAME GetLoadInfo(TCHAR* lpstrFile, TCHAR* filter)
+{
+	OPENFILENAME ofn;
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = g_hWndParent;
+	ofn.lpstrFilter = filter;
+	ofn.lpstrFile = lpstrFile;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.lpstrInitialDir = L".";
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	return ofn;
+}

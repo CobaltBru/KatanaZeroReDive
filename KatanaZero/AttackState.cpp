@@ -32,6 +32,7 @@ void AttackState::Enter(Player* player)
 	player->SetEffectImage(ImageManager::GetInstance()->FindImage("normalslash"));
 	player->SetEState(EPlayerState::Attack);
 	player->GetInfo()->bIsAttack = true;
+
 	
 	if (player->GetPos().x > g_ptMouse.x) player->SetDirection(EDirection::Left);
 	if (player->GetPos().x < g_ptMouse.x) player->SetDirection(EDirection::Right);
@@ -42,7 +43,7 @@ void AttackState::Enter(Player* player)
 	attackDir.y = g_ptMouse.y - player->GetPos().y;
 	Normalize(attackDir);
 
-	player->GetRigidBody()->AddVelocity(attackDir * 100.f);
+	player->GetRigidBody()->AddVelocity(attackDir * 300.f);
 }
 
 void AttackState::Update(Player* player)

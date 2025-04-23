@@ -30,11 +30,16 @@ PlayerState* IdleState::GetInput(Player* player)
 
 void IdleState::Enter(Player* player)
 {
-	player->SetImage(ImageManager::GetInstance()->FindImage("zeroidle"));
 	player->SetEState(EPlayerState::Idle);	
 
 }
 
 void IdleState::Update(Player* player)
 {
+    if (!player->GetInfo()->bIsShiftChanged) return;
+
+    if (player->GetInfo()->bIsShift)
+        player->SetImage(ImageManager::GetInstance()->FindImage("zeroidleshadow"));
+    else
+	    player->SetImage(ImageManager::GetInstance()->FindImage("zeroidle"));
 }

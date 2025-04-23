@@ -108,6 +108,14 @@ typedef struct tagFPOINT
 	{
 		return (x != fp2.x || y != fp2.y);
 	}
+	tagFPOINT operator + (const tagFPOINT& fp2) const 
+	{
+		return tagFPOINT{x+fp2.x, y+fp2.y};
+	}
+	tagFPOINT operator - (const tagFPOINT& fp2) const
+	{
+		return tagFPOINT{ x - fp2.x, y - fp2.y };
+	}
 
 } FPOINT;
 

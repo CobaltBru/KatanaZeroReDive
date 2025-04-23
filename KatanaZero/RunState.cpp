@@ -26,7 +26,14 @@ void RunState::Enter(Player* player)
 
 void RunState::Update(Player* player)
 {
-    player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+    if (player->GetInfo()->bIsShift)
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerorunshadow"));
+    else
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -300.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 300.f, 0.f });
+
+    if (!player->GetInfo()->bIsShiftChanged) return;
+
 }
