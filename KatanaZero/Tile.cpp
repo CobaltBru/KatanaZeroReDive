@@ -73,9 +73,11 @@ void Tile::Render(HDC hdc)
 	{
 		//컬링을 해보자.
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-		const float screenX = iter.second.tileX + Scroll.x;
-		const float screenY = iter.second.tileX + Scroll.y;
-		if (screenX >= 0.f && screenY <= WINSIZE_X && screenY >= 0.f && screenX <= WINSIZE_Y)
+		const float screenLeft = (iter.second.tileX - (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.x;
+		const float screenRight = (iter.second.tileX + (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.x;
+		const float screenTop = (iter.second.tileY - (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
+		const float screenBottom = (iter.second.tileY + (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
+		if (screenRight >= 0.f && screenLeft <= WINSIZE_X && screenBottom >= 0.f && screenTop <= WINSIZE_Y)
 			iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale());		
 	}
 }
