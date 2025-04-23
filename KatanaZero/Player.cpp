@@ -370,8 +370,8 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_roll.bmp", 350, 33, 7, 1, true, RGB(255, 255, 255));
-	//ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 46,11, 1, true, RGB(255, 255, 255));
+	//ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_roll.bmp", 350, 33, 7, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 46,11, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerofall", L"Image/zero_fall.bmp", 176, 50, 4, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
@@ -383,8 +383,8 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));
 	//ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerorunshadow", L"Image/zero_run_shadow.bmp", 440, 32, 10, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 31, 7, 1, true, RGB(255, 0, 255));
-	//ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_flip_shadow.bmp", 528, 44, 7, 1, true, RGB(255, 0, 255));
+	//ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 31, 7, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_flip_shadow.bmp", 528, 44, 11, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerofallshadow", L"Image/zero_fall_shadow.bmp", 164, 49, 4, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 41, 7, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));
