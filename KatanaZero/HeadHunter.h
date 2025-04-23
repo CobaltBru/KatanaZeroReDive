@@ -27,7 +27,6 @@ class HeadHunter : public GameObject
 private:
    
     FPOINT firePos;
-    FPOINT wallPos;
 
     bool isFlip;
     bool isAttacked;
@@ -38,9 +37,7 @@ private:
     bool isFired;
     bool isFlipLocked;
 
-    FPOINT jumpDist1;
-    FPOINT jumpDist2;
-    FPOINT jumpDist3;
+
     float angle;
     float weaponAngle; // 레이저 각도
     float dAngle; // 
@@ -48,7 +45,7 @@ private:
     float moveTimer;
     float bulletTimer;
 
-
+    float dir;
     int hp;
     int wave;
     int bulletWave;
@@ -60,7 +57,7 @@ private:
     int lazerLoop;
     int deadCount;
     int dieIndex;
-
+    int random;
     int frameIndex;
     Image* image;
     State state;
@@ -101,7 +98,7 @@ public:
     void Die();
 
     void SpawnBullet(FPOINT firePos, float angle);
-    void SpawnBomb(FPOINT firePos, float angle);
+    void SpawnBomb(FPOINT firePos, float speed, float speed2);
 
     void ChangeState(State newState);
     void CheckPlayerPos();

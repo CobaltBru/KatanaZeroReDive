@@ -13,16 +13,18 @@ Bomb::~Bomb()
 {
 }
 
-HRESULT Bomb::Init(FPOINT pos, float angle)
+HRESULT Bomb::Init(FPOINT pos, float speed, float speed2)
 {
 	
     Pos = pos;
-    this->angle = angle;
+    this->speed = speed;
+    this->speed2 = speed2;
 
     isActive = true;
     timer = 0;
     frameIndex = 0;
     timer2 = 0;
+    
 
     image = ImageManager::GetInstance()->AddImage("wBomb", L"Image/HeadHunter/wBomb.bmp", 14, 10, 1, 1, true, RGB(255, 0, 255));
     image = ImageManager::GetInstance()->AddImage("explosion", L"Image/HeadHunter/explosion.bmp", 770 * 5, 70 * 5, 11, 1, true, RGB(255, 0, 255)); // 터지는 모션
@@ -42,7 +44,7 @@ HRESULT Bomb::Init(FPOINT pos, float angle)
 
     // 초기 발사 속도 (포물선)
     ObjectRigidBody->SetMaxVelocity({ 300.f, 1000.f });
-    ObjectRigidBody->SetVelocity({ +300.f, -600.f - angle }); // → 방향, ↑ 방향 // 나오는 각도를 매번 다르게 하려면? > 지피티야..
+    ObjectRigidBody->SetVelocity({ speed, speed2 }); // → 방향, ↑ 방향 // 나오는 각도를 매번 다르게 하려면? > 지피티야..
 
     return S_OK; 
 }
@@ -50,7 +52,7 @@ HRESULT Bomb::Init(FPOINT pos, float angle)
 HRESULT Bomb::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
 {
     Pos = InPos;
-    this->angle = angle;
+
 
     isActive = true;
     timer = 0;
@@ -75,7 +77,7 @@ HRESULT Bomb::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 
     // 초기 발사 속도 (포물선)
     ObjectRigidBody->SetMaxVelocity({ 300.f, 600.f });
-    ObjectRigidBody->SetVelocity({ +300.f, -600.f }); // → 방향, ↑ 방향 // 나오는 각도를 매번 다르게 하려면? > 지피티야..
+    ObjectRigidBody->SetVelocity({ +300.f, -600.f + 100.f * (rand() % 3)}); // → 방향, ↑ 방향 // 나오는 각도를 매번 다르게 하려면? > 지피티야..
 
     return S_OK;
 }
@@ -97,7 +99,6 @@ void Bomb::Update()
     Collision();
 
     ObjectRigidBody->Update();
-    
 
     // 시간이 지나면 멈추고 터짐
     if (ObjectCollider->IsHitted() || timer > 5.0f)

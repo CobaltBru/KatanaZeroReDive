@@ -7,20 +7,18 @@ enum class bombState
     Explosion
 };
 
-class RigidBody;
-class Collider;
+
 class Image;
 class Bomb : public GameObject
 {
 private:
-    Collider* BombCollider;
-    RigidBody* ObjectRigidBody;
-
-    
+  
     int frameIndex;
-    float angle;
+
     float timer;
     float timer2;
+    float speed; 
+    float speed2;
     bool isActive;
 
     bool isExploded = false;
@@ -33,7 +31,7 @@ public:
     Bomb();
     virtual ~Bomb();
 
-    virtual HRESULT Init(FPOINT pos, float angle);
+    virtual HRESULT Init(FPOINT pos, float angle, float speed);
     virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend);
     virtual void Release();
     virtual void Update();
@@ -44,7 +42,6 @@ public:
 
     void SetIsActive(bool isActive) { this->isActive = isActive; }
     void SetPos(FPOINT pos) { this->Pos = pos; }
-    void SetAngle(float angle) { this->angle = angle; }
 
     
     void Collision();

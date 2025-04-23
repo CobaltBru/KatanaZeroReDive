@@ -1,13 +1,10 @@
 #pragma once
 #include "GameObject.h"
 
-class Collider;
 class GPImage;
 class Bullet1 : public GameObject
 {
 private:
-    Collider* BulletCollider;
-
     float angle;
     bool isActive;
 
