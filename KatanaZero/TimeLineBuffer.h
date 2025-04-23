@@ -22,7 +22,7 @@ public:
 	inline void Clear() { frameBuffer.clear(); }
 
 private:
-	const size_t MAX_SNAPSHOTS = 10000;
+	const size_t MAX_SNAPSHOTS = 100000; // 180fps로 저장하는데 
 	deque<SnapShot> frameBuffer;
 };
 

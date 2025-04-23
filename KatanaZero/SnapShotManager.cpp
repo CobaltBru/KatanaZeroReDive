@@ -36,7 +36,7 @@ void SnapShotManager::Update(bool isDead)
 		if (!isReplaying)
 		{
 			elapsedTime += dt;
-			if (elapsedTime >= 0.01666666667f / 3.f)
+			if (elapsedTime >= 0.01666666667f / 0.5f)
 			{
 				
 				elapsedTime = 0.0f;
@@ -50,14 +50,7 @@ void SnapShotManager::Update(bool isDead)
 		StartReplay();
 		if (isReplaying)
 		{
-			elapsedTime += dt;
-
-			if (elapsedTime >= 0.01666666667f / 27.f)
-			{
-				
-				elapsedTime = 0.0f;
-				Replay();
-			}
+			Replay();
 		}
 	}
 }
