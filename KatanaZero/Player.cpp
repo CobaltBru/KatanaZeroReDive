@@ -31,11 +31,14 @@ Player::~Player()
 
 HRESULT Player::Init()
 {
+	InitImage();
+
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 	effectImage = nullptr;
 
 	Pos = FPOINT{ 300.0f, 300.0f };
 	switchTime = 0.02f;
+
 
 	InitPlayerStates();
 	state = states->Idle;
@@ -126,6 +129,18 @@ void Player::Update()
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
 	frameTimer += deltaTime;	
 
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SHIFT))	
+	{
+		info->bIsShift = true;
+		info->bIsShiftChanged = true;
+		// change image, slow motion
+	}
+	else if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SHIFT))
+	{
+		info->bIsShift = false;
+		info->bIsShiftChanged = true;
+	}
+
 	// input
 	PlayerState* newState = state->GetInput(this);	
 	if (newState)
@@ -136,12 +151,7 @@ void Player::Update()
 	// update state
 	state->Update(this);
 
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
-	{
-		// change image 
-
-		// slow motion
-	}
+	
 
 	// apply acceleration including gravity
 	UpdateRigidBody();
@@ -215,6 +225,7 @@ void Player::InitPlayerInfo()
 	info->bIsAttack = false;
 	info->bIsJump = false;
 	info->bIsFlip = false;
+	info->bIsShift = false;
 }
 
 void Player::InitBindState()
@@ -361,4 +372,33 @@ void Player::UpdateCollision()
 		}
 			
 	}
+}
+
+
+void Player::InitImage()
+{
+	//zero
+	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 49, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerofall", L"Image/zero_fall.bmp", 176, 50, 4, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));		
+	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));	
+
+	// shadow
+	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));
+	//ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerorunshadow", L"Image/zero_run_shadow.bmp", 440, 33, 10, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 33, 11, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerofallshadow", L"Image/zero_fall_shadow.bmp", 164, 49, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 42, 7, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroidletorunshadow", L"Image/zero_idle_to_run_shadow.bmp", 184, 34, 4, 1, true, RGB(255, 0, 255));
+
+	// slash
+	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 }

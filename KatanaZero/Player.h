@@ -28,6 +28,8 @@ struct playerInfo
 	bool bIsAttack;
 	bool bIsJump;
 	bool bIsFlip;
+	bool bIsShift;
+	bool bIsShiftChanged;
 };
 
 struct playerStates
@@ -83,6 +85,8 @@ public:
 	void Render(HDC hdc) override;
 	void MakeSnapShot(void* out) override;
 
+	void InitImage();
+	 
 	void InitPlayerStates();
 	void InitPlayerInfo();
 

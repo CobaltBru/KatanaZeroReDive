@@ -41,4 +41,11 @@ void WallSlideState::Enter(Player* player)
 void WallSlideState::Update(Player* player)
 {
 	player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
+
+	if (!player->GetInfo()->bIsShiftChanged) return;
+
+	if (player->GetInfo()->bIsShift)
+		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslideshadow"));
+	else
+		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 }
