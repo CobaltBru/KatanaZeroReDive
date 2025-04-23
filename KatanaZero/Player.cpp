@@ -36,7 +36,7 @@ HRESULT Player::Init()
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 	effectImage = nullptr;
 
-	Pos = FPOINT{ 300.0f, 300.0f };
+	Pos = FPOINT{ 1200, 700 };
 	switchTime = 0.02f;
 
 
@@ -55,11 +55,11 @@ HRESULT Player::Init()
 	(float)image->GetFrameHeight()},
 	true, 1.f);*/
 
-	AttackCollider = new Collider(this, EColliderType::Rect, {}, {
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f },
+	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
 		true, 1.f);
-
+	
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
 
@@ -189,6 +189,11 @@ void Player::Render(HDC hdc)
 
 	if (effectImage != nullptr && info->bIsAttack)
 	{
+		FPOINT attackDir = { 0.f, 0.f };
+		attackDir.x = g_ptMouse.x - Pos.x;
+		attackDir.y = g_ptMouse.y - Pos.y;
+		Normalize(attackDir);
+		AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
 		if (dir == EDirection::Left)
 			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
 		else
@@ -353,9 +358,11 @@ void Player::UpdateCollision()
 			BulletTest* bullet = dynamic_cast<BulletTest*>(HitResult.HitCollision->GetOwner());
 			if (bullet)
 			{
-				float angle;
+				/*float angle;
 				if (dir == EDirection::Right) angle = -30.f;
-				else angle = -150.f;
+				else angle = -150.f;*/
+				float angle = bullet->GetAngle() + 180.f;
+				if (angle >= 360.f) angle -= 360.f;
 				bullet->SetAngle(angle);
 			}
 		}
