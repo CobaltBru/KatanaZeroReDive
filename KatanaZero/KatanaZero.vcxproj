@@ -146,6 +146,7 @@
     <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="FlipState.cpp" />
+    <ClCompile Include="GoalTrigger.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="Enemies.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="FlipState.h" />
+    <ClInclude Include="GoalTrigger.h" />
     <ClInclude Include="GoPopUp.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />

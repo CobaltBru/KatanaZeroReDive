@@ -145,6 +145,9 @@
     <Filter Include="MainGame\Tile">
       <UniqueIdentifier>{aca1fe46-5c92-4772-b68f-5109f8071163}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Trigger">
+      <UniqueIdentifier>{e261302d-168b-450b-8817-aaa4b2183298}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -388,6 +391,7 @@
     <ClCompile Include="Tile.cpp">
       <Filter>MainGame\Tile</Filter>
     </ClCompile>
+    <ClCompile Include="GoalTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -643,5 +647,6 @@
     <ClInclude Include="Tile.h">
       <Filter>MainGame\Tile</Filter>
     </ClInclude>
+    <ClInclude Include="GoalTrigger.h" />
   </ItemGroup>
 </Project>
