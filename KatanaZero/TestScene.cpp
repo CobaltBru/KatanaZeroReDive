@@ -196,6 +196,19 @@ void TestScene::TestCode()
 		// 인자 : 쉐이크 강도, 지속시간
 		ScrollManager->CameraShake(5.f, 1.f);
 	}
+
+	//슬로우
+	if (KeyManager::GetInstance()->IsStayKeyDown('I'))
+	{
+		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
+		// TimerManager::GetInstance()->GetDeltaTime();
+		 
+		
+		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+		TimerManager::GetInstance()->SetSlow(0.1f,0.2f);
+	}
+	else  // 슬로우 풀기
+		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
 }
 
 void TestScene::Update()
