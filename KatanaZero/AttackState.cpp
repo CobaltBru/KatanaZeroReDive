@@ -16,6 +16,26 @@ PlayerState* AttackState::GetInput(Player* player)
 		player->SetEffectImage(nullptr);
 		return player->GetStates()->Idle;
     }
+
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
+	if (lineResult.LineType == ELineType::Wall)
+	{
+		if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
+
+		playerInfo->bIsAttack = false;
+		if (player->GetRigidBody()->IsGround() == false)
+		{
+			player->SetSwitchTime(0.02f);
+			player->SetEffectImage(nullptr);
+			return player->GetStates()->WallSlide;
+		}
+		else
+		{
+			player->SetSwitchTime(0.02f);
+			player->SetEffectImage(nullptr);
+			return player->GetStates()->WallSlide;
+		}
+	}
 	
 	return nullptr;
 }

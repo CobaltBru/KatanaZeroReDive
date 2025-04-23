@@ -6,17 +6,20 @@
 #include "ObjectManager.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
+#include "CollisionManager.h"
 #include "ScrollManager.h"
 #include "GPImage.h"
 #include "Image.h"
 #include "SoundManager.h"
 #include "ChatManager.h"
 
+#include "LineManager.h"
+
 #include "ScenePsych.h"
 #include "ScenePlayer.h"
 
 TalkScene::TalkScene() :
-	ObjectManager(nullptr), RenderManager(nullptr)
+	ObjectManager(nullptr), RenderManager(nullptr), LineManager(nullptr),CollisionManager(nullptr), chatManager(nullptr)
 {
 }
 
@@ -27,8 +30,26 @@ HRESULT TalkScene::Init()
 	ObjectManager->Init();
 	RenderManager = RenderManager::GetInstance();
 	RenderManager->Init();
-	pos = { 0,0 };
+	LineManager = LineManager::GetInstance();
+	LineManager->Init();
+	CollisionManager = CollisionManager::GetInstance();
+	CollisionManager->Init();
 
+	chatManager = new ChatManager();
+	chatManager->pushPos({ 865.f,500.f });
+	chatManager->LoadChat("ChatDatas/Talkscene.json");
+	inChat = false;
+	chatManager->startChat("UnBP5gsTpB");
+	badChat = false;
+	chatDone = false;
+	pos = { 0,0 };
+	chairPos = { 695.f,640.f };
+	DoorPos = { 247.f,600.f };
+	if (FAILED(LineManager->LoadFile(L"Data/Talk/talkLine.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
 	
 	if (FAILED(InitImage()))
 	{
@@ -50,38 +71,123 @@ void TalkScene::Release()
 		ObjectManager->Release();
 	if (RenderManager != nullptr)
 		RenderManager->Release();
+	if (LineManager != nullptr)
+		LineManager->Release();
+	if (CollisionManager != nullptr)
+		CollisionManager->Release();
+	if (chatManager != nullptr)
+	{
+		chatManager->Release();
+		delete chatManager;
+		chatManager = nullptr;
+	}
+		
 
 	ScrollManager::GetInstance()->Release();
 	ObjectManager = nullptr;
 	RenderManager = nullptr;
+	LineManager = nullptr;
+	CollisionManager = nullptr;
 }
 
 void TalkScene::Update()
 {
 	ObjectManager->Update();
+	CollisionManager->Update();
+	if (!inChat)
+	{
+		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+		{
+			FPOINT playerPos = player->GetPos();
+			if (fabs(playerPos.x - chairPos.x) < 15.f)
+			{
 
-	/*if (KeyManager::GetInstance()->IsStayKeyDown('W'))
-	{
-		pos.y -= 1;
+				player->SetPos(chairPos);
+				player->sitUP();
+				if (chatDone == false)
+				{
+					chatManager->startChat("T6qxd3wono");
+					inChat = true;
+					chatDone = true;
+				}
+				
+			}
+
+			if (fabs(playerPos.x - DoorPos.x) < 20.f)
+			{
+				if (chatDone)
+				{
+					SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
+					return;
+				}
+			}
+
+		}
 	}
-	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
+	
+	chatManager->Update();
+
+	if (inChat)
 	{
-		pos.y += 1;
+		if (chatManager->getKey() == "X0CXrB2qMG" && chatManager->checkChatComplete("X0CXrB2qMG"))
+		{
+			psych->Move();
+			player->getChronos();
+			badChat = true;
+		}
+
+		//약맞으러
+		if (chatManager->getKey() == "N4bTsm5YwY" && chatManager->checkChatComplete("N4bTsm5YwY"))
+		{
+			psych->Move();
+			player->getChronos();
+		}
+		if ((chatManager->getKey() == "" || chatManager->getKey() == "END") && inChat)
+			if (!badChat)
+			{
+				//약 다맞으면
+				if (psych->isMoveEnd())
+				{
+					chatManager->startChat("jlHjfE32wz");
+				}
+			}
+			else
+			{
+				//약 다맞으면
+				if (psych->isMoveEnd())
+				{
+					chatManager->startChat("mpYito8hu6");
+				}
+			}
+
+		//끝
+		if (chatManager->getKey() == "mpYito8hu6" && chatManager->checkChatComplete("mpYito8hu6"))
+		{
+			inChat = false;
+			timer += TimerManager::GetInstance()->GetDeltaTime();
+			if (timer >= 3.f)
+			{
+				chatManager->startChat("");
+			}
+			
+		}
 	}
-	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+	if (chatDone == true && inChat == false)
 	{
-		pos.x -= 1;
+		timer += TimerManager::GetInstance()->GetDeltaTime();
+		if (timer >= 3.f)
+		{
+			chatManager->startChat("");
+		}
 	}
-	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
-	{
-		pos.x += 1;
-	}*/
-	//firePlace->setPos(pos, false, false);
 }
 
 void TalkScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
+	LineManager->Render(hdc);
+	CollisionManager->Render(hdc);
+	chatManager->Render(hdc);
 }
 
 HRESULT TalkScene::InitImage()
@@ -115,18 +221,17 @@ HRESULT TalkScene::InitObject()
 	firePlace->On();
 	ObjectManager->AddGameObject(EObjectType::GameObject, firePlace);
 
-	psych = new ScenePsych();
-	psychPos = { 865.f,637.f };
-	psych->SetPos(psychPos);
-	psych->Init();
-	ObjectManager->AddGameObject(EObjectType::GameObject, psych);
+	
 
 	player = new ScenePlayer();
-	playerPos = { 695.f,640.f };
-	player->SetPos(playerPos);
+	player->SetPos(DoorPos);
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
-	
+
+	psych = new ScenePsych();
+	psych->SetPos({ 865.f,637.f });
+	psych->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, psych);
 	
 
 	return S_OK;

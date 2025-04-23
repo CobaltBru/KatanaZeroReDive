@@ -11,7 +11,7 @@
 #include "CommonFunction.h"
 
 SimpleObject::SimpleObject()
-	:Image(nullptr), ScrollSpeed(0.f), bWall(false)
+	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false)
 {
 }
 
@@ -178,7 +178,7 @@ void SimpleObject::RigidBodyTest()
 	if (Result.LineType == ELineType::Wall)
 	{
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f,500.f });
-		bWall = true;
+		bIsWall = true;
 
 		const float L = Pos.x - (ObjectCollider->GetSize().x * 0.5f);
 		const float R = Pos.x + (ObjectCollider->GetSize().x * 0.5f);
@@ -191,7 +191,7 @@ void SimpleObject::RigidBodyTest()
 	else
 	{
 		ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
-		bWall = false;
+		bIsWall = false;
 	}
 }
 
@@ -230,7 +230,7 @@ void SimpleObject::PhysicsMove()
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		if (bWall)
+		if (bIsWall)
 		{
 			ObjectRigidBody->AddVelocity({ (bIsLeft ? 200.f : -200.f) ,-500.f });
 		}
