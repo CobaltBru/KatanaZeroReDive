@@ -18,6 +18,21 @@
 #include "ScenePsych.h"
 #include "ScenePlayer.h"
 
+void TalkScene::renderEffect(HDC hdc)
+{
+
+	int width = WINSIZE_X;
+	int height = WINSIZE_Y;
+	float offset = -20 * (effectTimer) * (effectTimer - 2.f);
+	for (int y = 0; y < height; y++)
+	{
+		BitBlt(hdc, offset, y, width, 1,
+			hdc,0, y, SRCPAINT);
+	}
+}
+
+
+
 TalkScene::TalkScene() :
 	ObjectManager(nullptr), RenderManager(nullptr), LineManager(nullptr),CollisionManager(nullptr), chatManager(nullptr)
 {
@@ -45,6 +60,11 @@ HRESULT TalkScene::Init()
 	pos = { 0,0 };
 	chairPos = { 695.f,640.f };
 	DoorPos = { 247.f,600.f };
+
+	drugTimerOn = false;
+	drugTimer = 0;
+	effectTimer = 0;
+	effectOn = false;
 	if (FAILED(LineManager->LoadFile(L"Data/Talk/talkLine.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -92,6 +112,7 @@ void TalkScene::Release()
 
 void TalkScene::Update()
 {
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	ObjectManager->Update();
 	CollisionManager->Update();
 	if (!inChat)
@@ -134,6 +155,7 @@ void TalkScene::Update()
 			psych->Move();
 			player->getChronos();
 			badChat = true;
+			drugTimerOn = true;
 		}
 
 		//약맞으러
@@ -141,6 +163,7 @@ void TalkScene::Update()
 		{
 			psych->Move();
 			player->getChronos();
+			drugTimerOn = true;
 		}
 		if ((chatManager->getKey() == "" || chatManager->getKey() == "END") && inChat)
 			if (!badChat)
@@ -180,15 +203,40 @@ void TalkScene::Update()
 			chatManager->startChat("");
 		}
 	}
+	if (drugTimerOn)
+	{
+		drugTimer += dt;
+		if (drugTimer >= 11.05f)
+		{
+			effectTimer += dt;
+			if (effectTimer >= 2.0f)
+			{
+				effectOn = false;
+				drugTimerOn = false;
+			}
+			else
+			{
+				effectOn = true;
+			}
+		}
+	}
+	
 }
 
 void TalkScene::Render(HDC hdc)
 {
+	
 	RenderManager->Render(hdc);
 	LineManager->Render(hdc);
 	CollisionManager->Render(hdc);
 	chatManager->Render(hdc);
+	RECT rect = { 0,0,WINSIZE_X,WINSIZE_Y };
+	//RenderWaveEffect(hdc, hdc, rect, timer);
+	if(effectOn) renderEffect(hdc);
+
+	
 }
+
 
 HRESULT TalkScene::InitImage()
 {
