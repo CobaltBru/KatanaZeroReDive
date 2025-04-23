@@ -10,7 +10,7 @@ PlayerState* JumpState::GetInput(Player* player)
         return player->GetStates()->Idle;
     }
 
-    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
     {
         player->SetSwitchTime(0.02f);
         return player->GetStates()->Attack;
@@ -37,9 +37,12 @@ PlayerState* JumpState::GetInput(Player* player)
     const FLineResult lineResult = player->GetRigidBody()->GetResult();
     if (lineResult.LineType == ELineType::Wall)
     {
+        //if (player->GetRigidBody()->IsGround() == false && player->GetRigidBody()->GetVelocity().y >= 50.f)
         if (player->GetRigidBody()->IsGround() == false)
+        {
             return player->GetStates()->WallSlide;
-
+        }
+        
         if (lineResult.IsLeft)
             player->SetDirection(EDirection::Left);
     }

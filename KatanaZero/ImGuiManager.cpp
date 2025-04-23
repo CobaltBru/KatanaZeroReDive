@@ -271,7 +271,7 @@ void ImGuiManager::Tile()
 
 			CreateBackground(item_current);
 
-			if (Bg_current != -1)
+			if (Bg_current != -1 && !BackgroundObject.empty())
 			{
 				ImGui::SeparatorText(u8"Position");
 
@@ -719,7 +719,7 @@ void ImGuiManager::LoadBackGround()
 				break;
 
 			Background* BackgroundObj = new Background();
-			BackgroundObj->Init(BackgroundName, ScrollPer, scrollManager->GetScale());
+			BackgroundObj->Init(BackgroundName, ScrollPer, scrollManager->GetScale() + 0.5f);
 			BackgroundObj->SetPos(Pos);
 			BackgroundObj->GetImage()->SetTransparent(bTransparent);
 			objectManager->AddGameObject(EObjectType::GameObject, BackgroundObj);
@@ -1022,7 +1022,7 @@ void ImGuiManager::CreateBackground(int Index)
 		return;
 
 	Background* BackgroundObj = new Background();
-	BackgroundObj->Init(BackgroundList[Index], 1.f, scrollManager->GetScale());
+	BackgroundObj->Init(BackgroundList[Index], 1.f, scrollManager->GetScale() + 0.5f);
 	objectManager->AddGameObject(EObjectType::GameObject, BackgroundObj);
 
 	string name = BackgroundList[Index];

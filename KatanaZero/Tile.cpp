@@ -48,13 +48,26 @@ HRESULT Tile::Init(LPCWSTR InLoadPath)
 			break;
 
 		Image* image = ImageManager::GetInstance()->FindImage(ImageName);
-
-		CurrentTiles[KeyName].image = image;
-		CurrentTiles[KeyName].tileX = td.tileX;
-		CurrentTiles[KeyName].tileY = td.tileY;
-		CurrentTiles[KeyName].frameX = td.frameX;
-		CurrentTiles[KeyName].frameY = td.frameY;
-		CurrentTiles[KeyName].ImageName = ImageName;
+		
+		if (CurrentTiles.find(KeyName) == CurrentTiles.end())
+		{
+			CurrentTiles[KeyName].image = image;
+			CurrentTiles[KeyName].tileX = td.tileX;
+			CurrentTiles[KeyName].tileY = td.tileY;
+			CurrentTiles[KeyName].frameX = td.frameX;
+			CurrentTiles[KeyName].frameY = td.frameY;
+			CurrentTiles[KeyName].ImageName = ImageName;
+		}
+		else
+		{
+			CurrentTiles2[KeyName].image = image;
+			CurrentTiles2[KeyName].tileX = td.tileX;
+			CurrentTiles2[KeyName].tileY = td.tileY;
+			CurrentTiles2[KeyName].frameX = td.frameX;
+			CurrentTiles2[KeyName].frameY = td.frameY;
+			CurrentTiles2[KeyName].ImageName = ImageName;
+		}
+		
 	}
 
 	CloseHandle(hFile);
@@ -78,7 +91,19 @@ void Tile::Render(HDC hdc)
 		const float screenTop = (iter.second.tileY - (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
 		const float screenBottom = (iter.second.tileY + (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
 		if (screenRight >= 0.f && screenLeft <= WINSIZE_X && screenBottom >= 0.f && screenTop <= WINSIZE_Y)
-			iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale());		
+			iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale() / 2);		
+	}
+
+	for (auto& iter : CurrentTiles2)
+	{
+		//컬링을 해보자.
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+		const float screenLeft = (iter.second.tileX - (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.x;
+		const float screenRight = (iter.second.tileX + (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.x;
+		const float screenTop = (iter.second.tileY - (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
+		const float screenBottom = (iter.second.tileY + (16 * ScrollManager::GetInstance()->GetScale())) + Scroll.y;
+		if (screenRight >= 0.f && screenLeft <= WINSIZE_X && screenBottom >= 0.f && screenTop <= WINSIZE_Y)
+			iter.second.image->FrameRender(hdc, iter.second.tileX + Scroll.x, iter.second.tileY + Scroll.y, iter.second.frameX, iter.second.frameY, false, true, ScrollManager::GetInstance()->GetScale() / 2);
 	}
 }
 

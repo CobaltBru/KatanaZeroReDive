@@ -62,5 +62,6 @@ private:
 
 	unordered_map<string, Image*> TileList;
 	unordered_map<string,FTileInfo> CurrentTiles;
+	unordered_map<string, FTileInfo> CurrentTiles2;
 };
 

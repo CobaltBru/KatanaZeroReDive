@@ -31,6 +31,8 @@ struct playerInfo
 	bool bIsShift;
 	bool bIsShiftChanged;
 	bool bIsWall;
+	bool bCanAttack;
+	float attackCoolTime;
 };
 
 struct playerStates
@@ -54,6 +56,7 @@ private:
 
 	bool bIsLeft;
 	
+	float attackTimer;
 
 	float scrollSpeed;
 
@@ -122,6 +125,9 @@ public:
 	inline void SetSwitchTime(float time) { switchTime = time; }
 
 	inline Collider* GetAttackCollider() { return AttackCollider; }
+
+	inline void InitAttackTimer() { attackTimer = 0; }
+
 	void InitBindState();
 };
 

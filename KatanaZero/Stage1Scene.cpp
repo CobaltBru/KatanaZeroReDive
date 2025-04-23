@@ -93,7 +93,7 @@ HRESULT Stage1Scene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
 	InitTile();
@@ -199,7 +199,7 @@ void Stage1Scene::LoadBackground()
 			break;
 
 		Background* BackgroundObj = new Background();
-		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
+		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale()+ 0.5f);
 		BackgroundObj->SetPos(Pos);
 		BackgroundObj->GetImage()->SetTransparent(bTransparent);
 		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
