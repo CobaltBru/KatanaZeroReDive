@@ -13,6 +13,7 @@ public:
     // 모든 GPImage와 펜 해제
     void Release();
 
+    void InitImages();
     // 이미지 로드 (단일 프레임)
     GPImage* AddImage(const std::string& key,
         const wchar_t* filePath);

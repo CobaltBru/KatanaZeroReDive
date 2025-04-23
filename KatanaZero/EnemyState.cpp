@@ -9,6 +9,7 @@
 #include "CommonFunction.h"
 #include "EffectManager.h"
 #include "ScrollManager.h"
+#include "GangsterBullet.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -183,6 +184,10 @@ void EDead::Enter(Enemy& enemy)
 {
 	state = "Dead";
 	enemy.ChangeAnimation(EImageType::Dead);
+	FPOINT colliderSize = enemy.GetCollider()->GetSize();
+	EffectManager::GetInstance()->CreateBGBlood({ enemy.GetPos().x, enemy.GetPos().y - 10.f }, 0.f);
+	EffectManager::GetInstance()->EmitBlood(enemy.GetPos(), 20);
+	EffectManager::GetInstance()->Activefx("hitslash", enemy.GetPos(), 0.f, false);
 }
 
 void EDead::Update(Enemy& enemy)
@@ -287,7 +292,11 @@ void GangsterAttack::Update(Enemy& enemy)
 	if (enemy.GetCurrFrame() == 1)
 	{
 		float offset = (enemy.GetDir() == 1) ? 28.f : -28.f;
-		EffectManager::GetInstance()->Activefx("gangstergun", { enemy.GetPos().x + offset * ScrollManager::GetInstance()->GetScale(), enemy.GetPos().y - 1.f * ScrollManager::GetInstance()->GetScale() }, 0.f, false);
+		FPOINT firePoint = { enemy.GetPos().x + offset * ScrollManager::GetInstance()->GetScale(), enemy.GetPos().y - 1.f * ScrollManager::GetInstance()->GetScale() };
+		bool bFlip = (enemy.GetDir() == 1) ? false : true;
+		EffectManager::GetInstance()->Activefx("gangstergun", firePoint, 0.f, bFlip);
+		GangsterBullet* bullet = new GangsterBullet();
+		bullet->Init(firePoint, enemy.GetDir());
 	}
 	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
 	{

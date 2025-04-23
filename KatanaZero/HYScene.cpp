@@ -1,4 +1,4 @@
-#include "Stage1Scene.h"
+#include "HYScene.h"
 #include "CommonFunction.h"
 
 #include "ObjectManager.h"
@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "GPImageManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -28,12 +29,12 @@
 #include "DefaultObject.h"
 #include "Factory.h"
 
-Stage1Scene::Stage1Scene()
+HYScene::HYScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
 }
 
-HRESULT Stage1Scene::Init()
+HRESULT HYScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
@@ -60,26 +61,28 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
+	GPImageManager::GetInstance()->Init();
+
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/HY1Line.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HYScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HYScene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HYScene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 	if (FAILED(InitEffects()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HYScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -88,7 +91,7 @@ HRESULT Stage1Scene::Init()
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitImage()
+HRESULT HYScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
@@ -99,7 +102,7 @@ HRESULT Stage1Scene::InitImage()
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitObject()
+HRESULT HYScene::InitObject()
 {
 	Background* background = new Background();
 	background->Init("black",0.f);
@@ -112,7 +115,7 @@ HRESULT Stage1Scene::InitObject()
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitEffects()
+HRESULT HYScene::InitEffects()
 {
 	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
 	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
@@ -124,7 +127,7 @@ HRESULT Stage1Scene::InitEffects()
 	return S_OK;
 }
 
-void Stage1Scene::TestCode()
+void HYScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
@@ -134,7 +137,7 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
 
-void Stage1Scene::InitBackgroundImage()
+void HYScene::InitBackgroundImage()
 {
 	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
 
@@ -153,10 +156,10 @@ void Stage1Scene::InitBackgroundImage()
 	}
 }
 
-void Stage1Scene::LoadBackground()
+void HYScene::LoadBackground()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1BG.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -195,10 +198,10 @@ void Stage1Scene::LoadBackground()
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::LoadObject()
+void HYScene::LoadObject()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1Object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -240,15 +243,17 @@ void Stage1Scene::LoadObject()
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+
+		
 	}
 
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::LoadFloor()
+void HYScene::LoadFloor()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1Floor.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -271,15 +276,21 @@ void Stage1Scene::LoadFloor()
 
 		FloorZones.push_back(fz);
 	}
+	g_FloorZones = FloorZones;
 
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::Update()
+void HYScene::Update()
 {
 	ObjectManager->Update();
+		
+	
 	CollisionManager->Update();
 	fxManager->Update();
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
+		snapShotManager->StartReplay();
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	ScrollManager->Update();
@@ -287,7 +298,7 @@ void Stage1Scene::Update()
 	TestCode();
 }
 
-void Stage1Scene::Render(HDC hdc)
+void HYScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
@@ -296,8 +307,9 @@ void Stage1Scene::Render(HDC hdc)
 	LineManager->Render(hdc);
 }
 
-void Stage1Scene::Release()
+void HYScene::Release()
 {
+	GPImageManager::GetInstance()->Release();
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
 	if (CollisionManager != nullptr)

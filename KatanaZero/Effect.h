@@ -32,8 +32,9 @@ private:
 	void Move();
 public:
 	virtual HRESULT Init() override;
-	virtual HRESULT Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bMove = false);
-	virtual HRESULT Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bMove = false);
+	virtual HRESULT Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bFlip = false, bool bMove = false);
+	virtual HRESULT Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bFlip = false, bool bMove = false);
+	virtual HRESULT Init(string key, FPOINT start, FPOINT end, float speed, bool bFlip = false, bool bMove = false);
 	virtual void Release() override;
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
@@ -52,10 +53,19 @@ struct RemainEffect
 {
 	GPImage* image;
 	FPOINT pos;
+	FPOINT velocity;
 	float alpha;
+	float totalLife;
 	float lifetime;
 	bool bFlip;
 	int frame;
+};
+
+struct BackgroundBloodfx
+{
+	GPImage* image;
+	FPOINT pos;
+	bool bFlip;
 };
 
 

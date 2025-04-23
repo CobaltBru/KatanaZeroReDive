@@ -75,4 +75,6 @@ public:
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
 	bool IsHitted();
+
+	virtual void Attack() {};
 };

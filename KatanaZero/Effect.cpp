@@ -6,6 +6,7 @@
 #include "ScrollManager.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "GPImageManager.h"
 
 void Effect::UpdateFrame()
 {
@@ -42,7 +43,7 @@ HRESULT Effect::Init()
 	return E_FAIL;
 }
 
-HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bMove)
+HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bFlip, bool bMove)
 {
 	pos = { 0.0f, 0.0f };
 	start = { 0.0f, 0.0f };
@@ -55,7 +56,7 @@ HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bM
 	angle = 0.0f;
 	frameTimer = 0.0f;
 	bActive = false;
-	bFlip = false;
+	this->bFlip = bFlip;
 	this->bMove = bMove;
 	alpha = 1.0f;
 	fxImage = new GPImage();
@@ -65,7 +66,7 @@ HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bM
 	return S_OK;
 }
 
-HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bMove)
+HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bFlip, bool bMove)
 {
 	this->start = start;
 	this->end = end;
@@ -78,13 +79,34 @@ HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT 
 	angle = atan2f(end.y - start.y, end.x - start.x) * 180 / M_PI; // degree(radian x)
 	frameTimer = 0.0f;
 	bActive = false;
-	bFlip = false;
+	this->bFlip = bFlip;
 	this->bMove = bMove;
 	alpha = 1.0f;
 	fxImage = new GPImage();
 	fxImage->AddImage(AType, maxframeX, maxframeY);
 	if (!fxImage)
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT Effect::Init(string key, FPOINT start, FPOINT end, float speed, bool bFlip, bool bMove)
+{
+	this->start = start;
+	this->end = end;
+	pos = this->start;
+	currFrameX = 0;
+	currFrameY = 0;
+	fxImage = GPImageManager::GetInstance()->FindImage(key);
+	if (fxImage == nullptr) return E_FAIL;
+	maxFrameX = fxImage->getMaxFrame();
+	maxFrameY = 1;
+	this->speed = speed;
+	angle = atan2f(end.y - start.y, end.x - start.x) * 180 / M_PI;
+	frameTimer = 0.f;
+	bActive = false;
+	this->bFlip = bFlip;
+	this->bMove = bMove;
+	alpha = 1.f;
 	return S_OK;
 }
 

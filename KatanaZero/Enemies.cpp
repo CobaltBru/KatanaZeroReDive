@@ -259,6 +259,11 @@ void Gangster::SetAnimKey(EImageType newImage)
 	}
 }
 
+void Gangster::Attack()
+{
+
+}
+
 HRESULT ShieldCop::Init(FPOINT InPos)
 {
 	InitImages();

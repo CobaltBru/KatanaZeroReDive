@@ -153,7 +153,7 @@
     <ClCompile Include="Button.cpp">
       <Filter>2D Framework\UI\Button</Filter>
     </ClCompile>
-    <ClCompile Include="Stage1Scene.cpp">
+    <ClCompile Include="HYScene.cpp">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
@@ -389,6 +389,12 @@
     </ClCompile>
     <ClCompile Include="ScenePsych.cpp" />
     <ClCompile Include="ScenePlayer.cpp" />
+    <ClCompile Include="GangsterBullet.cpp">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage1Scene.cpp">
+      <Filter>MainGame\Scene\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -406,7 +412,7 @@
     <ClInclude Include="Button.h">
       <Filter>2D Framework\UI\Button</Filter>
     </ClInclude>
-    <ClInclude Include="Stage1Scene.h">
+    <ClInclude Include="HYScene.h">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
@@ -645,5 +651,11 @@
     </ClInclude>
     <ClInclude Include="ScenePsych.h" />
     <ClInclude Include="ScenePlayer.h" />
+    <ClInclude Include="GangsterBullet.h">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage1Scene.h">
+      <Filter>MainGame\Scene\Stage</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
