@@ -32,12 +32,12 @@ void GameObject::MakeSnapShot(void* out)
 {
 }
 
-int GameObject::GetFloorIndex() const
+int GameObject::GetFloorIndex(vector<FloorZone> fz) const
 {
 	float y = this->GetPos().y;
-	for (int i = 0; i < FloorZones.size(); i++)
+	for (int i = 0; i < fz.size(); i++)
 	{
-		if (FloorZones[i].Contains(y))
+		if (fz[i].Contains(y))
 		{
 			return i;
 		}

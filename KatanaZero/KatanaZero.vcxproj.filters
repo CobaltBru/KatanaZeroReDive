@@ -153,7 +153,7 @@
     <ClCompile Include="Button.cpp">
       <Filter>2D Framework\UI\Button</Filter>
     </ClCompile>
-    <ClCompile Include="Stage1Scene.cpp">
+    <ClCompile Include="HYScene.cpp">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
@@ -378,6 +378,17 @@
     <ClCompile Include="main.cpp">
       <Filter>?Üå?ä§ ?åå?ùº</Filter>
     </ClCompile>
+    <ClCompile Include="GPImageManager.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ReplayObjects.cpp">
+      <Filter>2D Framework\SnapShot</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePsych.cpp" />
+    <ClCompile Include="ScenePlayer.cpp" />
+    <ClCompile Include="Stage1Scene.cpp">
+      <Filter>MainGame\Scene\Stage</Filter>
+    </ClCompile>  
     <ClCompile Include="WorldBackground.cpp">
       <Filter>MainGame\Background</Filter>
     </ClCompile>
@@ -422,7 +433,7 @@
     <ClInclude Include="Button.h">
       <Filter>2D Framework\UI\Button</Filter>
     </ClInclude>
-    <ClInclude Include="Stage1Scene.h">
+    <ClInclude Include="HYScene.h">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
@@ -650,6 +661,17 @@
     <ClInclude Include="TalkScene.h">
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="GPImageManager.h">
+      <Filter>2D Framework\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplayObjects.h">
+      <Filter>2D Framework\SnapShot</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePsych.h" />
+    <ClInclude Include="ScenePlayer.h" />
+    <ClInclude Include="Stage1Scene.h">
+      <Filter>MainGame\Scene\Stage</Filter>
+    </ClInclude>  
     <ClInclude Include="WorldBackground.h">
       <Filter>MainGame\Background</Filter>
     </ClInclude>

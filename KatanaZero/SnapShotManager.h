@@ -13,28 +13,26 @@ enum class EObjectClassType : uint8_t
 };
 
 class GameObject;
+class ReplayBase;
 class SnapShotManager : public Singleton<SnapShotManager>
 {
 public:
 	void Init();
 	void Release();
 	void Update(bool isDead);
-	void AddGameObject(EObjectClassType  InClassType, GameObject* InGameObject) { GameObjectList[(int)InClassType].push_back(InGameObject); }
 	void Save();
 	void StartReplay();
 	void Replay();
 	
 	inline bool IsReplaying() { return isReplaying; }
 	inline int GetReplayIndex() { return replayIndex; }
-	inline list<GameObject*> GetPlayer() { 
-		return GameObjectList[(int)EObjectClassType::Player]; 
-	}
+	GameObject* GetPlayer();
 private:
 	float elapsedTime{0.f};
 	bool isReplaying{ false };
 	int replayIndex{ -1 };
 	TimeLineBuffer snapShots;
-	list<GameObject*> GameObjectList[(int)EObjectClassType::End];
-	
+	GameObject* player{ nullptr };
+	vector<ReplayBase*> replayClones;
 };
 

@@ -9,6 +9,9 @@
 #include "RigidBody.h"
 #include "SimpleTestObject.h"
 #include "CommonFunction.h"
+#include "Enemy.h"
+
+#include "SnapShotManager.h"
 
 SimpleObject::SimpleObject()
 	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false)
@@ -87,6 +90,14 @@ void SimpleObject::Render(HDC hdc)
 	}
 }
 
+void SimpleObject::MakeSnapShot(void* out)
+{
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->pos = this->Pos;
+	pSnapShot->animFrame = 0;
+	pSnapShot->bFlip = this->bFlip;
+}
+
 void SimpleObject::Collision()
 {
 	// 충돌 정보
@@ -106,6 +117,10 @@ void SimpleObject::Collision()
 		pos.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
 		pos.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
 		Normalize(pos);
+		float AttackAngle = atan2f(-pos.y, pos.x)* (180.f / 3.14159265f);
+		Enemy* Hitenemy = static_cast<Enemy*>(HitResult.HitCollision->GetOwner());
+		Hitenemy->SetHitAngle(AttackAngle);
+		
 
 		// 상대방의 리지드바디에 힘을 전달
 		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);

@@ -3,6 +3,7 @@
 #include "Image.h"
 #include "Timer.h"
 #include "Stage1Scene.h"
+#include "HYScene.h"
 #include "TestScene.h"
 #include "MapTool.h"
 
@@ -38,6 +39,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
+	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 	SceneManager::GetInstance()->ChangeScene("Test","로딩_1");

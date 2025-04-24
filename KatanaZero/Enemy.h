@@ -8,7 +8,6 @@ enum class EType
 	Grunt,
 	Pomp,
 	Gangster,
-	SheildCop,
 	None
 };
 
@@ -19,6 +18,7 @@ protected:
 	EnemyState* eState;				// 상태패턴용 클래스, delete 했고
 	GPImage* image;					// GDI+ 이미지, delete 했고
 	vector<GPImage*> images;		// 한 캐릭터에 필요한 모든 이미지, 등록해놓고 불러오기 용, delete 했고
+	string currAnimKey;
 	float Speed;					// 이동속도
 	int currFrame;					// 애니메이션
 	float frameTimer;				// 애니메이션 업데이트타임
@@ -26,9 +26,12 @@ protected:
 	int dir;
 	float detectRange;
 	float attackRange;
+	float meleeAttackRange;
+	float attackDuration;
 	EType eType;
 	int targetFloor;
 	bool bReachedTargetFloor;
+	float HitAngle;
 
 	// Jump
 	float Gravity;
@@ -42,6 +45,7 @@ public:
 	Enemy();
 	virtual ~Enemy();
 	virtual HRESULT Init(FPOINT InPos);
+	virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup);
 	virtual void InitImages();
 	virtual void InitRigidBodySetting();
 	virtual void Release();
@@ -60,12 +64,20 @@ public:
 	int GetTargetFloor() const { return targetFloor; }
 	void SetReachedTargetFloor(bool value) { bReachedTargetFloor = value; }
 	bool HasReachedTargetFloor() const { return bReachedTargetFloor; }
+	void SetHitAngle(float hitangle) { HitAngle = hitangle; }
+	float GetHitAngle() const { return HitAngle; }
 
 	void UpdateAnimation();
 	void ChangeState(EnemyState* newState);
 	void ChangeAnimation(EImageType newImage);
+	virtual void SetAnimKey(EImageType newImage) {};
 	virtual bool Detecting();
 	virtual bool IsInAttackRange();
+	virtual bool IsInMeleeAttackRange();
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
+	bool IsHitted();
+
+
+	virtual void Attack() {};
 };

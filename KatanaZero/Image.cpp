@@ -238,8 +238,8 @@ void Image::Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip)
 void Image::FrameRender(HDC hdc, int destX, int destY, 
     int frameX, int frameY, bool isFlip, bool isCenter, float Scale)
 {
-    int x = destX * Scale;
-	int y = destY * Scale;
+    int x = destX;
+	int y = destY;
 	if (isCenter)
 	{
         x = destX - ((imageInfo->frameWidth * Scale) / 2);
@@ -248,6 +248,7 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
 
     imageInfo->currFrameX = frameX;
     imageInfo->currFrameY = frameY;
+
 
     if (isFlip && isTransparent)
     {

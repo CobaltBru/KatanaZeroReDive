@@ -6,6 +6,12 @@
 #include "ScreenEffectManager.h"
 #include "Effect.h"
 #include "EffectManager.h"
+#include "ObjectManager.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Enemies.h"
+#include "ReplayObjects.h"
+#include "SimpleObject.h"
 
 
 void SnapShotManager::Init()
@@ -14,10 +20,11 @@ void SnapShotManager::Init()
 
 void SnapShotManager::Release()
 {
-	for (int i = 0; i < (int)EObjectClassType::End; ++i)
-	{
-		GameObjectList[i].clear();
-	}
+	for (auto* clone : replayClones) delete clone;
+	replayClones.clear();
+	snapShots.Clear();
+	if (player)
+		player = nullptr;
 	ReleaseInstance();
 }
 
@@ -29,11 +36,13 @@ void SnapShotManager::Update(bool isDead)
 		if (!isReplaying)
 		{
 			elapsedTime += dt;
-			if (elapsedTime >= 0.01666666667f * 5.f)
+			if (elapsedTime >= 0.01666666667f / 0.5f)
 			{
-				Save();
+				
 				elapsedTime = 0.0f;
+				Save();
 			}
+			
 		}
 	}
 	else
@@ -41,13 +50,7 @@ void SnapShotManager::Update(bool isDead)
 		StartReplay();
 		if (isReplaying)
 		{
-			elapsedTime += dt;
-
-			if (elapsedTime >= 0.01666666667f)
-			{
-				Replay();
-				elapsedTime = 0.0f;
-			}
+			Replay();
 		}
 	}
 }
@@ -57,25 +60,22 @@ void SnapShotManager::Save()
 	PlayerSnapShot pSnapShot;
 	vector<EnemySnapShot> eSnapShots;
 	vector<EffectSnapShot> fxSnapShots;
-	for (auto iter = GameObjectList[(int)EObjectClassType::Player].begin(); iter != GameObjectList[(int)EObjectClassType::Player].end();)
+	for (auto* obj : ObjectManager::GetInstance()->GetObjects())
 	{
-		(*iter)->MakeSnapShot(&pSnapShot);	// 내부 구현 필요, 추상함수
-		
-		++iter;
-	}
-	for (auto iter = GameObjectList[(int)EObjectClassType::Enemy].begin(); iter != GameObjectList[(int)EObjectClassType::Enemy].end();)
-	{
-		EnemySnapShot eSnapShot;
-		(*iter)->MakeSnapShot(&eSnapShot);	// 내부 구현 필요, 추상함수
-		eSnapShots.push_back(eSnapShot);
-		++iter;
-	}
-	for (auto iter = GameObjectList[(int)EObjectClassType::Effect].begin(); iter != GameObjectList[(int)EObjectClassType::Effect].end();)
-	{
-		EffectSnapShot fxSnapShot;
-		(*iter)->MakeSnapShot(&fxSnapShot);	// 내부 구현 필요, 추상함수
-		fxSnapShots.push_back(fxSnapShot);
-		++iter;
+		if (auto* player = dynamic_cast<SimpleObject*>(obj))
+		{
+			player->MakeSnapShot(&pSnapShot);
+		}
+		else if (auto* enemy = dynamic_cast<Enemy*>(obj)) {
+			EnemySnapShot eSnap;
+			enemy->MakeSnapShot(&eSnap);
+			eSnapShots.push_back(eSnap);
+		}
+		/*else if (auto* fx = dynamic_cast<Effect*>(obj)) {
+			EffectSnapShot fxSnap;
+			fx->MakeSnapShot(&fxSnap);
+			fxSnapShots.push_back(fxSnap);
+		}*/
 	}
 
 	ScrollSnapShot sSnapShot;
@@ -86,10 +86,33 @@ void SnapShotManager::Save()
 
 void SnapShotManager::StartReplay()
 {
-	if (isReplaying || snapShots.GetBufferSize() <= 0) return;
+	if (isReplaying || snapShots.GetBufferSize() == 0) return;
 	isReplaying = true;
-	replayIndex = snapShots.GetBufferSize() - 1;
-	elapsedTime = 0.0f;
+	replayIndex = static_cast<int>(snapShots.GetBufferSize()) - 1;
+	elapsedTime = 0.f;
+	// clear old clones
+	for (auto* clone : replayClones) delete clone;
+	replayClones.clear();
+	// instantiate clones based solely on snapshot data
+	const auto& frame = snapShots.GetFrame(0);
+	// player clone
+	{
+		auto* rp = new ReplayPlayer();
+		rp->ApplySnapShot(frame.player);
+		replayClones.push_back(rp);
+	}
+	// enemy clones
+	for (const auto& eSnap : frame.enemies) {
+		auto* re = new ReplayEnemy();
+		re->ApplySnapShot(eSnap);
+		replayClones.push_back(re);
+	}
+	// effect clones
+	/*for (const auto& fxSnap : frame.effects) {
+		auto* rf = new ReplayEffect();
+		rf->ApplySnapShot(fxSnap);
+		replayClones.push_back(rf);
+	}*/
 	ScreenEffectManager::GetInstance()->StartDistortion();
 }
 
@@ -100,37 +123,29 @@ void SnapShotManager::Replay()
 		isReplaying = false;
 		ScreenEffectManager::GetInstance()->StopDistortion();
 		snapShots.Clear();
+		for (auto* clone : replayClones) delete clone;
+		replayClones.clear();
 		return;
 	}
-	const SnapShot& frame = snapShots.GetFrame(replayIndex);
-
-	// Player 되감기
-	for (auto obj : GameObjectList[(int)EObjectClassType::Player])
-	{
-		TaeKyungObject* p = static_cast<TaeKyungObject*>(obj);
-		p->ApplySnapShot(frame.player);
+	const auto& frame = snapShots.GetFrame(replayIndex);
+	size_t eIdx = 0, fxIdx = 0;
+	for (auto* clone : replayClones) {
+		if (auto* rp = dynamic_cast<ReplayPlayer*>(clone)) {
+			rp->ApplySnapShot(frame.player);
+		}
+		if (auto* re = dynamic_cast<ReplayEnemy*>(clone)) {
+			if (eIdx < frame.enemies.size()) re->ApplySnapShot(frame.enemies[eIdx++]);
+		}
+		/*else if (auto* rf = dynamic_cast<ReplayEffect*>(clone)) {
+			if (fxIdx < frame.effects.size()) rf->ApplySnapShot(frame.effects[fxIdx++]);
+		}*/
+		RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, clone);
 	}
-
-	// Enemy 되감기
-	auto enemyIter = GameObjectList[(int)EObjectClassType::Enemy].begin();
-	for (const EnemySnapShot& eSnap : frame.enemies)
-	{
-		if (enemyIter == GameObjectList[(int)EObjectClassType::Enemy].end()) break;
-		TestObject* e = static_cast<TestObject*>(*enemyIter);
-		e->ApplySnapShot(eSnap);
-		++enemyIter;
-	}
-
-
-	auto fxIter = GameObjectList[(int)EObjectClassType::Effect].begin();
-	for (const EffectSnapShot& fxSnap : frame.effects)
-	{
-		if (fxIter == GameObjectList[(int)EObjectClassType::Effect].end()) break;
-		Effect* fx = static_cast<Effect*>(*fxIter);
-		fx->ApplySnapShot(fxSnap);
-		++fxIter;
-	}
-
 	ScrollManager::GetInstance()->ReplayScroll(frame.scroll.scroll);
 	--replayIndex;
+}
+
+GameObject* SnapShotManager::GetPlayer()
+{
+	return ObjectManager::GetInstance()->GetPlayer();
 }

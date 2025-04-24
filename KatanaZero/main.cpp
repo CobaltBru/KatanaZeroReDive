@@ -35,11 +35,7 @@ uniform_int_distribution<int> uid;
 //// DirectX
 // Forward declarations of helper functions
 
-vector<FloorZone> FloorZones = {
-	{ 0.f, 260.f },
-	{ 260.f, 340.f },
-	{ 340.f, 425.f },
-};
+vector<FloorZone> g_FloorZones;
 
 // Init
 

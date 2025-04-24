@@ -21,6 +21,8 @@
 #include "Bullet.h"
 #include "EffectManager.h"
 
+#include "SnapShotManager.h"
+
 
 Player::Player()
 {	
@@ -72,7 +74,7 @@ HRESULT Player::Init()
 
 	// set player input key
 	playerInput = new PlayerInput();
-	playerInput->Init();
+	//playerInput->Init();
 
 	dir = EDirection::Right;
 
