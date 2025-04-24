@@ -60,7 +60,7 @@ HRESULT Player::Init()
 	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f,
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
-		true, 1.f);
+		false, 1.f);
 	
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
@@ -240,6 +240,7 @@ void Player::InitPlayerInfo()
 	info->bIsShiftChanged = false;
 	info->bIsWall = false;
 	info->attackCoolTime = .7f;
+	info->prevState = "";
 }
 
 void Player::InitBindState()
@@ -304,21 +305,21 @@ void Player::UpdateRigidBody()
 {
 	ObjectRigidBody->Update();
 
-	const FLineResult lineResult = ObjectRigidBody->GetResult();
-	if (lineResult.LineType == ELineType::Wall)
-	{
-		if (lineResult.IsLeft) dir = EDirection::Left;
+	//const FLineResult lineResult = ObjectRigidBody->GetResult();
+	//if (lineResult.LineType == ELineType::Wall)
+	//{
+	//	if (lineResult.IsLeft) dir = EDirection::Left;
 
-		ObjectRigidBody->SetVelocity({ 0.f , 10.f });
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-		info->bIsWall = true;
-		bIsLeft = lineResult.IsLeft;
-	}
-	else
-	{
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-		info->bIsWall = false;
-	}
+	//	ObjectRigidBody->SetVelocity({ 0.f , 10.f });
+	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
+	//	info->bIsWall = true;
+	//	bIsLeft = lineResult.IsLeft;
+	//}
+	//else
+	//{
+	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
+	//	info->bIsWall = false;
+	//}
 }
 
 void Player::UpdateCollision()

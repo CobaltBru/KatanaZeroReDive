@@ -10,42 +10,53 @@ PlayerState* JumpState::GetInput(Player* player)
         return player->GetStates()->Idle;
     }
 
-    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
+    const FLineResult lineResult = player->GetRigidBody()->GetResult();
+    if (lineResult.LineType == ELineType::Wall)     // if the player is attached to the wall
     {
-        player->SetSwitchTime(0.02f);
-        return player->GetStates()->Attack;
-    }
+        // if the previous state was wallslide, automatically switch to wallslide when the player is attached
+        if (player->GetInfo()->prevState == "wallslide")
+            return player->GetStates()->WallSlide;
 
-    if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+        // if the player press toward the wall
+        if ((lineResult.IsLeft && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
+            (!lineResult.IsLeft && KeyManager::GetInstance()->IsStayKeyDown('D')))
+        {
+            if (player->GetRigidBody()->IsGround() == false)
+            {
+                return player->GetStates()->WallSlide;
+            }
+
+            if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
+            else player->SetDirection(EDirection::Right);
+        }
+
+    }
+    
+
+    
+    if (KeyManager::GetInstance()->IsStayKeyDown('A') && player->GetInfo()->prevState != "wallslide")
     {
         player->SetDirection(EDirection::Left);
         player->GetRigidBody()->AddVelocity({ -1.f, 0.f });        
     }
-
-    if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+    
+    if (KeyManager::GetInstance()->IsStayKeyDown('D') && player->GetInfo()->prevState != "wallslide")
     {
         player->SetDirection(EDirection::Right);
         player->GetRigidBody()->AddVelocity({ 1.f, 0.f });
     }
+
+    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
+    {
+        player->SetSwitchTime(0.02f);
+        return player->GetStates()->Attack;
+    }    
 
     //if (player->GetInfo()->bIsJump == false)
     //{
     //    player->SetSwitchTime(0.02f);
     //    return player->GetStates()->Idle;
     //}
-
-    const FLineResult lineResult = player->GetRigidBody()->GetResult();
-    if (lineResult.LineType == ELineType::Wall)
-    {
-        //if (player->GetRigidBody()->IsGround() == false && player->GetRigidBody()->GetVelocity().y >= 50.f)
-        if (player->GetRigidBody()->IsGround() == false)
-        {
-            return player->GetStates()->WallSlide;
-        }
-        
-        if (lineResult.IsLeft)
-            player->SetDirection(EDirection::Left);
-    }
     return nullptr;
 }
 
@@ -56,7 +67,7 @@ void JumpState::Enter(Player* player)
     player->SetSwitchTime(0.02f * 10.f);
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zerojump"));
-    player->GetRigidBody()->AddVelocity({ 0.f, -300.f });
+    player->GetRigidBody()->AddVelocity({ 0.f, -800.f });
 }
 
 void JumpState::Update(Player* player)

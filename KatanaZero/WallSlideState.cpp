@@ -10,9 +10,21 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft ==true ? 100.f: -100.f), -200.f});
+		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft == true ? 500.f : -500.f), 0.f });
+		player->GetInfo()->prevState = "wallslide";
 		return player->GetStates()->Jump;
 	}
+	/*if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+	{
+		player->GetRigidBody()->AddVelocity({-80.f,50.f });
+		return player->GetStates()->Idle;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+	{
+		player->GetRigidBody()->AddVelocity({ 80.f,50.f });
+		return player->GetStates()->Idle;
+	}*/
+	
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
 	{		
@@ -27,12 +39,17 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 void WallSlideState::Enter(Player* player)
 {
+	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
+
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
+	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
+	else player->SetDirection(EDirection::Right);		
 }
 
 void WallSlideState::Update(Player* player)
 {
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
-	player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
+	//player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
 
 	if (!player->GetInfo()->bIsShiftChanged) return;
 

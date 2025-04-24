@@ -33,6 +33,7 @@
 
 #include "Enemy.h"
 #include "Enemies.h"
+#include "ParticleEffect.h"
 
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
@@ -44,7 +45,7 @@ HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 	
-
+	srand(time(NULL));
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
 	RenderManager = RenderManager::GetInstance();
@@ -190,6 +191,8 @@ HRESULT TestScene::InitObject()
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
+
+		
 	}
 	return S_OK;
 }
@@ -209,6 +212,7 @@ void TestScene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
 		SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
+	
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
@@ -228,15 +232,15 @@ void TestScene::TestCode()
 	}
 	else  // 슬로우 풀기
 		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
-
-
-	// 라인 트레이스
+	
+	//// 라인 트레이스
 	//FHitResult HitResult;
-	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
+	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))
 	//{
 	//	// 라인 트레이스 맞은 대상의 콜라이더
 	//	HitResult.HitCollision->SetHit(true);
 	//}
+
 }
 
 void TestScene::Update()

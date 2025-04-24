@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
+class GPImage;
 class Image;
 class PickUp : public GameObject
 {
@@ -12,8 +13,19 @@ public:
 	virtual void Update();
 	virtual void Render(HDC hdc);
 
+	void SetVisible(bool InVisible) { IsVisible = InVisible; }
+	void Shoot(float InAngle, float InSpeed);
+
 private:
+	void Collision();
+	void CreateBrokeParticle();
+private:
+	GPImage* gpImage;
 	Image* Image;
 	int FrameX;
+	bool IsVisible;
+	float Angle;
+	float SpinAlngle;
+	float Speed;
 };
 

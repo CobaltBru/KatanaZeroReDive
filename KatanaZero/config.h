@@ -2,6 +2,8 @@
 
 #pragma once
 #pragma comment(lib, "Winmm.lib")
+#pragma warning(disable:4244)
+#pragma warning(disable:4267)
 
 #include <Windows.h>
 #include <string>
@@ -75,14 +77,24 @@ typedef struct tagFPOINT
 	}
 	
 
-	tagFPOINT operator *(const float& f)
+	tagFPOINT operator *(const tagFPOINT& fp2)
 	{
 		tagFPOINT fp;
 
-		fp.x = x * f;
-		fp.y = y * f;
+		fp.x = x * fp2.x;
+		fp.y = y * fp2.y;
 		return fp;
 	}	
+
+	tagFPOINT operator +(const tagFPOINT& fp2)
+	{
+		tagFPOINT fp;
+
+		fp.x = x + fp2.x;
+		fp.y = y + fp2.y;
+		return fp;
+	}
+
 	tagFPOINT operator /(const float& f)
 	{
 		tagFPOINT fp;
@@ -99,14 +111,13 @@ typedef struct tagFPOINT
 		fp.y = -y;
 		return fp;
 	}
-	tagFPOINT operator *(const tagFPOINT& fp2)
+	tagFPOINT operator *(const float& f)
 	{
 		tagFPOINT fp;
-		fp.x = x * fp2.x;
-		fp.y = y * fp2.y;
+		fp.x = x * f;
+		fp.y = y * f;
 		return fp;
 	}
-
 
 	bool operator == (const tagFPOINT& fp2)
 	{
