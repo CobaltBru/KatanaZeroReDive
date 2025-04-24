@@ -728,8 +728,8 @@ pair<FPOINT, FPOINT> LineManager::FindNearestSlope(const FPOINT& targetPos, int 
 
 		const auto& Lpos = line->GetLine().LeftPoint;
 		const auto& Rpos = line->GetLine().RightPoint;
-		int floorL = line->GetFloorIndex(Lpos);
-		int floorR = line->GetFloorIndex(Rpos);
+		int floorL = line->GetFloorIndex(g_FloorZones, Lpos);
+		int floorR = line->GetFloorIndex(g_FloorZones, Rpos);
 		bool matches =
 			(floorL == fromFloor && floorR == toFloor) ||
 			(floorR == fromFloor && floorL == toFloor);

@@ -45,7 +45,7 @@ private:
 	bool inChat;
 	bool badChat;
 	bool chatDone;
-
+	bool firstdone;
 	float timer = 0;
 
 	

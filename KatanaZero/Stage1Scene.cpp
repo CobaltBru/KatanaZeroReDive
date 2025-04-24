@@ -126,13 +126,6 @@ HRESULT Stage1Scene::InitObject()
 
 HRESULT Stage1Scene::InitEffects()
 {
-	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
-	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
-	fxManager->Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
-	fxManager->Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
-	fxManager->Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
-	fxManager->Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
-	fxManager->RegisterEffect();
 	return S_OK;
 }
 

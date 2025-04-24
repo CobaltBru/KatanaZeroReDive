@@ -1,5 +1,7 @@
 #include "RenderManager.h"
 #include "GameObject.h"
+#include "SnapShotManager.h"
+#include "ReplayObjects.h"
 
 void RenderManager::Init()
 {
@@ -42,7 +44,10 @@ void RenderManager::RenderBackGround(HDC hdc)
 void RenderManager::RenderNonAlphaBlend(HDC hdc)
 {
 	for (auto& iter : GameObjectList[(int)ERenderGroup::NonAlphaBlend])
+	{
+		if (SnapShotManager::GetInstance()->IsReplaying() && dynamic_cast<ReplayBase*>(iter) == nullptr) continue;
 		iter->Render(hdc);
+	}
 
 	GameObjectList[(int)ERenderGroup::NonAlphaBlend].clear();
 }
@@ -50,7 +55,10 @@ void RenderManager::RenderNonAlphaBlend(HDC hdc)
 void RenderManager::RenderAlphaBlend(HDC hdc)
 {
 	for (auto& iter : GameObjectList[(int)ERenderGroup::AlphaBlend])
+	{
+		if (SnapShotManager::GetInstance()->IsReplaying() && dynamic_cast<ReplayBase*>(iter) == nullptr) continue;
 		iter->Render(hdc);
+	}	
 
 	GameObjectList[(int)ERenderGroup::AlphaBlend].clear();
 }

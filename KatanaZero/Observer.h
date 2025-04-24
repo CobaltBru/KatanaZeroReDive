@@ -8,7 +8,7 @@ struct ObsPlayerState
 	std::string leftItem;
 	std::string rightItem;
 	bool isLive;
-
+	bool isSlow;
 };
 
 class Observer

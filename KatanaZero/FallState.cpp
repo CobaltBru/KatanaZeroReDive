@@ -1,12 +1,13 @@
 #include "FallState.h"
 #include "Player.h"
 #include "RigidBody.h"
-
+#include "EffectManager.h"
 
 PlayerState* FallState::GetInput(Player* player)
 {
 	if (player->GetRigidBody()->IsGround())
 	{
+		EffectManager::GetInstance()->Activefx("landcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 1.75f }, 0.0f, false);
 		player->GetRigidBody()->SetDown(false);
 		return player->GetStates()->Idle;
 	}

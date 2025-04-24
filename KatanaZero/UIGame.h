@@ -7,6 +7,7 @@
 #define ONE 0
 #define TWO 1
 #define BCELLCNT 11
+class ParticleEffect;
 class UIGame : public GameObject, public Observer
 {
 private:
@@ -40,13 +41,14 @@ private:
 
 	int Item2FrameX;
 	float Item2Scale;
-
+	bool isSlow;
 	float batteryGage;
 	float timeGage;
 	string leftItem, rightItem;
 
 	float timer = 0.f;
-
+	ParticleEffect* part1;
+	ParticleEffect* part2;
 public:
 	virtual HRESULT Init() override;
 	virtual void Update() override;

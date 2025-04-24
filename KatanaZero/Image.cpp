@@ -251,6 +251,7 @@ void Image::FrameRender(HDC hdc, int destX, int destY,
     imageInfo->currFrameX = frameX;
     imageInfo->currFrameY = frameY;
 
+
     if (isFlip && isTransparent)
     {
         StretchBlt(imageInfo->hTempDC, 0, 0,

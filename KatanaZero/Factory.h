@@ -6,6 +6,8 @@
 #include "SimpleTestObject.h"
 #include "SimpleObject.h"
 #include "Player.h"
+
+#include "Enemies.h"
 #include "PickUp.h"
 using namespace std;
 
@@ -13,6 +15,9 @@ using namespace std;
 static unordered_map<string, function<GameObject* ()>> ObjectInfo = {
 	{"StartPoint", []() {return new SimpleObject(); }},
 	{"SimpleTestObject", []() {return new SimpleTestObject(); } },
+	{"Grunt", []() {return new Grunt(); }},
+	{"Pomp", []() {return new Pomp(); }},
+	{"Gangster", []() {return new Gangster(); }},
 	{"Bottle1", []() {return new PickUp(); } },
 	{"Bottle2", []() {return new PickUp(); } },
 };

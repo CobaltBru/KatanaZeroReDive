@@ -1,6 +1,7 @@
 #include "UIGame.h"
 #include "Image.h"
 #include "RenderManager.h"
+#include "ParticleEffect.h"
 HRESULT UIGame::Init()
 {
 	
@@ -51,7 +52,12 @@ HRESULT UIGame::Init()
 		shiftButton.setAniTask({ {ONE, 0.f},{TWO,0.f} });
 		shiftButton.On();
 	
-	
+		part1 = new ParticleEffect();
+		part1->Init();
+		part1->SetPos({ batteryPos.x + 8.f,batteryPos.y + 20.f });
+		part2 = new ParticleEffect();
+		part2->Init();
+		part2->SetPos({ batteryPos.x + 178.f,batteryPos.y + 20.f });
 	}
 
 	//timer
@@ -108,6 +114,9 @@ HRESULT UIGame::Init()
 	Item2Scale = 1.f;
 	Item2FrameX = 0;
 
+	isSlow = false;
+
+
 	return S_OK;
 }
 
@@ -125,6 +134,7 @@ void UIGame::Update()
 			batteryGage = max(batteryGage, 0.0f);
 			timeGage = max(timeGage, 0.0f);
 		}
+		isSlow = true;
 	}
 	else
 	{
@@ -137,8 +147,14 @@ void UIGame::Update()
 			batteryGage = min(batteryGage, 1.0f);
 			timeGage = min(timeGage, 1.0f);
 		}
+		isSlow = false;
 	}
 	battery.Update();
+	if (isSlow)
+	{
+		part1->Update();
+		part2->Update();
+	}
 	
 	for (int i = 0; i < BCELLCNT; i++)
 	{
@@ -159,6 +175,12 @@ void UIGame::Render(HDC hdc)
 	
 	hud->Render(hdc, 0, 0);
 	battery.Render(hdc);
+	if (isSlow)
+	{
+		part1->Render(hdc);
+		part2->Render(hdc);
+	}
+	
 	for (int i = 0; i < (BCELLCNT * batteryGage); i++)
 	{
 		batteryCellBlue[i].Render(hdc);
@@ -182,6 +204,19 @@ void UIGame::Render(HDC hdc)
 
 void UIGame::Release()
 {
+	if (part1)
+	{
+		part1->Release();
+		delete part1;
+		part1 = nullptr;
+	}
+	if (part2)
+	{
+		part2->Release();
+		delete part2;
+		part2 = nullptr;
+	}
+	
 }
 
 void UIGame::EventPlayerState(const ObsPlayerState& ps)
@@ -197,6 +232,9 @@ void UIGame::EventPlayerState(const ObsPlayerState& ps)
 		rightItem = ps.rightItem;
 		item2 = ImageManager::GetInstance()->FindImage(rightItem);
 	}
+
+	isSlow = ps.isSlow;
+	batteryGage = ps.battery;
 }
 
 void UIGame::TimerUIEvent(const float t)

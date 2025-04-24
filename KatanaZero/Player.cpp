@@ -20,6 +20,8 @@
 #include "CommonFunction.h"
 #include "Bullet.h"
 
+#include "SnapShotManager.h"
+
 
 Player::Player()
 {	
@@ -39,7 +41,9 @@ HRESULT Player::Init()
 	Pos = FPOINT{ 1200, 700 };
 	switchTime = 0.02f;
 
-
+	halfWidth = image->GetFrameWidth() * 0.5f;	
+	halfHeight = image->GetFrameHeight() * 0.5f;
+	
 	InitPlayerStates();
 	state = states->Idle;
 
@@ -58,7 +62,7 @@ HRESULT Player::Init()
 	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f,
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
-		true, 1.f);
+		false, 1.f);
 	
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
@@ -71,7 +75,7 @@ HRESULT Player::Init()
 
 	// set player input key
 	playerInput = new PlayerInput();
-	playerInput->Init();
+	//playerInput->Init();
 
 	dir = EDirection::Right;
 
@@ -139,12 +143,24 @@ void Player::Update()
 	{
 		info->bIsShift = true;
 		info->bIsShiftChanged = true;
-		// change image, slow motion
+
+		// slow motion
+		//슬로우
+		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
+		// TimerManager::GetInstance()->GetDeltaTime();
+
+		// 여기서 안됨
+		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+		//TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+		
 	}
 	else if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SHIFT))
 	{
 		info->bIsShift = false;
 		info->bIsShiftChanged = true;
+
+		// 슬로우 풀기
+		//TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
 	}
 
 	// input
@@ -193,27 +209,12 @@ void Player::Render(HDC hdc)
 			FrameIndex %= image->GetMaxFrameX();	
 	}
 
-	if (effectImage != nullptr && info->bIsAttack)
-	{
-		FPOINT attackDir = { 0.f, 0.f };
-		attackDir.x = g_ptMouse.x - Pos.x;
-		attackDir.y = g_ptMouse.y - Pos.y;
-		Normalize(attackDir);
-		AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
-		if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
-		
-		/*if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
-	}
 }
 
 void Player::MakeSnapShot(void* out)
 {
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->animFrame = this->FrameIndex;
 }
 
 void Player::InitPlayerStates()
@@ -238,6 +239,7 @@ void Player::InitPlayerInfo()
 	info->bIsShiftChanged = false;
 	info->bIsWall = false;
 	info->attackCoolTime = .7f;
+	info->prevState = "";
 }
 
 void Player::InitBindState()
@@ -302,21 +304,21 @@ void Player::UpdateRigidBody()
 {
 	ObjectRigidBody->Update();
 
-	const FLineResult lineResult = ObjectRigidBody->GetResult();
-	if (lineResult.LineType == ELineType::Wall)
-	{
-		if (lineResult.IsLeft) dir = EDirection::Left;
+	//const FLineResult lineResult = ObjectRigidBody->GetResult();
+	//if (lineResult.LineType == ELineType::Wall)
+	//{
+	//	if (lineResult.IsLeft) dir = EDirection::Left;
 
-		ObjectRigidBody->SetVelocity({ 0.f , 10.f });
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-		info->bIsWall = true;
-		bIsLeft = lineResult.IsLeft;
-	}
-	else
-	{
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-		info->bIsWall = false;
-	}
+	//	ObjectRigidBody->SetVelocity({ 0.f , 10.f });
+	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
+	//	info->bIsWall = true;
+	//	bIsLeft = lineResult.IsLeft;
+	//}
+	//else
+	//{
+	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
+	//	info->bIsWall = false;
+	//}
 }
 
 void Player::UpdateCollision()
@@ -383,9 +385,9 @@ void Player::UpdateCollision()
 void Player::InitImage()
 {
 	//zero
-	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 39, 11, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zeroidle", L"Image/zero_idle.bmp", 420, 37, 11, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerojump", L"Image/zero_jump.bmp", 136, 44, 4, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 34, 10, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerorun", L"Image/zero_run.bmp", 460, 33, 10, 1, true, RGB(255, 255, 255));
 	//ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_roll.bmp", 350, 33, 7, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroflip", L"Image/zero_flip.bmp", 574, 46,11, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerofall", L"Image/zero_fall.bmp", 176, 50, 4, 1, true, RGB(255, 255, 255));
@@ -393,11 +395,10 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));		
 	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));	
+	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 33, 4, 1, true, RGB(255, 255, 255));	
 
 	// shadow
-	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));
-	//ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));	
 	ImageManager::GetInstance()->AddImage("zerorunshadow", L"Image/zero_run_shadow.bmp", 440, 32, 10, 1, true, RGB(255, 0, 255));
 	//ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 31, 7, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_flip_shadow.bmp", 528, 44, 11, 1, true, RGB(255, 0, 255));
@@ -405,7 +406,28 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 41, 7, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorunshadow", L"Image/zero_idle_to_run_shadow.bmp", 184, 34, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
 
 	// slash
 	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 }
+
+
+//if (effectImage != nullptr && info->bIsAttack)
+//{
+//	FPOINT attackDir = { 0.f, 0.f };
+//	attackDir.x = g_ptMouse.x - Pos.x;
+//	attackDir.y = g_ptMouse.y - Pos.y;
+//	Normalize(attackDir);
+//	AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
+//	if (dir == EDirection::Left)
+//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
+//	else
+//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+//	
+//	/*if (dir == EDirection::Left)
+//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+//	else
+//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
+//}
+

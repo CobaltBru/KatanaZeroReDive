@@ -3,6 +3,7 @@
 #include "GPImage.h"
 #include "RenderManager.h"
 #include "CommonFunction.h"
+#include "SoundManager.h"
 
 void Animation::Init(Image* image, int frameX, float scale)
 {
@@ -70,6 +71,17 @@ void Animation::Update()
 		if (timer >= aniTasks[anitaskIdx].second)
 		{
 			anitaskIdx++;
+			if (anitaskIdx < soundTasks.size())
+			{
+				string soundKey = soundTasks[anitaskIdx].first;
+				int num = soundTasks[anitaskIdx].second;
+				if (soundKey != "")
+				{
+					SoundManager::GetInstance()->PlaySounds(soundKey, static_cast<EChannelType>(num));
+				}
+			}
+			
+			
 			if (anitaskIdx >= aniTasks.size())
 			{
 				if (!loopflag)
@@ -165,7 +177,6 @@ void Animation::Stop()
 void Animation::On()
 {
 	isOn = true;
-	this->Start();
 }
 
 void Animation::Off()
@@ -225,6 +236,14 @@ void Animation::setAniTask(std::vector<pair<int, float>>& lst)
 {
 	aniTasks.assign(lst.begin(), lst.end());
 	frameIdx = aniTasks[anitaskIdx].first;
+}
+
+void Animation::setSoundTask(initializer_list<pair<string, int>> lst)
+{
+	for (auto task : lst)
+	{
+		soundTasks.push_back(task);
+	}
 }
 
 void Animation::Release()

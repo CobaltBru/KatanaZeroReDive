@@ -17,6 +17,8 @@ public:
 	virtual void Update();
 	virtual void Render(HDC hdc);
 
+	virtual void MakeSnapShot(void* out) override;
+
 	void SetUI(UIGame* InUIGame) { UIGameObj = InUIGame; }
 	//Collider* GetCollider() const { return ObjectCollider; }
 	//RigidBody* GetRigidBody() const { return ObjectRigidBody; }
