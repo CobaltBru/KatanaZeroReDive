@@ -33,12 +33,12 @@ HRESULT Turret::Init()
     player = SnapShotManager::GetInstance()->GetPlayer();
 
     turretImage = ImageManager::GetInstance()->AddImage("Turret", L"Image/HeadHunter/turret.bmp", 1600, 100, 16, 1, true, RGB(255, 0, 255));
-    turretImage = ImageManager::GetInstance()->AddImage("TurretDie", L"Image/HeadHunter/turretdie.bmp", 1400, 100, 14, 1, true, RGB(255, 0, 25)); // turret보다 10 밀어서 생성하기
+    turretImage = ImageManager::GetInstance()->AddImage("TurretDie", L"Image/HeadHunter/turretdie.bmp", 1400, 100, 14, 1, true, RGB(255, 0, 255)); // turret보다 10 밀어서 생성하기
     
     turretImage = ImageManager::GetInstance()->AddImage("TurretHolder", L"Image/HeadHunter/turretholder.bmp", 100, 100, 1, 1, true, RGB(255, 0, 255));
 
     headImage = new GPImage();
-    headImage->AddImage(L"Image/HeadHunter/turrethead.png");
+    headImage->AddImage(L"Image/HeadHunter/turrethead2.png");
 
     backImage = new GPImage();
     backImage->AddImage(L"Image/HeadHunter/turretback.png");
@@ -113,19 +113,21 @@ void Turret::Update(FPOINT pos)
             turretImage = ImageManager::GetInstance()->FindImage("TurretHolder");
             isOperated = true;
 
-            angle = RAD_TO_DEG(atan2f(player->GetPos().y - Pos.y, player->GetPos().x - Pos.x));
-            if (angle >= 30.f)
+            angle = RAD_TO_DEG(atan2f(player->GetPos().y - (Pos.y + 8 * 2.5f), player->GetPos().x - (Pos.x + 15.f * 2.5f)));
+            
+            if (angle >= 27.f)
             {
-                angle = 30.f;
+                angle = 27.f;
             }
 
-            if (angle <= -30.f)
+            if (angle <= -27.f)
             {
-                angle = -30.f;
+                angle = -27.f;
             }
             if (timer > 0.5f)
             {
-                SpawnBullet(Pos, angle);
+                SpawnBullet({ (Pos.x - 12.f * 2.5f) + 35.f* ScrollManager::GetInstance()->GetScale() *cosf(DEG_TO_RAD(angle)),
+                    (Pos.y+ 8*2.5f) + 35.f * ScrollManager::GetInstance()->GetScale()* sinf(DEG_TO_RAD(angle))}, angle);
                 timer = 0;
             }
 
@@ -165,7 +167,7 @@ void Turret::Render(HDC hdc)
 
 			if (headImage)
 			{
-                headImage->Middle_RenderAll(&graphics, { Pos.x - 20 * ScrollManager::GetInstance()->GetScale(), Pos.y + 12 * ScrollManager::GetInstance()->GetScale() }, 0, angle, false, 1.0f, 1.0f, 1.0f, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+                headImage->Middle_RenderAll(&graphics, { Pos.x - 20 * ScrollManager::GetInstance()->GetScale(), Pos.y + 8 * ScrollManager::GetInstance()->GetScale() }, 0, angle, false, 1.0f, 1.0f, 1.0f, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 			}
 
 			if (frontImage)

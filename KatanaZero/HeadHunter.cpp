@@ -230,16 +230,19 @@ void HeadHunter::Release()
 
 void HeadHunter::Update()
 {
+    LastPos = Pos;
     RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
     timer += TimerManager::GetInstance()->GetDeltaTime();
     moveTimer += TimerManager::GetInstance()->GetDeltaTime();
     bulletTimer += TimerManager::GetInstance()->GetDeltaTime();
 
-    Collision();
+    //Collision();
 
     if (state == State::Idle || state == State::Dash || state == State::GroundGun || state == State::Faint || state == State::Die || state == State::Bullet || state == State::DashDown) ObjectRigidBody->Update();
 
     lazer->Update(firePos, weaponAngle); 
+
+
 
     //for (auto bullet : bullets) {
     //    bullet->Update();
@@ -249,7 +252,7 @@ void HeadHunter::Update()
         bomb->Update();
     }*/
 
-    turret->Update({ 300,300 });
+    turret->Update({ 280,400 });
     
    
     // 테스트
@@ -367,13 +370,13 @@ void HeadHunter::Idle()
         frameIndex = 0;
         
         if (loop == 0 || loop ==3) {
-            ChangeState(State::GroundLazer); // 또는 groundlazer
+            ChangeState(State::Dash); // 또는 groundlazer
         }
         if (loop == 1 || loop == 4) {
-            ChangeState(State::GroundLazer);
+            ChangeState(State::Dash);
         }
         if (loop == 2 || loop ==5) {
-            ChangeState(State::GroundLazer); //dash
+            ChangeState(State::Dash); //dash
         }
         
     }
@@ -546,7 +549,7 @@ void HeadHunter::Bullet()
         // 총알 발사
         if (bulletTimer > 0.01f)
         {
-            if (dAngle <= 160)
+            if (dAngle <= 180)
             {
                 FPOINT fire = { Pos.x + 40 * cosf(DEG_TO_RAD(dAngle)), Pos.y + 40 * sinf(DEG_TO_RAD(dAngle)) };
                 SpawnBullet(fire, dAngle);

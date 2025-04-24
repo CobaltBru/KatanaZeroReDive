@@ -93,12 +93,14 @@ void Bomb::Release()
 
 void Bomb::Update()
 {   
+    LastPos = Pos;
     RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
     timer += TimerManager::GetInstance()->GetDeltaTime();
-    
+
+    ObjectRigidBody->Update(); // 리지드 바디 먼저 하고 콜리전 할 것
     Collision();
 
-    ObjectRigidBody->Update();
+    
 
     // 시간이 지나면 멈추고 터짐
     if (ObjectCollider->IsHitted() || timer > 5.0f)

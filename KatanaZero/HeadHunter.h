@@ -18,7 +18,6 @@ enum class State
 
 
 class Player;
-class RigidBody;
 class Bomb;
 class Lazer;
 class Turret;
@@ -71,7 +70,6 @@ private:
     std::vector<Bullet1*> bullets;
     std::vector<Bomb*> bombs;
     
-    RigidBody* ObjectRigidBody;
 
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;
