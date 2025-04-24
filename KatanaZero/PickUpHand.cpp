@@ -1,19 +1,42 @@
 #include "PickUpHand.h"
 #include "PickUp.h"
-PickUpHand::PickUpHand()
-	:PickUpItem(nullptr)
+#include "PickUpUI.h"
+#include "ObjectManager.h"
+
+PickUpHand::PickUpHand(GameObject* InOwner)
+	:PickUpItem(nullptr), Owner(InOwner) , PickUpItemUI(nullptr)
 {
 }
 
-bool PickUpHand::SetPickUpItem(PickUp* InPickUpItem)
+bool PickUpHand::SetPickUpItem(PickUp* InPickUpItem, FPOINT InOffset)
 {
-	if (PickUpItem != nullptr)
-		return false;
+	if (PickUpItem == nullptr)
+	{
+		PickUpItem = InPickUpItem;
+		PickUpItem->SetVisible(false);
 
-	PickUpItem = InPickUpItem;
-	PickUpItem->SetVisible(false);
+		if (PickUpItemUI == nullptr)
+		{
+			PickUpItemUI = new PickUpUI();
+			PickUpItemUI->Init(PickUpItem->GetImageKey(), Owner->GetPPos(), InOffset, PickUpItem->GetFlip());
+			ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, PickUpItemUI);
+		}
+		
+		PickUpItemUI->SetImage(PickUpItem->GetImageKey());
+		PickUpItemUI->SetScale(PickUpItem->GetScale());
+		PickUpItemUI->Start();
+
+		return true;
+	}	
+
+	return false;
 }
 
-void PickUpHand::Shoot(float InAngle)
+void PickUpHand::Shoot(FPOINT InPos,float InAngle, float InSpeed)
 {
+	if (PickUpItem == nullptr)
+		return;
+
+	PickUpItem->Shoot(InPos,InAngle, InSpeed);
+	PickUpItem = nullptr;
 }

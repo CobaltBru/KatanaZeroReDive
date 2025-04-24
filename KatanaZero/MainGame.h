@@ -22,6 +22,7 @@ public:
 
 private:
 	HRESULT InitSound();
+	HRESULT InitImage();
 
 private:
 	HDC hdc;

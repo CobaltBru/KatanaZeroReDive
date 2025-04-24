@@ -26,6 +26,7 @@ private:
 	Image* mouseLeft;
 	Image* mouseRight;
 	Image* item1;
+
 	Image* item2;
 
 	FPOINT batteryPos;
@@ -37,6 +38,9 @@ private:
 	FPOINT slotPos;
 	FPOINT item1Pos;
 	FPOINT item2Pos;
+
+	int Item2FrameX;
+	float Item2Scale;
 	bool isSlow;
 	float batteryGage;
 	float timeGage;
@@ -53,5 +57,7 @@ public:
 
 	virtual void EventPlayerState(const ObsPlayerState& ps) override;
 	virtual void TimerUIEvent(const float t) override;
+
+	void SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, float InScale);
 };
 

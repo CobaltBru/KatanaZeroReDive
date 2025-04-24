@@ -6,6 +6,9 @@
 
 PlayerState* WallSlideState::GetInput(Player* player)
 {
+	if (player->GetInfo()->bIsDead)
+		return player->GetStates()->Dead;
+
 	const FLineResult lineResult = player->GetRigidBody()->GetResult();
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
@@ -42,19 +45,10 @@ void WallSlideState::Enter(Player* player)
 {
 	updateCount = 0;
 	
-	const FLineResult lineResult = player->GetRigidBody()->GetResult();
-	if (lineResult.IsLeft)
-	{
-		EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3}, 90.f, true);
-	}
-	else
-	{
-		EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
-	}
-
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 	player->SetAnimKey("zerowallslide");
 
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
 	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
 	else player->SetDirection(EDirection::Right);			
 }
@@ -66,6 +60,7 @@ void WallSlideState::Update(Player* player)
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 	//player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
 
+	// effect
 	if (updateCount > (player->GetImage()->GetMaxFrameX() * 100))
 	{
 		const FLineResult lineResult = player->GetRigidBody()->GetResult();

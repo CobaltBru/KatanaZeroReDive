@@ -16,10 +16,11 @@
 #include "RunState.h"
 #include "JumpState.h"
 #include "FlipState.h"
+#include "DeadState.h"
 #include "WallSlideState.h"
 #include "CommonFunction.h"
 #include "Bullet.h"
-
+#include "SoundManager.h"
 #include "SnapShotManager.h"
 
 
@@ -51,8 +52,8 @@ HRESULT Player::Init()
 	InitPlayerInfo();
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.8f, 
-		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 1.0f },
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.1f, 
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
 		true, 1.f);
 
 	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
@@ -61,7 +62,7 @@ HRESULT Player::Init()
 	true, 1.f);*/
 
 	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
 		false, 1.f);
 	
@@ -144,12 +145,24 @@ void Player::Update()
 	{
 		info->bIsShift = true;
 		info->bIsShiftChanged = true;
-		// change image, slow motion
+
+		// slow motion
+		//슬로우
+		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
+		// TimerManager::GetInstance()->GetDeltaTime();
+
+		// 여기서 안됨
+		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+		//TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+		
 	}
 	else if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SHIFT))
 	{
 		info->bIsShift = false;
 		info->bIsShiftChanged = true;
+
+		// 슬로우 풀기
+		//TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
 	}
 
 	// input
@@ -170,6 +183,9 @@ void Player::Update()
 
 	// scroll offset
 	Offset();
+
+	if (!info->bGameStart)
+		if (GetRigidBody()->IsGround()) info->bGameStart = true;
 }
 
 void Player::Render(HDC hdc)
@@ -219,6 +235,7 @@ void Player::InitPlayerStates()
 	states->Jump = new JumpState;
 	states->Flip = new FlipState;
 	states->WallSlide = new WallSlideState;
+	states->Dead = new DeadState;
 }
 
 void Player::InitPlayerInfo()
@@ -230,6 +247,8 @@ void Player::InitPlayerInfo()
 	info->bIsShift = false;
 	info->bIsShiftChanged = false;
 	info->bIsWall = false;
+	info->bGameStart = false;
+	info->bIsDead = false;
 	info->attackCoolTime = .7f;
 	info->prevState = "";
 }
@@ -296,27 +315,13 @@ void Player::UpdateRigidBody()
 {
 	ObjectRigidBody->Update();
 
-	//const FLineResult lineResult = ObjectRigidBody->GetResult();
-	//if (lineResult.LineType == ELineType::Wall)
-	//{
-	//	if (lineResult.IsLeft) dir = EDirection::Left;
-
-	//	ObjectRigidBody->SetVelocity({ 0.f , 10.f });
-	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-	//	info->bIsWall = true;
-	//	bIsLeft = lineResult.IsLeft;
-	//}
-	//else
-	//{
-	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-	//	info->bIsWall = false;
-	//}
 }
 
 void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	
+	if (!info->bGameStart) return;
 	if (info->bIsFlip) return;
 
 	// player die
@@ -329,9 +334,9 @@ void Player::UpdateCollision()
 		// direction from player to enemy
 		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
 
-		//// die
-		//if (HitResult.HitCollision->GetOwner()->GetRigidBody())
-		//	ObjectRigidBody->AddVelocity(-PEDir * 100.f);
+		info->bIsDead = true;
+
+		SoundManager::GetInstance()->PlaySounds("zerodie", EChannelType::Effect);
 	}
 
 	// player attack enemy
@@ -369,7 +374,8 @@ void Player::UpdateCollision()
 				bullet->SetAngle(angle);
 			}
 		}
-			
+
+		SoundManager::GetInstance()->PlaySounds("zeroslicebullet", EChannelType::Effect);
 	}
 }
 
@@ -388,10 +394,10 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));		
 	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 33, 4, 1, true, RGB(255, 255, 255));	
+	ImageManager::GetInstance()->AddImage("zerodead", L"Image/zero_dead.bmp", 671, 59, 12, 1, true, RGB(255, 255, 255));
 
 	// shadow
-	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));
-	//ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));	
 	ImageManager::GetInstance()->AddImage("zerorunshadow", L"Image/zero_run_shadow.bmp", 440, 32, 10, 1, true, RGB(255, 0, 255));
 	//ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_roll_shadow.bmp", 329, 31, 7, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_flip_shadow.bmp", 528, 44, 11, 1, true, RGB(255, 0, 255));
@@ -399,6 +405,7 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 41, 7, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorunshadow", L"Image/zero_idle_to_run_shadow.bmp", 184, 34, 4, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerojumpshadow", L"Image/zero_jump_shadow.bmp", 136, 44, 4, 1, true, RGB(255, 0, 255));
 
 	// slash
 	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));

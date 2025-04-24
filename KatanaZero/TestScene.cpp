@@ -195,8 +195,7 @@ HRESULT TestScene::InitObject()
 		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
-		GoPopUp* goPopUp = new GoPopUp();
-		
+		GoPopUp* goPopUp = new GoPopUp();		
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
@@ -230,7 +229,7 @@ void TestScene::TestCode()
 	}
 
 	//슬로우
-	if (KeyManager::GetInstance()->IsStayKeyDown('I'))
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 	{
 		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
 		// TimerManager::GetInstance()->GetDeltaTime();

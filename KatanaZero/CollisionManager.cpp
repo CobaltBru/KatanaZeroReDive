@@ -103,7 +103,7 @@ bool CollisionManager::CollisionAABB(Collider* InSour, FHitResult& OutHitResult,
 
 	for (auto& DestCollider : CollisionList[(int)InCollisionGroup])
 	{
-		if (!DestCollider->CanHit())
+		if (!DestCollider->CanHit() || !DestCollider->GetVisible())
 			continue;
 
 		FPOINT collider1Pos = InSour->GetPos();

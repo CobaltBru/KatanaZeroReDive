@@ -28,6 +28,7 @@
 #include "DefaultObject.h"
 #include "Factory.h"
 #include "Tile.h"
+#include "ArrowUI.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -205,6 +206,15 @@ void Stage1Scene::LoadBackground()
 
 void Stage1Scene::LoadObject()
 {
+	UIGame* ui = new UIGame();
+	ui->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
+
+	ArrowUI* ArrowUIObj = new ArrowUI();
+	ArrowUIObj->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
+
+
 	HANDLE hFile = CreateFile(
 		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -250,6 +260,12 @@ void Stage1Scene::LoadObject()
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+
+		if (ClassName == "StartPoint")
+		{
+			static_cast<SimpleObject*>(Obj)->SetUI(ui);
+			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
+		}
 	}
 
 	CloseHandle(hFile);

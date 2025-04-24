@@ -24,7 +24,7 @@ void EffectManager::InitEffects()
     Addfx("jumpcloud", {}, {}, 0.f);
     Addfx("wallcloud", {}, {}, 0.f);
     Addfx("landcloud", {}, {}, 0.f);
-    Addfx("dustcloud", {}, {}, 0.f);
+    Addfx("dustcloud", {}, {}, 0.f, 0.2f);
 }
 
 void EffectManager::Release()

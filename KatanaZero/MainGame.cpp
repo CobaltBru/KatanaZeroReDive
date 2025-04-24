@@ -42,7 +42,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Test","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -68,6 +68,13 @@ HRESULT MainGame::Init()
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
+
+	if (FAILED(InitImage()))
+	{
+		MessageBox(g_hWnd, L"InitImage Failed.", TEXT("경고"), MB_OK);
+		return E_FAIL;
+	}
+
 
 	return S_OK;
 }
@@ -119,9 +126,9 @@ void MainGame::Render()
 
 	SceneManager::GetInstance()->Render(hBackBufferDC);
 
-	TimerManager::GetInstance()->Render(hBackBufferDC);
-	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
-	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
+	//TimerManager::GetInstance()->Render(hBackBufferDC);
+	/*wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
+	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText))*/;
 
 	delete pGraphics;
 	backBuffer->Render(hdc);
@@ -151,6 +158,24 @@ HRESULT MainGame::InitSound()
 	if (FAILED(SoundManager::GetInstance()->AddSound("EffectTest", "Sound/EffectTest.wav")))
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
+		return E_FAIL;
+
+	// player
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroattack1", "Sound/zero_attack_1.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroattack2", "Sound/zero_attack_2.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroattack3", "Sound/zero_attack_3.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zerodie", "Sound/zero_die.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroslicebullet", "Sound/zero_slice_bullet.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroroll", "Sound/zero_roll.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zerojump", "Sound/zero_jump.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroland", "Sound/zero_land.wav")))
 		return E_FAIL;
 
 	//talk
@@ -203,6 +228,15 @@ HRESULT MainGame::InitSound()
 
 	}
 
+
+	return S_OK;
+}
+
+HRESULT MainGame::InitImage()
+{
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
+	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
 
 	return S_OK;
 }
