@@ -53,6 +53,7 @@ void WallSlideState::Enter(Player* player)
 	}
 
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
+	player->SetAnimKey("zerowallslide");
 
 	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
 	else player->SetDirection(EDirection::Right);			

@@ -20,12 +20,10 @@ struct EnemySnapShot
 
 struct EffectSnapShot
 {
-	FPOINT startpos;
-	FPOINT destpos;
+	FPOINT pos;
 	int animFrame;
 	float angle;
 	bool bFlip;
-	bool isActive;
 	string effectKey;
 };
 

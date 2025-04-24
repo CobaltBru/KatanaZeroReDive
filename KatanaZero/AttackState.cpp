@@ -48,6 +48,7 @@ void AttackState::Enter(Player* player)
 	
 	player->SetImage(ImageManager::GetInstance()->FindImage("zeroattack"));
 	player->SetEffectImage(ImageManager::GetInstance()->FindImage("normalslash"));
+	player->SetAnimKey("zeroattack");
 	
 	player->SetEState(EPlayerState::Attack);
 	player->GetInfo()->bIsAttack = true;

@@ -66,6 +66,9 @@ private:
 	PlayerState* state;
 	EPlayerState EState;
 
+	// 리플레이용 키
+	string currAnimKey;
+
 	// player state에 따른 move function과 animation을 따로 관리
 	
 	// player anim
@@ -119,6 +122,8 @@ public:
 
 	inline EPlayerState GetEState() { return EState; }
 	inline void SetEState(EPlayerState state) { this->EState = state; }
+	inline void SetAnimKey(string key) { this->currAnimKey = key; }
+	inline string GetAnimKey() { return currAnimKey; }
 
 	/*inline PlayerState* GetState() { return state; }
 	inline void SetState(PlayerState* state) { this->state = state; }*/

@@ -37,6 +37,7 @@ HRESULT Player::Init()
 
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 	effectImage = nullptr;
+	currAnimKey = "zeroidle";
 
 	Pos = FPOINT{ 1200, 700 };
 	switchTime = 0.02f;
@@ -203,6 +204,9 @@ void Player::MakeSnapShot(void* out)
 {
 	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
 	pSnapShot->animFrame = this->FrameIndex;
+	pSnapShot->bFlip = this->bFlip;
+	pSnapShot->pos = this->Pos;
+	pSnapShot->animKey = this->currAnimKey;
 }
 
 void Player::InitPlayerStates()

@@ -21,16 +21,21 @@ public:
 	void Release();
 	void Update(bool isDead);
 	void Save();
+	void SaveEffects();
 	void StartReplay();
 	void Replay();
+	void ReplayEffects();
 	
 	inline bool IsReplaying() { return isReplaying; }
 	inline int GetReplayIndex() { return replayIndex; }
 	GameObject* GetPlayer();
 private:
 	float elapsedTime{0.f};
+	float fxTimer{ 0.f };
 	bool isReplaying{ false };
 	int replayIndex{ -1 };
+	int fxReplayIndex{ -1 };
+	int replayCount{ -1 };
 	TimeLineBuffer snapShots;
 	GameObject* player{ nullptr };
 	vector<ReplayBase*> replayClones;

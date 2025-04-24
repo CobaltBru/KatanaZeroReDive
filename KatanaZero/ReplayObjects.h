@@ -71,7 +71,8 @@ public:
 		if (image)
 		{
 			Gdiplus::Graphics graphics(hdc);
-			image->Middle_RenderFrameScale(&graphics, snap.startpos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+			image->Middle_RenderAll(&graphics, snap.pos, snap.animFrame, snap.angle, snap.bFlip, 1.f, 1.f, 1.f, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+			//image->Middle_RenderFrameScale(&graphics, snap.pos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 		}
 		
 	}

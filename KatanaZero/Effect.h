@@ -27,6 +27,7 @@ private:
 	bool bMove;
 	float alpha;
 	float frameduration;
+	string currAnimKey;
 
 	//sour 테스트용
 	int offset = 0;

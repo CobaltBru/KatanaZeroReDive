@@ -68,6 +68,7 @@ void JumpState::Enter(Player* player)
     player->SetSwitchTime(0.02f * 10.f);
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zerojump"));
+    player->SetAnimKey("zerojump");
     
     EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ 0.f, -player->GetHalfHeight()}, 0.0f, false);
         
