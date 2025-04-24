@@ -237,7 +237,6 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
-
 	return S_OK;
 }
 
