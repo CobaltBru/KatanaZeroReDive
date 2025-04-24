@@ -23,6 +23,7 @@
 
 HRESULT MainGame::Init()
 {
+	srand(time(NULL));
 	ImageManager::GetInstance()->Init();
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
