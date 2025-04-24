@@ -62,6 +62,10 @@ HRESULT BossScene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
+	Player* player = new Player();
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/headhunter_test.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("BossScene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
@@ -254,7 +258,7 @@ void BossScene::LoadObject()
 			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
 		}
 	}
-
+	
 	CloseHandle(hFile);
 }
 

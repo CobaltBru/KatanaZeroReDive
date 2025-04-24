@@ -94,7 +94,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
 
     ObjectRigidBody = new RigidBody(this);
 
-    FPOINT player = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
+    player = SnapShotManager::GetInstance()->GetPlayer();
 
     lazer = new Lazer();
     lazer->Init();
@@ -143,7 +143,37 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
     random = 0;
 
     state = State::Dash;
+    {
+        image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 50, 12, 1, true, RGB(255, 0, 255));
 
+        image = ImageManager::GetInstance()->AddImage("GroundLazer", L"Image/HeadHunter/headhunter_takeoutrifle.bmp", 560, 45, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("RoundLazer", L"Image/HeadHunter/headhunter_lazer_2.bmp", 918, 46, 17, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Teleport", L"Image/HeadHunter/teleport1.bmp", 280, 37, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer", L"Image/HeadHunter/teleport2.bmp", 280, 50, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("VerticalLazer_out", L"Image/HeadHunter/teleport3.bmp", 280, 50, 4, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->AddImage("Faint", L"Image/HeadHunter/headhunter_faint.bmp", 495, 50, 11, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->AddImage("GroundGun", L"Image/HeadHunter/GroundGun.bmp", 490, 47, 7, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("GroundGun_shoot", L"Image/HeadHunter/GroundGun_shoot.bmp", 800, 47, 8, 1, true, RGB(255, 0, 255));
+
+        //BULLET
+        image = ImageManager::GetInstance()->AddImage("Jump", L"Image/HeadHunter/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpidle", L"Image/HeadHunter/headhunter_jumpidle.bmp", 90, 43, 3, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Jumpto", L"Image/HeadHunter/headhunter_jumptoceil.bmp", 35, 46, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Bullet", L"Image/HeadHunter/headhunter_shoot.bmp", 385, 55, 7, 1, true, RGB(255, 0, 255));
+
+        //DASH
+        image = ImageManager::GetInstance()->AddImage("Readytodash", L"Image/HeadHunter/readytodash.bmp", 432, 45, 9, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dash", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Dashend", L"Image/HeadHunter/dashend.bmp", 500, 50, 10, 1, true, RGB(255, 0, 255));
+
+        //Dead
+        image = ImageManager::GetInstance()->AddImage("DeadFly", L"Image/HeadHunter/deadfly.bmp", 280, 30, 4, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("DeadLand", L"Image/HeadHunter/deadland.bmp", 560, 45, 8, 1, true, RGB(255, 0, 255));
+
+        image = ImageManager::GetInstance()->FindImage("Idle");
+    }
 
 
     ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 3.f);
@@ -152,7 +182,7 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
 
     ObjectRigidBody = new RigidBody(this);
 
-    FPOINT player = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
+    player = SnapShotManager::GetInstance()->GetPlayer();
 
     lazer = new Lazer();
     lazer->Init();

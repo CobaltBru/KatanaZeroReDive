@@ -19,8 +19,8 @@ HRESULT Bullet1::Init(FPOINT pos, float angle)
 {
     Pos = pos;
     this->angle = angle;
-    this->dir = dir;
-    speed = 1.f;
+    this->dir = 0;
+    speed = 1500.f;
     targetType = ECollisionGroup::Player;
     isActive = true;
 
@@ -94,15 +94,15 @@ void Bullet1::Update()
     float dt = TimerManager::GetInstance()->GetDeltaTime();
     if(isActive)
     {
-        if (speed != 1.f)
+        if (dir != 0)
         {
             Pos.x += speed * cosf(DEG_TO_RAD(angle)) * dt * dir;
             Pos.y += speed * sinf(DEG_TO_RAD(angle)) * dt * dir;
         }
         else
         {
-            Pos.x += cosf(DEG_TO_RAD(angle));
-            Pos.y += sinf(DEG_TO_RAD(angle));
+            Pos.x += speed * cosf(DEG_TO_RAD(angle)) * dt; // 프레임 떨어지면 속도 같이 느려진다.
+            Pos.y += speed * sinf(DEG_TO_RAD(angle)) * dt;
         }
     }
 
@@ -119,6 +119,7 @@ void Bullet1::Update()
 
 void Bullet1::Render(HDC hdc)
 {
+    
     Gdiplus::Graphics graphics(hdc);
     if (image)
     {
