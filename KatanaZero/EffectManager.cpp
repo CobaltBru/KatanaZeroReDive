@@ -21,6 +21,8 @@ void EffectManager::InitEffects()
     Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
     Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
     Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
+    Addfx("dustcloud", L"Image/fx/spr_dustcloud.png", 7, 1);
+    Addfx("landcloud", L"Image/fx/spr_landcloud.png", 7, 1);
 }
 
 void EffectManager::Release()

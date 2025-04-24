@@ -29,6 +29,8 @@ void GPImageManager::InitImages()
     AddImage("hitslash", L"Image/fx/HitSlash.png", 4, 1);
     AddImage("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
     AddImage("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
+    AddImage("dustcloud", L"Image/fx/spr_dustcloud.png", 7, 1);
+    AddImage("landcloud", L"Image/fx/spr_landcloud.png", 7, 1);
     AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.png");
     AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.png");
     AddImage("BGBlood_right3", L"Image/fx/BGBlood_right3.png");
