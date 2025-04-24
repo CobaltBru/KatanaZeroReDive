@@ -8,6 +8,8 @@
 #include <math.h>
 #include "GPImageManager.h"
 
+int Effect::nextID = 0;
+
 void Effect::UpdateFrame()
 {
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
@@ -114,6 +116,7 @@ void Effect::MakeSnapShot(void* out)
 	fxSnapShot->bFlip = this->bFlip;
 	fxSnapShot->effectKey = this->currAnimKey;
 	fxSnapShot->animFrame = this->currFrameX;
+	fxSnapShot->id = this->GetID();
 }
 
 void Effect::ApplySnapShot(const EffectSnapShot& fxSnapShot)

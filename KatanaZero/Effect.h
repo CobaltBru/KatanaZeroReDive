@@ -10,6 +10,8 @@
 class Effect : public GameObject
 {
 private:
+	int id;
+	static int nextID;
 	GPImage* fxImage;
 	GameObject* owner;
 	FPOINT start;
@@ -49,9 +51,10 @@ public:
 	void Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip = false);
 	void Activefx(FPOINT pos, float angle, float speed, float scale, bool bFlip = false);
 	inline bool IsActive() { return bActive; }
+	inline int GetID() { return id; }
 
 	Effect(const Effect& other);
-	Effect() {};
+	Effect() : id(nextID++) {};
 	virtual ~Effect() {};
 };
 

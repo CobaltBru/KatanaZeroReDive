@@ -297,7 +297,11 @@ void HYScene::Update()
 	fxManager->Update();
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
+	{
+		snapShotManager->Save();
+		snapShotManager->SaveEffects();
 		snapShotManager->StartReplay();
+	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	ScrollManager->Update();

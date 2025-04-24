@@ -60,6 +60,7 @@ public:
 class ReplayEffect : public ReplayBase
 {
 public:
+	int ID;
 	EffectSnapShot snap;
 	void ApplySnapShot(const EffectSnapShot& fxSnap) override
 	{
@@ -74,6 +75,7 @@ public:
 			image->Middle_RenderAll(&graphics, snap.pos, snap.animFrame, snap.angle, snap.bFlip, 1.f, 1.f, 1.f, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 			//image->Middle_RenderFrameScale(&graphics, snap.pos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 		}
-		
 	}
+	void SetID(int id) { ID = id; }
+	int GetID() { return ID; }
 };

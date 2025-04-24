@@ -13,6 +13,7 @@ void TimeLineBuffer::SaveSnapShot(const PlayerSnapShot& player, const vector<Ene
 {
 	SnapShot currFrame;
 	currFrame.player = player;
+	currFrame.enemies = enemies;
 	currFrame.scroll = scroll;
 
 	frameBuffer.push_back(currFrame);
@@ -26,4 +27,8 @@ void TimeLineBuffer::SaveSnapShot(const PlayerSnapShot& player, const vector<Ene
 void TimeLineBuffer::SaveFx(const vector<EffectSnapShot>& effects)
 {
 	fxBuffer.push_back(effects);
+	if (fxBuffer.size() > MAX_SNAPSHOTS)
+	{
+		fxBuffer.pop_front();
+	}
 }

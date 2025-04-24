@@ -20,6 +20,7 @@ struct EnemySnapShot
 
 struct EffectSnapShot
 {
+	int id;
 	FPOINT pos;
 	int animFrame;
 	float angle;
