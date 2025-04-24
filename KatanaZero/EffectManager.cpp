@@ -14,6 +14,7 @@ void EffectManager::Init()
 
 void EffectManager::InitEffects()
 {
+    // 디폴트 프레임 업데이트 시간 0.1초
     Addfx("gangstergun", {}, {}, 0.f);
     Addfx("normalslash", {}, {}, 0.f);
     Addfx("rainbowslash", {}, {}, 0.f);
