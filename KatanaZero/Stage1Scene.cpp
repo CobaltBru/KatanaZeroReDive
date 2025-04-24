@@ -27,6 +27,8 @@
 #include "Player.h"
 #include "DefaultObject.h"
 #include "Factory.h"
+#include "Tile.h"
+#include "ArrowUI.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
@@ -114,13 +116,6 @@ HRESULT Stage1Scene::InitObject()
 
 HRESULT Stage1Scene::InitEffects()
 {
-	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
-	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
-	fxManager->Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
-	fxManager->Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
-	fxManager->Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
-	fxManager->Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
-	fxManager->RegisterEffect();
 	return S_OK;
 }
 
@@ -197,6 +192,15 @@ void Stage1Scene::LoadBackground()
 
 void Stage1Scene::LoadObject()
 {
+	UIGame* ui = new UIGame();
+	ui->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
+
+	ArrowUI* ArrowUIObj = new ArrowUI();
+	ArrowUIObj->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
+
+
 	HANDLE hFile = CreateFile(
 		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -240,6 +244,12 @@ void Stage1Scene::LoadObject()
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+
+		if (ClassName == "StartPoint")
+		{
+			static_cast<SimpleObject*>(Obj)->SetUI(ui);
+			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
+		}
 	}
 
 	CloseHandle(hFile);

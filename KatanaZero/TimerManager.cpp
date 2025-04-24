@@ -63,3 +63,5 @@ float TimerManager::GetDeltaTime(bool CanSlowSystem)
 		
 	return 0.0f;
 }
+
+

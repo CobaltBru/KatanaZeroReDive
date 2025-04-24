@@ -62,6 +62,7 @@ void HomeScene::Update()
 	ObjectManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
+		SoundManager::GetInstance()->PlaySounds("menuselect", EChannelType::Effect);
 		if (cursor == 0)
 			nextSceneEffect();
 		else if (cursor == 2)
@@ -82,10 +83,12 @@ void HomeScene::Update()
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
+		SoundManager::GetInstance()->PlaySounds("menumove", EChannelType::Effect);
 		if (cursor - 1 >= 0)--cursor;
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
 	{
+		SoundManager::GetInstance()->PlaySounds("menumove", EChannelType::Effect);
 		if (cursor + 1 < 3)++cursor;
 	}
 }
@@ -141,8 +144,15 @@ HRESULT HomeScene::InitObject()
 		{0,0.05f},{1,0.01f} ,
 		{0,2.f},{1,0.01f},
 		{0,1.5f} });
+	zero_zer->setSoundTask({
+		{"",1},{"flicker1",1},
+		{"",1},{"",1},
+		{"",1},{"",1},
+		{"",1},{"",1},
+		{"",1}
+		});
 	zero_zer->MoveOn({ 0.f,-WINSIZE_Y/2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
-	zero_zer->On();
+	zero_zer->Start();
 	ObjectManager->AddGameObject(EObjectType::GameObject, zero_zer);
 
 	gpi = new GPImage();
@@ -151,12 +161,18 @@ HRESULT HomeScene::InitObject()
 	zero_o->Init(gpi, 2);
 	zero_o->setPos({ WINSIZE_X / 2 + 203.f,WINSIZE_Y-2.f + 100.f}, false, true);
 	zero_o->setAniTask({
-		{0,2.0f},{1,0.5f},
+		{0,1.5f} ,{0,1.2f},{1,0.5f},
 		{0,0.05f},{1,0.01f} ,
 		{0,0.05f},{1,0.01f},
 		{0,4.f}});
+	zero_o->setSoundTask({
+		{"",1},{"",1},{"flicker2",1},
+		{"",1},{"",1},
+		{"",1},{"",1},
+		{"",1}
+		});
 	zero_o->MoveOn({ 0.f,-WINSIZE_Y / 2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
-	zero_o->On();
+	zero_o->Start();
 	ObjectManager->AddGameObject(EObjectType::GameObject, zero_o);
 
 	gpi = new GPImage();
@@ -168,7 +184,7 @@ HRESULT HomeScene::InitObject()
 	select_bg->setAniTask({
 		{0,10.f}});
 	select_bg->MoveOn({ 0.f,-600.f}, 2.0f, Move_SoftEnd | Move_Stop);
-	select_bg->On();
+	select_bg->Start();
 	ObjectManager->AddGameObject(EObjectType::GameObject, select_bg);
 
 	gpi = new GPImage();
@@ -223,8 +239,9 @@ HRESULT HomeScene::InitObject()
 	katana->setPos({ WINSIZE_X / 2,WINSIZE_Y - 100.f + 100.f }, false, true);
 	katana->setAniTask({
 		{0,10.f} });
+	katana->Start();
 	katana->MoveOn({ 0.f,-WINSIZE_Y / 2 - 165.f }, 1.0f, Move_SoftEnd | Move_Stop);
-	katana->On();
+	
 	ObjectManager->AddGameObject(EObjectType::GameObject, katana);
 
 
@@ -234,7 +251,7 @@ HRESULT HomeScene::InitObject()
 	grass1->setPos({ 0.f,WINSIZE_Y }, false, false);
 	grass1->setAniTask({ {0,10.f} });
 	grass1->MoveOn({ 0.f,-200.f }, 1.3f, Move_SoftEnd | Move_Stop);
-	grass1->On();
+	grass1->Start();
 	ObjectManager->AddGameObject(EObjectType::GameObject, grass1);
 
 	tmp = ImageManager::GetInstance()->AddImage("title_grass2", L"Image/UI/Home/spr_grass2.bmp", 19200, 637, 12, 1, true, RGB(255, 0, 255));
@@ -248,7 +265,7 @@ HRESULT HomeScene::InitObject()
 		{6,fs},{7,fs},{8,fs},
 		{9,fs},{10,fs},{11,fs}, });
 	grass2->MoveOn({ 0.f,-637.f }, 1.3f, Move_SoftEnd | Move_Stop);
-	grass2->On();
+	grass2->Start();
 	ObjectManager->AddGameObject(EObjectType::GameObject, grass2);
 
 	tmp = ImageManager::GetInstance()->FindImage("BlackBackground");

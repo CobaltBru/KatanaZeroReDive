@@ -1,6 +1,7 @@
 #include "UIGame.h"
 #include "Image.h"
 #include "RenderManager.h"
+#include "ParticleEffect.h"
 HRESULT UIGame::Init()
 {
 	
@@ -51,7 +52,12 @@ HRESULT UIGame::Init()
 		shiftButton.setAniTask({ {ONE, 0.f},{TWO,0.f} });
 		shiftButton.On();
 	
-	
+		part1 = new ParticleEffect();
+		part1->Init();
+		part1->SetPos({ batteryPos.x + 8.f,batteryPos.y + 20.f });
+		part2 = new ParticleEffect();
+		part2->Init();
+		part2->SetPos({ batteryPos.x + 178.f,batteryPos.y + 20.f });
 	}
 
 	//timer
@@ -100,10 +106,16 @@ HRESULT UIGame::Init()
 		item2Pos = { slotPos.x + 82.5f, slotPos.y + 4.f };
 		item1 = ImageManager::GetInstance()->AddImage("UIKatana", L"Image/UI/spr_katanaicons.bmp", 20 * (UISCALE), 20 * (UISCALE), true, RGB(255, 0, 255));
 		leftItem = "UIKatana";
-		item2 = ImageManager::GetInstance()->AddImage("UIHand", L"Image/UI/spr_itemicons.bmp", 20 * (UISCALE), 20 * (UISCALE), true, RGB(255, 0, 255));
+		item2 = ImageManager::GetInstance()->AddImage("UIHand", L"Image/UI/spr_itemicons.bmp", 20 * (UISCALE), 20 * (UISCALE),1,1, true, RGB(255, 0, 255));
 		rightItem = "UIHand";
 	}
 	hud = ImageManager::GetInstance()->AddImage("UIhud", L"Image/UI/spr_hud.bmp", 640 * (UISCALE), 23 * (UISCALE), true, RGB(255, 0, 255));
+	
+	Item2Scale = 1.f;
+	Item2FrameX = 0;
+
+	isSlow = false;
+
 
 	return S_OK;
 }
@@ -122,7 +134,7 @@ void UIGame::Update()
 			batteryGage = max(batteryGage, 0.0f);
 			timeGage = max(timeGage, 0.0f);
 		}
-
+		isSlow = true;
 	}
 	else
 	{
@@ -135,8 +147,14 @@ void UIGame::Update()
 			batteryGage = min(batteryGage, 1.0f);
 			timeGage = min(timeGage, 1.0f);
 		}
+		isSlow = false;
 	}
 	battery.Update();
+	if (isSlow)
+	{
+		part1->Update();
+		part2->Update();
+	}
 	
 	for (int i = 0; i < BCELLCNT; i++)
 	{
@@ -157,6 +175,12 @@ void UIGame::Render(HDC hdc)
 	
 	hud->Render(hdc, 0, 0);
 	battery.Render(hdc);
+	if (isSlow)
+	{
+		part1->Render(hdc);
+		part2->Render(hdc);
+	}
+	
 	for (int i = 0; i < (BCELLCNT * batteryGage); i++)
 	{
 		batteryCellBlue[i].Render(hdc);
@@ -172,7 +196,7 @@ void UIGame::Render(HDC hdc)
 	itemSlot.Render(hdc);
 
 	item1->Render(hdc, item1Pos.x, item1Pos.y);
-	item2->Render(hdc, item2Pos.x, item2Pos.y);
+	item2->FrameRender(hdc, item2Pos.x, item2Pos.y, Item2FrameX, 0, false, false, Item2Scale);
 
 	mouseLeft->Render(hdc, slotPos.x + 40.f, slotPos.y + 40.f);
 	mouseRight->Render(hdc, slotPos.x + 120.f, slotPos.y + 40.f);
@@ -180,24 +204,57 @@ void UIGame::Render(HDC hdc)
 
 void UIGame::Release()
 {
+	if (part1)
+	{
+		part1->Release();
+		delete part1;
+		part1 = nullptr;
+	}
+	if (part2)
+	{
+		part2->Release();
+		delete part2;
+		part2 = nullptr;
+	}
+	
 }
 
 void UIGame::EventPlayerState(const ObsPlayerState& ps)
 {
 	batteryGage = ps.battery;
-	if (leftItem != ps.leftItem)
+	if (leftItem != ps.leftItem && ps.leftItem != "")
 	{
 		leftItem = ps.leftItem;
 		item1 = ImageManager::GetInstance()->FindImage(leftItem);
 	}
-	if (rightItem != ps.rightItem)
+	if (rightItem != ps.rightItem && ps.rightItem != "")
 	{
 		rightItem = ps.rightItem;
 		item2 = ImageManager::GetInstance()->FindImage(rightItem);
 	}
+
+	isSlow = ps.isSlow;
+	batteryGage = ps.battery;
 }
 
 void UIGame::TimerUIEvent(const float t)
 {
 	timeGage = t;
+}
+
+void UIGame::SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, float InScale)
+{
+	if (InImageKey == "")
+	{
+		item2 = ImageManager::GetInstance()->FindImage("UIHand");
+		Item2FrameX = 0;
+		Item2Scale = 1;
+		item2Pos = { slotPos.x + 82.5f, slotPos.y + 4.f };
+		return;
+	}
+
+	item2 = ImageManager::GetInstance()->FindImage(InImageKey);
+	Item2FrameX = InFrameX;
+	Item2Scale = InScale;
+	item2Pos = { slotPos.x + 82.5f + InOffset.x, slotPos.y + 4.f + InOffset.y};
 }

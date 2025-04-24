@@ -103,15 +103,15 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="í—¤ë” íŒŒì¼">
+    <Filter Include="?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ë¦¬ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="ë¦¬ì†Œ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -139,6 +139,18 @@
     <Filter Include="MainGame\Trigger">
       <UniqueIdentifier>{e261302d-168b-450b-8817-aaa4b2183298}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\PickUp">
+      <UniqueIdentifier>{61e095e6-9938-45fc-a70d-12ea10a2e797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Broken">
+      <UniqueIdentifier>{e60765eb-97f9-453c-91ce-db0d28b0742d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\UI">
+      <UniqueIdentifier>{74f66ee5-09ca-4159-8b22-50ce3b0373f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\UI\Arrow">
+      <UniqueIdentifier>{1bccb178-eb86-4e2c-9031-3d0b84f0f399}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -150,7 +162,7 @@
     <ClCompile Include="Button.cpp">
       <Filter>2D Framework\UI\Button</Filter>
     </ClCompile>
-    <ClCompile Include="Stage1Scene.cpp">
+    <ClCompile Include="HYScene.cpp">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="LoadingScene.cpp">
@@ -372,8 +384,16 @@
     <ClCompile Include="UIGame.cpp">
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+    <ClCompile Include="GPImageManager.cpp">
+      <Filter>2D Framework\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="ReplayObjects.cpp">
+      <Filter>2D Framework\SnapShot</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePsych.cpp" />
+    <ClCompile Include="ScenePlayer.cpp" />
+    <ClCompile Include="Stage1Scene.cpp">
+      <Filter>MainGame\Scene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="WorldBackground.cpp">
       <Filter>MainGame\Background</Filter>
@@ -390,14 +410,33 @@
     <ClCompile Include="ScenePlayer.cpp">
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
+
     <ClCompile Include="BossScene.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="PickUp.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="Turret.cpp">
       <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUp.cpp">
+      <Filter>MainGame\PickUp</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUpHand.cpp">
+      <Filter>MainGame\PickUp</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUpUI.cpp">
+      <Filter>MainGame\PickUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Broken.cpp">
+      <Filter>MainGame\Broken</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEffect.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="StageClear.cpp" />
+    <ClCompile Include="ArrowUI.cpp">
+      <Filter>MainGame\UI\Arrow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -416,7 +455,7 @@
     <ClInclude Include="Button.h">
       <Filter>2D Framework\UI\Button</Filter>
     </ClInclude>
-    <ClInclude Include="Stage1Scene.h">
+    <ClInclude Include="HYScene.h">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScene.h">
@@ -629,20 +668,22 @@
     <ClInclude Include="WallSlideState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="CommonFunction.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
-    </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
-    </ClInclude>
-    <ClInclude Include="Factory.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerAnim.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
     <ClInclude Include="TalkScene.h">
       <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GPImageManager.h">
+      <Filter>2D Framework\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplayObjects.h">
+      <Filter>2D Framework\SnapShot</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePsych.h" />
+    <ClInclude Include="ScenePlayer.h" />
+    <ClInclude Include="Stage1Scene.h">
+      <Filter>MainGame\Scene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="WorldBackground.h">
       <Filter>MainGame\Background</Filter>
@@ -666,13 +707,33 @@
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
     <ClInclude Include="BossScene.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="PickUp.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="Turret.h">
       <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUp.h">
+      <Filter>MainGame\PickUp</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUpHand.h">
+      <Filter>MainGame\PickUp</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUpUI.h">
+      <Filter>MainGame\PickUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Broken.h">
+      <Filter>MainGame\Broken</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="ParticleEffect.h" />
+    <ClInclude Include="CommonFunction.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="StageClear.h" />
+    <ClInclude Include="ArrowUI.h">
+      <Filter>MainGame\UI\Arrow</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

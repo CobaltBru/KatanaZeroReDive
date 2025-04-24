@@ -22,8 +22,10 @@ public:
 	FPOINT GetPos() const { return Pos; }
 	FPOINT* GetPPos() { return &Pos; }
 	FPOINT GetSpawnPos() { return spawnPos; }
+	virtual bool IsDead() const { return bDead; }
 	bool GetFlip() const { return bFlip; }
-	bool IsDead() const { return bDead; }
+	float GetScale() const { return Scale; }
+	//bool IsDead() const { return bDead; }
 
 	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
@@ -31,7 +33,7 @@ public:
 	void SetScale(float InScale) { Scale = InScale; }
 	void SetFlip(bool InFlip) { bFlip = InFlip; }
 
-	int GetFloorIndex() const;
+	int GetFloorIndex(vector<FloorZone> fz) const;
 
 protected:
 	FPOINT Pos;

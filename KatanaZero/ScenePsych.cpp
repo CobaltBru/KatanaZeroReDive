@@ -32,17 +32,31 @@ HRESULT ScenePsych::Init()
 		{9,frameSpeed},{10,frameSpeed},{11,frameSpeed},
 		{12,frameSpeed*3.f}
 		}); 
+	standUp.setSoundTask({
+		{"",1},{"pyshmove",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"",1}
+		});
 	standUp.setloopFlag(false);
 
 	//¾É´Âµ¿ÀÛ
 	sitDown.Init(tmp, 13);
 	sitDown.setPos(Pos, true, true);
 	sitDown.setAniTask({
-		//{12,frameSpeed},{11,frameSpeed},{10,frameSpeed},
+		{12,frameSpeed},{11,frameSpeed},{10,frameSpeed},
 		{9,frameSpeed},{8,frameSpeed},{7,frameSpeed},
 		{6,frameSpeed},{5,frameSpeed},{4,frameSpeed},
 		{3,frameSpeed},{2,frameSpeed},{1,frameSpeed},
 		{0,frameSpeed}
+		});
+	sitDown.setSoundTask({
+		{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"pyshmove",1},{"",1},{"",1},
+		{"",1}
 		});
 	sitDown.setloopFlag(false);
 
@@ -55,6 +69,12 @@ HRESULT ScenePsych::Init()
 		{3,frameSpeed},{4,frameSpeed},{5,frameSpeed},
 		{6,frameSpeed},{7,frameSpeed},{8,frameSpeed},
 		{9,frameSpeed}
+		});
+	walk.setSoundTask({
+		{"",1},{"pyshstep01",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"pyshstep02",1},{"",1},{"",1},
+		{"",1}
 		});
 	walk.MoveOn({ 215.f,0.f }, 1.5f, Move_Linear | Move_Stop);
 
@@ -86,6 +106,12 @@ HRESULT ScenePsych::Init()
 		{6,frameSpeed},{7,frameSpeed},{8,frameSpeed},
 		{9,frameSpeed}
 		});
+	walk_ch.setSoundTask({
+		{"",1},{"pyshstep01",1},{"",1},
+		{"",1},{"",1},{"",1},
+		{"pyshstep02",1},{"",1},{"",1},
+		{"",1}
+		});
 	walk_ch.MoveOn({ -215.f,0.f }, 1.5f, Move_Linear | Move_Stop);
 
 
@@ -104,6 +130,18 @@ HRESULT ScenePsych::Init()
 		{28,frameSpeed*10.f},{29,frameSpeed},{30,frameSpeed},{31,frameSpeed},
 		{32,frameSpeed},{33,frameSpeed},{34,frameSpeed},{35,frameSpeed},
 		{36,frameSpeed},{37,frameSpeed},{38,frameSpeed},{39,frameSpeed}
+		});
+	inject.setSoundTask({
+		{"",1},{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
+		{"",1},{"pyshflick",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
+		{"pyshinject",1},{"pyshdrugffect",3},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
+		{"",1},{"",1},{"",1},{"",1},
 		});
 	inject.setloopFlag(false);
 
@@ -155,7 +193,7 @@ void ScenePsych::Move()
 	currentTask = TASK::MOVE;
 	moveIdx = 1;
 	MoveList[1]->setPos({ Pos.x,Pos.y}, true, true);
-	MoveList[1]->On();
+	MoveList[1]->Start();
 	
 }
 
@@ -169,7 +207,6 @@ void ScenePsych::MoveFunc()
 		MoveList[moveIdx]->setPos({ Pos.x,Pos.y - 7.f }, false, true);
 		MoveList[moveIdx]->MoveOn({ 215.f,0.f }, 1.7f, Move_Linear | Move_Stop);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 2) && MoveList[moveIdx]->getMoveComplete())
 	{
@@ -178,7 +215,6 @@ void ScenePsych::MoveFunc()
 		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, false, true);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 3) && MoveList[moveIdx]->getAniComplete())
 	{
@@ -188,7 +224,6 @@ void ScenePsych::MoveFunc()
 		MoveList[moveIdx]->setPos(Pos, true, true);
 		MoveList[moveIdx]->MoveOn({ -350.f,0.f }, 2.5f, Move_Linear | Move_Stop);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 4) && MoveList[moveIdx]->getMoveComplete())
 	{
@@ -197,7 +232,6 @@ void ScenePsych::MoveFunc()
 		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, true, true);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 5) && MoveList[moveIdx]->getAniComplete())
 	{
@@ -207,7 +241,6 @@ void ScenePsych::MoveFunc()
 		MoveList[moveIdx]->setPos(Pos, false, true);
 		MoveList[moveIdx]->MoveOn({ 135.f,0.f }, 1.5f, Move_Linear | Move_Stop);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 6) && MoveList[moveIdx]->getMoveComplete())
 	{
@@ -216,7 +249,6 @@ void ScenePsych::MoveFunc()
 		Pos = MoveList[moveIdx - 1]->getCurrentPos();
 		MoveList[moveIdx]->setPos(Pos, true, true);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 	}
 	else if ((moveIdx == 7) && MoveList[moveIdx]->getAniComplete())
 	{
@@ -225,7 +257,6 @@ void ScenePsych::MoveFunc()
 		moveIdx = 0;
 		MoveList[moveIdx]->setPos({ Pos.x,Pos.y + 7.f }, true, true);
 		MoveList[moveIdx]->Start();
-		MoveList[moveIdx]->On();
 		moveEnd = true;
 	}
 }

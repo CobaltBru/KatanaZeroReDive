@@ -99,7 +99,7 @@ void RigidBody::Move()
 
 void RigidBody::CollisionLine()
 {
-	if (!bGravity)
+	if (!bGravity || Owner->GetCollider()==nullptr)
 		return;
 
 	// 사실 각 라인 충돌이 필요한 클래스에서 충돌됐을 때의 로직을 맡기는게 맞는데, 일단 모두 관리하게끔 여기서 관리함.

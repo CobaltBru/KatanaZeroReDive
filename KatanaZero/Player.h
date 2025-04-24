@@ -33,6 +33,7 @@ struct playerInfo
 	bool bIsWall;
 	bool bCanAttack;
 	float attackCoolTime;
+	string prevState;
 };
 
 struct playerStates
@@ -71,6 +72,9 @@ private:
 	// PlayerAnim* playerAnim;
 	Image* image;
 	Image* effectImage;
+
+	float halfWidth;
+	float halfHeight;
 
 	playerInfo* info;
 
@@ -127,6 +131,9 @@ public:
 	inline Collider* GetAttackCollider() { return AttackCollider; }
 
 	inline void InitAttackTimer() { attackTimer = 0; }
+
+	inline float GetHalfWidth() { return halfWidth; }
+	inline float GetHalfHeight() { return halfHeight; }
 
 	void InitBindState();
 };

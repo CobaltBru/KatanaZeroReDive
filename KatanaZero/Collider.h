@@ -25,6 +25,7 @@ public:
 	FPOINT GetPos() const { return Pos; }
 	FPOINT GetPivot() const { return PivotPos; }
 	FPOINT GetSize() const { return Size; }
+	bool GetVisible() const { return bVisible; }
 	EColliderType GetColliderType() const { return ColliderType; }
 	bool IsDead() const { return bDead; }
 	bool IsHitted() const { return bHit; }
@@ -42,6 +43,7 @@ public:
 	void SetDead(bool bDead) { this->bDead = bDead; }
 	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetDebugDraw(bool InDraw) { bDebugDraw = InDraw; }
+	void SetVisible(bool InVisible) { bVisible = InVisible; }
 private:
 	void DrawRectLine(HDC hdc, FPOINT HalfSize);
 private:
@@ -54,6 +56,7 @@ private:
 
 	bool bHit;
 	bool bCanHit;
+	bool bVisible;
 	bool bDebugDraw;
 	bool bDead;
 

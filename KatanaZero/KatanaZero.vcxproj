@@ -136,10 +136,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="ArrowUI.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="BossScene.cpp" />
+    <ClCompile Include="Broken.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -149,13 +151,17 @@
     <ClCompile Include="FlipState.cpp" />
     <ClCompile Include="GoalTrigger.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
+    <ClCompile Include="GPImageManager.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="JumpState.cpp" />
     <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="PickUp.cpp" />
+    <ClCompile Include="PickUpHand.cpp" />
+    <ClCompile Include="PickUpUI.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -189,6 +195,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="ReplayObjects.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RunState.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -201,8 +208,10 @@
     <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
-    <ClCompile Include="Stage1Scene.cpp" />
+    <ClCompile Include="HYScene.cpp" />
     <ClCompile Include="GPImage.cpp" />
+    <ClCompile Include="Stage1Scene.cpp" />
+    <ClCompile Include="StageClear.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TalkScene.cpp" />
@@ -220,10 +229,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="ArrowUI.h" />
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="BossScene.h" />
+    <ClInclude Include="Broken.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Enemy.h" />
@@ -233,6 +244,7 @@
     <ClInclude Include="FlipState.h" />
     <ClInclude Include="GoalTrigger.h" />
     <ClInclude Include="GoPopUp.h" />
+    <ClInclude Include="GPImageManager.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />
     <ClInclude Include="Factory.h" />
@@ -241,7 +253,10 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JumpState.h" />
     <ClInclude Include="Observer.h" />
+    <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="PickUp.h" />
+    <ClInclude Include="PickUpHand.h" />
+    <ClInclude Include="PickUpUI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
@@ -279,6 +294,7 @@
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Reference\Headers\Imgui\stb_image.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="ReplayObjects.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RunState.h" />
     <ClInclude Include="Scene.h" />
@@ -293,8 +309,10 @@
     <ClInclude Include="SnapShotManager.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpriteAnimator.h" />
-    <ClInclude Include="Stage1Scene.h" />
+    <ClInclude Include="HYScene.h" />
     <ClInclude Include="GPImage.h" />
+    <ClInclude Include="Stage1Scene.h" />
+    <ClInclude Include="StageClear.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TalkScene.h" />

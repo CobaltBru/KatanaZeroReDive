@@ -7,6 +7,7 @@
 #define ONE 0
 #define TWO 1
 #define BCELLCNT 11
+class ParticleEffect;
 class UIGame : public GameObject, public Observer
 {
 private:
@@ -25,6 +26,7 @@ private:
 	Image* mouseLeft;
 	Image* mouseRight;
 	Image* item1;
+
 	Image* item2;
 
 	FPOINT batteryPos;
@@ -37,12 +39,16 @@ private:
 	FPOINT item1Pos;
 	FPOINT item2Pos;
 
+	int Item2FrameX;
+	float Item2Scale;
+	bool isSlow;
 	float batteryGage;
 	float timeGage;
 	string leftItem, rightItem;
 
 	float timer = 0.f;
-
+	ParticleEffect* part1;
+	ParticleEffect* part2;
 public:
 	virtual HRESULT Init() override;
 	virtual void Update() override;
@@ -51,5 +57,7 @@ public:
 
 	virtual void EventPlayerState(const ObsPlayerState& ps) override;
 	virtual void TimerUIEvent(const float t) override;
+
+	void SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, float InScale);
 };
 

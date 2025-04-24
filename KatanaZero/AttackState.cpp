@@ -3,6 +3,7 @@
 #include "RigidBody.h"
 #include "Image.h"
 #include "CommonFunction.h"
+#include "EffectManager.h"
 
 
 PlayerState* AttackState::GetInput(Player* player)
@@ -18,16 +19,19 @@ PlayerState* AttackState::GetInput(Player* player)
     }
 
 	const FLineResult lineResult = player->GetRigidBody()->GetResult();
-	if (lineResult.LineType == ELineType::Wall)
-	{
-		if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
-
-		playerInfo->bIsAttack = false;
-		if (player->GetRigidBody()->IsGround() == false)
+	if (lineResult.LineType == ELineType::Wall)		// if the player is attached to the wall
+	{	
+		// if the player press toward the wall
+		if ((lineResult.IsLeft && KeyManager::GetInstance()->IsOnceKeyDown('A')) ||
+			(!lineResult.IsLeft && KeyManager::GetInstance()->IsOnceKeyDown('D')))
 		{
-			player->SetSwitchTime(0.02f);
-			player->SetEffectImage(nullptr);
-			return player->GetStates()->WallSlide;
+			playerInfo->bIsAttack = false;
+			if (player->GetRigidBody()->IsGround() == false)
+			{
+				player->SetSwitchTime(0.02f);
+				player->SetEffectImage(nullptr);
+				return player->GetStates()->WallSlide;
+			}
 		}
 	}
 	
@@ -60,16 +64,18 @@ void AttackState::Enter(Player* player)
 	Normalize(attackDir);
 
 	player->GetRigidBody()->AddVelocity(attackDir * 300.f);
+
+	float fxAngle = atan2f(attackDir.y, attackDir.x) * (180.f / 3.14159265f);
+	float speed = sqrt(player->GetRigidBody()->GetVelocity().x * player->GetRigidBody()->GetVelocity().x + 
+		player->GetRigidBody()->GetVelocity().y * player->GetRigidBody()->GetVelocity().y);
+	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, SnapShotManager::GetInstance()->GetPlayer(), player->GetFlip());
 }
 
 void AttackState::Update(Player* player)
 {
-	// move
-
-	// collision
-
-	// render
-	
 	if (player->GetFrameIndex() >= ImageManager::GetInstance()->FindImage("zeroattack")->GetMaxFrameX()-1)
 		player->GetInfo()->bIsAttack = false;
+
+	if (player->GetInfo()->bIsShiftChanged && player->GetInfo()->bIsShift)
+		player->SetImage(ImageManager::GetInstance()->FindImage("zeroattackshadow"));
 }

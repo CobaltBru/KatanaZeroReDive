@@ -3,6 +3,7 @@
 #include "Image.h"
 #include "Timer.h"
 #include "Stage1Scene.h"
+#include "HYScene.h"
 #include "TestScene.h"
 #include "MapTool.h"
 
@@ -24,6 +25,7 @@
 
 HRESULT MainGame::Init()
 {
+	srand(time(NULL));
 	ImageManager::GetInstance()->Init();
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
@@ -42,11 +44,12 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
+	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Test","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -72,6 +75,13 @@ HRESULT MainGame::Init()
 			TEXT("백버퍼 생성 실패"), TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
+
+	if (FAILED(InitImage()))
+	{
+		MessageBox(g_hWnd, L"InitImage Failed.", TEXT("경고"), MB_OK);
+		return E_FAIL;
+	}
+
 
 	return S_OK;
 }
@@ -123,9 +133,9 @@ void MainGame::Render()
 
 	SceneManager::GetInstance()->Render(hBackBufferDC);
 
-	TimerManager::GetInstance()->Render(hBackBufferDC);
-	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
-	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
+	//TimerManager::GetInstance()->Render(hBackBufferDC);
+	/*wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
+	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText))*/;
 
 	delete pGraphics;
 	backBuffer->Render(hdc);
@@ -156,6 +166,66 @@ HRESULT MainGame::InitSound()
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
 		return E_FAIL;
+
+	//talk
+	{
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep01", "Sound/talkScene/sound_npc_therapist_footstep_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep02", "Sound/talkScene/sound_npc_therapist_footstep_02.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep03", "Sound/talkScene/sound_npc_therapist_footstep_03.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep04", "Sound/talkScene/sound_npc_therapist_footstep_04.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshflick", "Sound/talkScene/sound_npc_therapistmeds_flick_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshinject", "Sound/talkScene/sound_npc_therapistmeds_inject_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshdrugffect", "Sound/talkScene/sound_ambience_drug_effect_01.ogg")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshroom", "Sound/talkScene/song_nocturne.ogg")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshmove", "Sound/talkScene/sound_npc_therapist_sleeve_01.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("chatnormal", "Sound/chat/sound_PA_talk.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("chatdoom", "Sound/chat/sound_ui_dialogue_emphasis_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("chatexplode", "Sound/chat/sound_ui_dialogue_shatter_01.wav")))
+			return E_FAIL;
+
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("menumove", "Sound/menu_move.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("menuselect", "Sound/menu_select.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker1", "Sound/sound_object_neon_flicker_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker2", "Sound/sound_object_neon_flicker_02.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker3", "Sound/sound_object_neon_flicker_03.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker5", "Sound/sound_object_neon_flicker_05.wav")))
+			return E_FAIL;
+	}
+	//home
+	{
+
+	}
+
+
+	return S_OK;
+}
+
+HRESULT MainGame::InitImage()
+{
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
+	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
 
 	return S_OK;
 }

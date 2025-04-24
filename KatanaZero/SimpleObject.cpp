@@ -1,4 +1,5 @@
 #include "SimpleObject.h"
+#include "CommonFunction.h"
 #include "RenderManager.h"
 #include "ImageManager.h"
 #include "Image.h"
@@ -8,10 +9,16 @@
 #include "ScrollManager.h"
 #include "RigidBody.h"
 #include "SimpleTestObject.h"
-#include "CommonFunction.h"
+#include "PickUpHand.h"
+#include "PickUp.h"
+#include "UIGame.h"
+#include "Enemy.h"
+
+#include "SnapShotManager.h"
+#include "ArrowUI.h"
 
 SimpleObject::SimpleObject()
-	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false)
+	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false), RightHand(nullptr), UIGameObj(nullptr), ArrowUIObj(nullptr)
 {
 }
 
@@ -21,7 +28,7 @@ HRESULT SimpleObject::Init(FPOINT InPos, string InImageName)
 	Image = ImageManager::GetInstance()->FindImage(InImageName);
 	Pos = InPos;
 	//콜라이더 추가
-	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(),
 		(float)Image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() }, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
@@ -33,6 +40,8 @@ HRESULT SimpleObject::Init(FPOINT InPos, string InImageName)
 	InitOffset();
 
 	ScrollSpeed = 300.f;
+
+	RightHand = new PickUpHand(this);
 
 	return S_OK;
 }
@@ -58,6 +67,8 @@ HRESULT SimpleObject::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOff
 
 	ScrollSpeed = 300.f;
 
+	RightHand = new PickUpHand(this);
+
 	return S_OK;
 }
 
@@ -68,6 +79,7 @@ void SimpleObject::Update()
 	RigidBodyTest();
 
 	Collision();
+	PickUpUpdate();
 
 	// 위치에 관한 모든 로직이 끝난 뒤 마지막에 호출 권장
 	Offset();
@@ -83,10 +95,17 @@ void SimpleObject::Render(HDC hdc)
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		scroll = Scroll;
-		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0,false,true, ScrollManager::GetInstance()->GetScale());
+		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, false, true, ScrollManager::GetInstance()->GetScale());
 	}
 }
 
+void SimpleObject::MakeSnapShot(void* out)
+{
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->pos = this->Pos;
+	pSnapShot->animFrame = 0;
+	pSnapShot->bFlip = this->bFlip;
+}
 void SimpleObject::Collision()
 {
 	// 충돌 정보
@@ -96,7 +115,6 @@ void SimpleObject::Collision()
 	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy))
 	{
 		// 충돌했다.
-
 		ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
 		HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
 
@@ -106,6 +124,10 @@ void SimpleObject::Collision()
 		pos.x = HitResult.HitCollision->GetPos().x - ObjectCollider->GetPos().x;
 		pos.y = HitResult.HitCollision->GetPos().y - ObjectCollider->GetPos().y;
 		Normalize(pos);
+		float AttackAngle = atan2f(-pos.y, pos.x)* (180.f / 3.14159265f);
+		Enemy* Hitenemy = static_cast<Enemy*>(HitResult.HitCollision->GetOwner());
+		Hitenemy->SetHitAngle(AttackAngle);
+		
 
 		// 상대방의 리지드바디에 힘을 전달
 		//HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
@@ -263,11 +285,67 @@ void SimpleObject::NoPhysicsMove()
 		ObjectRigidBody->SetDown(false);
 }
 
+void SimpleObject::PickUpUpdate()
+{
+	FHitResult HitResult;
+	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult,ECollisionGroup::Item))
+	{
+		if (ArrowUIObj != nullptr)
+		{
+			ArrowUIObj->SetPos({ HitResult.HitCollision->GetOwner()->GetPos().x,HitResult.HitCollision->GetOwner()->GetPos().y - 80.f });
+			ArrowUIObj->SetVisible(true);
+		}
+			
+
+		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+		{
+			if (RightHand != nullptr)
+			{
+				if (RightHand->GetPickUpItem() == nullptr)
+				{
+					RightHand->SetPickUpItem(static_cast<PickUp*>(HitResult.HitCollision->GetOwner()), FPOINT{ 0.f,(float)-Image->GetFrameHeight() });
+					
+					if (UIGameObj != nullptr)
+						UIGameObj->SetRightItem(RightHand->GetPickUpItem()->GetImageKey(), { 12.f,-4.f}, 0, RightHand->GetPickUpItem()->GetScale() * ScrollManager::GetInstance()->GetScale());
+				}					
+				else
+					Shoot();
+			}			
+		}
+	}
+	else
+	{
+		if (ArrowUIObj != nullptr)
+			ArrowUIObj->SetVisible(false);
+	}
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+		Shoot();
+}
+
+void SimpleObject::Shoot()
+{
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+	float Radian = atan2f((Pos.y + Scroll.y) - g_ptMouse.y, (Pos.x + Scroll.x) - g_ptMouse.x);
+	float Angle = (Radian * 180.f / 3.14) + 180.f;
+	RightHand->Shoot(Pos, Angle, 5.f);
+
+	if (UIGameObj != nullptr)
+		UIGameObj->SetRightItem("", {}, 0, 1);
+}
+
 void SimpleObject::Release()
 {
 	if (ObjectRigidBody != nullptr)
 	{
 		delete ObjectRigidBody;
 		ObjectRigidBody = nullptr;
+	}
+
+	if (RightHand != nullptr)
+	{
+		delete RightHand;
+		RightHand = nullptr;
 	}
 }

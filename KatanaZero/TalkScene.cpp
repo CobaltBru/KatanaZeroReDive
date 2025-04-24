@@ -57,6 +57,7 @@ HRESULT TalkScene::Init()
 	chatManager->startChat("UnBP5gsTpB");
 	badChat = false;
 	chatDone = false;
+	firstdone = false;
 	pos = { 0,0 };
 	chairPos = { 695.f,640.f };
 	DoorPos = { 247.f,600.f };
@@ -82,6 +83,9 @@ HRESULT TalkScene::Init()
 		MessageBox(g_hWnd, TEXT("TalkScene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
+
+	SoundManager::GetInstance()->PlayBGM("pyshroom");
+
 	return S_OK;
 }
 
@@ -115,6 +119,7 @@ void TalkScene::Update()
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	ObjectManager->Update();
 	CollisionManager->Update();
+	ScrollManager::GetInstance()->Update();
 	if (!inChat)
 	{
 		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
@@ -155,7 +160,7 @@ void TalkScene::Update()
 			psych->Move();
 			player->getChronos();
 			badChat = true;
-			drugTimerOn = true;
+			firstdone = true;
 		}
 
 		//약맞으러
@@ -163,9 +168,15 @@ void TalkScene::Update()
 		{
 			psych->Move();
 			player->getChronos();
-			drugTimerOn = true;
+			firstdone = true;
+			
 		}
 		if ((chatManager->getKey() == "" || chatManager->getKey() == "END") && inChat)
+		{
+			if (firstdone)
+			{
+				drugTimerOn = true;
+			}
 			if (!badChat)
 			{
 				//약 다맞으면
@@ -182,6 +193,8 @@ void TalkScene::Update()
 					chatManager->startChat("mpYito8hu6");
 				}
 			}
+		}
+			
 
 		//끝
 		if (chatManager->getKey() == "mpYito8hu6" && chatManager->checkChatComplete("mpYito8hu6"))
@@ -206,7 +219,7 @@ void TalkScene::Update()
 	if (drugTimerOn)
 	{
 		drugTimer += dt;
-		if (drugTimer >= 11.05f)
+		if (drugTimer >= 10.55f)
 		{
 			effectTimer += dt;
 			if (effectTimer >= 2.0f)

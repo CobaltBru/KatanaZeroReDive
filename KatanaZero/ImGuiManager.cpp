@@ -42,9 +42,9 @@ static float ColliderSize[2] = { 0.f,0.f };
 //!!=========================================================!!
 //! 무조건 두개 다 동기화해야합니다.
 // 오브젝트 리스트 이름
-static const char* Objectnames[] = { "StartPoint", "SimpleTestObject","Bottle1","Bottle2", "HeadHunter"};
+static const char* Objectnames[] = { "StartPoint", "SimpleTestObject","Bottle1","Bottle2", "HeadHunter", "Grunt", "Pomp", "Gangster"};
 // 오브젝트 이미지 이름
-static const char* ObjectImagenames[] = { "TestPlayer", "rocket", "spr_beer_bottle_3_0", "spr_beer_bottle_4_0", "headhunter"};
+static const char* ObjectImagenames[] = { "TestPlayer", "rocket", "spr_beer_bottle_3_0", "spr_beer_bottle_4_0", "headhunter", "Grunt", "Pomp", "Gangster"};
 //! 무조건 두개 다 동기화해야합니다.
 //!!=========================================================!!
 static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);

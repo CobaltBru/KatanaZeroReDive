@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "GPImageManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -30,8 +31,12 @@
 #include "Bullet.h"
 #include "Collider.h"
 
+#include "Enemy.h"
+#include "Enemies.h"
+#include "ParticleEffect.h"
+
 TestScene::TestScene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
 {
 	
 }
@@ -40,7 +45,7 @@ HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 	
-
+	srand(time(NULL));
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
 	RenderManager = RenderManager::GetInstance();
@@ -61,8 +66,12 @@ HRESULT TestScene::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
+	gpImageManager = GPImageManager::GetInstance();
+	gpImageManager->Init();
+
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
+
 
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/playerLine.dat")))
 	{
@@ -97,6 +106,15 @@ HRESULT TestScene::InitImage()
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.bmp", 96, 27, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.bmp", 145, 29, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right3", L"Image/fx/BGBlood_right3.bmp", 294, 32, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop1", L"Image/fx/BGBlood_righttop1.bmp", 54, 70, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop2", L"Image/fx/BGBlood_righttop2.bmp", 92, 121, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop3", L"Image/fx/BGBlood_righttop3.bmp", 125, 142, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom1", L"Image/fx/BGBlood_rightbottom1.bmp", 54, 70, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom2", L"Image/fx/BGBlood_rightbottom2.bmp", 92, 121, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom3", L"Image/fx/BGBlood_rightbottom3.bmp", 125, 142, 1, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
 }
@@ -109,9 +127,9 @@ HRESULT TestScene::InitObject()
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-	BulletTest* newBullet = new BulletTest();
+	/*BulletTest* newBullet = new BulletTest();
 	newBullet->Init({300.f, 700.f}, 0.f);
-	ObjectManager->AddGameObject(EObjectType::GameObject, newBullet);
+	ObjectManager->AddGameObject(EObjectType::GameObject, newBullet);*/
 
 	//SimpleObject* simpleObject = new SimpleObject();
 	//simpleObject->Init("rocket", { 500.f, 300.f }, { 0.f, 0.f }, { 30.f, 30.f }, false);
@@ -136,11 +154,11 @@ HRESULT TestScene::InitObject()
 		testObject->Init("rocket", { 1000.f,300.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, testObject);
 
-		
 
 
 		//해영 테스트
 		{
+
 			snapShotManager->AddGameObject(EObjectClassType::Player, player);
 			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
 		}
@@ -150,9 +168,30 @@ HRESULT TestScene::InitObject()
 			headhunter->Init({ 300,360 });
 			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}
+			Grunt* grunt = new Grunt();
+			grunt->Init({ 800.f, 300.f });
+			Pomp* pomp = new Pomp();
+			pomp->Init({ 500.f, 300.f });
+			Gangster* gangster = new Gangster();
+			gangster->Init({ 100.f, 300.f });
+
+			ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
+			ObjectManager->AddGameObject(EObjectType::GameObject, pomp);
+			ObjectManager->AddGameObject(EObjectType::GameObject, gangster);
+
+			
+		}
+
+		// 지수 테스트
+		/*{
+			HeadHunter* headhunter = new HeadHunter();
+			headhunter->Init({ 300,360 });
+			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
+		}*/
+
 
 	}
-	// 테스트 코드 지운
+	// 테스트 코드 지운 사람
 	{
 		/*chatManager = new ChatManager();
 		chatManager->pushPos({ 600,100 });
@@ -166,24 +205,18 @@ HRESULT TestScene::InitObject()
 		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
-		GoPopUp* goPopUp = new GoPopUp();
-		
+		GoPopUp* goPopUp = new GoPopUp();		
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
+
+		
 	}
 	return S_OK;
 }
 
 HRESULT TestScene::InitEffects()
 {
-	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
-	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
-	fxManager->Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
-	fxManager->Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
-	fxManager->Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
-	fxManager->Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
-	fxManager->RegisterEffect();
 	return S_OK;
 }
 
@@ -195,8 +228,12 @@ void TestScene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F6))
 		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
+		SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
+	
+
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
@@ -205,7 +242,7 @@ void TestScene::TestCode()
 	}
 
 	//슬로우
-	if (KeyManager::GetInstance()->IsStayKeyDown('I'))
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 	{
 		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
 		// TimerManager::GetInstance()->GetDeltaTime();
@@ -216,7 +253,14 @@ void TestScene::TestCode()
 	}
 	else  // 슬로우 풀기
 		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
-
+	
+	//// 라인 트레이스
+	//FHitResult HitResult;
+	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))
+	//{
+	//	// 라인 트레이스 맞은 대상의 콜라이더
+	//	HitResult.HitCollision->SetHit(true);
+	//}
 
 	// 라인 트레이스
 	//FHitResult HitResult;
@@ -225,6 +269,7 @@ void TestScene::TestCode()
 	//	// 라인 트레이스 맞은 대상의 콜라이더
 	//	HitResult.HitCollision->SetHit(true);
 	//}
+
 }
 
 void TestScene::Update()
@@ -236,13 +281,6 @@ void TestScene::Update()
 	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
 	//testDestPos.y +=1.f;
 	fxManager->Update();
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
-	{
-		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
-	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
 	{
@@ -283,6 +321,8 @@ void TestScene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
+	if (gpImageManager != nullptr)
+		gpImageManager->Release();
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -291,4 +331,5 @@ void TestScene::Release()
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 	fxManager = nullptr;
+	gpImageManager = nullptr;
 }
