@@ -7,6 +7,8 @@
 
 PlayerState* RunState::GetInput(Player* player)
 {
+    if (player->GetInfo()->bIsDead)
+        return player->GetStates()->Dead;
     if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyUp('A') || KeyManager::GetInstance()->IsOnceKeyUp('D'))

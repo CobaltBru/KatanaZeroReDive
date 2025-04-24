@@ -160,6 +160,24 @@ HRESULT MainGame::InitSound()
 	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
 		return E_FAIL;
 
+	// player
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroattack1", "Sound/zero_attack_1.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroattack2", "Sound/zero_attack_2.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroattack3", "Sound/zero_attack_3.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zerodie", "Sound/zero_die.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroslicebullet", "Sound/zero_slice_bullet.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroroll", "Sound/zero_roll.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zerojump", "Sound/zero_jump.wav")))
+		return E_FAIL;
+	if (FAILED(SoundManager::GetInstance()->AddSound("zeroland", "Sound/zero_land.wav")))
+		return E_FAIL;
+
 	//talk
 	{
 		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep01", "Sound/talkScene/sound_npc_therapist_footstep_01.wav")))
