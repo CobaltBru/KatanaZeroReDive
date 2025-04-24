@@ -33,60 +33,22 @@ void Effect::UpdateFrame()
 
 void Effect::Move()
 {
-	float dt = TimerManager::GetInstance()->GetDeltaTime();
-	pos.x += speed * dt * cosf(angle);
-	pos.y += speed * dt * sinf(angle);
+	if (owner != nullptr)
+	{
+		pos.x = owner->GetPos().x;
+		pos.y = owner->GetPos().y;
+	}
+	else
+	{
+		float dt = TimerManager::GetInstance()->GetDeltaTime();
+		pos.x += speed * dt * cosf(angle);
+		pos.y += speed * dt * sinf(angle);
+	}
 }
 
 HRESULT Effect::Init()
 {
 	return E_FAIL;
-}
-
-HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bFlip, bool bMove)
-{
-	pos = { 0.0f, 0.0f };
-	start = { 0.0f, 0.0f };
-	end = { 0.0f, 0.0f };
-	currFrameX = 0;
-	currFrameY = 0;
-	maxFrameX = maxframeX;
-	maxFrameY = maxframeY;
-	speed = 0.0f;
-	angle = 0.0f;
-	frameTimer = 0.0f;
-	bActive = false;
-	this->bFlip = bFlip;
-	this->bMove = bMove;
-	alpha = 1.0f;
-	fxImage = new GPImage();
-	fxImage->AddImage(AType, maxframeX, maxframeY);
-	if (!fxImage)
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT Effect::Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bFlip, bool bMove)
-{
-	this->start = start;
-	this->end = end;
-	pos = this->start;
-	currFrameX = 0;
-	currFrameY = 0;
-	maxFrameX = maxframeX;
-	maxFrameY = maxframeY;
-	this->speed = speed;
-	angle = atan2f(end.y - start.y, end.x - start.x) * 180 / M_PI; // degree(radian x)
-	frameTimer = 0.0f;
-	bActive = false;
-	this->bFlip = bFlip;
-	this->bMove = bMove;
-	alpha = 1.0f;
-	fxImage = new GPImage();
-	fxImage->AddImage(AType, maxframeX, maxframeY);
-	if (!fxImage)
-		return E_FAIL;
-	return S_OK;
 }
 
 HRESULT Effect::Init(string key, FPOINT start, FPOINT end, float speed, bool bFlip, bool bMove)
@@ -112,11 +74,8 @@ HRESULT Effect::Init(string key, FPOINT start, FPOINT end, float speed, bool bFl
 
 void Effect::Release()
 {
-	if (fxImage)
-	{
-		delete fxImage;
-		fxImage = nullptr;
-	}
+	if (owner)
+		owner = nullptr;
 }
 
 void Effect::Update()
@@ -124,6 +83,7 @@ void Effect::Update()
 	//프레임 증가
 	if (!bActive) return;
 	UpdateFrame();
+
 	//움직임
 	if (!bMove) return;
 	Move();
@@ -167,6 +127,33 @@ void Effect::Activefx(FPOINT pos, float angle, bool bFlip)
 	this->bFlip = bFlip;
 	this->angle = angle;
 	bActive = true;
+	bMove = false;
+	currFrameX = 0;
+	currFrameY = 0;
+	this->owner = nullptr;
+}
+
+void Effect::Activefx(FPOINT pos, float angle, float speed, bool bFlip)
+{
+	this->pos = pos;
+	this->bFlip = bFlip;
+	this->angle = angle;
+	this->speed = speed;
+	bActive = true;
+	bMove = true;
+	currFrameX = 0;
+	currFrameY = 0;
+	this->owner = nullptr;
+}
+
+void Effect::Activefx(FPOINT pos, float angle, GameObject* owner, bool bFlip)
+{
+	this->pos = pos;
+	this->owner = owner;
+	this->bFlip = bFlip;
+	this->angle = angle;
+	bActive = true;
+	bMove = true;
 	currFrameX = 0;
 	currFrameY = 0;
 }

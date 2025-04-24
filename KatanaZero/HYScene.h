@@ -12,6 +12,7 @@ class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
 class Player;
+class GPImageManager;
 class HYScene : public Scene
 {
 public:
@@ -47,5 +48,6 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
+	GPImageManager* gpImageManager;
 };
 

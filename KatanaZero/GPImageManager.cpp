@@ -7,14 +7,16 @@ void GPImageManager::Init()
 void GPImageManager::Release()
 {
     // 등록된 이미지 모두 해제
-    for (auto& kv : mapImages) {
-        if (kv.second) {
-            kv.second->Release();
-            delete kv.second;
-            kv.second = nullptr;
+    for (auto it = mapImages.begin(); it != mapImages.end(); /*nothing*/)
+    {
+        GPImage* img = it->second;
+        if (img)
+        {
+            img->Release();
+            delete img;
         }
+        it = mapImages.erase(it);
     }
-    mapImages.clear();
     // 싱글톤 인스턴스 해제
     ReleaseInstance();
 }

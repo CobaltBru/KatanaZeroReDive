@@ -11,6 +11,7 @@ class Effect : public GameObject
 {
 private:
 	GPImage* fxImage;
+	GameObject* owner;
 	FPOINT start;
 	FPOINT end;
 	FPOINT pos;
@@ -34,8 +35,6 @@ private:
 	void Move();
 public:
 	virtual HRESULT Init() override;
-	virtual HRESULT Init(const wchar_t* AType, int maxframeX, int maxframeY, bool bFlip = false, bool bMove = false);
-	virtual HRESULT Init(const wchar_t* AType, int maxframeX, int maxframeY, FPOINT start, FPOINT end, float speed, bool bFlip = false, bool bMove = false);
 	virtual HRESULT Init(string key, FPOINT start, FPOINT end, float speed, bool bFlip = false, bool bMove = false);
 	virtual void Release() override;
 	virtual void Update() override;
@@ -43,6 +42,8 @@ public:
 	virtual void MakeSnapShot(void* out) override;
 	void ApplySnapShot(const EffectSnapShot& fxSnapShot);
 	void Activefx(FPOINT pos, float angle ,bool bFlip = false);
+	void Activefx(FPOINT pos, float angle, float speed, bool bFlip = false);
+	void Activefx(FPOINT pos, float angle, GameObject* owner, bool bFlip = false);
 	void Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip = false);
 	inline bool IsActive() { return bActive; }
 

@@ -62,9 +62,10 @@ void AttackState::Enter(Player* player)
 	attackDir.x = g_ptMouse.x - player->GetPos().x;
 	attackDir.y = g_ptMouse.y - player->GetPos().y;
 	Normalize(attackDir);
-	float fxAngle = atan2f(attackDir.y, attackDir.x) * (180.f / 3.14159265f);
-	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, player->GetFlip());
 	player->GetRigidBody()->AddVelocity(attackDir * 300.f);
+	float fxAngle = atan2f(attackDir.y, attackDir.x) * (180.f / 3.14159265f);
+	float speed = sqrt(player->GetRigidBody()->GetVelocity().x * player->GetRigidBody()->GetVelocity().x + player->GetRigidBody()->GetVelocity().y * player->GetRigidBody()->GetVelocity().y);
+	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, SnapShotManager::GetInstance()->GetPlayer(), player->GetFlip());
 }
 
 void AttackState::Update(Player* player)
