@@ -10,7 +10,8 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft ==true ? 100.f: -100.f), -200.f});
+		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft ==true ? 500.f: -500.f), 0.f});
+		player->GetInfo()->prevState = "wallslide";
 		return player->GetStates()->Jump;
 	}
 
@@ -28,6 +29,10 @@ PlayerState* WallSlideState::GetInput(Player* player)
 void WallSlideState::Enter(Player* player)
 {
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
+
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
+	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
+	else player->SetDirection(EDirection::Right);		
 }
 
 void WallSlideState::Update(Player* player)

@@ -238,6 +238,7 @@ void Player::InitPlayerInfo()
 	info->bIsShiftChanged = false;
 	info->bIsWall = false;
 	info->attackCoolTime = .7f;
+	info->prevState = "";
 }
 
 void Player::InitBindState()

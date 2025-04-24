@@ -13,9 +13,13 @@ PlayerState* JumpState::GetInput(Player* player)
     const FLineResult lineResult = player->GetRigidBody()->GetResult();
     if (lineResult.LineType == ELineType::Wall)     // if the player is attached to the wall
     {
+        // if the previous state was wallslide, automatically switch to wallslide when the player is attached
+        if (player->GetInfo()->prevState == "wallslide")
+            return player->GetStates()->WallSlide;
+
         // if the player press toward the wall
-        if ((lineResult.IsLeft && KeyManager::GetInstance()->IsOnceKeyDown('A')) ||
-            (!lineResult.IsLeft && KeyManager::GetInstance()->IsOnceKeyDown('D')))
+        if ((lineResult.IsLeft && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
+            (!lineResult.IsLeft && KeyManager::GetInstance()->IsStayKeyDown('D')))
         {
             if (player->GetRigidBody()->IsGround() == false)
             {
@@ -25,15 +29,18 @@ PlayerState* JumpState::GetInput(Player* player)
             if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
             else player->SetDirection(EDirection::Right);
         }
+
     }
     
-    if (KeyManager::GetInstance()->IsStayKeyDown('A'))
+
+    
+    if (KeyManager::GetInstance()->IsStayKeyDown('A') && player->GetInfo()->prevState != "wallslide")
     {
         player->SetDirection(EDirection::Left);
         player->GetRigidBody()->AddVelocity({ -1.f, 0.f });        
     }
     
-    if (KeyManager::GetInstance()->IsStayKeyDown('D'))
+    if (KeyManager::GetInstance()->IsStayKeyDown('D') && player->GetInfo()->prevState != "wallslide")
     {
         player->SetDirection(EDirection::Right);
         player->GetRigidBody()->AddVelocity({ 1.f, 0.f });
