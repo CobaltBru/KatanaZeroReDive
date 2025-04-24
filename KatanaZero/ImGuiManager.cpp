@@ -42,9 +42,9 @@ static float ColliderSize[2] = { 0.f,0.f };
 //!!=========================================================!!
 //! 무조건 두개 다 동기화해야합니다.
 // 오브젝트 리스트 이름
-static const char* Objectnames[] = { "StartPoint", "SimpleTestObject" };
+static const char* Objectnames[] = { "StartPoint", "SimpleTestObject","Bottle1","Bottle2"};
 // 오브젝트 이미지 이름
-static const char* ObjectImagenames[] = { "TestPlayer", "rocket" };
+static const char* ObjectImagenames[] = { "TestPlayer", "rocket", "spr_beer_bottle_3_0", "spr_beer_bottle_4_0"};
 //! 무조건 두개 다 동기화해야합니다.
 //!!=========================================================!!
 static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
@@ -573,6 +573,7 @@ void ImGuiManager::SaveObject()
 				ObjData.Size = obj->GetCollider()->GetSize();
 			}
 			ObjData.bLeft = obj->GetFlip();
+			ObjData.Scale = obj->GetScale();
 
 			WriteFile(hFile, &ObjData.ClsasNameSize, sizeof(int), &dwByte, NULL);
 			WriteFile(hFile, &ObjData.ImageNameSize, sizeof(int), &dwByte, NULL);
@@ -582,6 +583,7 @@ void ImGuiManager::SaveObject()
 			WriteFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 			WriteFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 			WriteFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+			WriteFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		}
 
@@ -779,6 +781,7 @@ void ImGuiManager::LoadObject()
 			ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 			ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 			ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+			ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 			ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 			ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -800,6 +803,7 @@ void ImGuiManager::LoadObject()
 
 			DefaultObject* Object = new DefaultObject();
 			Object->Init(ImageName, ObjData.Pos, ObjData.bLeft, ERenderGroup::NonAlphaBlend, ClassName);
+			Object->SetScale(ObjData.Scale);
 
 			WorldObject.push_back(Object);
 
@@ -1224,9 +1228,19 @@ void ImGuiManager::WorldObjectUpdate()
 			WorldObjCollider->SetDebugDraw(true);
 		}
 
+		
+		ImGui::SeparatorText(u8"Scale & Flip");
+
+		static float Scale = 1.f;
+		Scale = static_cast<DefaultObject*>(WorldObject[World_current])->GetScale();
+		ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+		ImGui::DragFloat("Scale", &Scale);
+		static_cast<DefaultObject*>(WorldObject[World_current])->SetScale(Scale);
+
+		ImGui::SameLine();
+
 		static bool bFlip = false;
 		bFlip = static_cast<DefaultObject*>(WorldObject[World_current])->GetFlip();
-		ImGui::SeparatorText(u8"Flip");
 		ImGui::Checkbox("Flip", &bFlip);
 		static_cast<DefaultObject*>(WorldObject[World_current])->SetFlip(bFlip);
 	}

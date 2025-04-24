@@ -28,6 +28,7 @@
 #include "SimpleTestObject.h"
 #include "SimpleObject.h"
 #include "Bullet.h"
+#include "Collider.h"
 
 #include "ParticleEffect.h"
 
@@ -190,12 +191,13 @@ HRESULT TestScene::InitEffects()
 
 void TestScene::TestCode()
 {
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
-		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
-		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
-		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+	// 라인 트레이스
+	FHitResult HitResult;
+	if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))
+	{
+		// 라인 트레이스 맞은 대상의 콜라이더
+		HitResult.HitCollision->SetHit(true);
+	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
@@ -215,6 +217,15 @@ void TestScene::TestCode()
 	}
 	else  // 슬로우 풀기
 		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
+
+
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
+		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
+		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
 
 void TestScene::Update()
