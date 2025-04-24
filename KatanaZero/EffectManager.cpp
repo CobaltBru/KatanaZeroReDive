@@ -48,6 +48,10 @@ void EffectManager::Release()
 
 void EffectManager::Update()
 {
+    for (auto& bg : bgBloodFx)
+    {
+        bg.Update();
+    }
     for (auto& fx : activeFx)
     {
         fx->Update();
@@ -94,11 +98,6 @@ void EffectManager::Update()
 void EffectManager::Render(HDC hdc)
 {
     Gdiplus::Graphics graphics(hdc);
-
-    for (auto& bgIter : bgBloodFx)
-    {
-        bgIter.image->RenderFrameScale(&graphics, bgIter.pos, 0, bgIter.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
-    }
 
     for (auto& rIter : remainFx)
     {
@@ -197,33 +196,119 @@ void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bo
     remainFx.push_back(rFx);
 }
 
-void EffectManager::CreateBGBlood(FPOINT pos, float angle)
+void EffectManager::CreateBGBlood(FPOINT pos, float angle, FPOINT size)
 {
+    int rndimg = rand() % 3;
     BackgroundBloodfx bgBlood;
     bgBlood.image = nullptr;
-    if (angle > -45.f && angle <= 45.f)
+    if (angle > -30.f && angle <= 30.f)
     {
-        bgBlood.image = GPImageManager::GetInstance()->FindImage("BGBlood_right1");
-        bgBlood.bFlip = false;
-        bgBlood.pos = pos;
-    }
-    if (angle > -90.f && angle <= -45.f)
-    {
-        bgBlood.image = GPImageManager::GetInstance()->FindImage("BGBlood_righttop1");
-        bgBlood.bFlip = false;
-        bgBlood.pos = pos;
-    }
-    if (angle > -135.f && angle <= -90.f)
-    {
-        bgBlood.image = GPImageManager::GetInstance()->FindImage("BGBlood_righttop1");
+        switch (rndimg)
+        {
+        case 0:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_right1");
+            break;
+        case 1:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_right2");
+            break;
+        case 2:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_right3");
+            break;
+        }
         bgBlood.bFlip = true;
-        bgBlood.pos = pos;
+        float offset = (float)bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale() / 2.f;
+        bgBlood.SetPos({ pos.x, pos.y - offset });
     }
-    if (angle > -180.f && angle <= -135.f)
+    else if (angle >= 30.f && angle < 90.f)
     {
-        bgBlood.image = GPImageManager::GetInstance()->FindImage("BGBlood_right1");
+        switch (rndimg)
+        {
+        case 0:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_righttop1");
+            break;
+        case 1:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_righttop2");
+            break;
+        case 2:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_righttop3");
+            break;
+        }
+        bgBlood.bFlip = false;
+        float offset = (float)bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale();
+        bgBlood.SetPos({ pos.x, pos.y  - offset });
+    }
+    else if (angle >= 90.f && angle < 150.f)
+    {
+        switch (rndimg)
+        {
+        case 0:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_righttop1");
+            break;
+        case 1:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_righttop2");
+            break;
+        case 2:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_righttop3");
+            break;
+        }
         bgBlood.bFlip = true;
-        bgBlood.pos = pos;
+        float offsetX = bgBlood.image->GetWidth() * ScrollManager::GetInstance()->GetScale();
+        float offsetY = bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale();
+        bgBlood.SetPos({ pos.x - offsetX, pos.y - offsetY });
+    }
+    else if ((angle >= 150.f && angle <= 180.f) || (angle >= -180.f && angle < -150.f))
+    {
+        switch (rndimg)
+        {
+        case 0:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_right1");
+            break;
+        case 1:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_right2");
+            break;
+        case 2:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_right3");
+            break;
+        }
+        bgBlood.bFlip = false;
+        float offsetX = bgBlood.image->GetWidth() * ScrollManager::GetInstance()->GetScale();
+        float offsetY = bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale() / 2.f;
+        bgBlood.SetPos({ pos.x - offsetX, pos.y - offsetY });
+    }
+    else if (angle >= -150.f && angle < -90.f)
+    {
+        switch (rndimg)
+        {
+        case 0:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_rightbottom1");
+            break;
+        case 1:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_rightbottom2");
+            break;
+        case 2:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_rightbottom3");
+            break;
+        }
+        bgBlood.bFlip = true;
+        float offset = bgBlood.image->GetWidth() * ScrollManager::GetInstance()->GetScale();
+        bgBlood.SetPos({ pos.x - offset, pos.y });
+    }
+    else if (angle >= -90.f && angle < -30.f)
+    {
+        switch (rndimg)
+        {
+        case 0:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_rightbottom1");
+            break;
+        case 1:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_rightbottom2");
+            break;
+        case 2:
+            bgBlood.image = ImageManager::GetInstance()->FindImage("BGBlood_rightbottom3");
+            break;
+        }
+        bgBlood.bFlip = false;
+        bgBlood.SetPos({ pos.x , pos.y });
     }
     bgBloodFx.push_back(bgBlood);
 }

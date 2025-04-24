@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "GPImageManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -34,7 +35,7 @@
 #include "Enemies.h"
 
 TestScene::TestScene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
 {
 	
 }
@@ -64,8 +65,13 @@ HRESULT TestScene::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
+	gpImageManager = GPImageManager::GetInstance();
+	gpImageManager->Init();
+
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
+
+
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/playerLine.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -112,9 +118,9 @@ HRESULT TestScene::InitObject()
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-	BulletTest* newBullet = new BulletTest();
+	/*BulletTest* newBullet = new BulletTest();
 	newBullet->Init({300.f, 700.f}, 0.f);
-	ObjectManager->AddGameObject(EObjectType::GameObject, newBullet);
+	ObjectManager->AddGameObject(EObjectType::GameObject, newBullet);*/
 
 	//SimpleObject* simpleObject = new SimpleObject();
 	//simpleObject->Init("rocket", { 500.f, 300.f }, { 0.f, 0.f }, { 30.f, 30.f }, false);
@@ -158,11 +164,11 @@ HRESULT TestScene::InitObject()
 		}
 
 		// 지수 테스트
-		{
+		/*{
 			HeadHunter* headhunter = new HeadHunter();
 			headhunter->Init({ 300,360 });
 			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
+		}*/
 
 	}
 	// 테스트 코드 지운 사람
@@ -225,12 +231,12 @@ void TestScene::TestCode()
 
 
 	// 라인 트레이스
-	FHitResult HitResult;
-	if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
-	{
-		// 라인 트레이스 맞은 대상의 콜라이더
-		HitResult.HitCollision->SetHit(true);
-	}
+	//FHitResult HitResult;
+	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
+	//{
+	//	// 라인 트레이스 맞은 대상의 콜라이더
+	//	HitResult.HitCollision->SetHit(true);
+	//}
 }
 
 void TestScene::Update()
@@ -289,6 +295,8 @@ void TestScene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
+	if (gpImageManager != nullptr)
+		gpImageManager->Release();
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -297,4 +305,5 @@ void TestScene::Release()
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 	fxManager = nullptr;
+	gpImageManager = nullptr;
 }

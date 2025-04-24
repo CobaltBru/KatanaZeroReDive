@@ -6,7 +6,6 @@ void GPImageManager::Init()
 
 void GPImageManager::Release()
 {
-
     // 등록된 이미지 모두 해제
     for (auto& kv : mapImages) {
         if (kv.second) {
@@ -16,7 +15,6 @@ void GPImageManager::Release()
         }
     }
     mapImages.clear();
-
     // 싱글톤 인스턴스 해제
     ReleaseInstance();
 }
@@ -37,7 +35,9 @@ void GPImageManager::InitImages()
     AddImage("BGBlood_righttop1", L"Image/fx/BGBlood_righttop1.png");
     AddImage("BGBlood_righttop2", L"Image/fx/BGBlood_righttop2.png");
     AddImage("BGBlood_righttop3", L"Image/fx/BGBlood_righttop3.png");
-    AddImage("BGBlood_bottom", L"Image/fx/BGBlood_bottom.png");
+    AddImage("BGBlood_rightbottom1", L"Image/fx/BGBlood_rightbottom1.png");
+    AddImage("BGBlood_rightbottom2", L"Image/fx/BGBlood_rightbottom2.png");
+    AddImage("BGBlood_rightbottom3", L"Image/fx/BGBlood_rightbottom3.png");
 }
 
 GPImage* GPImageManager::AddImage(const std::string& key,

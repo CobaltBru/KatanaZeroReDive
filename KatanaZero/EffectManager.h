@@ -29,7 +29,7 @@ public:
 	void Activefx(string key, FPOINT pos, float angle, bool bFlip);
 	void Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip);
 	void CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip = false);
-	void CreateBGBlood(FPOINT pos, float angle);
+	void CreateBGBlood(FPOINT pos, float angle, FPOINT size);
 	void EmitBlood(FPOINT pos, int count);
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 
+class GPImageManager;
 class HeadHunter;
 class ObjectManager;
 class RenderManager;
@@ -42,6 +43,7 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
+	GPImageManager* gpImageManager;
 
 	FPOINT testPlayerPos;
 	FPOINT testDestPos;

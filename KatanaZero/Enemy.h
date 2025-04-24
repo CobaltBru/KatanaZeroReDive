@@ -31,6 +31,7 @@ protected:
 	EType eType;
 	int targetFloor;
 	bool bReachedTargetFloor;
+	float HitAngle;
 
 	// Jump
 	float Gravity;
@@ -63,6 +64,8 @@ public:
 	int GetTargetFloor() const { return targetFloor; }
 	void SetReachedTargetFloor(bool value) { bReachedTargetFloor = value; }
 	bool HasReachedTargetFloor() const { return bReachedTargetFloor; }
+	void SetHitAngle(float hitangle) { HitAngle = hitangle; }
+	float GetHitAngle() const { return HitAngle; }
 
 	void UpdateAnimation();
 	void ChangeState(EnemyState* newState);
@@ -74,6 +77,7 @@ public:
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
 	bool IsHitted();
+
 
 	virtual void Attack() {};
 };

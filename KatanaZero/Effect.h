@@ -3,8 +3,10 @@
 #include "SnapShotManager.h"
 #include "Image.h"
 #include "ImageManager.h"
+#include "RenderManager.h"
+#include "ScrollManager.h"
+#include "GPImage.h"
 
-class GPImage;
 class Effect : public GameObject
 {
 private:
@@ -61,11 +63,21 @@ struct RemainEffect
 	int frame;
 };
 
-struct BackgroundBloodfx
+struct BackgroundBloodfx : public GameObject
 {
-	GPImage* image;
-	FPOINT pos;
+	Image* image;
 	bool bFlip;
+	void Update() override
+	{
+		RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::BackGround, this);
+	}
+	void Render(HDC hdc) override
+	{
+		if (image)
+		{
+			image->FrameRender(hdc, Pos.x, Pos.y, 0, 0, bFlip, false, ScrollManager::GetInstance()->GetScale());
+		}
+	}
 };
 
 

@@ -182,7 +182,8 @@ void EDead::Enter(Enemy& enemy)
 	state = "Dead";
 	enemy.ChangeAnimation(EImageType::Dead);
 	FPOINT colliderSize = enemy.GetCollider()->GetSize();
-	EffectManager::GetInstance()->CreateBGBlood({ enemy.GetPos().x, enemy.GetPos().y - 10.f }, 0.f);
+	float hitAngle = enemy.GetHitAngle();
+	EffectManager::GetInstance()->CreateBGBlood({ enemy.GetPos().x, enemy.GetPos().y - 10.f }, hitAngle, enemy.GetCollider()->GetSize());
 	EffectManager::GetInstance()->EmitBlood(enemy.GetPos(), 40);
 	EffectManager::GetInstance()->Activefx("hitslash", enemy.GetPos(), 0.f, false);
 }
@@ -368,6 +369,10 @@ EnemyState* EFindSlope::CheckTransition(Enemy* enemy)
 		int playerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
 		return new ERunOnSlope(slopeEntry, slopeExit, playerFloor);
 	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
+	}
 
 	return nullptr;
 }
@@ -419,6 +424,10 @@ EnemyState* ERunOnSlope::CheckTransition(Enemy* enemy)
 	if (dist < 3.f)
 	{
 		return new ERun();
+	}
+	if (enemy->IsHitted())
+	{
+		return new EDead();
 	}
 	return nullptr;
 }

@@ -78,9 +78,6 @@ void Bullet1::Update()
         }
     }
 
-    if (Pos.x > WINSIZE_X || Pos.x < 0 || Pos.y > WINSIZE_Y || Pos.y < 0)
-        this->bDead = true;
-
     if (this->ObjectCollider->IsHitted())
     {
         if (this->targetType == ECollisionGroup::Player)
@@ -88,6 +85,8 @@ void Bullet1::Update()
     }
 
     Collision();
+    if (Pos.x > WINSIZE_X || Pos.x < 0 || Pos.y > WINSIZE_Y || Pos.y < 0)
+        this->SetDead(true);
 }
 
 void Bullet1::Render(HDC hdc)

@@ -16,12 +16,13 @@ void ObjectManager::Update()
 				(*iter)->Release();
 				delete (*iter);
 				iter = GameObjectList[i].erase(iter);
+				continue;
 			}
 			else
 			{
 				(*iter)->Update();
 				++iter;
-			}			
+			}
 		}
 	}
 }
