@@ -73,12 +73,9 @@ void AttackState::Enter(Player* player)
 
 void AttackState::Update(Player* player)
 {
-	// move
-
-	// collision
-
-	// render
-	
 	if (player->GetFrameIndex() >= ImageManager::GetInstance()->FindImage("zeroattack")->GetMaxFrameX()-1)
 		player->GetInfo()->bIsAttack = false;
+
+	if (player->GetInfo()->bIsShiftChanged && player->GetInfo()->bIsShift)
+		player->SetImage(ImageManager::GetInstance()->FindImage("zeroattackshadow"));
 }

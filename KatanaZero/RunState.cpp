@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "RigidBody.h"
 #include "EffectManager.h"
+#include <random>
 
 
 PlayerState* RunState::GetInput(Player* player)
@@ -20,8 +21,6 @@ PlayerState* RunState::GetInput(Player* player)
 
 void RunState::Enter(Player* player)
 {
-    updateCount = 0;
-
     player->SetSwitchTime(0.02f);
     player->SetFrameIndex(0);
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidletorun"));
@@ -34,8 +33,6 @@ void RunState::Enter(Player* player)
 
 void RunState::Update(Player* player)
 {
-    updateCount++;
-
     if (player->GetInfo()->bIsShift)
         player->SetImage(ImageManager::GetInstance()->FindImage("zerorunshadow"));
     else
@@ -44,9 +41,11 @@ void RunState::Update(Player* player)
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -300.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 300.f, 0.f });
 
-    if (updateCount > 100)
+    updateCount = rand();
+    if (updateCount % 200 == 0 && player->GetRigidBody()->IsGround())
     {
-        EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 2 }, 100.f, false);
+        float randDist = (float)(rand() % 10);
+        EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 2.0f + randDist }, 100.f, false);
         updateCount = 0;
     }
 }
