@@ -103,15 +103,15 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="í—¤ë” íŒŒì¼">
+    <Filter Include="?—¤?” ?ŒŒ?¼">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="?†Œ?Š¤ ?ŒŒ?¼">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ë¦¬ì†ŒìŠ¤ íŒŒì¼">
+    <Filter Include="ë¦¬ì†Œ?Š¤ ?ŒŒ?¼">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -376,7 +376,7 @@
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>ì†ŒìŠ¤ íŒŒì¼</Filter>
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="WorldBackground.cpp">
       <Filter>MainGame\Background</Filter>
@@ -392,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="ScenePlayer.cpp">
       <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="StageClear.cpp">
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEffect.cpp">
+      <Filter>?†Œ?Š¤ ?ŒŒ?¼</Filter>
     </ClCompile>
     <ClCompile Include="PickUp.cpp">
       <Filter>MainGame\PickUp</Filter>
@@ -630,13 +636,13 @@
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
     <ClInclude Include="CommonFunction.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">
-      <Filter>í—¤ë” íŒŒì¼</Filter>
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="PlayerAnim.h">
       <Filter>MainGame\Player</Filter>
@@ -664,6 +670,12 @@
     </ClInclude>
     <ClInclude Include="ScenePlayer.h">
       <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="StageClear.h">
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEffect.h">
+      <Filter>?—¤?” ?ŒŒ?¼</Filter>
     </ClInclude>
     <ClInclude Include="PickUp.h">
       <Filter>MainGame\PickUp</Filter>

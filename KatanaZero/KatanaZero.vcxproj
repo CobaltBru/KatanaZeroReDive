@@ -154,6 +154,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="JumpState.cpp" />
     <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="PickUp.cpp" />
     <ClCompile Include="PickUpHand.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="GPImage.cpp" />
+    <ClCompile Include="StageClear.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TalkScene.cpp" />
@@ -239,6 +241,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JumpState.h" />
     <ClInclude Include="Observer.h" />
+    <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="PickUp.h" />
     <ClInclude Include="PickUpHand.h" />
     <ClInclude Include="Player.h" />
@@ -294,6 +297,7 @@
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="GPImage.h" />
+    <ClInclude Include="StageClear.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TalkScene.h" />
