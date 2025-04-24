@@ -80,4 +80,7 @@ void JumpState::Update(Player* player)
     /*if (player->GetFrameIndex() >= ImageManager::GetInstance()->FindImage("zerojump")->GetMaxFrameX()-1)    
         player->GetInfo()->bIsJump = false;*/
     player->GetRigidBody()->AddVelocity({ 0.f, 0.005f });
+
+    if (player->GetInfo()->bIsShiftChanged && player->GetInfo()->bIsShift)
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerojumpshadow"));
 }
