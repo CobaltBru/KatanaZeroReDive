@@ -1,9 +1,9 @@
 #pragma once
 #include "GameObject.h"
-
+#include "Subject.h"
 class Image;
-class Collider;
-class RigidBody;
+class PickUpHand;
+class UIGame;
 class SimpleObject : public GameObject
 {
 public:
@@ -17,10 +17,11 @@ public:
 	virtual void Update();
 	virtual void Render(HDC hdc);
 
+	void SetUI(UIGame* InUIGame) { UIGameObj = InUIGame; }
 	//Collider* GetCollider() const { return ObjectCollider; }
 	//RigidBody* GetRigidBody() const { return ObjectRigidBody; }
 	//FPOINT GetLastPos()  const { return LastPos; }
-	
+
 private:
 	void Collision();
 
@@ -33,6 +34,9 @@ private:
 	void PhysicsMove();
 	void NoPhysicsMove();
 
+
+	void PickUpUpdate();
+	void Shoot();
 private:
 	Image* Image;
 	/*Collider* ObjectCollider;
@@ -43,5 +47,8 @@ private:
 
 	bool bIsWall;
 	bool bIsLeft;
+
+	PickUpHand* RightHand;
+	UIGame* UIGameObj;
 };
 

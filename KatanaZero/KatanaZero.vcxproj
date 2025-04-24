@@ -139,6 +139,7 @@
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Broken.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PickUp.cpp" />
     <ClCompile Include="PickUpHand.cpp" />
+    <ClCompile Include="PickUpUI.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -222,6 +224,7 @@
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Broken.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Enemy.h" />
@@ -241,6 +244,7 @@
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PickUp.h" />
     <ClInclude Include="PickUpHand.h" />
+    <ClInclude Include="PickUpUI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />

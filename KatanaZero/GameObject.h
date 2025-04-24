@@ -23,6 +23,7 @@ public:
 	FPOINT* GetPPos() { return &Pos; }
 	FPOINT GetSpawnPos() { return spawnPos; }
 	bool GetFlip() const { return bFlip; }
+	float GetScale() const { return Scale; }
 	bool IsDead() const { return bDead; }
 
 	void SetPos(FPOINT InPos) { Pos = InPos; }

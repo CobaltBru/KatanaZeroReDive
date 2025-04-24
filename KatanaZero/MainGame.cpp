@@ -66,6 +66,13 @@ HRESULT MainGame::Init()
 		return E_FAIL;
 	}
 
+	if (FAILED(InitImage()))
+	{
+		MessageBox(g_hWnd, L"InitImage Failed.", TEXT("°æ°í"), MB_OK);
+		return E_FAIL;
+	}
+
+
 	return S_OK;
 }
 
@@ -116,9 +123,9 @@ void MainGame::Render()
 
 	SceneManager::GetInstance()->Render(hBackBufferDC);
 
-	TimerManager::GetInstance()->Render(hBackBufferDC);
-	wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
-	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText));
+	//TimerManager::GetInstance()->Render(hBackBufferDC);
+	/*wsprintf(szText, TEXT("Mouse X : %d, Y : %d"), g_ptMouse.x, g_ptMouse.y);
+	TextOut(hBackBufferDC, 20, 60, szText, wcslen(szText))*/;
 
 	delete pGraphics;
 	backBuffer->Render(hdc);
@@ -149,6 +156,14 @@ HRESULT MainGame::InitSound()
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT MainGame::InitImage()
+{
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
 
 	return S_OK;
 }

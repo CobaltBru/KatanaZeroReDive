@@ -164,8 +164,7 @@ HRESULT TestScene::InitObject()
 		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
-		GoPopUp* goPopUp = new GoPopUp();
-		
+		GoPopUp* goPopUp = new GoPopUp();		
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);

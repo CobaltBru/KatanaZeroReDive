@@ -93,8 +93,10 @@ void MapTool::Update()
 		const float TILEX = 32 * (ScrollManager::GetInstance()->GetScale() / 2);
 		const float TILEY = 32 * (ScrollManager::GetInstance()->GetScale() / 2);
 
-		int CurrentTileX = g_ptMouse.x / TILEX;
-		int CurrentTileY = g_ptMouse.y / TILEY;
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+		int CurrentTileX = (g_ptMouse.x - Scroll.x) / TILEX;
+		int CurrentTileY = (g_ptMouse.y - Scroll.y) / TILEY;
 		int OffsetX = TILEX / 2;
 		int OffsetY = TILEX / 2;
 
@@ -108,6 +110,7 @@ void MapTool::Update()
 		else
 		{
 			auto iter = TileList.find(tileName);
+		
 			if (iter != TileList.end())
 			{
 				if (CurrentTiles.find(key) == CurrentTiles.end())

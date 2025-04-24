@@ -212,6 +212,10 @@ void Stage1Scene::LoadBackground()
 
 void Stage1Scene::LoadObject()
 {
+	UIGame* ui = new UIGame();
+	ui->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
+
 	HANDLE hFile = CreateFile(
 		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -257,6 +261,11 @@ void Stage1Scene::LoadObject()
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
+
+		if (ClassName == "StartPoint")
+		{
+			static_cast<SimpleObject*>(Obj)->SetUI(ui);
+		}
 	}
 
 	CloseHandle(hFile);

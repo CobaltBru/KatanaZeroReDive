@@ -142,6 +142,9 @@
     <Filter Include="MainGame\PickUp">
       <UniqueIdentifier>{61e095e6-9938-45fc-a70d-12ea10a2e797}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Broken">
+      <UniqueIdentifier>{e60765eb-97f9-453c-91ce-db0d28b0742d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -398,6 +401,12 @@
     </ClCompile>
     <ClCompile Include="PickUpHand.cpp">
       <Filter>MainGame\PickUp</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUpUI.cpp">
+      <Filter>MainGame\PickUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Broken.cpp">
+      <Filter>MainGame\Broken</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -670,6 +679,12 @@
     </ClInclude>
     <ClInclude Include="PickUpHand.h">
       <Filter>MainGame\PickUp</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUpUI.h">
+      <Filter>MainGame\PickUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Broken.h">
+      <Filter>MainGame\Broken</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

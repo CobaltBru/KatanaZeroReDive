@@ -100,10 +100,13 @@ HRESULT UIGame::Init()
 		item2Pos = { slotPos.x + 82.5f, slotPos.y + 4.f };
 		item1 = ImageManager::GetInstance()->AddImage("UIKatana", L"Image/UI/spr_katanaicons.bmp", 20 * (UISCALE), 20 * (UISCALE), true, RGB(255, 0, 255));
 		leftItem = "UIKatana";
-		item2 = ImageManager::GetInstance()->AddImage("UIHand", L"Image/UI/spr_itemicons.bmp", 20 * (UISCALE), 20 * (UISCALE), true, RGB(255, 0, 255));
+		item2 = ImageManager::GetInstance()->AddImage("UIHand", L"Image/UI/spr_itemicons.bmp", 20 * (UISCALE), 20 * (UISCALE),1,1, true, RGB(255, 0, 255));
 		rightItem = "UIHand";
 	}
 	hud = ImageManager::GetInstance()->AddImage("UIhud", L"Image/UI/spr_hud.bmp", 640 * (UISCALE), 23 * (UISCALE), true, RGB(255, 0, 255));
+	
+	Item2Scale = 1.f;
+	Item2FrameX = 0;
 
 	return S_OK;
 }
@@ -122,7 +125,6 @@ void UIGame::Update()
 			batteryGage = max(batteryGage, 0.0f);
 			timeGage = max(timeGage, 0.0f);
 		}
-
 	}
 	else
 	{
@@ -172,7 +174,7 @@ void UIGame::Render(HDC hdc)
 	itemSlot.Render(hdc);
 
 	item1->Render(hdc, item1Pos.x, item1Pos.y);
-	item2->Render(hdc, item2Pos.x, item2Pos.y);
+	item2->FrameRender(hdc, item2Pos.x, item2Pos.y, Item2FrameX, 0, false, false, Item2Scale);
 
 	mouseLeft->Render(hdc, slotPos.x + 40.f, slotPos.y + 40.f);
 	mouseRight->Render(hdc, slotPos.x + 120.f, slotPos.y + 40.f);
@@ -185,12 +187,12 @@ void UIGame::Release()
 void UIGame::EventPlayerState(const ObsPlayerState& ps)
 {
 	batteryGage = ps.battery;
-	if (leftItem != ps.leftItem)
+	if (leftItem != ps.leftItem && ps.leftItem != "")
 	{
 		leftItem = ps.leftItem;
 		item1 = ImageManager::GetInstance()->FindImage(leftItem);
 	}
-	if (rightItem != ps.rightItem)
+	if (rightItem != ps.rightItem && ps.rightItem != "")
 	{
 		rightItem = ps.rightItem;
 		item2 = ImageManager::GetInstance()->FindImage(rightItem);
@@ -200,4 +202,21 @@ void UIGame::EventPlayerState(const ObsPlayerState& ps)
 void UIGame::TimerUIEvent(const float t)
 {
 	timeGage = t;
+}
+
+void UIGame::SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, float InScale)
+{
+	if (InImageKey == "")
+	{
+		item2 = ImageManager::GetInstance()->FindImage("UIHand");
+		Item2FrameX = 0;
+		Item2Scale = 1;
+		item2Pos = { slotPos.x + 82.5f, slotPos.y + 4.f };
+		return;
+	}
+
+	item2 = ImageManager::GetInstance()->FindImage(InImageKey);
+	Item2FrameX = InFrameX;
+	Item2Scale = InScale;
+	item2Pos = { slotPos.x + 82.5f + InOffset.x, slotPos.y + 4.f + InOffset.y};
 }
