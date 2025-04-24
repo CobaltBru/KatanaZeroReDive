@@ -36,6 +36,7 @@ private:
 	float scale;
 	//idx, time
 	std::vector<pair<int,float>> aniTasks;
+	std::vector<pair<string, int>> soundTasks;
 	Task moveTask;
 	//총 프레임 수 저장
 	int frameX;
@@ -78,6 +79,8 @@ public:
 	inline void setFrame(int idx) { this->frameIdx = idx; }
 	void setAniTask(initializer_list<pair<int, float>> lst);
 	void setAniTask(std::vector < pair<int, float>>& lst);
+
+	void setSoundTask(initializer_list<pair<string, int>> lst);
 	virtual void Release() override;
 	void setloopFlag(bool flag);
 

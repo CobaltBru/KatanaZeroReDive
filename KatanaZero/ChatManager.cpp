@@ -3,6 +3,7 @@
 #include "GPImage.h"
 #include "ScrollManager.h"
 #include "CommonFunction.h"
+#include "SoundManager.h"
 #include <fstream>
 using json = nlohmann::json;
 using namespace Gdiplus;
@@ -22,6 +23,7 @@ Token::Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS col
     explodeTimer = 0;
     len = wtext.size();
     currentAppear = -1;
+    oldCurrentAppear = -1;
     if (appear == APPEAR::END)
         currentAppear = len - 1;
     if (color == COLORS::WHITE)
@@ -40,6 +42,7 @@ Token::Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS col
         savedColor = RGB(0, 255, 255);
 
     complete = false;
+    soundrun = false;
 }
 
 void Token::Update()
@@ -100,6 +103,11 @@ void Token::NormalAppear(HDC hdc)
         if (timer>= appearTime)
         {
             currentAppear = max(currentAppear, i);
+            if (currentAppear != oldCurrentAppear)
+            {
+                oldCurrentAppear = currentAppear;
+                SoundManager::GetInstance()->PlaySounds("chatnormal", EChannelType::Effect);
+            }
             if (elapsed >= upTime)
             {
                 y = pos.y + globalPos.y;
@@ -127,6 +135,12 @@ void Token::NormalAppear(HDC hdc)
 
 void Token::DoomAppear(HDC hdc)
 {
+    if (soundrun == false)
+    {
+        soundrun = true;
+        SoundManager::GetInstance()->PlaySounds("chatdoom", EChannelType::Effect);
+        ScrollManager::GetInstance()->CameraShake(5.f, 0.2f);
+    }
     int x = pos.x + globalPos.x;
     float appearDelay = 0.02f;
 
@@ -394,6 +408,7 @@ void Chat::DrawTokens(HDC hdc)
 
 void Chat::makeExplode()
 {
+    SoundManager::GetInstance()->PlaySounds("chatexplode", EChannelType::Effect);
     for (int i = 0; i < tokens.size(); i++)
     {
         tokens[i].second.setExplode();
@@ -773,10 +788,12 @@ void ChatManager::Update()
         {
             if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
             {
+                SoundManager::GetInstance()->PlaySounds("menumove", EChannelType::Effect);
                 currentChat->moveCursor(-1);
             }
             else if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
             {
+                SoundManager::GetInstance()->PlaySounds("menumove", EChannelType::Effect);
                 currentChat->moveCursor(1);
             }
         }
@@ -784,6 +801,7 @@ void ChatManager::Update()
         {
             if (currentChat->getStatus() != 0)
             {
+                SoundManager::GetInstance()->PlaySounds("menuselect", EChannelType::Effect);
                 if (currentChat->getStatus() == 2)
                 {
                     explodeFlag = true;
@@ -818,13 +836,17 @@ void ChatManager::Update()
             }
             timer = 0.f;
         }*/
-        RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
+        
     }
     else
     {
+       /* if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
+        {
+            startChat("");
+        }*/
         currentKey = "";
     }
-    
+    RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
 }
 
 void ChatManager::Render(HDC hdc)

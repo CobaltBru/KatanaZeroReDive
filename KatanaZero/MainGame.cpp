@@ -153,6 +153,57 @@ HRESULT MainGame::InitSound()
 	if (FAILED(SoundManager::GetInstance()->AddSound("HomeOST", "Sound/HomeOST.mp3")))
 		return E_FAIL;
 
+	//talk
+	{
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep01", "Sound/talkScene/sound_npc_therapist_footstep_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep02", "Sound/talkScene/sound_npc_therapist_footstep_02.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep03", "Sound/talkScene/sound_npc_therapist_footstep_03.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshstep04", "Sound/talkScene/sound_npc_therapist_footstep_04.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshflick", "Sound/talkScene/sound_npc_therapistmeds_flick_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshinject", "Sound/talkScene/sound_npc_therapistmeds_inject_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshdrugffect", "Sound/talkScene/sound_ambience_drug_effect_01.ogg")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshroom", "Sound/talkScene/song_nocturne.ogg")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("pyshmove", "Sound/talkScene/sound_npc_therapist_sleeve_01.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("chatnormal", "Sound/chat/sound_PA_talk.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("chatdoom", "Sound/chat/sound_ui_dialogue_emphasis_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("chatexplode", "Sound/chat/sound_ui_dialogue_shatter_01.wav")))
+			return E_FAIL;
+
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("menumove", "Sound/menu_move.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("menuselect", "Sound/menu_select.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker1", "Sound/sound_object_neon_flicker_01.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker2", "Sound/sound_object_neon_flicker_02.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker3", "Sound/sound_object_neon_flicker_03.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("flicker5", "Sound/sound_object_neon_flicker_05.wav")))
+			return E_FAIL;
+	}
+	//home
+	{
+
+	}
+
+
 	return S_OK;
 }
 
