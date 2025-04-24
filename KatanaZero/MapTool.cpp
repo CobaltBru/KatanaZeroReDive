@@ -182,6 +182,7 @@ HRESULT MapTool::InitImage()
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("headhunter", L"Image/HeadHunter/headhunter_idle_init.bmp", 25, 50, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("Player", L"Image/TestPlayer.bmp", 25, 50, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("Grunt", L"Image/Enemy/Grunt/Grunt.bmp", 30, 36, 1, 1, true, RGB(255, 255, 255));

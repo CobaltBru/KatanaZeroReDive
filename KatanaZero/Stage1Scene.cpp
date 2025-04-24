@@ -127,6 +127,8 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
+		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
 }
 
 void Stage1Scene::InitBackgroundImage()

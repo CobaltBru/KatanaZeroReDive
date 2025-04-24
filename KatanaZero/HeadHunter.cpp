@@ -94,7 +94,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
 
     ObjectRigidBody = new RigidBody(this);
 
-    player = SnapShotManager::GetInstance()->GetPlayer().front();
+    FPOINT player = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
 
     lazer = new Lazer();
     lazer->Init();
@@ -152,7 +152,7 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
 
     ObjectRigidBody = new RigidBody(this);
 
-    player = SnapShotManager::GetInstance()->GetPlayer().front();
+    FPOINT player = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
 
     lazer = new Lazer();
     lazer->Init();
@@ -985,8 +985,6 @@ void HeadHunter::CheckPlayerPos()
     {
         dir = 1;
     }
- 
-
 }
 
 void HeadHunter::RandomLoop()

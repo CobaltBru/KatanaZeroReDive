@@ -38,13 +38,13 @@
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
 {
-	
+
 }
 
 HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
-	
+
 	srand(time(NULL));
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
@@ -95,7 +95,7 @@ HRESULT TestScene::Init()
 		MessageBox(g_hWnd, TEXT("TestScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-	
+
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
 	return S_OK;
@@ -105,6 +105,7 @@ HRESULT TestScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.bmp", 96, 27, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.bmp", 145, 29, 1, 1, true, RGB(255, 0, 255));
@@ -143,9 +144,9 @@ HRESULT TestScene::InitObject()
 	// 테스트 코드 태경
 	{
 		Background* background = new Background();
-		background->Init("black",0.f);
+		background->Init("black", 0.f);
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
-		
+
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
@@ -158,16 +159,6 @@ HRESULT TestScene::InitObject()
 
 		//해영 테스트
 		{
-
-			snapShotManager->AddGameObject(EObjectClassType::Player, player);
-			snapShotManager->AddGameObject(EObjectClassType::Enemy, testObject);
-		}
-
-		{
-			HeadHunter* headhunter = new HeadHunter();
-			headhunter->Init({ 300,360 });
-			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
-		}
 			Grunt* grunt = new Grunt();
 			grunt->Init({ 800.f, 300.f });
 			Pomp* pomp = new Pomp();
@@ -179,7 +170,7 @@ HRESULT TestScene::InitObject()
 			ObjectManager->AddGameObject(EObjectType::GameObject, pomp);
 			ObjectManager->AddGameObject(EObjectType::GameObject, gangster);
 
-			
+
 		}
 
 		// 지수 테스트
@@ -188,7 +179,6 @@ HRESULT TestScene::InitObject()
 			headhunter->Init({ 300,360 });
 			ObjectManager->AddGameObject(EObjectType::GameObject, headhunter);
 		}*/
-
 
 	}
 	// 테스트 코드 지운 사람
@@ -205,12 +195,12 @@ HRESULT TestScene::InitObject()
 		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
-		GoPopUp* goPopUp = new GoPopUp();		
+		GoPopUp* goPopUp = new GoPopUp();
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
 
-		
+
 	}
 	return S_OK;
 }
@@ -224,15 +214,15 @@ void TestScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F6))
-		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
 		SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
-	
 
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
@@ -246,25 +236,17 @@ void TestScene::TestCode()
 	{
 		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
 		// TimerManager::GetInstance()->GetDeltaTime();
-		 
-		
+
+
 		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-		TimerManager::GetInstance()->SetSlow(0.1f,0.2f);
+		TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
 	}
 	else  // 슬로우 풀기
-		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
-	
+		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+
 	//// 라인 트레이스
 	//FHitResult HitResult;
 	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))
-	//{
-	//	// 라인 트레이스 맞은 대상의 콜라이더
-	//	HitResult.HitCollision->SetHit(true);
-	//}
-
-	// 라인 트레이스
-	//FHitResult HitResult;
-	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
 	//{
 	//	// 라인 트레이스 맞은 대상의 콜라이더
 	//	HitResult.HitCollision->SetHit(true);

@@ -30,7 +30,7 @@ HRESULT Turret::Init()
     isDestroyed = false;
     isOperated = false;
 
-    player = SnapShotManager::GetInstance()->GetPlayer().front();
+    player = SnapShotManager::GetInstance()->GetPlayer();
 
     turretImage = ImageManager::GetInstance()->AddImage("Turret", L"Image/HeadHunter/turret.bmp", 1600, 100, 16, 1, true, RGB(255, 0, 255));
     turretImage = ImageManager::GetInstance()->AddImage("TurretDie", L"Image/HeadHunter/turretdie.bmp", 1400, 100, 14, 1, true, RGB(255, 0, 25)); // turret보다 10 밀어서 생성하기
