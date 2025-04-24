@@ -144,7 +144,7 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
     dieIndex = 0;
     random = 0;
 
-    state = State::GroundLazer;
+    state = State::Idle;
     {
         image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 50, 12, 1, true, RGB(255, 0, 255));
 
@@ -350,7 +350,7 @@ void HeadHunter::Collision()
     {
     	// 충돌했다.
 
-    	ObjectCollider->SetHit(false);	// 내 콜라이더 충돌
+    	ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
     	HitResult.HitCollision->SetHit(false);// 상대방 콜라이더 충돌
 
     	HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
@@ -956,6 +956,7 @@ void HeadHunter::Die()
         break;
     case 1:
         image = ImageManager::GetInstance()->FindImage("DeadLand");
+        ObjectRigidBody->SetVelocity({ (hitDir) * 150.f,0.f });
         if (frameIndex < image->GetMaxFrameX() - 1)
         {
             if (timer > 0.1f)
