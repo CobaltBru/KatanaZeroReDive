@@ -29,9 +29,11 @@
 #include "Factory.h"
 #include "Tile.h"
 #include "ArrowUI.h"
+#include "GPImageManager.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
+	, gpImageManager(nullptr)
 {
 }
 
@@ -61,6 +63,9 @@ HRESULT Stage1Scene::Init()
 
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
+
+	gpImageManager = GPImageManager::GetInstance();
+	gpImageManager->Init();
 
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	{
@@ -359,6 +364,9 @@ void Stage1Scene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
+	if (gpImageManager != nullptr)
+		gpImageManager->Release();
+
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -367,4 +375,5 @@ void Stage1Scene::Release()
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 	fxManager = nullptr;
+	gpImageManager = nullptr;
 }

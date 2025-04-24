@@ -106,6 +106,7 @@ void RigidBody::CollisionLine()
 
 	ZeroMemory(&Result, sizeof(FLineResult));
 	Result.IsDiagonalLine = bDiagonalLine;
+	Result.LineType = ELineType::End;
 
 	// ¶¥
 	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(Owner->GetPos(), Owner->GetLastPos(), Result, bGround, Owner->GetCollider()->GetSize().y, bDown))

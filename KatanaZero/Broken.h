@@ -16,5 +16,6 @@ public:
 
 private:
 	Image* Image;
+	int Count;
 };
 

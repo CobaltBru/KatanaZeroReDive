@@ -12,6 +12,8 @@ enum class EChannelType : uint8_t
 	Effect,
 	UI,
 	Environment,
+	Broken1,
+	Broken2,
 	MaxChannel = 32
 };
 

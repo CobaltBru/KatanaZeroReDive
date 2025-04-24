@@ -2,6 +2,7 @@
 #include "PickUp.h"
 #include "PickUpUI.h"
 #include "ObjectManager.h"
+#include "SoundManager.h"
 
 PickUpHand::PickUpHand(GameObject* InOwner)
 	:PickUpItem(nullptr), Owner(InOwner) , PickUpItemUI(nullptr)
@@ -39,4 +40,6 @@ void PickUpHand::Shoot(FPOINT InPos,float InAngle, float InSpeed)
 
 	PickUpItem->Shoot(InPos,InAngle, InSpeed);
 	PickUpItem = nullptr;
+
+	SoundManager::GetInstance()->PlaySounds("sound_player_throw", EChannelType::Effect);
 }

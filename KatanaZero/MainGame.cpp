@@ -211,6 +211,20 @@ HRESULT MainGame::InitSound()
 	}
 
 
+	//PickUp
+	{
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_player_throw", "Sound/PickUp/sound_player_throw.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_player_grabtea", "Sound/PickUp/sound_player_grabtea.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_enemy_death_bottle", "Sound/PickUp/sound_enemy_death_bottle.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_clatter_glass2", "Sound/PickUp/sound_clatter_glass2.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_clatter_glass1", "Sound/PickUp/sound_clatter_glass1.wav")))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -219,6 +233,7 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
+	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 
 	return S_OK;
 }
