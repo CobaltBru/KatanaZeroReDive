@@ -148,6 +148,7 @@
     <ClCompile Include="FlipState.cpp" />
     <ClCompile Include="GoalTrigger.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
+    <ClCompile Include="GPImageManager.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
     <ClCompile Include="IdleState.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Reference\Headers\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="ReplayObjects.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RunState.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -202,8 +204,9 @@
     <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
-    <ClCompile Include="Stage1Scene.cpp" />
+    <ClCompile Include="HYScene.cpp" />
     <ClCompile Include="GPImage.cpp" />
+    <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StageClear.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
@@ -233,6 +236,7 @@
     <ClInclude Include="FlipState.h" />
     <ClInclude Include="GoalTrigger.h" />
     <ClInclude Include="GoPopUp.h" />
+    <ClInclude Include="GPImageManager.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />
     <ClInclude Include="Factory.h" />
@@ -281,6 +285,7 @@
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Reference\Headers\Imgui\stb_image.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="ReplayObjects.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RunState.h" />
     <ClInclude Include="Scene.h" />
@@ -295,8 +300,9 @@
     <ClInclude Include="SnapShotManager.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpriteAnimator.h" />
-    <ClInclude Include="Stage1Scene.h" />
+    <ClInclude Include="HYScene.h" />
     <ClInclude Include="GPImage.h" />
+    <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="StageClear.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TaeKyungObject.h" />

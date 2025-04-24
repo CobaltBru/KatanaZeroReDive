@@ -22,7 +22,7 @@ PlayerState* IdleState::GetInput(Player* player)
     if (lineResult.LineType == ELineType::Wall)    
         player->GetInfo()->bIsWall = true;
     
-    if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround() && !player->GetInfo()->bIsWall)
+    if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround())
         return player->GetStates()->Jump;
 
     if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
@@ -30,8 +30,6 @@ PlayerState* IdleState::GetInput(Player* player)
         player->GetRigidBody()->SetDown(true);
         return player->GetStates()->Fall;
     }
-    if (KeyManager::GetInstance()->IsStayKeyDown('W') && player->GetInfo()->bIsWall)    
-        player->GetRigidBody()->AddVelocity({ (player->GetDirection() == EDirection::Left ? 300.f : -300.f), -300.f});            
     
     return nullptr;
 }

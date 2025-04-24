@@ -6,11 +6,12 @@
 #include "SnapShotManager.h"
 #include "TaeKyungObject.h"
 #include "RenderManager.h"
+#include "ScrollManager.h"
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
 	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
-	bReachedTargetFloor(false)
+	bReachedTargetFloor(false), attackDuration(0.f), meleeAttackRange(0.f), currAnimKey(""), HitAngle(0.f)
 {
 }
 
@@ -19,6 +20,11 @@ Enemy::~Enemy()
 }
 
 HRESULT Enemy::Init(FPOINT InPos)
+{
+	return E_NOTIMPL;
+}
+
+HRESULT Enemy::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
 {
 	return E_NOTIMPL;
 }
@@ -42,7 +48,8 @@ void Enemy::InitRigidBodySetting()
 	//무게
 	ObjectRigidBody->SetMass(1.f);
 	//최대 속도
-	ObjectRigidBody->SetMaxVelocity({ 100.f,400.f });
+	ObjectRigidBody->SetMaxVelocity({ Speed , 400.f });
+	
 	//마찰
 	ObjectRigidBody->SetFriction(50.f);
 
@@ -67,8 +74,6 @@ void Enemy::Release()
 	{
 		if (img)
 		{
-			img->Release();
-			delete img;
 			img = nullptr;
 		}
 	}
@@ -77,6 +82,7 @@ void Enemy::Release()
 
 void Enemy::Update()
 {
+	UpdateAnimation();
 	if (eState)
 	{
 		eState->Update(*this);
@@ -86,8 +92,6 @@ void Enemy::Update()
 			ChangeState(newState);
 		}
 	}
-		
-	UpdateAnimation();
 
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
@@ -97,7 +101,7 @@ void Enemy::Render(HDC hdc)
 	if (image)
 	{
 		Gdiplus::Graphics graphics(hdc);
-		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, 1.f, 1.f);
+		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 	}
 }
 
@@ -105,9 +109,10 @@ void Enemy::MakeSnapShot(void* out)
 {
 	EnemySnapShot* eSnapShot = static_cast<EnemySnapShot*>(out);
 	eSnapShot->pos = this->GetPos();
-	eSnapShot->ID = 0;
+	eSnapShot->animKey = currAnimKey;
 	eSnapShot->animFrame = currFrame;
 	eSnapShot->isDead = this->bDead;
+	eSnapShot->bFlip = this->bFlip;
 }
 
 int Enemy::GetMaxAttackFrame() const
@@ -161,17 +166,20 @@ void Enemy::ChangeAnimation(EImageType newImage)
 	currFrame = 0;
 	if (image == images[(int)newImage]) return;
 	image = images[(int)newImage];
+	SetAnimKey(newImage);
 }
 
 bool Enemy::Detecting()
 {
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
+	int playerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
+	int myFloor = this->GetFloorIndex(g_FloorZones);
 	
 	float dx = playerPos.x - Pos.x;
 	float dist = fabs(dx);
 
-	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	if (playerFloor == myFloor && ((dx > 0 && dir == 1) || (dx < 0 && dir == -1)))
 	{
 		return dist < detectRange;
 	}
@@ -181,8 +189,8 @@ bool Enemy::Detecting()
 
 bool Enemy::IsInAttackRange()
 {
-	if (SnapShotManager::GetInstance()->GetPlayer().empty()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer().front()->GetPos();
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
 	float dx = playerPos.x - Pos.x;
 	float dist = fabs(dx);
 
@@ -194,13 +202,28 @@ bool Enemy::IsInAttackRange()
 	return false;
 }
 
+bool Enemy::IsInMeleeAttackRange()
+{
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
+	float dx = playerPos.x - Pos.x;
+	float dist = fabs(dx);
+
+	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	{
+		return dist < meleeAttackRange;
+	}
+
+	return false;
+}
+
 bool Enemy::IsInSameFloor()
 {
 	auto player = SnapShotManager::GetInstance()->GetPlayer();
-	if (player.empty()) return true;
+	if (!player) return true;
 
-	int myFloor = this->GetFloorIndex();
-	int playerFloor = player.front()->GetFloorIndex();
+	int myFloor = this->GetFloorIndex(g_FloorZones);
+	int playerFloor = player->GetFloorIndex(g_FloorZones);
 
 	return myFloor == playerFloor;
 }
@@ -208,4 +231,10 @@ bool Enemy::IsInSameFloor()
 bool Enemy::IsOnDownLine()
 {
 	return GetRigidBody()->GetResult().LineType == ELineType::DownLine;
+}
+
+bool Enemy::IsHitted()
+{
+	if (ObjectCollider->IsHitted()) return true;
+	return false;
 }

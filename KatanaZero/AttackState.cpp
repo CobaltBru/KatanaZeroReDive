@@ -3,6 +3,7 @@
 #include "RigidBody.h"
 #include "Image.h"
 #include "CommonFunction.h"
+#include "EffectManager.h"
 
 
 PlayerState* AttackState::GetInput(Player* player)
@@ -18,16 +19,19 @@ PlayerState* AttackState::GetInput(Player* player)
     }
 
 	const FLineResult lineResult = player->GetRigidBody()->GetResult();
-	if (lineResult.LineType == ELineType::Wall)
-	{
-		if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
-
-		playerInfo->bIsAttack = false;
-		if (player->GetRigidBody()->IsGround() == false)
+	if (lineResult.LineType == ELineType::Wall)		// if the player is attached to the wall
+	{	
+		// if the player press toward the wall
+		if ((lineResult.IsLeft && KeyManager::GetInstance()->IsOnceKeyDown('A')) ||
+			(!lineResult.IsLeft && KeyManager::GetInstance()->IsOnceKeyDown('D')))
 		{
-			player->SetSwitchTime(0.02f);
-			player->SetEffectImage(nullptr);
-			return player->GetStates()->WallSlide;
+			playerInfo->bIsAttack = false;
+			if (player->GetRigidBody()->IsGround() == false)
+			{
+				player->SetSwitchTime(0.02f);
+				player->SetEffectImage(nullptr);
+				return player->GetStates()->WallSlide;
+			}
 		}
 	}
 	
@@ -58,7 +62,8 @@ void AttackState::Enter(Player* player)
 	attackDir.x = g_ptMouse.x - player->GetPos().x;
 	attackDir.y = g_ptMouse.y - player->GetPos().y;
 	Normalize(attackDir);
-
+	float fxAngle = atan2f(attackDir.y, attackDir.x) * (180.f / 3.14159265f);
+	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, player->GetFlip());
 	player->GetRigidBody()->AddVelocity(attackDir * 300.f);
 }
 

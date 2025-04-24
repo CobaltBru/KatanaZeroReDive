@@ -33,6 +33,7 @@ struct playerInfo
 	bool bIsWall;
 	bool bCanAttack;
 	float attackCoolTime;
+	string prevState;
 };
 
 struct playerStates

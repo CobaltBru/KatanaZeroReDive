@@ -20,6 +20,8 @@
 #include "CommonFunction.h"
 #include "Bullet.h"
 
+#include "SnapShotManager.h"
+
 
 Player::Player()
 {	
@@ -58,7 +60,7 @@ HRESULT Player::Init()
 	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f,
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
-		true, 1.f);
+		false, 1.f);
 	
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
@@ -71,7 +73,7 @@ HRESULT Player::Init()
 
 	// set player input key
 	playerInput = new PlayerInput();
-	playerInput->Init();
+	//playerInput->Init();
 
 	dir = EDirection::Right;
 
@@ -193,23 +195,23 @@ void Player::Render(HDC hdc)
 			FrameIndex %= image->GetMaxFrameX();	
 	}
 
-	if (effectImage != nullptr && info->bIsAttack)
-	{
-		FPOINT attackDir = { 0.f, 0.f };
-		attackDir.x = g_ptMouse.x - Pos.x;
-		attackDir.y = g_ptMouse.y - Pos.y;
-		Normalize(attackDir);
-		AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
-		if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
-		
-		/*if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
-	}
+	//if (effectImage != nullptr && info->bIsAttack)
+	//{
+	//	FPOINT attackDir = { 0.f, 0.f };
+	//	attackDir.x = g_ptMouse.x - Pos.x;
+	//	attackDir.y = g_ptMouse.y - Pos.y;
+	//	Normalize(attackDir);
+	//	AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
+	//	if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+	//	
+	//	/*if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
+	//}
 }
 
 void Player::MakeSnapShot(void* out)
@@ -238,6 +240,7 @@ void Player::InitPlayerInfo()
 	info->bIsShiftChanged = false;
 	info->bIsWall = false;
 	info->attackCoolTime = .7f;
+	info->prevState = "";
 }
 
 void Player::InitBindState()
@@ -302,21 +305,21 @@ void Player::UpdateRigidBody()
 {
 	ObjectRigidBody->Update();
 
-	const FLineResult lineResult = ObjectRigidBody->GetResult();
-	if (lineResult.LineType == ELineType::Wall)
-	{
-		if (lineResult.IsLeft) dir = EDirection::Left;
+	//const FLineResult lineResult = ObjectRigidBody->GetResult();
+	//if (lineResult.LineType == ELineType::Wall)
+	//{
+	//	if (lineResult.IsLeft) dir = EDirection::Left;
 
-		ObjectRigidBody->SetVelocity({ 0.f , 10.f });
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-		info->bIsWall = true;
-		bIsLeft = lineResult.IsLeft;
-	}
-	else
-	{
-		ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-		info->bIsWall = false;
-	}
+	//	ObjectRigidBody->SetVelocity({ 0.f , 10.f });
+	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
+	//	info->bIsWall = true;
+	//	bIsLeft = lineResult.IsLeft;
+	//}
+	//else
+	//{
+	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
+	//	info->bIsWall = false;
+	//}
 }
 
 void Player::UpdateCollision()

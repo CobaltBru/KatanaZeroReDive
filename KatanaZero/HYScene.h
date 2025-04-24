@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene.h"
 
-class GPImageManager;
 class HeadHunter;
 class ObjectManager;
 class RenderManager;
@@ -13,11 +12,12 @@ class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
 class Player;
-class TestScene : public Scene
+class HYScene : public Scene
 {
 public:
-	TestScene();
-	virtual ~TestScene() = default;
+
+	HYScene();
+	virtual ~HYScene() = default;
 
 	virtual HRESULT Init() override;
 	virtual void Release() override;
@@ -31,6 +31,11 @@ protected:
 
 private:
 	void TestCode();
+
+	void InitBackgroundImage();
+	void LoadBackground();
+	void LoadObject();
+	void LoadFloor();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;
@@ -42,10 +47,5 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
-	GPImageManager* gpImageManager;
-
-	FPOINT testPlayerPos;
-	FPOINT testDestPos;
-
 };
 
