@@ -43,11 +43,14 @@ void WallSlideState::Enter(Player* player)
 	updateCount = 0;
 	
 	const FLineResult lineResult = player->GetRigidBody()->GetResult();
-
-	float halfWidth = player->GetImage()->GetFrameWidth() * 0.5f;
-	float halfHeight = player->GetImage()->GetFrameHeight() * 0.5f;
-	EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ -halfWidth, halfHeight * 3 }, 270.f,
-		(lineResult.IsLeft? true : false));
+	if (lineResult.IsLeft)
+	{
+		EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3}, 90.f, true);
+	}
+	else
+	{
+		EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
+	}
 
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 
@@ -65,17 +68,15 @@ void WallSlideState::Update(Player* player)
 	if (updateCount > (player->GetImage()->GetMaxFrameX() * 100))
 	{
 		const FLineResult lineResult = player->GetRigidBody()->GetResult();
-
-		float halfWidth = player->GetImage()->GetFrameWidth() * 0.5f;
-		float halfHeight = player->GetImage()->GetFrameHeight() * 0.5f;
 		if (lineResult.IsLeft)
 		{
-			EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ halfWidth, halfHeight * 3 }, 90.f, true);
+			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 90.f, true);
 		}
 		else
 		{
-			EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ -halfWidth, halfHeight * 3 }, 270.f, false);
+			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
 		}
+
 		//EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, halfHeight },
 		//	player->GetPos() + FPOINT{ 0.f, halfHeight }, 0.1f, false);
 		updateCount = 0;

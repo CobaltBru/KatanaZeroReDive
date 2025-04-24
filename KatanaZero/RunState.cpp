@@ -29,8 +29,7 @@ void RunState::Enter(Player* player)
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 100.f, 0.f });
 
 
-    EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight()*2 },
-        player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight ()*3 }, 100.f, false);
+    EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight()*2 }, 100.f, false);
 }
 
 void RunState::Update(Player* player)
@@ -47,8 +46,7 @@ void RunState::Update(Player* player)
 
     if (updateCount > 100)
     {
-        EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight()*2 },
-            player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() *3 }, 100.f, false);
+        EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 2 }, 100.f, false);
         updateCount = 0;
     }
 }
