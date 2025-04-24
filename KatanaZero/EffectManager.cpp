@@ -14,6 +14,7 @@ void EffectManager::Init()
 
 void EffectManager::InitEffects()
 {
+    // 디폴트 프레임 업데이트 시간 0.1초
     Addfx("gangstergun", {}, {}, 0.f);
     Addfx("normalslash", {}, {}, 0.f);
     Addfx("rainbowslash", {}, {}, 0.f);
@@ -119,13 +120,13 @@ void EffectManager::Render(HDC hdc)
     }
 }
 
-void EffectManager::Addfx(string key, FPOINT start, FPOINT end, float speed, bool bMove)
+void EffectManager::Addfx(string key, FPOINT start, FPOINT end, float speed, float duration, bool bMove)
 {
     Effect* fx = nullptr;
     fx = Findfx(key);
     if (fx) return;
     fx = new Effect();
-    if (FAILED(fx->Init(key, start, end, speed, bMove)))
+    if (FAILED(fx->Init(key, start, end, speed, duration, bMove)))
     {
         fx->Release();
         delete fx;
