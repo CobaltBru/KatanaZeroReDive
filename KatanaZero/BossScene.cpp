@@ -1,4 +1,4 @@
-#include "Stage1Scene.h"
+#include "BossScene.h"
 #include "CommonFunction.h"
 
 #include "ObjectManager.h"
@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "SnapShotManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -27,13 +28,14 @@
 #include "Player.h"
 #include "DefaultObject.h"
 #include "Factory.h"
+#include "Tile.h"
 
-Stage1Scene::Stage1Scene()
+BossScene::BossScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
 }
 
-HRESULT Stage1Scene::Init()
+HRESULT BossScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
@@ -60,7 +62,7 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/headhunter_test.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -88,18 +90,22 @@ HRESULT Stage1Scene::Init()
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitImage()
+HRESULT BossScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("headhunter", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
+	InitTile();
 
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitObject()
+HRESULT BossScene::InitObject()
 {
 	Background* background = new Background();
 	background->Init("black", 0.f);
@@ -109,10 +115,18 @@ HRESULT Stage1Scene::InitObject()
 	LoadObject();
 	LoadFloor();
 
+	Tile* tile = new Tile();
+	if (FAILED(tile->Init(L"Data/Stage1/Stage1Tile.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
+
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitEffects()
+HRESULT BossScene::InitEffects()
 {
 	fxManager->Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
 	fxManager->Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
@@ -124,7 +138,7 @@ HRESULT Stage1Scene::InitEffects()
 	return S_OK;
 }
 
-void Stage1Scene::TestCode()
+void BossScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
@@ -134,7 +148,7 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
 
-void Stage1Scene::InitBackgroundImage()
+void BossScene::InitBackgroundImage()
 {
 	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
 
@@ -153,10 +167,10 @@ void Stage1Scene::InitBackgroundImage()
 	}
 }
 
-void Stage1Scene::LoadBackground()
+void BossScene::LoadBackground()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/headhunter_bg.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -171,6 +185,7 @@ void Stage1Scene::LoadBackground()
 		int Size;
 		float ScrollPer;
 		FPOINT Pos;
+		bool bTransparent;
 		ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 
@@ -178,6 +193,7 @@ void Stage1Scene::LoadBackground()
 		ReadFile(hFile, buffer, Size, &dwByte, NULL);
 		buffer[Size] = '\0';
 		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+		ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);
 
 		string BackgroundName = buffer;
 
@@ -187,18 +203,19 @@ void Stage1Scene::LoadBackground()
 			break;
 
 		Background* BackgroundObj = new Background();
-		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
+		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale() + 0.5f);
 		BackgroundObj->SetPos(Pos);
+		BackgroundObj->GetImage()->SetTransparent(bTransparent);
 		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
 	}
 
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::LoadObject()
+void BossScene::LoadObject()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/headhunter_object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -224,6 +241,7 @@ void Stage1Scene::LoadObject()
 		ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 		ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -239,13 +257,19 @@ void Stage1Scene::LoadObject()
 
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
+		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
-	}
 
+		if (ClassName == "StartPoint")
+		{
+			SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Player, Obj);
+
+		}
+	}
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::LoadFloor()
+void BossScene::LoadFloor()
 {
 	HANDLE hFile = CreateFile(
 		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
@@ -275,7 +299,26 @@ void Stage1Scene::LoadFloor()
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::Update()
+void BossScene::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255), 32, 32);
+	}
+}
+
+void BossScene::Update()
 {
 	ObjectManager->Update();
 	CollisionManager->Update();
@@ -287,7 +330,7 @@ void Stage1Scene::Update()
 	TestCode();
 }
 
-void Stage1Scene::Render(HDC hdc)
+void BossScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
@@ -296,7 +339,7 @@ void Stage1Scene::Render(HDC hdc)
 	LineManager->Render(hdc);
 }
 
-void Stage1Scene::Release()
+void BossScene::Release()
 {
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
