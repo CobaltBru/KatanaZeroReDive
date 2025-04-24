@@ -195,23 +195,23 @@ void Player::Render(HDC hdc)
 			FrameIndex %= image->GetMaxFrameX();	
 	}
 
-	if (effectImage != nullptr && info->bIsAttack)
-	{
-		FPOINT attackDir = { 0.f, 0.f };
-		attackDir.x = g_ptMouse.x - Pos.x;
-		attackDir.y = g_ptMouse.y - Pos.y;
-		Normalize(attackDir);
-		AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
-		if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
-		
-		/*if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
-	}
+	//if (effectImage != nullptr && info->bIsAttack)
+	//{
+	//	FPOINT attackDir = { 0.f, 0.f };
+	//	attackDir.x = g_ptMouse.x - Pos.x;
+	//	attackDir.y = g_ptMouse.y - Pos.y;
+	//	Normalize(attackDir);
+	//	AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
+	//	if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+	//	
+	//	/*if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
+	//}
 }
 
 void Player::MakeSnapShot(void* out)

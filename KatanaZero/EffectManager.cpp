@@ -9,7 +9,7 @@
 
 void EffectManager::Init()
 {
-    
+    InitEffects();
 }
 
 void EffectManager::InitEffects()
@@ -108,7 +108,6 @@ void EffectManager::Render(HDC hdc)
     {
         fx->Render(hdc);
     }
-
 }
 
 void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, int maxFrameY)
