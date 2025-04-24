@@ -15,9 +15,10 @@
 #include "Enemy.h"
 
 #include "SnapShotManager.h"
+#include "ArrowUI.h"
 
 SimpleObject::SimpleObject()
-	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false), RightHand(nullptr), UIGameObj(nullptr)
+	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false), RightHand(nullptr), UIGameObj(nullptr), ArrowUIObj(nullptr)
 {
 }
 
@@ -27,7 +28,7 @@ HRESULT SimpleObject::Init(FPOINT InPos, string InImageName)
 	Image = ImageManager::GetInstance()->FindImage(InImageName);
 	Pos = InPos;
 	//콜라이더 추가
-	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)Image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(),
 		(float)Image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() }, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
@@ -94,7 +95,7 @@ void SimpleObject::Render(HDC hdc)
 		// 스크롤이 필요한 오브젝트들
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		scroll = Scroll;
-		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0,false,true, ScrollManager::GetInstance()->GetScale());
+		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, false, true, ScrollManager::GetInstance()->GetScale());
 	}
 }
 
@@ -105,7 +106,6 @@ void SimpleObject::MakeSnapShot(void* out)
 	pSnapShot->animFrame = 0;
 	pSnapShot->bFlip = this->bFlip;
 }
-
 void SimpleObject::Collision()
 {
 	// 충돌 정보
@@ -290,6 +290,13 @@ void SimpleObject::PickUpUpdate()
 	FHitResult HitResult;
 	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult,ECollisionGroup::Item))
 	{
+		if (ArrowUIObj != nullptr)
+		{
+			ArrowUIObj->SetPos({ HitResult.HitCollision->GetOwner()->GetPos().x,HitResult.HitCollision->GetOwner()->GetPos().y - 80.f });
+			ArrowUIObj->SetVisible(true);
+		}
+			
+
 		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
 		{
 			if (RightHand != nullptr)
@@ -305,6 +312,11 @@ void SimpleObject::PickUpUpdate()
 					Shoot();
 			}			
 		}
+	}
+	else
+	{
+		if (ArrowUIObj != nullptr)
+			ArrowUIObj->SetVisible(false);
 	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))

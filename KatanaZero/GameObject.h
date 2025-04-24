@@ -25,7 +25,7 @@ public:
 	virtual bool IsDead() const { return bDead; }
 	bool GetFlip() const { return bFlip; }
 	float GetScale() const { return Scale; }
-	bool IsDead() const { return bDead; }
+	//bool IsDead() const { return bDead; }
 
 	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }

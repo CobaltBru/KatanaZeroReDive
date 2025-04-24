@@ -103,15 +103,15 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="?ó§?çî ?åå?ùº">
+    <Filter Include="?ÔøΩÔøΩ?ÔøΩÔøΩ ?ÔøΩÔøΩ?ÔøΩÔøΩ">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="?Üå?ä§ ?åå?ùº">
+    <Filter Include="?ÔøΩÔøΩ?ÔøΩÔøΩ ?ÔøΩÔøΩ?ÔøΩÔøΩ">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Î¶¨ÏÜå?ä§ ?åå?ùº">
+    <Filter Include="Î¶¨ÏÜå?ÔøΩÔøΩ ?ÔøΩÔøΩ?ÔøΩÔøΩ">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -144,6 +144,12 @@
     </Filter>
     <Filter Include="MainGame\Broken">
       <UniqueIdentifier>{e60765eb-97f9-453c-91ce-db0d28b0742d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\UI">
+      <UniqueIdentifier>{74f66ee5-09ca-4159-8b22-50ce3b0373f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\UI\Arrow">
+      <UniqueIdentifier>{1bccb178-eb86-4e2c-9031-3d0b84f0f399}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -378,9 +384,6 @@
     <ClCompile Include="UIGame.cpp">
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>?Üå?ä§ ?åå?ùº</Filter>
-    </ClCompile>
     <ClCompile Include="GPImageManager.cpp">
       <Filter>2D Framework\Image</Filter>
     </ClCompile>
@@ -391,7 +394,7 @@
     <ClCompile Include="ScenePlayer.cpp" />
     <ClCompile Include="Stage1Scene.cpp">
       <Filter>MainGame\Scene\Stage</Filter>
-    </ClCompile>  
+    </ClCompile>
     <ClCompile Include="WorldBackground.cpp">
       <Filter>MainGame\Background</Filter>
     </ClCompile>
@@ -407,12 +410,6 @@
     <ClCompile Include="ScenePlayer.cpp">
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="StageClear.cpp">
-      <Filter>?Üå?ä§ ?åå?ùº</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleEffect.cpp">
-      <Filter>?Üå?ä§ ?åå?ùº</Filter>
-    </ClCompile>
     <ClCompile Include="PickUp.cpp">
       <Filter>MainGame\PickUp</Filter>
     </ClCompile>
@@ -424,6 +421,12 @@
     </ClCompile>
     <ClCompile Include="Broken.cpp">
       <Filter>MainGame\Broken</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEffect.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="StageClear.cpp" />
+    <ClCompile Include="ArrowUI.cpp">
+      <Filter>MainGame\UI\Arrow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -655,15 +658,6 @@
     <ClInclude Include="WallSlideState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="CommonFunction.h">
-      <Filter>?ó§?çî ?åå?ùº</Filter>
-    </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>?ó§?çî ?åå?ùº</Filter>
-    </ClInclude>
-    <ClInclude Include="Factory.h">
-      <Filter>?ó§?çî ?åå?ùº</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerAnim.h">
       <Filter>MainGame\Player</Filter>
     </ClInclude>
@@ -680,7 +674,7 @@
     <ClInclude Include="ScenePlayer.h" />
     <ClInclude Include="Stage1Scene.h">
       <Filter>MainGame\Scene\Stage</Filter>
-    </ClInclude>  
+    </ClInclude>
     <ClInclude Include="WorldBackground.h">
       <Filter>MainGame\Background</Filter>
     </ClInclude>
@@ -702,12 +696,6 @@
     <ClInclude Include="ScenePlayer.h">
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="StageClear.h">
-      <Filter>?ó§?çî ?åå?ùº</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleEffect.h">
-      <Filter>?ó§?çî ?åå?ùº</Filter>
-    </ClInclude>
     <ClInclude Include="PickUp.h">
       <Filter>MainGame\PickUp</Filter>
     </ClInclude>
@@ -719,6 +707,14 @@
     </ClInclude>
     <ClInclude Include="Broken.h">
       <Filter>MainGame\Broken</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="ParticleEffect.h" />
+    <ClInclude Include="CommonFunction.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="StageClear.h" />
+    <ClInclude Include="ArrowUI.h">
+      <Filter>MainGame\UI\Arrow</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

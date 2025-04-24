@@ -4,6 +4,7 @@
 class Image;
 class PickUpHand;
 class UIGame;
+class ArrowUI;
 class SimpleObject : public GameObject
 {
 public:
@@ -20,6 +21,8 @@ public:
 	virtual void MakeSnapShot(void* out) override;
 
 	void SetUI(UIGame* InUIGame) { UIGameObj = InUIGame; }
+
+	void SetArrowUI(ArrowUI* InArrowUI) { ArrowUIObj = InArrowUI; }
 	//Collider* GetCollider() const { return ObjectCollider; }
 	//RigidBody* GetRigidBody() const { return ObjectRigidBody; }
 	//FPOINT GetLastPos()  const { return LastPos; }
@@ -52,5 +55,6 @@ private:
 
 	PickUpHand* RightHand;
 	UIGame* UIGameObj;
+	ArrowUI* ArrowUIObj;
 };
 

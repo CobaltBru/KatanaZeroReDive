@@ -4,11 +4,13 @@
 
 Collider::Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, FPOINT size, bool debugDraw, float hitDelayTime)
 	:Owner(owner), ColliderType(colliderType), PivotPos(pivot), Size(size), bDebugDraw(debugDraw), HitDelayTime(hitDelayTime), Pos(), bHit(false), bCanHit(true), bDead(false), CurrentDelayTime(0.f)
+	, bVisible(true)
 {
 }
 
 Collider::Collider(GameObject* owner, EColliderType colliderType, FPOINT pivot, float size, bool debugDraw, float hitDelayTime)
 	: Owner(owner), ColliderType(colliderType), PivotPos(pivot), Size({ size,size }), bDebugDraw(debugDraw), HitDelayTime(hitDelayTime), Pos(), bHit(false), bCanHit(true), bDead(false), CurrentDelayTime(0.f)
+	, bVisible(true)
 {
 }
 

@@ -38,6 +38,11 @@ void PickUp::Update()
 {
 	LastPos = Pos;
 	
+	if (!IsVisible)
+		ObjectCollider->SetVisible(false);
+	else
+		ObjectCollider->SetVisible(true);
+
 	if (Angle >= 0.f)
 	{
 		SpinAlngle += 1000.f * TimerManager::GetInstance()->GetDeltaTime();

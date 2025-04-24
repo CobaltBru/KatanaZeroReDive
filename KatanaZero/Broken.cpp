@@ -5,6 +5,9 @@
 #include "RigidBody.h"
 #include "ScrollManager.h"
 #include "RenderManager.h"
+#include "CommonFunction.h"
+
+uniform_int_distribution<int> uidFlip(0, 1);
 
 Broken::Broken()
 {
@@ -15,6 +18,7 @@ HRESULT Broken::Init(string InImageKey, FPOINT InPos, FPOINT InVelocity, float I
 	Image = ImageManager::GetInstance()->FindImage(InImageKey + "_broke");
 	Pos = InPos;
 
+	bFlip = uidFlip(dre);
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, Image->GetFrameWidth() * (Scale * ScrollManager::GetInstance()->GetScale()), false, 1.f);
 	ObjectCollider->SetPos(Pos);
@@ -45,7 +49,7 @@ void Broken::Update()
 	LastPos = Pos;
 
 	ObjectCollider->Update();
-	ObjectRigidBody->Update();
+	ObjectRigidBody->Update();		
 
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
