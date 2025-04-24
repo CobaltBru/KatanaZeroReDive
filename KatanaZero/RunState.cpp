@@ -4,7 +4,7 @@
 
 PlayerState* RunState::GetInput(Player* player)
 {
-    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+    if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyUp('A') || KeyManager::GetInstance()->IsOnceKeyUp('D'))
         return player->GetStates()->Idle;
@@ -18,6 +18,7 @@ PlayerState* RunState::GetInput(Player* player)
 
 void RunState::Enter(Player* player)
 {
+    player->SetSwitchTime(0.02f);
     player->SetFrameIndex(0);
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidletorun"));
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -100.f, 0.f });
@@ -26,7 +27,14 @@ void RunState::Enter(Player* player)
 
 void RunState::Update(Player* player)
 {
-    player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+    if (player->GetInfo()->bIsShift)
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerorunshadow"));
+    else
+        player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -300.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 300.f, 0.f });
+
+    if (!player->GetInfo()->bIsShiftChanged) return;
+
 }

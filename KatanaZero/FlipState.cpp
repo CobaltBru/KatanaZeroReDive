@@ -35,4 +35,11 @@ void FlipState::Update(Player* player)
 
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -600.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 600.f, 0.f });
+
+    if (!player->GetInfo()->bIsShiftChanged) return;
+
+    if (player->GetInfo()->bIsShift)
+        player->SetImage(ImageManager::GetInstance()->FindImage("zeroflipshadow"));
+    else
+        player->SetImage(ImageManager::GetInstance()->FindImage("zeroflip"));
 }

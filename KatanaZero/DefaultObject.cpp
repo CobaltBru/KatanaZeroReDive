@@ -5,7 +5,7 @@
 #include "CollisionManager.h"
 
 DefaultObject::DefaultObject()
-	:Image(nullptr), bFlip(false)
+	:Image(nullptr)
 {
 }
 
@@ -38,7 +38,7 @@ void DefaultObject::Update()
 void DefaultObject::Render(HDC hdc)
 {
 	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-	Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip,true, ScrollManager::GetInstance()->GetScale());
+	Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip,true, Scale * ScrollManager::GetInstance()->GetScale());
 }
 
 void DefaultObject::Release()

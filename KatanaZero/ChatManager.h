@@ -66,6 +66,7 @@ protected:
 	//말풍선 켜지는데 걸리는 시간
 	float boxTime;
 	int statusFlag = 0;
+	bool isComplete;
 public:
 	virtual ~Chat() {};
 	void Init(vector <pair<float, Token >> &tokens);
@@ -78,8 +79,9 @@ public:
 	inline int getStatus() { return statusFlag; }
 	virtual void moveCursor(int way) {};
 	virtual inline string selectCursor() { return "NULL"; }
-
+	inline bool IsComplete() { return isComplete; }
 	void calcSizes(HDC hdc);
+	virtual inline float getTotalTime() { return 5.f; }
 };
 
 enum class OptionState { RED, TRANSITION, NORMAL };
@@ -129,6 +131,7 @@ public:
 	void DrawNormalSelects(HDC hdc);
 	virtual void moveCursor(int way) override;
 	virtual string selectCursor() override;
+	virtual inline float getTotalTime() { return totalTime; }
 
 };
 class ChatManager : public GameObject
@@ -156,5 +159,6 @@ public:
 	void LoadChat(const std::string& path);
 
 	inline string getKey() { return currentKey; }
+	bool checkChatComplete(string key);
 };
 

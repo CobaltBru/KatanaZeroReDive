@@ -28,7 +28,7 @@ HRESULT MainGame::Init()
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
 	SoundManager::GetInstance()->Init();
-
+	
 	if (FAILED(InitSound()))
 	{
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
@@ -41,11 +41,11 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("HY","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Test","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
-
+	
 	int nFontsAdded = AddFontResourceEx(L"Font/DungGeunMo.ttf", FR_PRIVATE, 0);
 	if (nFontsAdded == 0)
 	{

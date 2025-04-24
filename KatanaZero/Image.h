@@ -70,10 +70,11 @@ public:
 		int maxFrameX, int maxFrameY,
 		bool isTransparent = FALSE, COLORREF transColor = FALSE);
 
-	HRESULT Init(const wchar_t* filePath, bool isTransparent = FALSE, COLORREF transColor = FALSE);
+	HRESULT Init(const wchar_t* filePath, bool isTransparent = FALSE, COLORREF transColor = FALSE, int FrameWidth = 0, int FrameHeight = 0);
 
 	// 화면에 출력
 	void Render(HDC hdc, int destX = 0, int destY = 0, float Scale = 1.f);
+
 	void Render(HDC hdc, int destX, int destY, int frameIndex, bool isFlip = false);
 	void FrameRender(HDC hdc, int destX, int destY,
 		int frameX, int frameY, bool isFlip = false, bool isCenter = true, float Scale = 1.f);
@@ -96,5 +97,8 @@ public:
 	inline int GetHeight() { return imageInfo->height; }
 	inline int GetFrameWidth() { return imageInfo->frameWidth; }
 	inline int GetFrameHeight() { return imageInfo->frameHeight; }
+	inline bool GetTransparent() { return isTransparent; }
+
+	void SetTransparent(bool InTransparent) { isTransparent = InTransparent; }
 };
 

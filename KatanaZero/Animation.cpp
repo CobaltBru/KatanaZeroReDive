@@ -24,6 +24,7 @@ void Animation::Init(Image* image, int frameX, float scale)
 	isComplete = false;
 	loopflag = true;
 
+	isMove = false;
 	moveTask.dest = { 0,0 };
 	moveTask.duration = 0.f;
 	moveTask.flag = 0.f;
@@ -52,6 +53,7 @@ void Animation::Init(GPImage* image, int frameX, float scale)
 	isComplete = false;
 	loopflag = true;
 
+	isMove = false;
 	moveTask.dest = { 0,0 };
 	moveTask.duration = 0.f;
 	moveTask.flag = 0.f;
@@ -146,9 +148,13 @@ void Animation::Render(HDC hdc)
 void Animation::Start()
 {
 	anitaskIdx = 0;
-	frameIdx = 0;
+	frameIdx = aniTasks.front().first;
 	timer = 0;
 	isStart = true;
+	isMoveComplete = false;
+	isComplete = false;
+	isOn = true;
+
 }
 
 void Animation::Stop()
@@ -212,11 +218,13 @@ void Animation::setAniTask(initializer_list<pair<int, float>> lst)
 	{
 		aniTasks.push_back(task);
 	}
+	frameIdx = aniTasks[anitaskIdx].first;
 }
 
 void Animation::setAniTask(std::vector<pair<int, float>>& lst)
 {
 	aniTasks.assign(lst.begin(), lst.end());
+	frameIdx = aniTasks[anitaskIdx].first;
 }
 
 void Animation::Release()

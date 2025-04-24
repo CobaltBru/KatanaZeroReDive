@@ -99,6 +99,14 @@ typedef struct tagFPOINT
 		fp.y = -y;
 		return fp;
 	}
+	tagFPOINT operator *(const tagFPOINT& fp2)
+	{
+		tagFPOINT fp;
+		fp.x = x * fp2.x;
+		fp.y = y * fp2.y;
+		return fp;
+	}
+
 
 	bool operator == (const tagFPOINT& fp2)
 	{
@@ -107,6 +115,14 @@ typedef struct tagFPOINT
 	bool operator != (const tagFPOINT& fp2)
 	{
 		return (x != fp2.x || y != fp2.y);
+	}
+	tagFPOINT operator + (const tagFPOINT& fp2) const 
+	{
+		return tagFPOINT{x+fp2.x, y+fp2.y};
+	}
+	tagFPOINT operator - (const tagFPOINT& fp2) const
+	{
+		return tagFPOINT{ x - fp2.x, y - fp2.y };
 	}
 
 } FPOINT;
@@ -169,6 +185,7 @@ struct FObjectData
 	FPOINT Offset;
 	FPOINT Size;
 	bool bLeft;
+	float Scale;
 };
 
 /*

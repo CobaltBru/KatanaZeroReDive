@@ -33,7 +33,7 @@ public:
 
 	Image* AddImage(string key, const wchar_t* filePath,
 		bool isTransparent = FALSE,
-		COLORREF transColor = FALSE);
+		COLORREF transColor = FALSE, int FrameWidth = 0,int FramwHeight = 0);
 
 	void DeleteImage(string key);
 	Image* FindImage(string key);

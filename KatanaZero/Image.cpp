@@ -108,7 +108,7 @@ HRESULT Image::Init(const wchar_t* filePath, int width, int height, int maxFrame
     return S_OK;   // S_OK, E_FAIL
 }
 
-HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transColor)
+HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transColor, int FrameWidth, int FrameHeight)
 {
     HDC hdc = GetDC(g_hWnd);
 
@@ -130,10 +130,10 @@ HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transC
     imageInfo->height = bmp.bmHeight;
     imageInfo->loadType = IMAGE_LOAD_TYPE::File;
 
-    imageInfo->maxFrameX = 0;
-    imageInfo->maxFrameY = 0;
-    imageInfo->frameWidth = 0;
-    imageInfo->frameHeight = 0;
+    imageInfo->maxFrameX = FrameWidth == 0 ? 0 : bmp.bmWidth / FrameWidth;
+    imageInfo->maxFrameY = FrameHeight == 0 ? 0 :bmp.bmHeight / FrameHeight;
+    imageInfo->frameWidth = FrameWidth;
+    imageInfo->frameHeight = FrameHeight;
     imageInfo->currFrameX = imageInfo->currFrameY = 0;
 
     ReleaseDC(g_hWnd, hdc);
@@ -152,7 +152,7 @@ HRESULT Image::Init(const wchar_t* filePath, bool isTransparent, COLORREF transC
 
 void Image::Render(HDC hdc, int destX, int destY, float Scale)
 {
-    if (isTransparent)
+   if (isTransparent)
     {
         GdiTransparentBlt(hdc,
             destX, destY,
@@ -164,15 +164,24 @@ void Image::Render(HDC hdc, int destX, int destY, float Scale)
     }
     else
     {
-        BitBlt(
-            hdc,                // 복사 목적지 DC
-            destX, destY,       // 복사 목적지 위치
-            imageInfo->width * Scale,   // 원본에서 복사될 가로크기
-            imageInfo->height * Scale,  // 원본에서 복사될 세로크기
-            imageInfo->hMemDC,  // 원본 DC
-            0, 0,               // 원본 복사 시작 위치
-            SRCCOPY             // 복사 옵션
+        StretchBlt(hdc, 
+            destX, destY,
+            imageInfo->width * Scale, imageInfo->height * Scale,
+            imageInfo->hMemDC,
+            0,0,
+            imageInfo->width, imageInfo->height,
+            SRCCOPY
         );
+
+        //BitBlt(
+        //    hdc,                // 복사 목적지 DC
+        //    destX, destY,       // 복사 목적지 위치
+        //    imageInfo->width * Scale,   // 원본에서 복사될 가로크기
+        //    imageInfo->height * Scale,  // 원본에서 복사될 세로크기
+        //    imageInfo->hMemDC,  // 원본 DC
+        //    0, 0,               // 원본 복사 시작 위치
+        //    SRCCOPY             // 복사 옵션
+        //);
     }
 }
 

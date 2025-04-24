@@ -146,6 +146,7 @@
     <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="FlipState.cpp" />
+    <ClCompile Include="GoalTrigger.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
     <ClCompile Include="GPImageManager.cpp" />
     <ClCompile Include="HomeScene.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="JumpState.cpp" />
     <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="PickUp.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -177,7 +179,6 @@
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PlayerAnim.cpp" />
     <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PopUpManager.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp" />
@@ -209,12 +210,14 @@
     <ClCompile Include="TalkScene.cpp" />
     <ClCompile Include="TestObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TimeLineBuffer.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
     <ClCompile Include="UIGame.cpp" />
     <ClCompile Include="WallSlideState.cpp" />
+    <ClCompile Include="WorldBackground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -228,6 +231,7 @@
     <ClInclude Include="Enemies.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="FlipState.h" />
+    <ClInclude Include="GoalTrigger.h" />
     <ClInclude Include="GoPopUp.h" />
     <ClInclude Include="GPImageManager.h" />
     <ClInclude Include="HomeScene.h" />
@@ -238,6 +242,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JumpState.h" />
     <ClInclude Include="Observer.h" />
+    <ClInclude Include="PickUp.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="Collider.h" />
@@ -273,6 +278,7 @@
     <ClInclude Include="Reference\Headers\Imgui\imstb_truetype.h" />
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="PlayerState.h" />
+    <ClInclude Include="Reference\Headers\Imgui\stb_image.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ReplayObjects.h" />
     <ClInclude Include="RigidBody.h" />
@@ -297,12 +303,14 @@
     <ClInclude Include="TalkScene.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="TimeLineBuffer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
     <ClInclude Include="UIGame.h" />
     <ClInclude Include="WallSlideState.h" />
+    <ClInclude Include="WorldBackground.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -26,11 +26,16 @@ public:
     virtual void Render(HDC hdc);
 
     bool GetIsActive() { return isActive; }
+    float GetAngle() { return angle; }
 
     void SetIsActive(bool isActive) { this->isActive = isActive; }
     void SetPos(FPOINT pos) { this->Pos = pos; }
     void SetAngle(float angle) { this->angle = angle; }
 
     void Collision();
+};
+
+class BulletTest : public Bullet1
+{
 };
 

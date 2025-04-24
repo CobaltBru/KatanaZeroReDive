@@ -16,6 +16,20 @@ PlayerState* AttackState::GetInput(Player* player)
 		player->SetEffectImage(nullptr);
 		return player->GetStates()->Idle;
     }
+
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
+	if (lineResult.LineType == ELineType::Wall)
+	{
+		if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
+
+		playerInfo->bIsAttack = false;
+		if (player->GetRigidBody()->IsGround() == false)
+		{
+			player->SetSwitchTime(0.02f);
+			player->SetEffectImage(nullptr);
+			return player->GetStates()->WallSlide;
+		}
+	}
 	
 	return nullptr;
 }
@@ -30,9 +44,12 @@ void AttackState::Enter(Player* player)
 	
 	player->SetImage(ImageManager::GetInstance()->FindImage("zeroattack"));
 	player->SetEffectImage(ImageManager::GetInstance()->FindImage("normalslash"));
+	
 	player->SetEState(EPlayerState::Attack);
 	player->GetInfo()->bIsAttack = true;
-	
+	player->GetInfo()->bCanAttack = false;
+	player->InitAttackTimer();
+
 	if (player->GetPos().x > g_ptMouse.x) player->SetDirection(EDirection::Left);
 	if (player->GetPos().x < g_ptMouse.x) player->SetDirection(EDirection::Right);
 
@@ -42,7 +59,7 @@ void AttackState::Enter(Player* player)
 	attackDir.y = g_ptMouse.y - player->GetPos().y;
 	Normalize(attackDir);
 
-	player->GetRigidBody()->AddVelocity(attackDir * 100.f);
+	player->GetRigidBody()->AddVelocity(attackDir * 300.f);
 }
 
 void AttackState::Update(Player* player)
