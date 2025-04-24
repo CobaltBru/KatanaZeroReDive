@@ -1,6 +1,8 @@
 #include "RunState.h"
 #include "Player.h"
 #include "RigidBody.h"
+#include "EffectManager.h"
+
 
 PlayerState* RunState::GetInput(Player* player)
 {
@@ -18,15 +20,22 @@ PlayerState* RunState::GetInput(Player* player)
 
 void RunState::Enter(Player* player)
 {
+    updateCount = 0;
+
     player->SetSwitchTime(0.02f);
     player->SetFrameIndex(0);
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidletorun"));
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -100.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 100.f, 0.f });
+
+
+    EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight()*2 }, 100.f, false);
 }
 
 void RunState::Update(Player* player)
 {
+    updateCount++;
+
     if (player->GetInfo()->bIsShift)
         player->SetImage(ImageManager::GetInstance()->FindImage("zerorunshadow"));
     else
@@ -35,6 +44,9 @@ void RunState::Update(Player* player)
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -300.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 300.f, 0.f });
 
-    if (!player->GetInfo()->bIsShiftChanged) return;
-
+    if (updateCount > 100)
+    {
+        EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 2 }, 100.f, false);
+        updateCount = 0;
+    }
 }

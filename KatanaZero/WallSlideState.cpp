@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "RigidBody.h"
 #include "Image.h"
-
+#include "EffectManager.h"
 
 PlayerState* WallSlideState::GetInput(Player* player)
 {
@@ -14,16 +14,17 @@ PlayerState* WallSlideState::GetInput(Player* player)
 		player->GetInfo()->prevState = "wallslide";
 		return player->GetStates()->Jump;
 	}
-	/*if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('A') && !lineResult.IsLeft)
 	{
 		player->GetRigidBody()->AddVelocity({-80.f,50.f });
-		return player->GetStates()->Idle;
+		return player->GetStates()->Fall;
 	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+	if (KeyManager::GetInstance()->IsOnceKeyDown('D') && lineResult.IsLeft)
 	{
 		player->GetRigidBody()->AddVelocity({ 80.f,50.f });
-		return player->GetStates()->Idle;
-	}*/
+		return player->GetStates()->Fall;
+	}
 	
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
@@ -39,23 +40,57 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 void WallSlideState::Enter(Player* player)
 {
+	updateCount = 0;
+	
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
+	if (lineResult.IsLeft)
+	{
+		EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3}, 90.f, true);
+	}
+	else
+	{
+		EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
+	}
+
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 
-	const FLineResult lineResult = player->GetRigidBody()->GetResult();
 	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
-	else player->SetDirection(EDirection::Right);		
+	else player->SetDirection(EDirection::Right);			
 }
 
 void WallSlideState::Update(Player* player)
 {
+	updateCount++;
+
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 	//player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
 
-	if (!player->GetInfo()->bIsShiftChanged) return;
+	if (updateCount > (player->GetImage()->GetMaxFrameX() * 100))
+	{
+		const FLineResult lineResult = player->GetRigidBody()->GetResult();
+		if (lineResult.IsLeft)
+		{
+			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 90.f, true);
+		}
+		else
+		{
+			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
+		}
 
-	if (player->GetInfo()->bIsShift)
+		//EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, halfHeight },
+		//	player->GetPos() + FPOINT{ 0.f, halfHeight }, 0.1f, false);
+		updateCount = 0;
+	}
+
+	if (player->GetInfo()->bIsShiftChanged && player->GetInfo()->bIsShift)
 		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslideshadow"));	
+
+	//EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos(), 0.0f, false);
+	//EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip)
 }
+
+
+
 
 	//if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 
 	//	(KeyManager::GetInstance()->IsOnceKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 

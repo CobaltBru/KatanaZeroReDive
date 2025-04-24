@@ -2,11 +2,14 @@
 #include "Player.h"
 #include "RigidBody.h"
 #include "Image.h"
+#include "EffectManager.h"
+
 
 PlayerState* JumpState::GetInput(Player* player)
 {
     if (player->GetRigidBody()->IsGround() == true)
-    {
+    {        
+        EffectManager::GetInstance()->Activefx("landcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 1.75f }, 0.0f, false);
         return player->GetStates()->Idle;
     }
 
@@ -30,20 +33,18 @@ PlayerState* JumpState::GetInput(Player* player)
             else player->SetDirection(EDirection::Right);
         }
 
-    }
-    
-
+    }   
     
     if (KeyManager::GetInstance()->IsStayKeyDown('A') && player->GetInfo()->prevState != "wallslide")
     {
         player->SetDirection(EDirection::Left);
-        player->GetRigidBody()->AddVelocity({ -1.f, 0.f });        
+        player->GetRigidBody()->AddVelocity({ -2.f, 0.f });        
     }
     
     if (KeyManager::GetInstance()->IsStayKeyDown('D') && player->GetInfo()->prevState != "wallslide")
     {
         player->SetDirection(EDirection::Right);
-        player->GetRigidBody()->AddVelocity({ 1.f, 0.f });
+        player->GetRigidBody()->AddVelocity({ 2.f, 0.f });
     }
 
     if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
@@ -67,7 +68,10 @@ void JumpState::Enter(Player* player)
     player->SetSwitchTime(0.02f * 10.f);
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zerojump"));
-    player->GetRigidBody()->AddVelocity({ 0.f, -800.f });
+    
+    EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ 0.f, -player->GetHalfHeight()}, 0.0f, false);
+        
+    player->GetRigidBody()->AddVelocity({ 0.f, -600.f });
 }
 
 void JumpState::Update(Player* player)

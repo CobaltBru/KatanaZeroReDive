@@ -21,6 +21,9 @@ void EffectManager::InitEffects()
     Addfx("hitslash", {}, {}, 0.f);
     Addfx("enemyslash", {}, {}, 0.f);
     Addfx("jumpcloud", {}, {}, 0.f);
+    Addfx("wallcloud", {}, {}, 0.f);
+    Addfx("landcloud", {}, {}, 0.f);
+    Addfx("dustcloud", {}, {}, 0.f);
 }
 
 void EffectManager::Release()
