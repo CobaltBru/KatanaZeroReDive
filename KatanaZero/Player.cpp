@@ -19,7 +19,6 @@
 #include "WallSlideState.h"
 #include "CommonFunction.h"
 #include "Bullet.h"
-#include "EffectManager.h"
 
 #include "SnapShotManager.h"
 
@@ -174,7 +173,15 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{		
-		image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, (dir == EDirection::Left ? true : false), true, ScrollManager::GetInstance()->GetScale());
+		if (dir == EDirection::Left)		
+			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
+		else		
+			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+
+		//if (dir == EDirection::Left)
+		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+		//else
+		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);
 
 		// update frame index
 		if (frameTimer > switchTime)
@@ -188,9 +195,23 @@ void Player::Render(HDC hdc)
 			FrameIndex %= image->GetMaxFrameX();	
 	}
 
-	if (info->bIsAttack)
-		EffectManager::GetInstance()->Activefx("normalslash", GetPos() + FPOINT{-30.f, -30.f}, 0.f, (dir == EDirection::Left ? true : false));
-		
+	//if (effectImage != nullptr && info->bIsAttack)
+	//{
+	//	FPOINT attackDir = { 0.f, 0.f };
+	//	attackDir.x = g_ptMouse.x - Pos.x;
+	//	attackDir.y = g_ptMouse.y - Pos.y;
+	//	Normalize(attackDir);
+	//	AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
+	//	if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+	//	
+	//	/*if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
+	//}
 }
 
 void Player::MakeSnapShot(void* out)
@@ -374,7 +395,7 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zerocrouch", L"Image/zero_crouch.bmp", 36, 40, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroattack", L"Image/zero_attack.bmp", 448, 44, 7, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));		
-	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 37, 42, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 34, 4, 1, true, RGB(255, 255, 255));	
 
 	// shadow
@@ -385,26 +406,9 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zeroflipshadow", L"Image/zero_flip_shadow.bmp", 528, 44, 11, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zerofallshadow", L"Image/zero_fall_shadow.bmp", 164, 49, 4, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroattackshadow", L"Image/zero_attack_shadow.bmp", 420, 41, 7, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 38, 42, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("zerowallslideshadow", L"Image/zero_wallslide_shadow.bmp", 46, 42, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorunshadow", L"Image/zero_idle_to_run_shadow.bmp", 184, 34, 4, 1, true, RGB(255, 0, 255));
 
 	// slash
 	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 }
-
-
-
-
-//if (effectImage != nullptr && info->bIsAttack)
-	//{
-	//	FPOINT attackDir = { 0.f, 0.f };
-	//	attackDir.x = g_ptMouse.x - Pos.x;
-	//	attackDir.y = g_ptMouse.y - Pos.y;
-	//	Normalize(attackDir);
-	//	AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
-	//	if (dir == EDirection::Left)
-	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
-	//	else
-	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
-	//}
-
