@@ -9,7 +9,18 @@
 
 void EffectManager::Init()
 {
+    
+}
+
+void EffectManager::InitEffects()
+{
     Addfx("gangstergun", L"Image/fx/Gangster_FireFx.png", 6, 1);
+    Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
+    Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
+    Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
+    Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
+    Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
+    Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
 }
 
 void EffectManager::Release()
@@ -146,18 +157,6 @@ void EffectManager::Addfx(string key, FPOINT start, FPOINT end, float speed, boo
     mapFx.insert(make_pair(key, fx));
 }
 
-void EffectManager::RegisterEffect()
-{
-    map<string, Effect*>::iterator iter;
-    for (iter = mapFx.begin(); iter != mapFx.end(); iter++)
-    {
-        if (iter->second)
-        {
-            //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, iter->second);
-        }
-    }
-}
-
 Effect* EffectManager::Findfx(string key)
 {
     map<string, Effect*>::iterator iter;
@@ -174,7 +173,6 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, bool bFlip)
     Effect* newfx = new Effect(*fx); // ¾èº¹ -> ´ó±Û¸µ »µÅ· Æ÷ÀÎÅÍ ¹ß»ý   << ±â¸ð¸µ~
     newfx->Activefx(pos, angle, bFlip);
     activeFx.push_back(newfx);
-    //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);
 }
 
 void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip)
@@ -184,7 +182,6 @@ void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, b
     Effect* newfx = new Effect(*fx);
     newfx->Activefx(pos, dest, speed, bFlip);
     activeFx.push_back(newfx);
-    //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);
 }
 
 void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip)

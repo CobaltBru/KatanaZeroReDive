@@ -9,7 +9,7 @@
 #include "CommonFunction.h"
 #include "EffectManager.h"
 #include "ScrollManager.h"
-#include "GangsterBullet.h"
+#include "Bullet.h"
 
 void EIDLE::Enter(Enemy& enemy)
 {
@@ -142,9 +142,6 @@ EnemyState* ERun::CheckTransition(Enemy* enemy)
 			else
 				return new GangsterAttack();		// gun
 			break;
-		case EType::ShieldCop:
-			return new ShieldCopAttack();
-			break;
 		}
 	}
 	if (enemy->IsHitted())
@@ -186,7 +183,7 @@ void EDead::Enter(Enemy& enemy)
 	enemy.ChangeAnimation(EImageType::Dead);
 	FPOINT colliderSize = enemy.GetCollider()->GetSize();
 	EffectManager::GetInstance()->CreateBGBlood({ enemy.GetPos().x, enemy.GetPos().y - 10.f }, 0.f);
-	EffectManager::GetInstance()->EmitBlood(enemy.GetPos(), 20);
+	EffectManager::GetInstance()->EmitBlood(enemy.GetPos(), 40);
 	EffectManager::GetInstance()->Activefx("hitslash", enemy.GetPos(), 0.f, false);
 }
 
@@ -284,19 +281,25 @@ void GangsterAttack::Enter(Enemy& enemy)
 	state = "Attack";
 	enemy.ChangeAnimation(EImageType::GangsterAttack);
 	isAttackFinish = false;
+	isFire = false;
 	enemy.GetRigidBody()->SetVelocity({ 0.f, 0.f });
 }
 
 void GangsterAttack::Update(Enemy& enemy)
 {
-	if (enemy.GetCurrFrame() == 1)
+	if (enemy.GetCurrFrame() == 1 && !isFire)
 	{
 		float offset = (enemy.GetDir() == 1) ? 28.f : -28.f;
 		FPOINT firePoint = { enemy.GetPos().x + offset * ScrollManager::GetInstance()->GetScale(), enemy.GetPos().y - 1.f * ScrollManager::GetInstance()->GetScale() };
 		bool bFlip = (enemy.GetDir() == 1) ? false : true;
 		EffectManager::GetInstance()->Activefx("gangstergun", firePoint, 0.f, bFlip);
-		GangsterBullet* bullet = new GangsterBullet();
-		bullet->Init(firePoint, enemy.GetDir());
+		Bullet1* bullet = new Bullet1();
+		auto player = SnapShotManager::GetInstance()->GetPlayer();
+
+		int dir = (enemy.GetDir() == 1) ? 1 : -1;
+		float targetangle = atan2f(player->GetPos().y - enemy.GetPos().y, player->GetPos().x - enemy.GetPos().x);
+		bullet->Init(firePoint, -targetangle, 1000.f, dir);
+		isFire = true;
 	}
 	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
 	{
@@ -319,25 +322,6 @@ EnemyState* GangsterAttack::CheckTransition(Enemy* enemy)
 	{
 		return new EDead();
 	}
-	return nullptr;
-}
-
-void ShieldCopAttack::Enter(Enemy& enemy)
-{
-	EAttack::Enter(enemy);
-}
-
-void ShieldCopAttack::Update(Enemy& enemy)
-{
-	enemy.GetRigidBody()->Update();
-}
-
-void ShieldCopAttack::Exit(Enemy& enemy)
-{
-}
-
-EnemyState* ShieldCopAttack::CheckTransition(Enemy* enemy)
-{
 	return nullptr;
 }
 

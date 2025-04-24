@@ -105,6 +105,8 @@ public:
 
 class GangsterAttack : public EAttack
 {
+private:
+	bool isFire{ false };
 public:
 	virtual void Enter(Enemy& enemy) override;
 	virtual void Update(Enemy& enemy) override;
@@ -113,15 +115,6 @@ public:
 };
 
 class GangsterMeleeAttack : public EAttack
-{
-public:
-	virtual void Enter(Enemy& enemy) override;
-	virtual void Update(Enemy& enemy) override;
-	virtual void Exit(Enemy& enemy) override;
-	virtual EnemyState* CheckTransition(Enemy* enemy) override;
-};
-
-class ShieldCopAttack : public EAttack
 {
 public:
 	virtual void Enter(Enemy& enemy) override;

@@ -8,7 +8,6 @@ enum class EType
 	Grunt,
 	Pomp,
 	Gangster,
-	ShieldCop,
 	None
 };
 

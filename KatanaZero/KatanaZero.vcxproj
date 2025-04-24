@@ -146,7 +146,6 @@
     <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="FallState.cpp" />
     <ClCompile Include="FlipState.cpp" />
-    <ClCompile Include="GangsterBullet.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
     <ClCompile Include="GPImageManager.cpp" />
     <ClCompile Include="HomeScene.cpp" />
@@ -229,7 +228,6 @@
     <ClInclude Include="Enemies.h" />
     <ClInclude Include="FallState.h" />
     <ClInclude Include="FlipState.h" />
-    <ClInclude Include="GangsterBullet.h" />
     <ClInclude Include="GoPopUp.h" />
     <ClInclude Include="GPImageManager.h" />
     <ClInclude Include="HomeScene.h" />

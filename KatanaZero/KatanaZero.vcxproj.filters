@@ -389,9 +389,6 @@
     </ClCompile>
     <ClCompile Include="ScenePsych.cpp" />
     <ClCompile Include="ScenePlayer.cpp" />
-    <ClCompile Include="GangsterBullet.cpp">
-      <Filter>MainGame\Enemy\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="Stage1Scene.cpp">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClCompile>
@@ -651,9 +648,6 @@
     </ClInclude>
     <ClInclude Include="ScenePsych.h" />
     <ClInclude Include="ScenePlayer.h" />
-    <ClInclude Include="GangsterBullet.h">
-      <Filter>MainGame\Enemy\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="Stage1Scene.h">
       <Filter>MainGame\Scene\Stage</Filter>
     </ClInclude>
