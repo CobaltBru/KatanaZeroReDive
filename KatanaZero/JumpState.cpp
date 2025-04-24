@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "RigidBody.h"
 #include "Image.h"
+#include "EffectManager.h"
+
 
 PlayerState* JumpState::GetInput(Player* player)
 {
@@ -30,9 +32,7 @@ PlayerState* JumpState::GetInput(Player* player)
             else player->SetDirection(EDirection::Right);
         }
 
-    }
-    
-
+    }   
     
     if (KeyManager::GetInstance()->IsStayKeyDown('A') && player->GetInfo()->prevState != "wallslide")
     {
@@ -67,6 +67,8 @@ void JumpState::Enter(Player* player)
     player->SetSwitchTime(0.02f * 10.f);
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zerojump"));
+    EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos(), 0.0f, false);
+    //EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos(), player->GetPos() + FPOINT{0.f, -100.f}, 100.0f, false);
     player->GetRigidBody()->AddVelocity({ 0.f, -800.f });
 }
 

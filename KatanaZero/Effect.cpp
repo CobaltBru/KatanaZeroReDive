@@ -160,6 +160,11 @@ void Effect::Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip)
 
 }
 
+void Effect::Activefx(FPOINT pos, float angle, float speed, float scale, bool bFlip)
+{
+}
+
+
 Effect::Effect(const Effect& other)
 {
 	this->fxImage = other.fxImage;   // 이것도 포인터라 얕복이야

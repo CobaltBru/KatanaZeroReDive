@@ -146,6 +146,15 @@ void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, b
     //SnapShotManager::GetInstance()->AddGameObject(EObjectClassType::Effect, newfx);
 }
 
+void EffectManager::Activefx(string key, FPOINT pos, float angle, float speed, bool bFlip, float scale)
+{
+    Effect* fx = Findfx(key);
+    if (!fx) return;
+    Effect* newfx = new Effect(*fx); // 얕복 -> 댕글링 뻐킹 포인터 발생   << 기모링~
+    newfx->Activefx(pos, angle, speed, scale, bFlip);
+    activeFx.push_back(newfx);
+}
+
 void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip)
 {
     RemainEffect rFx;

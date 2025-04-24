@@ -19,6 +19,7 @@
 #include "WallSlideState.h"
 #include "CommonFunction.h"
 #include "Bullet.h"
+#include "EffectManager.h"
 
 
 Player::Player()
@@ -171,15 +172,7 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{		
-		if (dir == EDirection::Left)		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
-		else		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
-
-		//if (dir == EDirection::Left)
-		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
-		//else
-		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);
+		image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, (dir == EDirection::Left ? true : false), true, ScrollManager::GetInstance()->GetScale());
 
 		// update frame index
 		if (frameTimer > switchTime)
@@ -193,23 +186,9 @@ void Player::Render(HDC hdc)
 			FrameIndex %= image->GetMaxFrameX();	
 	}
 
-	if (effectImage != nullptr && info->bIsAttack)
-	{
-		FPOINT attackDir = { 0.f, 0.f };
-		attackDir.x = g_ptMouse.x - Pos.x;
-		attackDir.y = g_ptMouse.y - Pos.y;
-		Normalize(attackDir);
-		AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
-		if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+	if (info->bIsAttack)
+		EffectManager::GetInstance()->Activefx("normalslash", GetPos() + FPOINT{-30.f, -30.f}, 0.f, (dir == EDirection::Left ? true : false));
 		
-		/*if (dir == EDirection::Left)
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
-		else
-			effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true);*/
-	}
 }
 
 void Player::MakeSnapShot(void* out)
@@ -410,3 +389,20 @@ void Player::InitImage()
 	// slash
 	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 }
+
+
+
+
+//if (effectImage != nullptr && info->bIsAttack)
+	//{
+	//	FPOINT attackDir = { 0.f, 0.f };
+	//	attackDir.x = g_ptMouse.x - Pos.x;
+	//	attackDir.y = g_ptMouse.y - Pos.y;
+	//	Normalize(attackDir);
+	//	AttackCollider->SetPivot({ attackDir.x * 70.f,attackDir.y * 70.f });
+	//	if (dir == EDirection::Left)
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
+	//	else
+	//		effectImage->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+	//}
+

@@ -23,6 +23,7 @@ public:
 	Effect* Findfx(string key);
 	void Activefx(string key, FPOINT pos, float angle, bool bFlip);
 	void Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip);
+	void Activefx(string key, FPOINT pos, float angle, float speed, bool bFlip, float scale);
 	void CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip = false);
 };
 

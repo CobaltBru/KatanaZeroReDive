@@ -14,6 +14,7 @@ PlayerState* WallSlideState::GetInput(Player* player)
 		player->GetInfo()->prevState = "wallslide";
 		return player->GetStates()->Jump;
 	}
+
 	/*if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
 	{
 		player->GetRigidBody()->AddVelocity({-80.f,50.f });
@@ -56,6 +57,9 @@ void WallSlideState::Update(Player* player)
 	if (player->GetInfo()->bIsShift)
 		player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslideshadow"));	
 }
+
+
+
 
 	//if ((KeyManager::GetInstance()->IsStayKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 
 	//	(KeyManager::GetInstance()->IsOnceKeyDown('W') && KeyManager::GetInstance()->IsStayKeyDown('D')) || 

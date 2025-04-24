@@ -41,6 +41,7 @@ public:
 	void ApplySnapShot(const EffectSnapShot& fxSnapShot);
 	void Activefx(FPOINT pos, float angle ,bool bFlip = false);
 	void Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip = false);
+	void Activefx(FPOINT pos, float angle, float speed, float scale, bool bFlip = false);
 	inline bool IsActive() { return bActive; }
 
 	Effect(const Effect& other);
