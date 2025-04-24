@@ -151,6 +151,12 @@
     <Filter Include="MainGame\UI\Arrow">
       <UniqueIdentifier>{1bccb178-eb86-4e2c-9031-3d0b84f0f399}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Scene\Stage\Hidden">
+      <UniqueIdentifier>{4628e37a-41c7-400f-85b4-655697eb9bcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Hidden">
+      <UniqueIdentifier>{6c9a8958-825b-4fcd-a2c9-6f0b77ecb89c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -427,6 +433,18 @@
     <ClCompile Include="StageClear.cpp" />
     <ClCompile Include="ArrowUI.cpp">
       <Filter>MainGame\UI\Arrow</Filter>
+    </ClCompile>
+    <ClCompile Include="HiddenScene.cpp">
+      <Filter>MainGame\Scene\Stage\Hidden</Filter>
+    </ClCompile>
+    <ClCompile Include="HiddenBoss.cpp">
+      <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalParts.cpp">
+      <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClCompile>
+    <ClCompile Include="ArmAttack.cpp">
+      <Filter>MainGame\Enemy\Hidden</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -715,6 +733,18 @@
     <ClInclude Include="StageClear.h" />
     <ClInclude Include="ArrowUI.h">
       <Filter>MainGame\UI\Arrow</Filter>
+    </ClInclude>
+    <ClInclude Include="HiddenScene.h">
+      <Filter>MainGame\Scene\Stage\Hidden</Filter>
+    </ClInclude>
+    <ClInclude Include="HiddenBoss.h">
+      <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalParts.h">
+      <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmAttack.h">
+      <Filter>MainGame\Enemy\Hidden</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

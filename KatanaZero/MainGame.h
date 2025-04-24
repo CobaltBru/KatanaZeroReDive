@@ -23,7 +23,7 @@ public:
 private:
 	HRESULT InitSound();
 	HRESULT InitImage();
-
+	void InitBackground();
 private:
 	HDC hdc;
 	PAINTSTRUCT ps;

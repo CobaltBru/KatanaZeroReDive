@@ -85,6 +85,9 @@ public:
 	bool LineTraceByObject(FHitResult& hitResult, ECollisionGroup CollisionGroup, FPOINT start, FPOINT end, bool bDebugDraw = true, float DebugDuration = 1.f, COLORREF DebugColor = RGB(255,0,0));
 	bool CheckLineTrace(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4);
 	int ccw(FPOINT p1, FPOINT p2, FPOINT p3);
+
+	//ġƮŰ
+	Collider* GetTargetCollider(ECollisionGroup InCollisionGroup) { return CollisionList[(int)InCollisionGroup].front(); }
 private:
 	list<Collider*> CollisionList[(int)ECollisionGroup::End];
 	list<Line*> LineList;

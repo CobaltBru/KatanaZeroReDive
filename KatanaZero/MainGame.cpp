@@ -10,6 +10,7 @@
 #include "TalkScene.h"
 #include "HomeScene.h"
 #include "LoadingScene.h"
+#include "HiddenScene.h"
 #include "SoundManager.h"
 
 #include "ScreenEffectManager.h"
@@ -41,8 +42,9 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
+	SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Hidden","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -235,7 +237,40 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
 	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
 
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant", L"Image/Hidden/spr_psychboss_giant.bmp", 11352, 235, 24, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_lilguy", L"Image/Hidden/spr_psychboss_giant_lilguy.bmp", 4848, 126, 24, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_face_idle", L"Image/Hidden/spr_psychboss_giant_face_idle.bmp", 954, 231, 6, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_face_hurt", L"Image/Hidden/spr_psychboss_giant_face_hurt.bmp", 1449, 234, 9, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_idle", L"Image/Hidden/spr_psychboss_giant_tentacle_idle.bmp", 1008, 163, 12, 1, true, RGB(255, 0, 255));
+
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_stab", L"Image/Hidden/spr_psychboss_giant_tentacle_stab.bmp", 400, 216, 5, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_stab_end", L"Image/Hidden/spr_psychboss_giant_tentacle_stab_end.bmp", 276, 216, 4, 1, true, RGB(255, 0, 255));
+
+	ImageManager::GetInstance()->AddImage("spr_psychboss_stabber_0", L"Image/Hidden/spr_psychboss_stabber_0.bmp", 36, 450, 1, 1, true, RGB(255, 0, 255));
+
+
+	InitBackground();
+	
+
 	return S_OK;
+}
+
+void MainGame::InitBackground()
+{
+	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
+	if (!backgrounds.empty())
+	{
+		for (int i = 0; i < backgrounds.size(); ++i)
+		{
+			int dotPos = backgrounds[i].find_last_of('.');
+			string nameOnly = dotPos != string::npos ? backgrounds[i].substr(0, dotPos) : backgrounds[i];
+
+			wstring wsPath = L"Image/Background/";
+			wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
+
+			ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
+		}
+	}
 }
 
 MainGame::MainGame()

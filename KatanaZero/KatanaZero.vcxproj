@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="ArmAttack.cpp" />
     <ClCompile Include="ArrowUI.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Background.cpp" />
@@ -151,11 +152,14 @@
     <ClCompile Include="GoalTrigger.cpp" />
     <ClCompile Include="GoPopUp.cpp" />
     <ClCompile Include="GPImageManager.cpp" />
+    <ClCompile Include="HiddenBoss.cpp" />
+    <ClCompile Include="HiddenScene.cpp" />
     <ClCompile Include="HomeScene.cpp" />
     <ClCompile Include="DefaultObject.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="JumpState.cpp" />
+    <ClCompile Include="NormalParts.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="PickUp.cpp" />
@@ -227,6 +231,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="ArmAttack.h" />
     <ClInclude Include="ArrowUI.h" />
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Background.h" />
@@ -242,6 +247,8 @@
     <ClInclude Include="GoalTrigger.h" />
     <ClInclude Include="GoPopUp.h" />
     <ClInclude Include="GPImageManager.h" />
+    <ClInclude Include="HiddenBoss.h" />
+    <ClInclude Include="HiddenScene.h" />
     <ClInclude Include="HomeScene.h" />
     <ClInclude Include="DefaultObject.h" />
     <ClInclude Include="Factory.h" />
@@ -249,6 +256,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JumpState.h" />
+    <ClInclude Include="NormalParts.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="PickUp.h" />
