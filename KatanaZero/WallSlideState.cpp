@@ -27,12 +27,13 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 void WallSlideState::Enter(Player* player)
 {
+	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 }
 
 void WallSlideState::Update(Player* player)
 {
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
-	player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
+	//player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
 
 	if (!player->GetInfo()->bIsShiftChanged) return;
 

@@ -187,13 +187,13 @@ HRESULT TestScene::InitEffects()
 
 void TestScene::TestCode()
 {
-	// 라인 트레이스
-	FHitResult HitResult;
-	if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))
-	{
-		// 라인 트레이스 맞은 대상의 콜라이더
-		HitResult.HitCollision->SetHit(true);
-	}
+	//// 라인 트레이스
+	//FHitResult HitResult;
+	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))
+	//{
+	//	// 라인 트레이스 맞은 대상의 콜라이더
+	//	HitResult.HitCollision->SetHit(true);
+	//}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
