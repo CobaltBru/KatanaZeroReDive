@@ -216,6 +216,8 @@ void Player::Render(HDC hdc)
 
 void Player::MakeSnapShot(void* out)
 {
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->animFrame = this->FrameIndex;
 }
 
 void Player::InitPlayerStates()

@@ -22,7 +22,7 @@ public:
 	void Release();
 	void Update();
 	void Render(HDC hdc);
-	void Addfx(string key, FPOINT start, FPOINT end, float speed, bool bMove = false);
+	void Addfx(string key, FPOINT start, FPOINT end, float speed, float duration, bool bMove = false);
 	Effect* Findfx(string key);
 	void Activefx(string key, FPOINT pos, float angle, bool bFlip);
 	void Activefx(string key, FPOINT pos, float angle, float speed, bool bFlip);

@@ -14,13 +14,13 @@ void EffectManager::Init()
 
 void EffectManager::InitEffects()
 {
-    Addfx("gangstergun", {}, {}, 0.f);
-    Addfx("normalslash", {}, {}, 0.f);
-    Addfx("rainbowslash", {}, {}, 0.f);
-    Addfx("bulletreflect", {}, {}, 0.f);
-    Addfx("hitslash", {}, {}, 0.f);
-    Addfx("enemyslash", {}, {}, 0.f);
-    Addfx("jumpcloud", {}, {}, 0.f);
+    Addfx("gangstergun", {}, {}, 0.f, 0.1f);
+    Addfx("normalslash", {}, {}, 0.f, 0.1f);
+    Addfx("rainbowslash", {}, {}, 0.f, 0.1f);
+    Addfx("bulletreflect", {}, {}, 0.f, 0.1f);
+    Addfx("hitslash", {}, {}, 0.f, 0.1f);
+    Addfx("enemyslash", {}, {}, 0.f, 0.1f);
+    Addfx("jumpcloud", {}, {}, 0.f, 0.1f);
 }
 
 void EffectManager::Release()
@@ -116,13 +116,13 @@ void EffectManager::Render(HDC hdc)
     }
 }
 
-void EffectManager::Addfx(string key, FPOINT start, FPOINT end, float speed, bool bMove)
+void EffectManager::Addfx(string key, FPOINT start, FPOINT end, float speed, float duration, bool bMove)
 {
     Effect* fx = nullptr;
     fx = Findfx(key);
     if (fx) return;
     fx = new Effect();
-    if (FAILED(fx->Init(key, start, end, speed, bMove)))
+    if (FAILED(fx->Init(key, start, end, speed, duration, bMove)))
     {
         fx->Release();
         delete fx;

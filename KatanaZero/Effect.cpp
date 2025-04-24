@@ -12,7 +12,7 @@ void Effect::UpdateFrame()
 {
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	frameTimer += dt;
-	if (frameTimer > 0.1f)
+	if (frameTimer > frameduration)
 	{
 		currFrameX++;
 		if (currFrameX >= fxImage->getMaxFrame())
@@ -51,10 +51,11 @@ HRESULT Effect::Init()
 	return E_FAIL;
 }
 
-HRESULT Effect::Init(string key, FPOINT start, FPOINT end, float speed, bool bFlip, bool bMove)
+HRESULT Effect::Init(string key, FPOINT start, FPOINT end, float speed, float frameduration, bool bFlip, bool bMove)
 {
 	this->start = start;
 	this->end = end;
+	this->frameduration = frameduration;
 	pos = this->start;
 	currFrameX = 0;
 	currFrameY = 0;
@@ -189,6 +190,7 @@ Effect::Effect(const Effect& other)
 	this->bActive = false;             // 새 인스턴스는 아직 활성화 안 됐으니까
 	this->bMove = other.bMove;
 	this->alpha = other.alpha;
+	this->frameduration = other.frameduration;
 
 	// sour 테스트용 변수도 복사
 	this->offset = other.offset;
