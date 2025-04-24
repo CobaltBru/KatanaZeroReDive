@@ -16,10 +16,12 @@ enum class State
     Die
 };
 
+
 class Player;
 class RigidBody;
 class Bomb;
 class Lazer;
+class Turret;
 class Image;
 class Bullet1;
 class HeadHunter : public GameObject
@@ -36,6 +38,7 @@ private:
     bool faintStart;
     bool isFired;
     bool isFlipLocked;
+    bool turretSpawned;
 
 
     float angle;
@@ -62,6 +65,8 @@ private:
     Image* image;
     State state;
     Lazer* lazer;
+    Turret* turret;
+
     GameObject* player;
     std::vector<Bullet1*> bullets;
     std::vector<Bomb*> bombs;
@@ -105,5 +110,6 @@ public:
     void RandomLoop();
     void IsLeft();
     void IsAttacked();
+    void RoundLazerCollision();
 };
 

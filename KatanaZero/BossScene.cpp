@@ -96,8 +96,7 @@ HRESULT BossScene::InitImage()
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("headhunter", L"Image/HeadHunter/dash.bmp", 51, 25, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+
 
 	InitBackgroundImage();
 	InitTile();

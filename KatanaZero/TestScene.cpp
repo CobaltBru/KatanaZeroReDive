@@ -96,7 +96,6 @@ HRESULT TestScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
-
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
@@ -196,6 +195,8 @@ void TestScene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
+		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
@@ -218,12 +219,12 @@ void TestScene::TestCode()
 
 
 	// 라인 트레이스
-	FHitResult HitResult;
-	if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
-	{
-		// 라인 트레이스 맞은 대상의 콜라이더
-		HitResult.HitCollision->SetHit(true);
-	}
+	//FHitResult HitResult;
+	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y },true, 0.f))
+	//{
+	//	// 라인 트레이스 맞은 대상의 콜라이더
+	//	HitResult.HitCollision->SetHit(true);
+	//}
 }
 
 void TestScene::Update()

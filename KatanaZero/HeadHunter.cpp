@@ -5,6 +5,7 @@
 #include "Lazer.h"
 #include "Bullet.h"
 #include "Bomb.h"
+#include "Turret.h"
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "RigidBody.h"
@@ -32,6 +33,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     isLeft = true;
     bCanSpawnBomb = false;
     faintStart = true;
+    turretSpawned = false;
 
     angle = 0;
     weaponAngle = 0;
@@ -54,7 +56,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     deadCount = 0;
     dieIndex = 0;
 
-    state = State::GroundGun;
+    state = State::Teleport;
     {
         image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 50, 12, 1, true, RGB(255, 0, 255));
 
@@ -97,6 +99,9 @@ HRESULT HeadHunter::Init(FPOINT InPos)
     lazer = new Lazer();
     lazer->Init();
 
+    turret = new Turret();
+    turret->Init();
+
     return S_OK;
 }
 
@@ -112,6 +117,7 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
     bCanSpawnBomb = false;
     isFired = false;
     isFlipLocked = false;
+    turretSpawned = false;
 
     angle = 0;
     weaponAngle = 0;
@@ -151,6 +157,9 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
     lazer = new Lazer();
     lazer->Init();
 
+    turret = new Turret();
+    turret->Init();
+
     return S_OK;
 }
 
@@ -161,6 +170,13 @@ void HeadHunter::Release()
         lazer->Release();
         delete lazer;
         lazer = nullptr;
+    }
+
+    if (turret)
+    {
+        turret->Release();
+        delete turret;
+        turret = nullptr;
     }
 
     for (auto bullet : bullets) {
@@ -202,7 +218,8 @@ void HeadHunter::Update()
     /*for (auto bomb : bombs) {
         bomb->Update();
     }*/
-    
+
+    turret->Update({ 300,300 });
     
    
     // 테스트
@@ -271,16 +288,18 @@ void HeadHunter::Render(HDC hdc)
     {
         image->FrameRender(hdc, Pos.x, Pos.y, frameIndex, 0, isFlip, true, ScrollManager::GetInstance()->GetScale());
 
-        lazer->Render(hdc);
-
-        for (auto bullet : bullets) {
-            bullet->Render(hdc);
-        }
-
-        for (auto bomb : bombs) {
-            bomb->Render(hdc);
-        }
     }
+	lazer->Render(hdc);
+
+	for (auto bullet : bullets) {
+		bullet->Render(hdc);
+	}
+
+	for (auto bomb : bombs) {
+		bomb->Render(hdc);
+	}
+
+    turret->Render(hdc);
 }
 
 void HeadHunter::Collision()
@@ -321,10 +340,10 @@ void HeadHunter::Idle()
             ChangeState(State::GroundLazer); // 또는 groundlazer
         }
         if (loop == 1 || loop == 4) {
-            ChangeState(State::GroundGun);
+            ChangeState(State::GroundLazer);
         }
         if (loop == 2 || loop ==5) {
-            ChangeState(State::Dash); //dash
+            ChangeState(State::GroundLazer); //dash
         }
         
     }
@@ -520,6 +539,13 @@ void HeadHunter::Bullet()
 
 void HeadHunter::Teleport()
 {
+    if (!turretSpawned)
+    {
+        turretSpawned = true;
+        turret->SetIsActive(true);
+    }
+   
+
     image = ImageManager::GetInstance()->FindImage("Teleport");
     if (timer > 0.1f)
     {
@@ -959,20 +985,6 @@ void HeadHunter::CheckPlayerPos()
     {
         dir = 1;
     }
-
-    //if (state != State::Bullet && state != State::DashDown && state != State::RoundLazer && state != State::VerticalLazer && state != State::GroundLazer && state != State::Teleport) {
-    //   if (Result.LineType == ELineType::Normal) // 땅에 있을 때 기준으로 이미지전환
-    //    {
-    //        if (Pos.x < player->GetPos().x)
-    //        {
-    //            isFlip = false;
-    //        }
-    //        else
-    //        {
-    //            isFlip = true;
-    //        }
-    //    }
-    //}
  
 
 }
@@ -1002,5 +1014,15 @@ void HeadHunter::IsAttacked()
         ChangeState(State::Faint);
     }
 
+}
+
+void HeadHunter::RoundLazerCollision()
+{
+    FHitResult HitResult;
+    if (CollisionManager::GetInstance()->LineTraceByObject(HitResult, ECollisionGroup::Player, firePos, { 400 * cosf(DEG_TO_RAD(weaponAngle)),100 * sinf(DEG_TO_RAD(weaponAngle)) }, true, 0.f))
+    {
+        // 라인 트레이스 맞은 대상의 콜라이더
+        HitResult.HitCollision->SetHit(true);
+    }
 }
 

@@ -369,7 +369,6 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>MainGame\TaeKyung\Default</Filter>
     </ClCompile>
-
     <ClCompile Include="UIGame.cpp">
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
@@ -390,6 +389,15 @@
     </ClCompile>
     <ClCompile Include="ScenePlayer.cpp">
       <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="BossScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Turret.cpp">
+      <Filter>MainGame\Enemy\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -656,6 +664,15 @@
     </ClInclude>
     <ClInclude Include="ScenePlayer.h">
       <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BossScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>MainGame\Enemy\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

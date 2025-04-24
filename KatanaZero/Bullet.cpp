@@ -63,8 +63,8 @@ void Bullet1::Update()
     RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
     if(isActive)
     {
-        Pos.x += 10 * cosf(DEG_TO_RAD(angle));
-        Pos.y += 10 * sinf(DEG_TO_RAD(angle));
+        Pos.x += 6 * cosf(DEG_TO_RAD(angle));
+        Pos.y += 6 * sinf(DEG_TO_RAD(angle));
     }
 
     if (ObjectCollider->IsHitted()) {
