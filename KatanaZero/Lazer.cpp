@@ -16,10 +16,11 @@ HRESULT Lazer::Init()
 	Pos = { 0,0 };
 	angle = 0;
 	isActive = false;
+    bCanCollide = false;
     frameIndex = 0;
     timer = 0;
     timer2 = 0;
-
+    
     warningTime = 1.0f;
 
 	image = new GPImage();
@@ -46,10 +47,7 @@ void Lazer::Release()
 
 void Lazer::Update(FPOINT pos, float angle)
 {
-    if (frameIndex == 3)
-    {
-        Collision();
-    }
+
     if (isActive)
     {
         timer += TimerManager::GetInstance()->GetDeltaTime();
@@ -73,7 +71,16 @@ void Lazer::Update(FPOINT pos, float angle)
         }
         
         this->angle = angle;
-        Pos = pos; 
+        Pos = pos;     
+
+        if (bCanCollide)
+        {
+		    if (frameIndex == 3)
+		    {
+			    Collision();
+		    }
+        }
+
     }
     if(!isActive)
     {
@@ -90,7 +97,7 @@ void Lazer::Render(HDC hdc)
         if (isActive)
         {
             image->Middle_RenderAll(&graphics, Pos, frameIndex, angle, false, 1.0f, 1.f, 1.f, 1.f,
-                ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());   
+                ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale() * 1.5);   
         }
         
     }

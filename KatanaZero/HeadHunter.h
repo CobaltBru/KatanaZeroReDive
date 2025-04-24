@@ -7,13 +7,14 @@ enum class State
     GroundLazer,
     GroundGun,
     Bullet,
-    Teleport,
+    //Teleport,
     VerticalLazer,
     RoundLazer,
     Dash,
     DashDown,
     Faint,
-    Die
+    Die,
+    NeckSlice
 };
 
 
@@ -61,6 +62,7 @@ private:
     int dieIndex;
     int random;
     int frameIndex;
+    int hitDir;
     Image* image;
     State state;
     Lazer* lazer;
@@ -88,26 +90,32 @@ public:
 
     void Collision();
 
+    //상태 관련
     void Idle();
     void GroundLazer();
     void GroundGun();
     void Bullet();
-    void Teleport();
+    //void Teleport();
     void VerticalLazer();
     void RoundLazer();
     void Dash();
     void DashDown();
     void Faint();
     void Die();
+    void NeckSlice();
 
+    // 무기 소환
     void SpawnBullet(FPOINT firePos, float angle);
     void SpawnBomb(FPOINT firePos, float speed, float speed2);
 
+    // 기타,,,
     void ChangeState(State newState);
     void CheckPlayerPos();
     void RandomLoop();
     void IsLeft();
     void IsAttacked();
     void RoundLazerCollision();
+    void FuckWall();
+
 };
 

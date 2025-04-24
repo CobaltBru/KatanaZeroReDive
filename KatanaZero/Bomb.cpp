@@ -103,22 +103,48 @@ void Bomb::Update()
     
 
     // ½Ã°£ÀÌ Áö³ª¸é ¸ØÃß°í ÅÍÁü
-    if (ObjectCollider->IsHitted() || timer > 5.0f)
+    if (ObjectCollider->IsHitted()) 
     {   
+        ObjectCollider->SetSize({ 150,150 });
+        image = ImageManager::GetInstance()->FindImage("explosion");
+        ObjectRigidBody->SetGravityVisible(false); // ¸ØÃß°í
+        ObjectRigidBody->SetVelocity({ 0,0 });
+        
+        if (frameIndex < image->GetMaxFrameX() - 1)
+        {
+			if (timer > 0.1f)
+			{
+				frameIndex++;
+				timer = 0;
+			}
+        }
+        if (frameIndex >= image->GetMaxFrameX()-1)
+        {
+            frameIndex = image->GetMaxFrameX();
+            bDead = true;
+        }
+    }
+    
+    if (timer > 4.0f)
+    {
         ObjectCollider->SetSize({ 150,150 });
         image = ImageManager::GetInstance()->FindImage("explosion");
         ObjectRigidBody->SetGravityVisible(false); // ¸ØÃß°í
         ObjectRigidBody->SetVelocity({ 0,0 });
 
         timer2 += TimerManager::GetInstance()->GetDeltaTime();
-        if (timer2 > 0.1f)
+
+        if (frameIndex < image->GetMaxFrameX() - 1)
         {
-            frameIndex++;
-            timer2 = 0;
+            if (timer2 > 0.1f)
+            {
+                frameIndex++;
+                timer2 = 0;
+            }
         }
-        if (frameIndex >= image->GetMaxFrameX())
+        if (frameIndex >= image->GetMaxFrameX() - 1)
         {
-            frameIndex = image->GetMaxFrameX();
+            frameIndex = image->GetMaxFrameX() -1;
             bDead = true;
         }
     }

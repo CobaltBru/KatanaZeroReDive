@@ -177,7 +177,7 @@ void Player::Update()
 	UpdateRigidBody();
 
 	// collision
-	UpdateCollision();
+	//UpdateCollision();
 
 	// scroll offset
 	Offset();
