@@ -36,7 +36,7 @@ private:
 	void Move();
 public:
 	virtual HRESULT Init() override;
-	virtual HRESULT Init(string key, FPOINT start, FPOINT end, float speed, float frameduration, bool bFlip = false, bool bMove = false);
+	virtual HRESULT Init(string key, FPOINT start, FPOINT end, float speed, float frameduration = 0.1f, bool bFlip = false, bool bMove = false);
 	virtual void Release() override;
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;

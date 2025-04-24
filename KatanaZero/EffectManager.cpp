@@ -14,13 +14,13 @@ void EffectManager::Init()
 
 void EffectManager::InitEffects()
 {
-    Addfx("gangstergun", {}, {}, 0.f, 0.1f);
-    Addfx("normalslash", {}, {}, 0.f, 0.1f);
-    Addfx("rainbowslash", {}, {}, 0.f, 0.1f);
-    Addfx("bulletreflect", {}, {}, 0.f, 0.1f);
-    Addfx("hitslash", {}, {}, 0.f, 0.1f);
-    Addfx("enemyslash", {}, {}, 0.f, 0.1f);
-    Addfx("jumpcloud", {}, {}, 0.f, 0.1f);
+    Addfx("gangstergun", {}, {}, 0.f);
+    Addfx("normalslash", {}, {}, 0.f);
+    Addfx("rainbowslash", {}, {}, 0.f);
+    Addfx("bulletreflect", {}, {}, 0.f);
+    Addfx("hitslash", {}, {}, 0.f);
+    Addfx("enemyslash", {}, {}, 0.f);
+    Addfx("jumpcloud", {}, {}, 0.f);
 }
 
 void EffectManager::Release()
