@@ -22,11 +22,14 @@ public:
 	FPOINT GetPos() const { return Pos; }
 	FPOINT* GetPPos() { return &Pos; }
 	FPOINT GetSpawnPos() { return spawnPos; }
+	bool GetFlip() const { return bFlip; }
 	bool IsDead() const { return bDead; }
 
 	void SetPos(FPOINT InPos) { Pos = InPos; }
 	void SetSpawnPos(FPOINT spawnPos) { this->spawnPos = spawnPos; }
 	void SetDead(bool InDead) { bDead = InDead; }
+	void SetScale(float InScale) { Scale = InScale; }
+	void SetFlip(bool InFlip) { bFlip = InFlip; }
 
 	int GetFloorIndex() const;
 
@@ -47,6 +50,7 @@ protected:
 	FPOINT LastPos;
 	ERenderGroup RenderGroup;
 	bool bFlip;
+	float Scale;
 
 };
 

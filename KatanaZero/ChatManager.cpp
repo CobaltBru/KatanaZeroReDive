@@ -267,6 +267,10 @@ void Chat::Update()
                     }
                 }
             }
+            else
+            {
+                isComplete = true;
+            }
             
         }
         for (int i = 0; i <= tokenIdx; i++) 
@@ -791,9 +795,29 @@ void ChatManager::Update()
             }
             else
             {
-                startChat(nextChat);
+                if (currentChat->IsComplete())
+                {
+                    startChat(nextChat);
+                }
+                     
             }
         }
+        /*if (currentChat->IsComplete())
+        {
+            timer+= TimerManager::GetInstance()->GetDeltaTime();
+        }
+        if (timer >= currentChat->getTotalTime())
+        {
+            if (currentChat->getStatus() ==1)
+            {
+                startChat(currentChat->selectCursor());
+            }
+            else
+            {
+                startChat(nextChat);
+            }
+            timer = 0.f;
+        }*/
         RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::UI, this);
     }
     else
@@ -896,4 +920,10 @@ void ChatManager::LoadChat(const std::string& path)
             Push(key, next, posIndex, oc);
         }
     }
+}
+
+bool ChatManager::checkChatComplete(string key)
+{
+    auto iter = chatMap.find(key);
+    return (*iter).second.first->IsComplete();
 }

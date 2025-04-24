@@ -7,6 +7,7 @@
 #include "SimpleObject.h"
 #include "Player.h"
 #include "HeadHunter.h"
+#include "PickUp.h"
 using namespace std;
 
 // 맵툴에 필요한 모든 오브젝트
@@ -14,6 +15,8 @@ static unordered_map<string, function<GameObject* ()>> ObjectInfo = {
 	{"StartPoint", []() {return new SimpleObject(); }},
 	{"SimpleTestObject", []() {return new SimpleTestObject(); } },
 	{"HeadHunter", []() {return new HeadHunter(); }}
+	{"Bottle1", []() {return new PickUp(); } },
+	{"Bottle2", []() {return new PickUp(); } },
 };
 
 inline GameObject* CreateObject(string ClassName)

@@ -1,9 +1,15 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "ImGuiManager.h"
 
 #undef new
 #include "Reference/Headers/Imgui/imgui_impl_win32.h"
 #include "Reference/Headers/Imgui/imgui_impl_dx11.h"
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "Reference/Headers/Imgui/stb_image.h"
 
 #include <fstream>
 #include "CommonFunction.h"
@@ -36,9 +42,9 @@ static float ColliderSize[2] = { 0.f,0.f };
 //!!=========================================================!!
 //! 무조건 두개 다 동기화해야합니다.
 // 오브젝트 리스트 이름
-static const char* Objectnames[] = { "StartPoint", "SimpleTestObject", "HeadHunter"};
+static const char* Objectnames[] = { "StartPoint", "SimpleTestObject","Bottle1","Bottle2", "HeadHunter"};
 // 오브젝트 이미지 이름
-static const char* ObjectImagenames[] = { "TestPlayer", "rocket", "headhunter"};
+static const char* ObjectImagenames[] = { "TestPlayer", "rocket", "spr_beer_bottle_3_0", "spr_beer_bottle_4_0", "headhunter"};
 //! 무조건 두개 다 동기화해야합니다.
 //!!=========================================================!!
 static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
@@ -46,7 +52,7 @@ static const int ObjectArrlength = sizeof(Objectnames) / sizeof(Objectnames[0]);
 
 
 ImGuiManager::ImGuiManager()
-	:PlayerStartPoint(nullptr), selectObject(nullptr), PlayerObject(nullptr), lineManager(nullptr), objectManager(nullptr), scrollManager(nullptr)
+	:PlayerStartPoint(nullptr), selectObject(nullptr), PlayerObject(nullptr), lineManager(nullptr), objectManager(nullptr), scrollManager(nullptr), selectedTile({0.f,0.f})
 {
 }
 
@@ -75,13 +81,16 @@ void ImGuiManager::Init()
 	// Init
 	LoadFont();
 	InitBackground();
+	InitTile();
 }
 
-void ImGuiManager::Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager)
+void ImGuiManager::Init(LineManager* InLineManager, ObjectManager* InObjectManager, ScrollManager* InScrollManager, function<void()> InSaveTileCallBack, function<void()> InLoadTileCallBack)
 {
 	lineManager = InLineManager;
 	objectManager = InObjectManager;
 	scrollManager = InScrollManager;
+	SaveTileCallBack = InSaveTileCallBack;
+	LoadTileCallBack = InLoadTileCallBack;
 }
 
 
@@ -262,7 +271,7 @@ void ImGuiManager::Tile()
 
 			CreateBackground(item_current);
 
-			if (Bg_current != -1)
+			if (Bg_current != -1 && !BackgroundObject.empty())
 			{
 				ImGui::SeparatorText(u8"Position");
 
@@ -277,10 +286,19 @@ void ImGuiManager::Tile()
 				ImGui::DragFloat("ScrollPer", &ScrollPer);
 				BackgroundObject[Bg_current]->SetScrollPercent(ScrollPer);
 
+
 				if (ImGui::Button(u8"삭제"))
 				{
 					DestroyBackGround();
 					Bg_current = -1;
+				}
+				if (Bg_current != -1)
+				{
+					ImGui::SeparatorText(u8"Transparent");
+					static bool IsTransparent = false;
+					IsTransparent = BackgroundObject[Bg_current]->GetImage()->GetTransparent();
+					ImGui::Checkbox("IsTransparent", &IsTransparent);
+					BackgroundObject[Bg_current]->GetImage()->SetTransparent(IsTransparent);
 				}
 			}
 
@@ -299,11 +317,32 @@ void ImGuiManager::Tile()
 		//Tile
 		if (ImGui::CollapsingHeader("Tile"))
 		{
+			if (ImGui::Button(u8"타일 저장"))
+			{
+				SaveTile();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button(u8"타일 불러오기"))
+			{
+				LoadTile();
+			}
 
+			ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+			ImGui::ListBox("TileList", &Tile_current, TileList.data(), TileList.size(), 4);
+			ImGui::SameLine();
+			
+			ImGui::Checkbox(u8"지우개", &TileEraser);
+
+			DrawTile();
+
+			
 		}
 
-
 		ImGui::EndTabItem();
+	}
+	else
+	{
+		Tile_current = -1;
 	}
 }
 
@@ -431,41 +470,10 @@ void ImGuiManager::Reset()
 	scrollManager = nullptr;
 }
 
-OPENFILENAME ImGuiManager::GetSaveInfo(TCHAR* lpstrFile)
-{
-	OPENFILENAME ofn;
-
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = g_hWndParent;
-	ofn.lpstrFile = lpstrFile;
-	ofn.nMaxFile = 100;
-	ofn.lpstrFilter = filter;
-	ofn.nFilterIndex = 1;
-	ofn.lpstrDefExt = L"dat";
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-	return ofn;
-}
-
-OPENFILENAME ImGuiManager::GetLoadInfo(TCHAR* lpstrFile)
-{
-	OPENFILENAME ofn;
-
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = g_hWndParent;
-	ofn.lpstrFilter = filter;
-	ofn.lpstrFile = lpstrFile;
-	ofn.nMaxFile = MAX_PATH;
-	ofn.lpstrInitialDir = L".";
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-	return ofn;
-}
-
 void ImGuiManager::SaveLine()
 {
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetSaveInfo(lpstrFile);
+	OPENFILENAME ofn = GetSaveInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -485,7 +493,7 @@ void ImGuiManager::SaveBackGround()
 		MessageBox(g_hWnd, L"백그라운드 없음.", TEXT("경고"), MB_OK);
 
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetSaveInfo(lpstrFile);
+	OPENFILENAME ofn = GetSaveInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -510,10 +518,12 @@ void ImGuiManager::SaveBackGround()
 			int Size = str.length();
 			float ScrollPer = iter->GetScrollPercent();
 			FPOINT Pos = iter->GetPos();
+			bool bTransparent = iter->GetImage()->GetTransparent();
 			WriteFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 			WriteFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 			WriteFile(hFile, str.c_str(), Size, &dwByte, NULL);
 			WriteFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+			WriteFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);			
 		}
 
 		CloseHandle(hFile);
@@ -525,7 +535,7 @@ void ImGuiManager::SaveBackGround()
 void ImGuiManager::SaveObject()
 {
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetSaveInfo(lpstrFile);
+	OPENFILENAME ofn = GetSaveInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -563,6 +573,7 @@ void ImGuiManager::SaveObject()
 				ObjData.Size = obj->GetCollider()->GetSize();
 			}
 			ObjData.bLeft = obj->GetFlip();
+			ObjData.Scale = obj->GetScale();
 
 			WriteFile(hFile, &ObjData.ClsasNameSize, sizeof(int), &dwByte, NULL);
 			WriteFile(hFile, &ObjData.ImageNameSize, sizeof(int), &dwByte, NULL);
@@ -572,6 +583,7 @@ void ImGuiManager::SaveObject()
 			WriteFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 			WriteFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 			WriteFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+			WriteFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		}
 
@@ -584,7 +596,7 @@ void ImGuiManager::SaveObject()
 void ImGuiManager::SaveFloor()
 {
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetSaveInfo(lpstrFile);
+	OPENFILENAME ofn = GetSaveInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -617,6 +629,11 @@ void ImGuiManager::SaveFloor()
 	}
 }
 
+void ImGuiManager::SaveTile()
+{
+	SaveTileCallBack();
+}
+
 void ImGuiManager::LoadFont()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -636,7 +653,7 @@ void ImGuiManager::LoadFont()
 void ImGuiManager::LoadLine()
 {
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetLoadInfo(lpstrFile);
+	OPENFILENAME ofn = GetLoadInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -661,7 +678,7 @@ void ImGuiManager::LoadBackGround()
 	DestroyAllBackGround();
 
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetLoadInfo(lpstrFile);
+	OPENFILENAME ofn = GetLoadInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -686,6 +703,7 @@ void ImGuiManager::LoadBackGround()
 			int Size;
 			float ScrollPer;
 			FPOINT Pos;
+			bool bTransparent;
 			ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 			ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 
@@ -693,6 +711,7 @@ void ImGuiManager::LoadBackGround()
 			ReadFile(hFile, buffer, Size, &dwByte, NULL);
 			buffer[Size] = '\0';
 			ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
+			ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);		
 
 			string BackgroundName = buffer;
 
@@ -702,8 +721,9 @@ void ImGuiManager::LoadBackGround()
 				break;
 
 			Background* BackgroundObj = new Background();
-			BackgroundObj->Init(BackgroundName, ScrollPer, scrollManager->GetScale());
+			BackgroundObj->Init(BackgroundName, ScrollPer, scrollManager->GetScale() + 0.5f);
 			BackgroundObj->SetPos(Pos);
+			BackgroundObj->GetImage()->SetTransparent(bTransparent);
 			objectManager->AddGameObject(EObjectType::GameObject, BackgroundObj);
 
 			char* Name = new char[BackgroundName.size() + 1];
@@ -725,7 +745,7 @@ void ImGuiManager::LoadBackGround()
 void ImGuiManager::LoadObject()
 {
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetLoadInfo(lpstrFile);
+	OPENFILENAME ofn = GetLoadInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -761,6 +781,7 @@ void ImGuiManager::LoadObject()
 			ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 			ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 			ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+			ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 			ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 			ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -782,6 +803,7 @@ void ImGuiManager::LoadObject()
 
 			DefaultObject* Object = new DefaultObject();
 			Object->Init(ImageName, ObjData.Pos, ObjData.bLeft, ERenderGroup::NonAlphaBlend, ClassName);
+			Object->SetScale(ObjData.Scale);
 
 			WorldObject.push_back(Object);
 
@@ -806,7 +828,7 @@ void ImGuiManager::LoadFloor()
 	DestroyAllFloor();
 
 	TCHAR lpstrFile[MAX_PATH] = L"";
-	OPENFILENAME ofn = GetLoadInfo(lpstrFile);
+	OPENFILENAME ofn = GetLoadInfo(lpstrFile, filter);
 
 	TCHAR szOldDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, szOldDir);
@@ -846,6 +868,75 @@ void ImGuiManager::LoadFloor()
 		CloseHandle(hFile);
 		MessageBox(g_hWnd, L"Floor 불러오기 성공", TEXT("성공"), MB_OK);
 	}
+}
+
+void ImGuiManager::LoadTile()
+{
+	LoadTileCallBack();
+}
+
+bool ImGuiManager::LoadTextureFromMemory(const void* data, size_t data_size, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
+{
+	// Load from disk into a raw RGBA buffer
+	int image_width = 0;
+	int image_height = 0;
+	unsigned char* image_data = stbi_load_from_memory((const unsigned char*)data, (int)data_size, &image_width, &image_height, NULL, 4);
+	if (image_data == NULL)
+		return false;
+
+	// Create texture
+	D3D11_TEXTURE2D_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Width = image_width;
+	desc.Height = image_height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = 0;
+
+	ID3D11Texture2D* pTexture = NULL;
+	D3D11_SUBRESOURCE_DATA subResource;
+	subResource.pSysMem = image_data;
+	subResource.SysMemPitch = desc.Width * 4;
+	subResource.SysMemSlicePitch = 0;
+	g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+
+	// Create texture view
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(srvDesc));
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = desc.MipLevels;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
+	pTexture->Release();
+
+	*out_width = image_width;
+	*out_height = image_height;
+	stbi_image_free(image_data);
+
+	return true;
+}
+
+bool ImGuiManager::LoadTextureFromFile(const char* file_name, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
+{
+	FILE* f = fopen(file_name, "rb");
+	if (f == NULL)
+		return false;
+	fseek(f, 0, SEEK_END);
+	size_t file_size = (size_t)ftell(f);
+	if (file_size == -1)
+		return false;
+	fseek(f, 0, SEEK_SET);
+	void* file_data = IM_ALLOC(file_size);
+	fread(file_data, 1, file_size, f);
+	fclose(f);
+	bool ret = LoadTextureFromMemory(file_data, file_size, out_srv, out_width, out_height);
+	IM_FREE(file_data);
+	return ret;
 }
 
 //vector<string> ImGuiManager::GetFileNames(const string& InFolderPath)
@@ -935,7 +1026,7 @@ void ImGuiManager::CreateBackground(int Index)
 		return;
 
 	Background* BackgroundObj = new Background();
-	BackgroundObj->Init(BackgroundList[Index], 1.f, scrollManager->GetScale());
+	BackgroundObj->Init(BackgroundList[Index], 1.f, scrollManager->GetScale() + 0.5f);
 	objectManager->AddGameObject(EObjectType::GameObject, BackgroundObj);
 
 	string name = BackgroundList[Index];
@@ -972,6 +1063,43 @@ void ImGuiManager::DestroyAllBackGround()
 	for (int i = 0; i < BackGroundName.size(); ++i)
 		delete[] BackGroundName[i];
 	BackGroundName.clear();
+}
+
+void ImGuiManager::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		const int size = nameOnly.size() + 1;
+		char* temp = new char[size];
+		strcpy_s(temp, size, nameOnly.c_str());
+
+		TileList.push_back(temp);
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		string path = "Image/Tile/" + Tiles[i];
+
+		int Width = 0;
+		int Height = 0;
+		ID3D11ShaderResourceView* Texture = nullptr;
+		bool ret = LoadTextureFromFile(path.c_str(), &Texture, &Width, &Height);
+		IM_ASSERT(ret);
+		pair<int, int> TextureSize = { Width ,Height };
+		pair<ID3D11ShaderResourceView*, pair<int, int>> info = { Texture ,TextureSize };
+
+		TileTextures.insert({ temp, info });
+
+		//ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
+	}
 }
 
 void ImGuiManager::ObjectTap()
@@ -1100,9 +1228,19 @@ void ImGuiManager::WorldObjectUpdate()
 			WorldObjCollider->SetDebugDraw(true);
 		}
 
+		
+		ImGui::SeparatorText(u8"Scale & Flip");
+
+		static float Scale = 1.f;
+		Scale = static_cast<DefaultObject*>(WorldObject[World_current])->GetScale();
+		ImGui::PushItemWidth(TILEMAPTOOL_X * 0.3f);
+		ImGui::DragFloat("Scale", &Scale);
+		static_cast<DefaultObject*>(WorldObject[World_current])->SetScale(Scale);
+
+		ImGui::SameLine();
+
 		static bool bFlip = false;
 		bFlip = static_cast<DefaultObject*>(WorldObject[World_current])->GetFlip();
-		ImGui::SeparatorText(u8"Flip");
 		ImGui::Checkbox("Flip", &bFlip);
 		static_cast<DefaultObject*>(WorldObject[World_current])->SetFlip(bFlip);
 	}
@@ -1282,6 +1420,56 @@ void ImGuiManager::DrawFloor(HDC hdc)
 	DeleteObject(hPen);
 }
 
+void ImGuiManager::DrawTile()
+{
+	if (Tile_current == -1)
+		return;
+
+	auto iter = TileTextures.find(TileList[Tile_current]);
+	if (iter == TileTextures.end())
+		return;
+
+	ID3D11ShaderResourceView* Texture = iter->second.first;
+	int Width = iter->second.second.first;
+	int Height = iter->second.second.second;
+
+	ImVec2 childSize = ImVec2(TILEMAPTOOL_X, 600.f);
+	ImGui::BeginChild("Image", childSize, true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	ImGui::Image((ImTextureID)(intptr_t)Texture, ImVec2(Width, Height));
+	
+	ImVec2 imagePos = ImGui::GetCursorScreenPos();
+	ImVec2 imagePos2 = ImGui::GetItemRectMin();
+	ImVec2 imageSize = ImVec2((float)Width, (float)Height);
+	float scrollY = ImGui::GetScrollY();
+
+	ImVec2 mousePos = ImGui::GetIO().MousePos;
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) 
+	{
+		ImVec2 localPos = ImVec2(abs(mousePos.x - imagePos.x), abs(mousePos.y - imagePos.y));
+		if (localPos.x >= 0 && localPos.y >= 0 && localPos.x < Width && localPos.y < Height) {
+			int tileX = static_cast<int>(localPos.x) / 32;
+			int tileY = static_cast<int>(localPos.y) / 32;
+			if ((int)selectedTile.x != tileX || (int)selectedTile.y != tileY)
+				TileEraser = false;
+			
+			selectedTile.x = (float)tileX;
+			selectedTile.y = (float)tileY;
+		}		
+	}
+
+	if (selectedTile.x >= 0 && selectedTile.y >= 0) 
+	{																			//이 근본없는 4는 도대체 뭐란 말인가			패딩 값인가보오..
+		float offsetY = imagePos2.y >= 0.f ? 0.f : (scrollY + abs(imagePos2.y)) / 2 + 32;
+		ImVec2 rectMin = ImVec2(imagePos.x + selectedTile.x * 32, abs(imagePos.y - Height - 4) + ((Height / 32 - 1) - selectedTile.y) * 32 - offsetY);
+		ImVec2 rectMax = ImVec2(rectMin.x + 32, rectMin.y + 32);
+		draw_list->AddRect(rectMin, rectMax, IM_COL32(255, 0, 0, 255)); // 빨간 테두리
+	}
+
+	ImGui::EndChild();
+}
+
 void ImGuiManager::Release()
 {
 	ImGui_ImplDX11_Shutdown();
@@ -1306,6 +1494,10 @@ void ImGuiManager::Release()
 		delete[] FloorName[i];
 	FloorName.clear();
 
+	for (int i = 0; i < TileList.size(); ++i)
+		delete[] TileList[i];
+	TileList.clear();
+	
 
 	ReleaseInstance();
 }

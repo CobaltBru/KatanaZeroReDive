@@ -103,15 +103,15 @@
     <Filter Include="MainGame\TaeKyung\Physics">
       <UniqueIdentifier>{5004c959-f2cd-4c81-8fc1-08135054c830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="?��?�� ?��?��">
+    <Filter Include="헤더 파일">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="?��?�� ?��?��">
+    <Filter Include="소스 파일">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="리소?�� ?��?��">
+    <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -133,14 +133,11 @@
     <Filter Include="MainGame\Player\PlayerState">
       <UniqueIdentifier>{668b3759-4f92-469d-83e3-66cbd1c2d9e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{0cea3ea6-e9f6-4ea3-ac64-8c0f680ce951}</UniqueIdentifier>
+    <Filter Include="MainGame\Tile">
+      <UniqueIdentifier>{aca1fe46-5c92-4772-b68f-5109f8071163}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{5d12cf9f-d83d-4d2f-a54c-967a509fbc21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{9fe14f5f-c762-4063-a6fe-dfe8d08b8d67}</UniqueIdentifier>
+    <Filter Include="MainGame\Trigger">
+      <UniqueIdentifier>{e261302d-168b-450b-8817-aaa4b2183298}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -367,22 +364,33 @@
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="DefaultObject.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>MainGame\TaeKyung\Default</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+
     <ClCompile Include="UIGame.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2D Framework\UI</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ScenePsych.cpp" />
-    <ClCompile Include="ScenePlayer.cpp" />
+    <ClCompile Include="WorldBackground.cpp">
+      <Filter>MainGame\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>MainGame\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalTrigger.cpp">
+      <Filter>MainGame\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePsych.cpp">
+      <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePlayer.cpp">
+      <Filter>MainGame\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -623,15 +631,31 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PlayerAnim.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>MainGame\Player</Filter>
     </ClInclude>
     <ClInclude Include="TalkScene.h">
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="ScenePsych.h" />
-    <ClInclude Include="ScenePlayer.h" />
+    <ClInclude Include="WorldBackground.h">
+      <Filter>MainGame\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference\Headers\Imgui\stb_image.h">
+      <Filter>2D Framework\ImGui\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>2D Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>MainGame\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="GoalTrigger.h">
+      <Filter>MainGame\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePsych.h">
+      <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePlayer.h">
+      <Filter>MainGame\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

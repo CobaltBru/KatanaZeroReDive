@@ -31,6 +31,7 @@ private:
 	Animation* MoveList[8];
 	int moveIdx = 0;
 	float timer;
+	bool moveEnd;
 public:
 	ScenePsych();
 	virtual ~ScenePsych() = default;
@@ -43,6 +44,6 @@ public:
 	void Move();
 
 	void MoveFunc();
-
+	inline bool isMoveEnd() { return moveEnd; }
 };
 
