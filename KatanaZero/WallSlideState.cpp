@@ -10,9 +10,20 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft ==true ? 100.f: -100.f), -200.f});
+		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft ==true ? 300.f: -300.f), -200.f});
 		return player->GetStates()->Jump;
 	}
+	/*if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
+	{
+		player->GetRigidBody()->AddVelocity({-80.f,50.f });
+		return player->GetStates()->Idle;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
+	{
+		player->GetRigidBody()->AddVelocity({ 80.f,50.f });
+		return player->GetStates()->Idle;
+	}*/
+	
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
 	{		

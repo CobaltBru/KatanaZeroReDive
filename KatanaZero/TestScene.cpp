@@ -30,6 +30,8 @@
 #include "Bullet.h"
 #include "Collider.h"
 
+#include "ParticleEffect.h"
+
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
@@ -40,7 +42,7 @@ HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 	
-
+	srand(time(NULL));
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
 	RenderManager = RenderManager::GetInstance();
@@ -169,6 +171,8 @@ HRESULT TestScene::InitObject()
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
+
+		
 	}
 	return S_OK;
 }

@@ -12,7 +12,6 @@ class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
 class Player;
-
 class TestScene : public Scene
 {
 public:
@@ -45,5 +44,6 @@ private:
 
 	FPOINT testPlayerPos;
 	FPOINT testDestPos;
+
 };
 
