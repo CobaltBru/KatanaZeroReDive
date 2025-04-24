@@ -42,18 +42,9 @@ void WallSlideState::Enter(Player* player)
 {
 	updateCount = 0;
 	
-	const FLineResult lineResult = player->GetRigidBody()->GetResult();
-	if (lineResult.IsLeft)
-	{
-		EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3}, 90.f, true);
-	}
-	else
-	{
-		EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
-	}
-
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 
+	const FLineResult lineResult = player->GetRigidBody()->GetResult();
 	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);
 	else player->SetDirection(EDirection::Right);			
 }
