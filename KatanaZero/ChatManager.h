@@ -20,7 +20,9 @@ private:
 
 	float explodeTimer;
 	int currentAppear;
+	int oldCurrentAppear;
 	bool complete;
+	float soundrun;
 public:
 	Token(wstring wtext, FPOINT pos, APPEAR appear, OPTION option, COLORS color);
 	inline void setGlobalPos(FPOINT pos) { this->globalPos = pos; }

@@ -14,15 +14,13 @@ void EffectManager::Init()
 
 void EffectManager::InitEffects()
 {
-    Addfx("gangstergun", L"Image/fx/Gangster_FireFx.png", 6, 1);
-    Addfx("normalslash", L"Image/fx/NormalSlash.png", 5, 1);
-    Addfx("rainbowslash", L"Image/fx/RainbowSlash.png", 7, 1);
-    Addfx("bulletreflect", L"Image/fx/BulletReflect.png", 5, 1);
-    Addfx("hitslash", L"Image/fx/HitSlash.png", 4, 1);
-    Addfx("enemyslash", L"Image/fx/EnemySlash.png", 4, 1);
-    Addfx("jumpcloud", L"Image/fx/JumpCloud.png", 4, 1);
-    Addfx("dustcloud", L"Image/fx/spr_dustcloud.png", 7, 1);
-    Addfx("landcloud", L"Image/fx/spr_landcloud.png", 7, 1);
+    Addfx("gangstergun", {}, {}, 0.f);
+    Addfx("normalslash", {}, {}, 0.f);
+    Addfx("rainbowslash", {}, {}, 0.f);
+    Addfx("bulletreflect", {}, {}, 0.f);
+    Addfx("hitslash", {}, {}, 0.f);
+    Addfx("enemyslash", {}, {}, 0.f);
+    Addfx("jumpcloud", {}, {}, 0.f);
 }
 
 void EffectManager::Release()
@@ -44,6 +42,8 @@ void EffectManager::Release()
         delete iter;
     }
     activeFx.clear();
+    remainFx.clear();
+    bgBloodFx.clear();
 
     ReleaseInstance();
 }
@@ -54,17 +54,21 @@ void EffectManager::Update()
     {
         bg.Update();
     }
-    for (auto& fx : activeFx)
+    for (auto fiter = activeFx.begin(); fiter != activeFx.end();)
     {
-        fx->Update();
-    }
-    activeFx.erase(remove_if(activeFx.begin(), activeFx.end(), [](Effect* e) {
-        if (!e->IsActive()) 
-        { 
-            delete e; 
-            return true; 
+        if ((*fiter)->IsActive())
+        {
+            (*fiter)->Update();
+            ++fiter;
         }
-        return false; }), activeFx.end());
+        else
+        {
+            (*fiter)->Release();
+            delete (*fiter);
+            fiter = activeFx.erase(fiter);
+            continue;
+        }
+    }
 
     float dt = TimerManager::GetInstance()->GetDeltaTime();
     for (auto& riter : remainFx)
@@ -112,36 +116,6 @@ void EffectManager::Render(HDC hdc)
     }
 }
 
-void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, int maxFrameY)
-{
-    Effect* fx = nullptr;
-    fx = Findfx(key);
-    if (fx) return;
-    fx = new Effect();
-    if (FAILED(fx->Init(filePath, maxFrameX, maxFrameY)))
-    {
-        fx->Release();
-        delete fx;
-        return;
-    }
-    mapFx.insert(make_pair(key, fx));
-}
-
-void EffectManager::Addfx(string key, const wchar_t* filePath, int maxFrameX, int maxFrameY, FPOINT start, FPOINT end, float speed, bool bMove)
-{
-    Effect* fx = nullptr;
-    fx = Findfx(key);
-    if (fx) return;
-    fx = new Effect();
-    if (FAILED(fx->Init(filePath, maxFrameX, maxFrameY, start, end, speed, bMove)))
-    {
-        fx->Release();
-        delete fx;
-        return;
-    }
-    mapFx.insert(make_pair(key, fx));
-}
-
 void EffectManager::Addfx(string key, FPOINT start, FPOINT end, float speed, bool bMove)
 {
     Effect* fx = nullptr;
@@ -175,6 +149,15 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, bool bFlip)
     activeFx.push_back(newfx);
 }
 
+void EffectManager::Activefx(string key, FPOINT pos, float angle, float speed, bool bFlip)
+{
+    Effect* fx = Findfx(key);
+    if (!fx) return;
+    Effect* newfx = new Effect(*fx); // 얕복 -> 댕글링 뻐킹 포인터 발생   << 기모링~
+    newfx->Activefx(pos, angle, bFlip);
+    activeFx.push_back(newfx);
+}
+
 void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, bool bFlip)
 {
     Effect* fx = Findfx(key);
@@ -184,12 +167,12 @@ void EffectManager::Activefx(string key, FPOINT pos, FPOINT dest, float speed, b
     activeFx.push_back(newfx);
 }
 
-void EffectManager::Activefx(string key, FPOINT pos, float angle, float speed, bool bFlip, float scale)
+void EffectManager::Activefx(string key, FPOINT pos, float angle, GameObject* owner, bool bFlip)
 {
     Effect* fx = Findfx(key);
     if (!fx) return;
-    Effect* newfx = new Effect(*fx); // 얕복 -> 댕글링 뻐킹 포인터 발생   << 기모링~
-    newfx->Activefx(pos, angle, speed, scale, bFlip);
+    Effect* newfx = new Effect(*fx);
+    newfx->Activefx(pos, angle, owner, bFlip);
     activeFx.push_back(newfx);
 }
 

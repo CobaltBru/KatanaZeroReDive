@@ -30,7 +30,7 @@
 #include "Factory.h"
 
 HYScene::HYScene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -62,7 +62,8 @@ HRESULT HYScene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	GPImageManager::GetInstance()->Init();
+	gpImageManager = GPImageManager::GetInstance();
+	gpImageManager->Init();
 
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/HY1Line.dat")))
 	{
@@ -315,7 +316,6 @@ void HYScene::Render(HDC hdc)
 
 void HYScene::Release()
 {
-	GPImageManager::GetInstance()->Release();
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
 	if (CollisionManager != nullptr)
@@ -332,6 +332,8 @@ void HYScene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
+	if (gpImageManager != nullptr)
+		gpImageManager->Release();
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -340,4 +342,5 @@ void HYScene::Release()
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 	fxManager = nullptr;
+	gpImageManager = nullptr;
 }

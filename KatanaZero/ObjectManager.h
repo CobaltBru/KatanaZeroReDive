@@ -22,7 +22,7 @@ public:
 	void AddGameObject(EObjectType  InObjectType, GameObject* InGameObject) 
 	{ 
 		GameObjectList[(int)InObjectType].push_back(InGameObject);
-		if (auto* p = dynamic_cast<SimpleObject*>(InGameObject))
+		if (auto* p = dynamic_cast<Player*>(InGameObject))
 			player = p;
 	}
 

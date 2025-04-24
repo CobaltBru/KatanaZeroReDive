@@ -261,13 +261,6 @@ void TestScene::Update()
 	//elapsedTime += TimerManager::GetInstance()->GetDeltaTime();
 	//testDestPos.y +=1.f;
 	fxManager->Update();
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
-	{
-		fxManager->Activefx("normalslash", { 100.0f, 200.0f }, { 250.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 200.0f, 200.0f }, { 350.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 300.0f, 200.0f }, { 450.0f, 350.0f }, 300.0f, false);
-		fxManager->Activefx("normalslash", { 500.0f, 200.0f }, { 650.0f, 350.0f }, 300.0f, false);
-	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
 	{
