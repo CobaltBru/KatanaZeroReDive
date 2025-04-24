@@ -139,6 +139,9 @@
     <Filter Include="MainGame\Trigger">
       <UniqueIdentifier>{e261302d-168b-450b-8817-aaa4b2183298}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\PickUp">
+      <UniqueIdentifier>{61e095e6-9938-45fc-a70d-12ea10a2e797}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -369,7 +372,6 @@
     <ClCompile Include="DefaultObject.cpp">
       <Filter>MainGame\TaeKyung\Default</Filter>
     </ClCompile>
-
     <ClCompile Include="UIGame.cpp">
       <Filter>2D Framework\UI</Filter>
     </ClCompile>
@@ -390,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="ScenePlayer.cpp">
       <Filter>MainGame\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUp.cpp">
+      <Filter>MainGame\PickUp</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUpHand.cpp">
+      <Filter>MainGame\PickUp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -656,6 +664,12 @@
     </ClInclude>
     <ClInclude Include="ScenePlayer.h">
       <Filter>MainGame\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUp.h">
+      <Filter>MainGame\PickUp</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUpHand.h">
+      <Filter>MainGame\PickUp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
