@@ -306,8 +306,8 @@ void HiddenScene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
-	if (gpImageManager != nullptr)
-		gpImageManager->Release();
+	//if (gpImageManager != nullptr)
+	//	gpImageManager->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
