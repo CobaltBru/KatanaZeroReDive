@@ -52,7 +52,7 @@ HRESULT Player::Init()
 	InitPlayerInfo();
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.1f, 
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
 		true, 1.f);
 
@@ -307,7 +307,7 @@ void Player::InitPlayerInfo()
 	info->bIsWall = false;
 	info->bGameStart = false;
 	info->bIsDead = false;
-	info->attackCoolTime = .7f;
+	info->attackCoolTime = .34f;
 	info->prevState = "";
 }
 

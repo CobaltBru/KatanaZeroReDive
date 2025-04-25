@@ -6,7 +6,7 @@
 
 Particle::Particle()
 {
-	ObjectRigidBody = new RigidBody(this);
+	ObjectRigidBody = new RigidBody(this, false);
 	InitRigidBodySetting();
 }
 
@@ -134,7 +134,7 @@ void ParticleEffect::Release()
 
 void ParticleEffect::Update()
 {
-	timer += TimerManager::GetInstance()->GetDeltaTime();
+	timer += TimerManager::GetInstance()->GetDeltaTime(false);
 	if (timer > delay)
 	{
 		timer = 0;

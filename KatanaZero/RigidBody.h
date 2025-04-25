@@ -6,7 +6,7 @@ class RigidBody
 {
 public:
 	RigidBody();
-	RigidBody(GameObject* InOwner);
+	RigidBody(GameObject* InOwner, bool CanSlowSystem = true);
 	~RigidBody();
 
 	void Update();
@@ -56,7 +56,7 @@ private:
 	bool bGround;
 	bool bDown;
 	bool bDiagonalLine;
-
+	bool CanSlowSystem;
 	FLineResult Result;
 };
 

@@ -51,7 +51,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("HY","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -231,6 +231,11 @@ HRESULT MainGame::InitSound()
 			return E_FAIL;
 		if (FAILED(SoundManager::GetInstance()->AddSound("flicker5", "Sound/sound_object_neon_flicker_05.wav")))
 			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("slowon", "Sound/sound_slomo_engage.ogg")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("slowoff", "Sound/sound_slomo_disengage.wav")))
+			return E_FAIL;
 	}
 	//home
 	{
@@ -256,6 +261,22 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("bg_warehouse_foreground", L"Image/Tile/bg_warehouse_foreground_0.bmp", 832, 288, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("bg_outside", L"Image/Tile/bg_outside_0.bmp", 414, 448, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("bg_government_foreground", L"Image/Tile/bg_government_foreground_0.bmp", 800, 320, 1, 1, true, RGB(255, 0, 255));
+	
+	ImageManager::GetInstance()->AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.bmp", 96, 27, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.bmp", 145, 29, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right3", L"Image/fx/BGBlood_right3.bmp", 294, 32, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop1", L"Image/fx/BGBlood_righttop1.bmp", 54, 70, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop2", L"Image/fx/BGBlood_righttop2.bmp", 92, 121, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop3", L"Image/fx/BGBlood_righttop3.bmp", 125, 142, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom1", L"Image/fx/BGBlood_rightbottom1.bmp", 54, 70, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom2", L"Image/fx/BGBlood_rightbottom2.bmp", 92, 121, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom3", L"Image/fx/BGBlood_rightbottom3.bmp", 125, 142, 1, 1, true, RGB(255, 0, 255));
+	
+	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+
 	return S_OK;
 }
 

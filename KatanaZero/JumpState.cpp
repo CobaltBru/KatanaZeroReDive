@@ -13,7 +13,7 @@ PlayerState* JumpState::GetInput(Player* player)
     if (player->GetRigidBody()->IsGround() == true)
     {        
         SoundManager::GetInstance()->PlaySounds("zeroland", EChannelType::Effect);
-        EffectManager::GetInstance()->Activefx("landcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 1.75f }, 0.0f, false);
+        EffectManager::GetInstance()->Activefx("landcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 1.5f }, 0.0f, false);
         return player->GetStates()->Idle;
     }
 
@@ -22,7 +22,10 @@ PlayerState* JumpState::GetInput(Player* player)
     {
         // if the previous state was wallslide, automatically switch to wallslide when the player is attached
         if (player->GetInfo()->prevState == "wallslide")
+        {
+            player->GetInfo()->prevState == "";
             return player->GetStates()->WallSlide;
+        }
 
         // if the player press toward the wall
         if ((lineResult.IsLeft && KeyManager::GetInstance()->IsStayKeyDown('A')) ||
@@ -79,7 +82,7 @@ void JumpState::Enter(Player* player)
     if (player->GetInfo()->prevState != "wallslide")
         EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ 0.f, -player->GetHalfHeight()}, 0.0f, false);
         
-    player->GetRigidBody()->AddVelocity({ 0.f, -600.f });
+    player->GetRigidBody()->AddVelocity({ 0.f, -700.f });
 
     // sound
     SoundManager::GetInstance()->PlaySounds("zerojump", EChannelType::Effect);
@@ -90,7 +93,7 @@ void JumpState::Update(Player* player)
     
     /*if (player->GetFrameIndex() >= ImageManager::GetInstance()->FindImage("zerojump")->GetMaxFrameX()-1)    
         player->GetInfo()->bIsJump = false;*/
-    player->GetRigidBody()->AddVelocity({ 0.f, 0.005f });
+    player->GetRigidBody()->AddVelocity({ 0.f, 2.f });
 
     if (player->GetInfo()->bIsShiftChanged && player->GetInfo()->bIsShift)
         player->SetImage(ImageManager::GetInstance()->FindImage("zerojumpshadow"));
