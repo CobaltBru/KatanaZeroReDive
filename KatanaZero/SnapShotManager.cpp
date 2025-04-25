@@ -13,6 +13,7 @@
 #include "ReplayObjects.h"
 #include "SimpleObject.h"
 #include <unordered_set>
+#include "SceneManager.h"
 
 
 void SnapShotManager::Init()

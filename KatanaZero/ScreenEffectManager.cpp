@@ -6,6 +6,7 @@
 #include "GPImage.h"
 #include "ImageManager.h"
 #include "ScrollManager.h"
+#include "SceneManager.h"
 
 
 void ScreenEffectManager::Init()
@@ -46,7 +47,7 @@ void ScreenEffectManager::RenderDistortion(HDC hdc)
 
 void ScreenEffectManager::StopDistortion()
 {
-	//if (!isDistortion) return;
+	if (!isDistortion) return;
 	isFinishReplay = true;
 	ScrollManager::GetInstance()->CameraShake(20.0f, scrollDuration);
 }
@@ -104,5 +105,6 @@ void ScreenEffectManager::ScrollDistortion(HDC hdc, float frequency, float disto
 		isFinishReplay = false;
 		scrollTimer = 0.0f;
 		scrollOffset = 0.0f;
+		SceneManager::GetInstance()->RestartCurrentScene();
 	}
 }
