@@ -27,7 +27,7 @@ HRESULT Bullet1::Init(FPOINT pos, float angle)
     image = new GPImage();
     image->AddImage(L"Image/HeadHunter/bullet.png");
 
-    ObjectCollider = new Collider(this, EColliderType::Rect, {}, 10.f, true, 1.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, {}, 10.f, false, 1.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Bullet);
     ObjectCollider->SetPos(Pos);
 

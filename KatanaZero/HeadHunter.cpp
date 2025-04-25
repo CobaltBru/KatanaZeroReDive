@@ -359,7 +359,7 @@ void HeadHunter::Collision()
     {
     	// 충돌했다.
 
-    	ObjectCollider->SetHit(false);	// 내 콜라이더 충돌
+    	ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
     	HitResult.HitCollision->SetHit(false);// 상대방 콜라이더 충돌
 
     	HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
