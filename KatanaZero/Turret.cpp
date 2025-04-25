@@ -77,8 +77,6 @@ void Turret::Update(FPOINT pos)
     {
         
 
-        Collision();
-
         if (!isDestroyed) // 이거 걸어줘야 여러번 안부숴진다
         {
             if (ObjectCollider->IsHitted())
@@ -92,6 +90,7 @@ void Turret::Update(FPOINT pos)
         switch (state)
         {
         case TurretState::Spawn:
+            
             turretImage = ImageManager::GetInstance()->FindImage("Turret");
             if (frameIndex < turretImage->GetMaxFrameX() - 1)
             {
@@ -110,6 +109,7 @@ void Turret::Update(FPOINT pos)
             break;
 
         case TurretState::Operate:
+            Collision();
             turretImage = ImageManager::GetInstance()->FindImage("TurretHolder");
             isOperated = true;
 

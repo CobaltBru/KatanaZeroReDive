@@ -131,11 +131,9 @@ void Lazer::Collision()
     }
     //라인 트레이스
     FHitResult Hitresult;
-    if (CollisionManager::GetInstance()->LineTraceByObject(Hitresult, ECollisionGroup::Player, Pos, { 100 * cosf(DEG_TO_RAD(angle)),100 * sinf(DEG_TO_RAD(angle))}, true, 0.f))
+    if (CollisionManager::GetInstance()->LineTraceByObject(Hitresult, ECollisionGroup::Player, Pos, { Pos.x + 700 * cosf(DEG_TO_RAD(angle)), Pos.y + 700 * sinf(DEG_TO_RAD(angle))}, true, 0.f,RGB(255,0,255)))
     {
         // 라인 트레이스 맞은 대상의 콜라이더
         Hitresult.HitCollision->SetHit(true);
     }
 }
-
-

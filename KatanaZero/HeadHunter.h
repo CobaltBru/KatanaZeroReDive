@@ -24,6 +24,7 @@ class Lazer;
 class Turret;
 class Image;
 class Bullet1;
+class Collider;
 class HeadHunter : public GameObject
 {
 private:
@@ -67,6 +68,8 @@ private:
     State state;
     Lazer* lazer;
     Turret* turret;
+  
+    Collider* dashCollider;
 
     GameObject* player;
     std::vector<Bullet1*> bullets;

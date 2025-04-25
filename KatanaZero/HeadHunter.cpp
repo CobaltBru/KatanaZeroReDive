@@ -144,7 +144,7 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
     dieIndex = 0;
     random = 0;
 
-    state = State::Idle;
+    state = State::Dash;
     {
         image = ImageManager::GetInstance()->AddImage("Idle", L"Image/HeadHunter/headhunter_idle.bmp", 840, 50, 12, 1, true, RGB(255, 0, 255));
 
@@ -175,13 +175,22 @@ HRESULT HeadHunter::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffse
         image = ImageManager::GetInstance()->AddImage("DeadLand", L"Image/HeadHunter/deadland.bmp", 560, 45, 8, 1, true, RGB(255, 0, 255));
         image = ImageManager::GetInstance()->AddImage("Dead", L"Image/HeadHunter/dead.bmp", 1007, 45, 19, 1, true, RGB(255, 0, 255));
 
+        // DeadHead
+        image = ImageManager::GetInstance()->AddImage("NoHead", L"Image/HeadHunter/nohead.bmp", 360, 45, 6, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("Head", L"Image/HeadHunter/head.bmp", 160, 20, 8, 1, true, RGB(255, 0, 255));
+        image = ImageManager::GetInstance()->AddImage("HeadGround", L"Image/HeadHunter/headground.bmp", 160, 20, 8, 1, true, RGB(255, 0, 255));
+
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
 
 
-    ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 4.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
     ObjectCollider->SetPos(Pos);
+
+    dashCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+    CollisionManager::GetInstance()->AddCollider(dashCollider, ECollisionGroup::Bullet);
+    dashCollider->SetPos(Pos);
 
     ObjectRigidBody = new RigidBody(this);
 
@@ -350,11 +359,25 @@ void HeadHunter::Collision()
     {
     	// 충돌했다.
 
-    	ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
+    	ObjectCollider->SetHit(false);	// 내 콜라이더 충돌
     	HitResult.HitCollision->SetHit(false);// 상대방 콜라이더 충돌
 
     	HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
     }
+
+    if (state == State::Dash || state == State::DashDown)
+    {
+        FHitResult Hitresult;
+        if (CollisionManager::GetInstance()->CollisionAABB(dashCollider, Hitresult, ECollisionGroup::Player))
+        {
+            ObjectCollider->SetHit(false);	// 내 콜라이더 충돌
+            Hitresult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
+
+            Hitresult.HitCollision->GetOwner();  // 상대방 객체 접근
+        }
+    }
+
+
 }
 
 void HeadHunter::Idle()
@@ -1114,12 +1137,7 @@ void HeadHunter::IsAttacked()
 
 void HeadHunter::RoundLazerCollision()
 {
-    FHitResult HitResult;
-    if (CollisionManager::GetInstance()->LineTraceByObject(HitResult, ECollisionGroup::Player, firePos, { 400 * cosf(DEG_TO_RAD(weaponAngle)),100 * sinf(DEG_TO_RAD(weaponAngle)) }, true, 0.f))
-    {
-        // 라인 트레이스 맞은 대상의 콜라이더
-        HitResult.HitCollision->SetHit(true);
-    }
+
 }
 
 void HeadHunter::FuckWall()
