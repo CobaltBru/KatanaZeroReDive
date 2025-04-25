@@ -143,7 +143,7 @@ void TalkScene::Update()
 			{
 				if (chatDone)
 				{
-					SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
+					SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
 					return;
 				}
 			}

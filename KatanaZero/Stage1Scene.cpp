@@ -299,6 +299,12 @@ void Stage1Scene::LoadFloor()
 
 void Stage1Scene::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("Home", "·Îµù_1");
+		return;
+	}
+
 	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
 	CollisionManager->Update();

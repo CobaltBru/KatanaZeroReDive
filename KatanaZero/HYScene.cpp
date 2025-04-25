@@ -324,6 +324,19 @@ void HYScene::InitTile()
 
 void HYScene::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+		return;
+	}
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown('G'))
+	{
+		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
+		return;
+	}
+	
+
 	ObjectManager->Update();
 		
 	
