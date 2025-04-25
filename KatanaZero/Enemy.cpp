@@ -7,6 +7,7 @@
 #include "TaeKyungObject.h"
 #include "RenderManager.h"
 #include "ScrollManager.h"
+#include "CommonFunction.h"
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
@@ -82,6 +83,17 @@ void Enemy::Release()
 
 void Enemy::Update()
 {
+	LastPos = Pos;
+	switch (eType)
+	{
+	case EType::Gangster:
+		AttackCollider->SetPivot({ meleeAttackRange / 2.f * dir, 0.f });
+		break;
+	case EType::Grunt:
+	case EType::Pomp:
+		AttackCollider->SetPivot({ attackRange / 2.f * dir, 0.f });
+		break;
+	}
 	UpdateAnimation();
 	if (eState)
 	{
@@ -101,7 +113,7 @@ void Enemy::Render(HDC hdc)
 	if (image)
 	{
 		Gdiplus::Graphics graphics(hdc);
-		image->Middle_RenderFrameScale(&graphics, Pos, currFrame, bFlip, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+		image->Middle_RenderFrameScale(&graphics, { Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y }, currFrame, bFlip, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 	}
 }
 
@@ -172,47 +184,32 @@ void Enemy::ChangeAnimation(EImageType newImage)
 bool Enemy::Detecting()
 {
 	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
-	int playerFloor = SnapShotManager::GetInstance()->GetPlayer()->GetFloorIndex(g_FloorZones);
-	int myFloor = this->GetFloorIndex(g_FloorZones);
-	
-	float dx = playerPos.x - Pos.x;
-	float dist = fabs(dx);
-
-	if (playerFloor == myFloor && ((dx > 0 && dir == 1) || (dx < 0 && dir == -1)))
+	FHitResult Result;
+	if (CollisionManager::GetInstance()->LineTraceByObject(Result, ECollisionGroup::Player, this->Pos, { Pos.x + detectRange * dir, Pos.y }))
 	{
-		return dist < detectRange;
+		return true;
 	}
-
 	return false;
 }
 
 bool Enemy::IsInAttackRange()
 {
 	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
-	float dx = playerPos.x - Pos.x;
-	float dist = fabs(dx);
-
-	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
+	FHitResult Result; // 충돌 대상
+	if (CollisionManager::GetInstance()->LineTraceByObject(Result, ECollisionGroup::Player, this->Pos, { Pos.x + attackRange * dir, Pos.y }))
 	{
-		return dist < attackRange;
+		return true;
 	}
-
+		
 	return false;
 }
 
 bool Enemy::IsInMeleeAttackRange()
 {
 	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
-	float dx = playerPos.x - Pos.x;
-	float dist = fabs(dx);
-
-	if ((dx > 0 && dir == 1) || (dx < 0 && dir == -1))
-	{
-		return dist < meleeAttackRange;
-	}
+	FHitResult Result;
+	if (CollisionManager::GetInstance()->LineTraceByObject(Result, ECollisionGroup::Player, this->Pos, { Pos.x + meleeAttackRange * dir, Pos.y }))
+		return true;
 
 	return false;
 }
@@ -237,4 +234,21 @@ bool Enemy::IsHitted()
 {
 	if (ObjectCollider->IsHitted()) return true;
 	return false;
+}
+
+void Enemy::Collision()
+{
+	if (!bCanAttack) return;
+	
+	FHitResult HitResult;
+	if (CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Player))
+	{
+		HitResult.HitCollision->SetHit(true);
+		HitResult.HitCollision->GetOwner();
+		FPOINT pos;
+		pos.x = HitResult.HitCollision->GetPos().x - AttackCollider->GetPos().x;
+		pos.y = HitResult.HitCollision->GetPos().y - AttackCollider->GetPos().y;
+		Normalize(pos);
+		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
+	}
 }

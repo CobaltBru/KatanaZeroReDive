@@ -82,7 +82,7 @@ struct BackgroundBloodfx : public GameObject
 	{
 		if (image)
 		{
-			image->FrameRender(hdc, Pos.x, Pos.y, 0, 0, bFlip, false, ScrollManager::GetInstance()->GetScale());
+			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + +ScrollManager::GetInstance()->GetScroll().y, 0, 0, bFlip, false, ScrollManager::GetInstance()->GetScale());
 		}
 	}
 };

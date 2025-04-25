@@ -94,6 +94,7 @@ public:
 	virtual ~Player();
 
 	HRESULT Init() override;
+	virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup) override;
 	void Release() override;
 	void Update() override;
 	void Render(HDC hdc) override;

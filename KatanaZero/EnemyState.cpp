@@ -48,6 +48,8 @@ EnemyState* EIDLE::CheckTransition(Enemy* enemy)
 void EWalk::Enter(Enemy& enemy)
 {
 	walktimer = 0.f;
+	urd.param(uniform_real_distribution<float>::param_type{ 1.5f, 3.f });
+	walkCooldown = (float)urd(dre);
 	state = "Walk";
 	enemy.ChangeAnimation(EImageType::Walk);
 }
@@ -109,6 +111,14 @@ void ERun::Update(Enemy& enemy)
 	const float chaseSpeed = enemy.GetSpeed() * 2.f;
 	enemy.GetRigidBody()->AddVelocity({ dir * chaseSpeed, 0.f });
 
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	enemy.AddATimer(dt);
+	if (enemy.GetATimer() >= enemy.GetADuration())
+	{
+		enemy.SetATimer(0.f);
+		enemy.SetCanAttack(true);
+	}
+
 	enemy.GetRigidBody()->Update();
 }
 
@@ -125,7 +135,7 @@ EnemyState* ERun::CheckTransition(Enemy* enemy)
 		return new EFindSlope();
 	}
 
-	if (enemy->IsInAttackRange())
+	if (enemy->IsInAttackRange() && enemy->CanAttack())
 	{
 		EType type = enemy->GetEnemyType();
 		switch (type)
@@ -165,6 +175,7 @@ void EAttack::Update(Enemy& enemy)
 	{
 		isAttackFinish = true;
 	}
+	enemy.Collision();
 	enemy.GetRigidBody()->Update();
 }
 
@@ -208,21 +219,21 @@ EnemyState* EDead::CheckTransition(Enemy* enemy)
 void GruntAttack::Enter(Enemy& enemy)
 {
 	EAttack::Enter(enemy);
-	
 }
 
 void GruntAttack::Update(Enemy& enemy)
-{
+{	
 	if (enemy.GetCurrFrame() >= enemy.GetImage()->getMaxFrame() - 1)
 	{
 		isAttackFinish = true;
 	}
+	enemy.Collision();
 	enemy.GetRigidBody()->Update();
 }
 
 void GruntAttack::Exit(Enemy& enemy)
 {
-
+	enemy.SetCanAttack(false);
 }
 
 EnemyState* GruntAttack::CheckTransition(Enemy* enemy)
@@ -249,11 +260,13 @@ void PompAttack::Update(Enemy& enemy)
 	{
 		isAttackFinish = true;
 	}
+	enemy.Collision();
 	enemy.GetRigidBody()->Update();
 }
 
 void PompAttack::Exit(Enemy& enemy)
 {
+	enemy.SetCanAttack(false);
 }
 
 EnemyState* PompAttack::CheckTransition(Enemy* enemy)
@@ -306,11 +319,13 @@ void GangsterAttack::Update(Enemy& enemy)
 	{
 		isAttackFinish = true;
 	}
+	enemy.Collision();
 	enemy.GetRigidBody()->Update();
 }
 
 void GangsterAttack::Exit(Enemy& enemy)
 {
+	enemy.SetCanAttack(false);
 }
 
 EnemyState* GangsterAttack::CheckTransition(Enemy* enemy)

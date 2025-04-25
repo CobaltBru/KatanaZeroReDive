@@ -195,6 +195,7 @@ void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bo
 
 void EffectManager::CreateBGBlood(FPOINT pos, float angle, FPOINT size)
 {
+    FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
     int rndimg = rand() % 3;
     BackgroundBloodfx bgBlood;
     bgBlood.image = nullptr;
@@ -214,7 +215,7 @@ void EffectManager::CreateBGBlood(FPOINT pos, float angle, FPOINT size)
         }
         bgBlood.bFlip = true;
         float offset = (float)bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale() / 2.f;
-        bgBlood.SetPos({ pos.x, pos.y - offset });
+        bgBlood.SetPos({ pos.x , pos.y - offset  });
     }
     else if (angle >= 30.f && angle < 90.f)
     {
@@ -232,7 +233,7 @@ void EffectManager::CreateBGBlood(FPOINT pos, float angle, FPOINT size)
         }
         bgBlood.bFlip = false;
         float offset = (float)bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale();
-        bgBlood.SetPos({ pos.x, pos.y  - offset });
+        bgBlood.SetPos({ pos.x , pos.y  - offset  });
     }
     else if (angle >= 90.f && angle < 150.f)
     {
@@ -251,7 +252,7 @@ void EffectManager::CreateBGBlood(FPOINT pos, float angle, FPOINT size)
         bgBlood.bFlip = true;
         float offsetX = bgBlood.image->GetWidth() * ScrollManager::GetInstance()->GetScale();
         float offsetY = bgBlood.image->GetHeight() * ScrollManager::GetInstance()->GetScale();
-        bgBlood.SetPos({ pos.x - offsetX, pos.y - offsetY });
+        bgBlood.SetPos({ pos.x - offsetX , pos.y - offsetY });
     }
     else if ((angle >= 150.f && angle <= 180.f) || (angle >= -180.f && angle < -150.f))
     {
@@ -288,7 +289,7 @@ void EffectManager::CreateBGBlood(FPOINT pos, float angle, FPOINT size)
         }
         bgBlood.bFlip = true;
         float offset = bgBlood.image->GetWidth() * ScrollManager::GetInstance()->GetScale();
-        bgBlood.SetPos({ pos.x - offset, pos.y });
+        bgBlood.SetPos({ pos.x - offset , pos.y });
     }
     else if (angle >= -90.f && angle < -30.f)
     {
@@ -321,7 +322,8 @@ void EffectManager::EmitBlood(FPOINT pos, int count)
         float speed = speedDist(rng);
         RemainEffect p;
         p.image = GPImageManager::GetInstance()->FindImage("bloodparticle");
-        p.pos = pos;
+        p.pos.x = pos.x + ScrollManager::GetInstance()->GetScroll().x;
+        p.pos.y = pos.y + ScrollManager::GetInstance()->GetScroll().y;
         p.totalLife = p.lifetime = 1.f;
         p.velocity = { cos(angle) * speed, sin(angle) * speed };
         p.alpha = 1.f;
