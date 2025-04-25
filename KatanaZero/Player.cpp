@@ -54,7 +54,7 @@ HRESULT Player::Init()
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
-		true, 1.f);
+		false, 1.f);
 
 	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
 	(float)image->GetFrameWidth(),
