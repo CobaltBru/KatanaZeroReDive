@@ -80,6 +80,13 @@ void HiddenBoss::Update()
 			if (Face->GetImageKey() != "spr_psychboss_giant_face_hurt")
 				Face->ChangeImage("spr_psychboss_giant_face_hurt", false);
 			--Hp;
+
+			if (Hp <= 0)
+			{
+				SceneManager::GetInstance()->ChangeScene("Home","·Îµù_1", true);
+				return;
+			}
+				
 		}
 	}
 
