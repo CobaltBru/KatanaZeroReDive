@@ -45,14 +45,14 @@ HRESULT Player::Init()
 
 	halfWidth = image->GetFrameWidth() * 0.5f;	
 	halfHeight = image->GetFrameHeight() * 0.5f;
-	
+	attackTimer = 0.f;
 	InitPlayerStates();
 	state = states->Idle;
 
 	InitPlayerInfo();
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.1f, 
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
 		true, 1.f);
 
@@ -237,7 +237,7 @@ void Player::Update()
 	UpdateRigidBody();
 
 	// collision
-	UpdateCollision();
+	//UpdateCollision();
 
 	// scroll offset
 	Offset();
@@ -307,7 +307,7 @@ void Player::InitPlayerInfo()
 	info->bIsWall = false;
 	info->bGameStart = false;
 	info->bIsDead = false;
-	info->attackCoolTime = .7f;
+	info->attackCoolTime = .34f;
 	info->prevState = "";
 }
 

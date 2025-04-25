@@ -6,6 +6,7 @@
 #include "SimpleTestObject.h"
 #include "SimpleObject.h"
 #include "Player.h"
+#include "HeadHunter.h"
 
 #include "Enemies.h"
 #include "PickUp.h"
@@ -15,11 +16,13 @@ using namespace std;
 static unordered_map<string, function<GameObject* ()>> ObjectInfo = {
 	{"StartPoint", []() {return new Player(); }},
 	{"SimpleTestObject", []() {return new SimpleTestObject(); } },
+	{"HeadHunter", []() {return new HeadHunter(); }},
 	{"Grunt", []() {return new Grunt(); }},
 	{"Pomp", []() {return new Pomp(); }},
 	{"Gangster", []() {return new Gangster(); }},
 	{"Bottle1", []() {return new PickUp(); } },
 	{"Bottle2", []() {return new PickUp(); } },
+	{"EndPoint", []() {return new SimpleObject(); }}
 };
 
 inline GameObject* CreateObject(string ClassName)

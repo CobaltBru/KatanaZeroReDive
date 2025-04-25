@@ -10,6 +10,9 @@
 #include "LineManager.h"
 #include "CommonFunction.h"
 #include "Broken.h"
+#include "SoundManager.h"
+#include "EffectManager.h"
+#include "SnapShotManager.h"
 
 PickUp::PickUp()
 	:gpImage(nullptr), Image(nullptr), IsVisible(true), Angle(-1.f), Speed(0.f), SpinAlngle(0.f)
@@ -22,7 +25,7 @@ HRESULT PickUp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, F
 	wstring str = Utf8ToWstring("Image/Bottle/" + InImageKey + ".png");
 	gpImage = new GPImage();
 	gpImage->AddImage(str.c_str(),1,1);
-
+	
 	Image = ImageManager::GetInstance()->FindImage(InImageKey);
 	Pos = InPos;
 
@@ -90,6 +93,11 @@ void PickUp::Collision()
 	{
 		bCollision = true;
 		NormalVector = { HitResult.HitCollision->GetPos().x - LastPos.x,HitResult.HitCollision->GetPos().y - LastPos.y};
+
+		float speed = sqrt(Pos.x * Pos.x + Pos.y * Pos.y);
+
+		//EffectManager::GetInstance()->Activefx("hitslash", Pos, 0.f, false);
+		//EffectManager::GetInstance()->Activefx("normalslash",Pos, Angle, SnapShotManager::GetInstance()->GetPlayer(), bFlip);
 	}
 	// ¶¥
 	else if (LineManager::GetInstance()->CollisionLine(Pos, LastPos, Result, false, ObjectCollider->GetSize().y, true))
@@ -117,8 +125,11 @@ void PickUp::Collision()
 	// ºÎµúÈù ¹Ý´ë ¹æÇâÀÇ 45µµ °¢µµ¿¡¼­ min ~ max °Å¸®¿¡¼­ ·£´ý »ý¼ºÇÏ°í Èûµµ ·£´ýÀ¸·Î ÁØ´Ù. 
 	if (bCollision)
 	{
+	
+
 		bDead = true;
-		
+		SoundManager::GetInstance()->PlaySounds("sound_enemy_death_bottle", EChannelType::Effect);
+
 		Normalize(NormalVector);
 
 		float RadianAngle = RAD_TO_DEG(atan2f(-NormalVector.y, -NormalVector.x));

@@ -1,15 +1,19 @@
 #pragma once
 #include "GameObject.h"
 
+
 class GPImage;
 class Lazer : public GameObject
 {
 private:
-    FPOINT startPos;
-    FPOINT destPos;
 
+    int frameIndex;
     float angle;
+    float timer;
+    float timer2;
+    float warningTime;
     bool isActive;
+    bool bCanCollide;
 
     GPImage* image;
 
@@ -22,9 +26,9 @@ public:
     virtual void Update(FPOINT pos, float angle);
     virtual void Render(HDC hdc);
 
-    void Fire(FPOINT startPos, FPOINT destPos);
-
     void SetIsActive(bool isActive) { this->isActive = isActive; }
-
+    void SetbCanCollide(bool bCanCollide) { this->bCanCollide = bCanCollide; }
+    void SetWarningTime(float time) { warningTime = time; }
+    void Collision();
 };
 

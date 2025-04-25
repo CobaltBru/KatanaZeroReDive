@@ -20,6 +20,8 @@ HRESULT SoundManager::Init()
 	BGMNextSound = nullptr;
 	EnvNextSound = nullptr;
 
+	pitch = 1.f;
+	timer = 0.f;
 	for (auto& channel : ChannelArr)
 		channel = nullptr;
 
@@ -79,7 +81,7 @@ void SoundManager::Update()
 		if (EnvDelay > 1.f)
 			EnvDelay = 1.f;
 	}
-
+	FMOD_Channel_SetPitch(ChannelArr[(int)EChannelType::BGM], pitch);
 	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::BGM], BGMDelay * BgmVolume);
 	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::Environment], EnvDelay * EnvVolume);
 	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::Effect], EffectVolume);
@@ -122,6 +124,10 @@ void SoundManager::PlaySounds(string InSoundKey, EChannelType InChannelType)
 		return;
 
 	FMOD_System_PlaySound(System, iter->second, nullptr, FALSE, &ChannelArr[(int)InChannelType]);
+
+	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::Broken1], 0.01f);
+	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::Broken2], EffectVolume);
+
 	FMOD_System_Update(System);
 }
 
@@ -155,6 +161,16 @@ void SoundManager::PlayEnv(string InSoundKey)
 	}
 }
 
+void SoundManager::PitchDown(EChannelType InChannelType)
+{
+	pitch = 0.6f;
+}
+
+void SoundManager::PitchOrigin(EChannelType InChannelType)
+{
+	pitch = 1.0f;
+}
+
 void SoundManager::StopSound(EChannelType InChannelType)
 {
 	FMOD_Channel_Stop(ChannelArr[(int)InChannelType]);
@@ -165,3 +181,5 @@ void SoundManager::StopAll()
 	for(int i = 0; i < (int)EChannelType::MaxChannel; ++i)
 		FMOD_Channel_Stop(ChannelArr[i]);
 }
+
+

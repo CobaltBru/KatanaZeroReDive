@@ -6,10 +6,12 @@
 #include "ScrollManager.h"
 #include "RenderManager.h"
 #include "CommonFunction.h"
+#include "SoundManager.h"
 
 uniform_int_distribution<int> uidFlip(0, 1);
 
 Broken::Broken()
+	:Count(0)
 {
 }
 
@@ -49,7 +51,21 @@ void Broken::Update()
 	LastPos = Pos;
 
 	ObjectCollider->Update();
-	ObjectRigidBody->Update();		
+	ObjectRigidBody->Update();
+
+	FPOINT Velocity = ObjectRigidBody->GetVelocity();
+	FLineResult Result = ObjectRigidBody->GetResult();
+	if (Result.LineType != ELineType::End && abs(Velocity.y) >= 1.f &&  GetLength(Velocity) >= 50.f && Count <= 2)
+	{
+		++Count;
+		const bool type = uidFlip(dre);
+		if (type)
+		{
+			SoundManager::GetInstance()->PlaySounds("sound_clatter_glass1", EChannelType::Broken1);
+		}
+		else
+			SoundManager::GetInstance()->PlaySounds("sound_clatter_glass2", EChannelType::Broken2);
+	}
 
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
@@ -60,7 +76,7 @@ void Broken::Render(HDC hdc)
 	Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip, true, Scale * ScrollManager::GetInstance()->GetScale());
 
 	if (ObjectCollider->CanDebugDraw())
-		ObjectCollider->Render(hdc);	
+		ObjectCollider->Render(hdc);
 }
 
 void Broken::Release()

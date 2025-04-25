@@ -8,12 +8,14 @@ RigidBody::RigidBody()
 	: Owner(nullptr), Mass(0.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(0.f), MaxVelocity({ 0.f,0.f }), bGravity(false), Gravity(0.f),
 	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(0.f), SaveAccelerationAlpha({ 0.f,0.f })
 {
+	CanSlowSystem = true;
 	ZeroMemory(&Result, sizeof(FLineResult));
 }
-RigidBody::RigidBody(GameObject* InOwner)
+RigidBody::RigidBody(GameObject* InOwner, bool CanSlowSystem)
 	:Owner(InOwner), Mass(1.f), Velocity({ 0.f,0.f }), Force({ 0.f,0.f }), FrictionCoefficient(50.f), MaxVelocity({ 200.f ,600.f }), bGravity(true), Gravity(9.8f),
 	bGround(false), AccelerationAlpha({ 0.f,0.f }), Acceleration({ 0.f,0.f }), bDown(false), bDiagonalLine(false), Elasticity(0.f), SaveAccelerationAlpha({ 0.f,800.f })
 {
+	this->CanSlowSystem = CanSlowSystem;
 	ZeroMemory(&Result, sizeof(FLineResult));
 }
 
@@ -42,12 +44,12 @@ void RigidBody::Update()
 	Acceleration += AccelerationAlpha;
 
 	//¼Óµµ
-	Velocity += Acceleration * TimerManager::GetInstance()->GetDeltaTime();
+	Velocity += Acceleration * TimerManager::GetInstance()->GetDeltaTime(CanSlowSystem);
 
 	//¸¶Âû
 	FPOINT tempVelocity = Velocity;
 	Normalize(tempVelocity);
-	FPOINT friction = -tempVelocity * FrictionCoefficient * TimerManager::GetInstance()->GetDeltaTime();
+	FPOINT friction = -tempVelocity * FrictionCoefficient * TimerManager::GetInstance()->GetDeltaTime(CanSlowSystem);
 
 	if (GetLength(Velocity) <= GetLength(friction))
 		Velocity = { 0.f,0.f };
@@ -91,7 +93,7 @@ void RigidBody::Move()
 
 		FPOINT Pos = Owner->GetPos();
 
-		Pos += Velocity * TimerManager::GetInstance()->GetDeltaTime();
+		Pos += Velocity * TimerManager::GetInstance()->GetDeltaTime(CanSlowSystem);
 
 		Owner->SetPos(Pos);
 	}
@@ -106,7 +108,7 @@ void RigidBody::CollisionLine()
 
 	ZeroMemory(&Result, sizeof(FLineResult));
 	Result.IsDiagonalLine = bDiagonalLine;
-
+	Result.LineType = ELineType::End;
 	// ¶¥
 	if (Velocity.y > 0.f && LineManager::GetInstance()->CollisionLine(Owner->GetPos(), Owner->GetLastPos(), Result, bGround, Owner->GetCollider()->GetSize().y, bDown))
 	{

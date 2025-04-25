@@ -13,7 +13,7 @@ PlayerState* WallSlideState::GetInput(Player* player)
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft == true ? 500.f : -500.f), 0.f });
+		player->GetRigidBody()->AddVelocity({ (lineResult.IsLeft == true ? 600.f : -600.f), 0.f });
 		player->GetInfo()->prevState = "wallslide";
 		return player->GetStates()->Jump;
 	}
@@ -66,11 +66,11 @@ void WallSlideState::Update(Player* player)
 		const FLineResult lineResult = player->GetRigidBody()->GetResult();
 		if (lineResult.IsLeft)
 		{
-			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ -player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 90.f, true);
+			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 3 }, 90.f, true);
 		}
 		else
 		{
-			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ player->GetHalfWidth(), player->GetHalfHeight() * 3 }, 270.f, false);
+			EffectManager::GetInstance()->Activefx("wallcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 3 }, 270.f, false);
 		}
 
 		//EffectManager::GetInstance()->Activefx("dustcloud", player->GetPos() + FPOINT{ 0.f, halfHeight },
