@@ -8,6 +8,8 @@
 #include <math.h>
 #include "GPImageManager.h"
 
+int Effect::nextID = 0;
+
 void Effect::UpdateFrame()
 {
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
@@ -56,6 +58,7 @@ HRESULT Effect::Init(string key, FPOINT start, FPOINT end, float speed, float fr
 	this->start = start;
 	this->end = end;
 	this->frameduration = frameduration;
+	this->currAnimKey = key;
 	pos = this->start;
 	currFrameX = 0;
 	currFrameY = 0;
@@ -108,13 +111,12 @@ void Effect::Render(HDC hdc)
 void Effect::MakeSnapShot(void* out)
 {
 	EffectSnapShot* fxSnapShot = static_cast<EffectSnapShot*>(out);
-	fxSnapShot->startpos = this->start;
-	fxSnapShot->destpos = this->end;
+	fxSnapShot->pos = this->pos;
 	fxSnapShot->angle = this->angle;
 	fxSnapShot->bFlip = this->bFlip;
-	fxSnapShot->effectKey = 
+	fxSnapShot->effectKey = this->currAnimKey;
 	fxSnapShot->animFrame = this->currFrameX;
-	fxSnapShot->isActive = bActive;
+	fxSnapShot->id = this->GetID();
 }
 
 void Effect::ApplySnapShot(const EffectSnapShot& fxSnapShot)
@@ -196,6 +198,7 @@ Effect::Effect(const Effect& other)
 	this->bMove = other.bMove;
 	this->alpha = other.alpha;
 	this->frameduration = other.frameduration;
+	this->currAnimKey = other.currAnimKey;
 
 	// sour 테스트용 변수도 복사
 	this->offset = other.offset;

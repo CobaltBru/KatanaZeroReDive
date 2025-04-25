@@ -15,14 +15,21 @@ public:
 	void SaveSnapShot(
 		const PlayerSnapShot& player,
 		const vector<EnemySnapShot>& enemies,
-		const vector<EffectSnapShot>& effects, 
 		const ScrollSnapShot& scroll);
+	void SaveFx(const vector<EffectSnapShot>& effects);
 	inline int GetBufferSize() { return (int)frameBuffer.size(); }
-	inline SnapShot GetFrame(int idx) { return frameBuffer[idx]; }
-	inline void Clear() { frameBuffer.clear(); }
+	inline int GetFxBufferSize() { return (int)fxBuffer.size(); }
+	inline SnapShot GetFrame(int idx) { return frameBuffer.at(idx); }
+	inline vector<EffectSnapShot> GetFxFrame(int idx) { return fxBuffer.at(idx); }
+	inline void Clear() 
+	{ 
+		frameBuffer.clear();
+		fxBuffer.clear();
+	}
 
 private:
-	const size_t MAX_SNAPSHOTS = 100000; // 180fps로 저장하는데 
+	const size_t MAX_SNAPSHOTS = 100000;
 	deque<SnapShot> frameBuffer;
+	deque<vector<EffectSnapShot>> fxBuffer;
 };
 

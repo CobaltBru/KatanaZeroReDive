@@ -38,6 +38,7 @@ HRESULT Player::Init()
 
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 	effectImage = nullptr;
+	currAnimKey = "zeroidle";
 
 	Pos = FPOINT{ 1200, 700 };
 	switchTime = 0.02f;
@@ -51,7 +52,7 @@ HRESULT Player::Init()
 	InitPlayerInfo();
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.1f, 
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
 		true, 1.f);
 
@@ -88,6 +89,63 @@ HRESULT Player::Init()
 	return S_OK;
 }
 
+HRESULT Player::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImage();
+
+	image = ImageManager::GetInstance()->FindImage("zeroidle");
+	effectImage = nullptr;
+	currAnimKey = "zeroidle";
+
+	Pos = InPos;
+	switchTime = 0.02f;
+	bFlip = InFlip;
+	RenderGroup = InRenderGroup;
+
+	halfWidth = image->GetFrameWidth() * 0.5f;
+	halfHeight = image->GetFrameHeight() * 0.5f;
+
+	InitPlayerStates();
+	state = states->Idle;
+
+	InitPlayerInfo();
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize,
+		true, 1.f);
+
+	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
+	(float)image->GetFrameWidth(),
+	(float)image->GetFrameHeight()},
+	true, 1.f);*/
+
+	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
+		false, 1.f);
+
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
+
+	ObjectRigidBody = new RigidBody(this);
+	InitRigidBody();
+
+	InitScrollOffset();
+	scrollSpeed = 300.f;
+
+	// set player input key
+	playerInput = new PlayerInput();
+	//playerInput->Init();
+
+	dir = EDirection::Right;
+
+	//playerAnim = new PlayerAnim;
+	//playerAnim->Init();
+
+	info->bIsWall = false;
+
+	return S_OK;
+}
+
 
 void Player::Release()
 {
@@ -109,6 +167,7 @@ void Player::Release()
 	}
 	if (states)
 	{
+		delete states->Dead;
 		delete states->Attack;
 		delete states->Fall;
 		delete states->Idle;
@@ -219,6 +278,9 @@ void Player::MakeSnapShot(void* out)
 {
 	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
 	pSnapShot->animFrame = this->FrameIndex;
+	pSnapShot->bFlip = this->bFlip;
+	pSnapShot->pos = this->Pos;
+	pSnapShot->animKey = this->currAnimKey;
 }
 
 void Player::InitPlayerStates()

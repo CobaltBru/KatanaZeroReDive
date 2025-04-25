@@ -213,6 +213,7 @@ extern POINT g_ptMouse;
 extern random_device rd;
 extern default_random_engine dre;
 extern uniform_int_distribution<int> uid;
+extern uniform_real_distribution<float> urd;
 
 extern ID3D11Device* g_pd3dDevice;
 extern ID3D11DeviceContext* g_pd3dDeviceContext;
