@@ -349,7 +349,7 @@ void HYScene::Render(HDC hdc)
 	CollisionManager->Render(hdc);
 	fxManager->Render(hdc);
 	screenEffectManager->RenderDistortion(hdc);
-	LineManager->Render(hdc);
+	//LineManager->Render(hdc);
 }
 
 void HYScene::Release()
