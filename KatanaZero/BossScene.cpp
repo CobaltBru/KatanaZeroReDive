@@ -1,4 +1,4 @@
-#include "Stage1Scene.h"
+#include "BossScene.h"
 #include "CommonFunction.h"
 
 #include "ObjectManager.h"
@@ -29,15 +29,13 @@
 #include "Factory.h"
 #include "Tile.h"
 #include "ArrowUI.h"
-#include "GPImageManager.h"
 
-Stage1Scene::Stage1Scene()
+BossScene::BossScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
-	, gpImageManager(nullptr)
 {
 }
 
-HRESULT Stage1Scene::Init()
+HRESULT BossScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
@@ -64,54 +62,53 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	gpImageManager = GPImageManager::GetInstance();
-	gpImageManager->Init();
+	Player* player = new Player();
+	player->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 
-	slowStart = false;
-
-	
-
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/headhunter_test.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("BossScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("BossScene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("BossScene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 	if (FAILED(InitEffects()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("BossScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
-	//SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
-	SoundManager::GetInstance()->PlayBGM("pyshroom");
+	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
+
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitImage()
+HRESULT BossScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
-
+	ImageManager::GetInstance()->AddImage("HeadHunter", L"Image/HeadHunter/headhunter_idle_init.bmp", 25, 50, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BossRoom", L"Image/Background/spr_outside_vault_bg_0.bmp", 640, 360, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("Player", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 
 	InitBackgroundImage();
 
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitObject()
+HRESULT BossScene::InitObject()
 {
 	Background* background = new Background();
 	background->Init("black", 0.f);
@@ -124,12 +121,12 @@ HRESULT Stage1Scene::InitObject()
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitEffects()
+HRESULT BossScene::InitEffects()
 {
 	return S_OK;
 }
 
-void Stage1Scene::TestCode()
+void BossScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
@@ -137,11 +134,9 @@ void Stage1Scene::TestCode()
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
-		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
 }
 
-void Stage1Scene::InitBackgroundImage()
+void BossScene::InitBackgroundImage()
 {
 	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
 
@@ -160,10 +155,10 @@ void Stage1Scene::InitBackgroundImage()
 	}
 }
 
-void Stage1Scene::LoadBackground()
+void BossScene::LoadBackground()
 {
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/headhunter_bg.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -202,19 +197,19 @@ void Stage1Scene::LoadBackground()
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::LoadObject()
+void BossScene::LoadObject()
 {
-	ui = new UIGame();
+	UIGame* ui = new UIGame();
 	ui->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-	ui->setInfo(300.f);
+
 	ArrowUI* ArrowUIObj = new ArrowUI();
 	ArrowUIObj->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
 
 
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/headhunter_object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -263,11 +258,11 @@ void Stage1Scene::LoadObject()
 			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
 		}
 	}
-
+	
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::LoadFloor()
+void BossScene::LoadFloor()
 {
 	HANDLE hFile = CreateFile(
 		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
@@ -297,9 +292,8 @@ void Stage1Scene::LoadFloor()
 	CloseHandle(hFile);
 }
 
-void Stage1Scene::Update()
+void BossScene::Update()
 {
-	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();
@@ -307,27 +301,10 @@ void Stage1Scene::Update()
 
 	ScrollManager->Update();
 
-	//슬로우
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
-	{
-		if (ui->getBattery() > 0.0001f)
-		{
-			ui->UpdateSlow(true);
-			//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-			TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
-		}
-		
-	}
-	else  // 슬로우 풀기
-	{
-		ui->UpdateSlow(false);
-		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
-	}
-
 	TestCode();
 }
 
-void Stage1Scene::Render(HDC hdc)
+void BossScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
@@ -336,7 +313,7 @@ void Stage1Scene::Render(HDC hdc)
 	LineManager->Render(hdc);
 }
 
-void Stage1Scene::Release()
+void BossScene::Release()
 {
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
@@ -354,9 +331,6 @@ void Stage1Scene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
-	if (gpImageManager != nullptr)
-		gpImageManager->Release();
-
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -365,5 +339,4 @@ void Stage1Scene::Release()
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 	fxManager = nullptr;
-	gpImageManager = nullptr;
 }

@@ -45,7 +45,7 @@ HRESULT Player::Init()
 
 	halfWidth = image->GetFrameWidth() * 0.5f;	
 	halfHeight = image->GetFrameHeight() * 0.5f;
-	
+	attackTimer = 0.f;
 	InitPlayerStates();
 	state = states->Idle;
 
@@ -237,7 +237,7 @@ void Player::Update()
 	UpdateRigidBody();
 
 	// collision
-	UpdateCollision();
+	//UpdateCollision();
 
 	// scroll offset
 	Offset();

@@ -142,6 +142,7 @@
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="BossWeak.cpp" />
+    <ClCompile Include="BossScene.cpp" />
     <ClCompile Include="Broken.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="UIGame.cpp" />
     <ClCompile Include="WallSlideState.cpp" />
     <ClCompile Include="WorldBackground.cpp" />
@@ -241,6 +243,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="BossWeak.h" />
+    <ClInclude Include="BossScene.h" />
     <ClInclude Include="Broken.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
@@ -336,6 +339,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="UIGame.h" />
     <ClInclude Include="WallSlideState.h" />
     <ClInclude Include="WorldBackground.h" />
