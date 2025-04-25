@@ -8,7 +8,7 @@ class SceneManager : public Singleton<SceneManager>
 private:
 	map<string, GameObject*> mapScenes;
 	map<string, GameObject*> mapLoadingScenes;
-
+	string currKey;
 	string NextLoading;
 	string NextScene;
 	bool bChange;
@@ -33,6 +33,8 @@ public:
 		NextLoading = loadingKey;
 		bChange = InbChange;
 	};
+
+	HRESULT RestartCurrentScene();
 
 	GameObject* AddScene(string key, GameObject* scene);
 	GameObject* AddLoadingScene(string key, GameObject* scene);

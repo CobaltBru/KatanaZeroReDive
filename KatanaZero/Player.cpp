@@ -40,7 +40,7 @@ HRESULT Player::Init()
 	effectImage = nullptr;
 	currAnimKey = "zeroidle";
 
-	Pos = FPOINT{ 1200, 700 };
+	Pos = FPOINT{ 400, 700 };
 	switchTime = 0.02f;
 
 	halfWidth = image->GetFrameWidth() * 0.5f;	
@@ -151,7 +151,7 @@ void Player::Release()
 {
 	if (playerInput)
 	{		
-		delete playerInput;
+		//delete playerInput;
 		playerInput = nullptr;
 	}
 	/*if (playerAnim)

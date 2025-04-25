@@ -100,16 +100,18 @@ void ERun::Enter(Enemy& enemy)
 void ERun::Update(Enemy& enemy)
 {
 	if (!SnapShotManager::GetInstance()->GetPlayer()) return;
+	if (!enemy.IsInAttackRange())
+	{
+		FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
+		FPOINT pos = enemy.GetPos();
 
-	FPOINT playerPos = SnapShotManager::GetInstance()->GetPlayer()->GetPos();
-	FPOINT pos = enemy.GetPos();
+		float dx = playerPos.x - pos.x;
+		int dir = (dx > 0) ? 1 : -1;
+		enemy.SetDir(dir);
 
-	float dx = playerPos.x - pos.x;
-	int dir = (dx > 0) ? 1 : -1;
-	enemy.SetDir(dir);
-
-	const float chaseSpeed = enemy.GetSpeed() * 2.f;
-	enemy.GetRigidBody()->AddVelocity({ dir * chaseSpeed, 0.f });
+		const float chaseSpeed = enemy.GetSpeed() * 2.f;
+		enemy.GetRigidBody()->AddVelocity({ dir * chaseSpeed, 0.f });
+	}
 
 	float dt = TimerManager::GetInstance()->GetDeltaTime();
 	enemy.AddATimer(dt);

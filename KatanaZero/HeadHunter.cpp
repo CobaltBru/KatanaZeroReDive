@@ -89,7 +89,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
 
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
-    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f   ,40.f   }, true, 10.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f   ,40.f   }, false, 10.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
     ObjectCollider->SetPos(Pos);
 
@@ -359,7 +359,7 @@ void HeadHunter::Collision()
     {
     	// 충돌했다.
 
-    	ObjectCollider->SetHit(false);	// 내 콜라이더 충돌
+    	ObjectCollider->SetHit(true);	// 내 콜라이더 충돌
     	HitResult.HitCollision->SetHit(false);// 상대방 콜라이더 충돌
 
     	HitResult.HitCollision->GetOwner();  // 상대방 객체 접근

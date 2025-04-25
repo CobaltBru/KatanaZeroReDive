@@ -24,6 +24,8 @@
 #include "Effect.h"
 #include "EffectManager.h"
 
+#include "GPImageManager.h"
+
 #include "Player.h"
 #include "DefaultObject.h"
 #include "Factory.h"
@@ -31,7 +33,7 @@
 #include "ArrowUI.h"
 
 BossScene::BossScene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), gpImageManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 {
 }
 
@@ -59,12 +61,15 @@ HRESULT BossScene::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
+	gpImageManager = GPImageManager::GetInstance();
+	gpImageManager->Init();
+
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
-
 	Player* player = new Player();
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+
 
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/headhunter_test.dat")))
 	{

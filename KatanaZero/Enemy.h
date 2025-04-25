@@ -33,6 +33,7 @@ protected:
 	int targetFloor;
 	bool bReachedTargetFloor;
 	float HitAngle;
+	bool canHit;
 
 	// Jump
 	float Gravity;
@@ -87,7 +88,4 @@ public:
 	bool CanAttack() { return bCanAttack; }
 	bool IsHitted();
 	void Collision();
-
-
-	virtual void Attack() {};
 };

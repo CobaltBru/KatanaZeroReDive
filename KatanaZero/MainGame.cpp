@@ -187,6 +187,7 @@ HRESULT MainGame::InitSound()
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("zeroland", "Sound/zero_land.wav")))
 		return E_FAIL;
+	
 
 	//talk
 	{

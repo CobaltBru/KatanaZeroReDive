@@ -51,7 +51,7 @@ HRESULT Turret::Init()
 
     turretImage = ImageManager::GetInstance()->FindImage("Turret");
 
-    ObjectCollider = new Collider(this, EColliderType::Rect, {-25.f * ScrollManager::GetInstance()->GetScale(),+25.f * ScrollManager::GetInstance()->GetScale() }, 50.f * ScrollManager::GetInstance()->GetScale(), true, 1.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, {-25.f * ScrollManager::GetInstance()->GetScale(),+25.f * ScrollManager::GetInstance()->GetScale() }, 50.f * ScrollManager::GetInstance()->GetScale(), false, 1.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
     ObjectCollider->SetPos(Pos);
 
