@@ -711,6 +711,7 @@ void HeadHunter::VerticalLazer()
 
 void HeadHunter::RoundLazer()
 {   
+    RoundLazerCollision();
     lazer->SetbCanCollide(false);
     float a = 180 + angle;
     float b = angle;
@@ -974,7 +975,7 @@ void HeadHunter::Die()
         }
         break;
     case 2:
-        image = ImageManager::GetInstance()->FindImage("Dead");
+        image = ImageManager::GetInstance()->FindImage("Dead"); // 기어가는 동작
         if (frameIndex < image->GetMaxFrameX() - 1)
         {
             if (timer > 0.3f)
