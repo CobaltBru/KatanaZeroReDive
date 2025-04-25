@@ -11,6 +11,7 @@
 #include "TalkScene.h"
 #include "HomeScene.h"
 #include "LoadingScene.h"
+#include "HiddenScene.h"
 #include "SoundManager.h"
 
 #include "ScreenEffectManager.h"
@@ -48,10 +49,10 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
 	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
+	SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
-	
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Hidden","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -186,6 +187,7 @@ HRESULT MainGame::InitSound()
 		return E_FAIL;
 	if (FAILED(SoundManager::GetInstance()->AddSound("zeroland", "Sound/zero_land.wav")))
 		return E_FAIL;
+	
 
 	//talk
 	{
@@ -243,6 +245,27 @@ HRESULT MainGame::InitSound()
 	}
 
 
+	//PickUp
+	{
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_player_throw", "Sound/PickUp/sound_player_throw.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_player_grabtea", "Sound/PickUp/sound_player_grabtea.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_enemy_death_bottle", "Sound/PickUp/sound_enemy_death_bottle.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_clatter_glass2", "Sound/PickUp/sound_clatter_glass2.wav")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_clatter_glass1", "Sound/PickUp/sound_clatter_glass1.wav")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("BossBossBoss", "Sound/BossBossBoss.mp3")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_cutblack", "Sound/sound_cutblack.wav")))
+			return E_FAIL;
+		
+	}
+
 	return S_OK;
 }
 
@@ -251,6 +274,23 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
+	ImageManager::GetInstance()->AddImage("normalslash", L"Image/fx/NormalSlash.bmp", 530, 32, 5, 1, true, RGB(255, 255, 255));
+
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant", L"Image/Hidden/spr_psychboss_giant.bmp", 11352, 235, 24, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_lilguy", L"Image/Hidden/spr_psychboss_giant_lilguy.bmp", 4848, 126, 24, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_face_idle", L"Image/Hidden/spr_psychboss_giant_face_idle.bmp", 954, 231, 6, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_face_hurt", L"Image/Hidden/spr_psychboss_giant_face_hurt.bmp", 1449, 234, 9, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_idle", L"Image/Hidden/spr_psychboss_giant_tentacle_idle.bmp", 1008, 163, 12, 1, true, RGB(255, 0, 255));
+
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_stab", L"Image/Hidden/spr_psychboss_giant_tentacle_stab.bmp", 400, 216, 5, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_stab_end", L"Image/Hidden/spr_psychboss_giant_tentacle_stab_end.bmp", 276, 216, 4, 1, true, RGB(255, 0, 255));
+
+	ImageManager::GetInstance()->AddImage("spr_psychboss_stabber_0", L"Image/Hidden/spr_psychboss_stabber_0.bmp", 36, 450, 1, 1, true, RGB(255, 0, 255));
+	
+	ImageManager::GetInstance()->AddImage("spr_psychboss_tentacle_hurt_", L"Image/Hidden/spr_psychboss_tentacle_hurt_.bmp", 204, 105, 6, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_tentacle_idle_", L"Image/Hidden/spr_psychboss_tentacle_idle_.bmp", 210, 96, 7, 1, true, RGB(255, 0, 255));
+
+	InitBackground();	
 
 	ImageManager::GetInstance()->AddImage("bg_cathedral", L"Image/Tile/bg_cathedral_foreground_0.bmp", 128, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("bg_motel_background", L"Image/Tile/bg_motel_background_0.bmp", 448, 448, 1, 1, true, RGB(255, 0, 255));
@@ -278,6 +318,24 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 
 	return S_OK;
+}
+
+void MainGame::InitBackground()
+{
+	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
+	if (!backgrounds.empty())
+	{
+		for (int i = 0; i < backgrounds.size(); ++i)
+		{
+			int dotPos = backgrounds[i].find_last_of('.');
+			string nameOnly = dotPos != string::npos ? backgrounds[i].substr(0, dotPos) : backgrounds[i];
+
+			wstring wsPath = L"Image/Background/";
+			wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
+
+			ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
+		}
+	}
 }
 
 MainGame::MainGame()

@@ -16,6 +16,7 @@
 
 #include "SnapShotManager.h"
 #include "ArrowUI.h"
+#include "SoundManager.h"
 
 SimpleObject::SimpleObject()
 	:Image(nullptr), ScrollSpeed(0.f), bIsWall(false), RightHand(nullptr), UIGameObj(nullptr), ArrowUIObj(nullptr)
@@ -307,6 +308,7 @@ void SimpleObject::PickUpUpdate()
 					
 					if (UIGameObj != nullptr)
 						UIGameObj->SetRightItem(RightHand->GetPickUpItem()->GetImageKey(), { 12.f,-4.f}, 0, RightHand->GetPickUpItem()->GetScale() * ScrollManager::GetInstance()->GetScale());
+					SoundManager::GetInstance()->PlaySounds("sound_player_grabtea", EChannelType::Effect);
 				}					
 				else
 					Shoot();

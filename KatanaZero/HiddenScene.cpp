@@ -1,4 +1,4 @@
-#include "Stage1Scene.h"
+#include "HiddenScene.h"
 #include "CommonFunction.h"
 
 #include "ObjectManager.h"
@@ -27,17 +27,17 @@
 #include "Player.h"
 #include "DefaultObject.h"
 #include "Factory.h"
-#include "Tile.h"
 #include "ArrowUI.h"
 #include "GPImageManager.h"
+#include "HiddenBoss.h"
 
-Stage1Scene::Stage1Scene()
-	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
-	, gpImageManager(nullptr)
+HiddenScene::HiddenScene()
+	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr),
+	LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr)
 {
 }
 
-HRESULT Stage1Scene::Init()
+HRESULT HiddenScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
 
@@ -67,154 +67,134 @@ HRESULT Stage1Scene::Init()
 	gpImageManager = GPImageManager::GetInstance();
 	gpImageManager->Init();
 
-	slowStart = false;
-
-	
-
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Hidden/HiddenLine.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HiddenScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HiddenScene InitImage Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HiddenScene InitObject Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 	if (FAILED(InitEffects()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("실패"), MB_OK);
+		MessageBox(g_hWnd, TEXT("HiddenScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
 
-	//SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
-	SoundManager::GetInstance()->PlayBGM("pyshroom");
+	SoundManager::GetInstance()->PlayBGM("BossBossBoss");
+
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitImage()
+HRESULT HiddenScene::InitImage()
 {
-	// 해당 씬에 필요한 모든 이미지 추가
-	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
-
-
-	InitBackgroundImage();
-
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitObject()
+HRESULT HiddenScene::InitObject()
 {
 	Background* background = new Background();
 	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
-
+	
 	LoadBackground();
+	HiddenBoss* boss = new HiddenBoss();
+	boss->SetPos({ WINSIZE_X * 0.5f, WINSIZE_Y * 0.5f });
+	boss->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, boss);
+
+
+	
+
+
+
+
 	LoadObject();
-	LoadFloor();
+
+	
+	
+
+
 
 	return S_OK;
 }
 
-HRESULT Stage1Scene::InitEffects()
+HRESULT HiddenScene::InitEffects()
 {
 	return S_OK;
 }
 
-void Stage1Scene::TestCode()
+void HiddenScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
-		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
-		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
 }
 
-void Stage1Scene::InitBackgroundImage()
+void HiddenScene::LoadBackground()
 {
-	vector<string> backgrounds = GetFileNames("Image/Background/*.bmp");
+	Image* image = ImageManager::GetInstance()->FindImage("spr_psychboss_background_0");
 
-	if (backgrounds.empty())
-		return;
-
-	for (int i = 0; i < backgrounds.size(); ++i)
+	for (int i = 0; i < 3; ++i)
 	{
-		int dotPos = backgrounds[i].find_last_of('.');
-		string nameOnly = dotPos != string::npos ? backgrounds[i].substr(0, dotPos) : backgrounds[i];
-
-		wstring wsPath = L"Image/Background/";
-		wsPath += wstring(backgrounds[i].begin(), backgrounds[i].end());
-
-		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255));
-	}
-}
-
-void Stage1Scene::LoadBackground()
-{
-	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Background.dat", GENERIC_READ, 0, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
-		MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("경고"), MB_OK);
-		return;
-	}
-
-	DWORD dwByte = 0;
-
-	while (true)
-	{
-		int Size;
-		float ScrollPer;
-		FPOINT Pos;
-		ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
-		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
-
-		char* buffer = new char[Size + 1];
-		ReadFile(hFile, buffer, Size, &dwByte, NULL);
-		buffer[Size] = '\0';
-		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
-
-		string BackgroundName = buffer;
-
-		delete[] buffer;
-
-		if (dwByte == 0)
-			break;
-
 		Background* BackgroundObj = new Background();
-		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
-		BackgroundObj->SetPos(Pos);
+		BackgroundObj->Init("spr_psychboss_background_0", 1, ScrollManager::GetInstance()->GetScale());
+
+		const float CenterY = WINSIZE_Y * 0.5f;		
+		BackgroundObj->SetPos({ 0.f,CenterY - (image->GetHeight() * ScrollManager::GetInstance()->GetScale() * i)});
+		BackgroundObj->GetImage()->SetTransparent(false);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+		MoveBackGrounds.push_back(BackgroundObj);
+	}	
+
+	{
+		Background* BackgroundObj = new Background();
+		BackgroundObj->Init("spr_psychboss_bg_1_0", 1, ScrollManager::GetInstance()->GetScale(),ERenderGroup::NonAlphaBlend);
+		BackgroundObj->SetPos({ 0.f,WINSIZE_Y * 0.25f });
+		BackgroundObj->GetImage()->SetTransparent(true);
 		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
 	}
 
-	CloseHandle(hFile);
+	{
+		Background* BackgroundObj = new Background();
+		BackgroundObj->Init("spr_psychboss_floor_0", 1, ScrollManager::GetInstance()->GetScale() + 0.5f, ERenderGroup::NonAlphaBlend);
+		BackgroundObj->SetPos({ 0.f,WINSIZE_Y * 0.8f});
+		BackgroundObj->GetImage()->SetTransparent(true);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+	}
+
+	{
+		Background* BackgroundObj = new Background();
+		BackgroundObj->Init("spr_psychboss_fg_0", 1, ScrollManager::GetInstance()->GetScale(), ERenderGroup::AlphaBlend);
+		BackgroundObj->SetPos({ 0.f,WINSIZE_Y * 0.7f });
+		BackgroundObj->GetImage()->SetTransparent(true);
+		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
+	}
 }
 
-void Stage1Scene::LoadObject()
+void HiddenScene::LoadObject()
 {
-	ui = new UIGame();
+	UIGame* ui = new UIGame();
 	ui->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-	ui->setInfo(300.f);
+
 	ArrowUI* ArrowUIObj = new ArrowUI();
 	ArrowUIObj->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
 
 
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Hidden/HiddenObject.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -240,6 +220,7 @@ void Stage1Scene::LoadObject()
 		ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 		ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -255,6 +236,7 @@ void Stage1Scene::LoadObject()
 
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
+		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
 
 		if (ClassName == "StartPoint")
@@ -266,40 +248,8 @@ void Stage1Scene::LoadObject()
 
 	CloseHandle(hFile);
 }
-
-void Stage1Scene::LoadFloor()
+void HiddenScene::Update()
 {
-	HANDLE hFile = CreateFile(
-		L"Data/Stage1/Stage1Floor.dat", GENERIC_READ, 0, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
-		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("경고"), MB_OK);
-		return;
-	}
-
-	DWORD dwByte = 0;
-
-	vector<FloorZone> FloorZones;
-	while (true)
-	{
-		FloorZone fz;
-		ZeroMemory(&fz, sizeof(FloorZone));
-
-		ReadFile(hFile, &fz, sizeof(FloorZone), &dwByte, NULL);
-
-		if (dwByte == 0)
-			break;
-
-		FloorZones.push_back(fz);
-	}
-
-	CloseHandle(hFile);
-}
-
-void Stage1Scene::Update()
-{
-	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();
@@ -307,27 +257,29 @@ void Stage1Scene::Update()
 
 	ScrollManager->Update();
 
-	//슬로우
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	for (int i = 0; i < MoveBackGrounds.size(); ++i)
 	{
-		if (ui->getBattery() > 0.0001f)
+		float Y = MoveBackGrounds[i]->GetPos().y;
+		Y += 50.f * TimerManager::GetInstance()->GetDeltaTime();
+		if (Y >= WINSIZE_Y)
 		{
-			ui->UpdateSlow(true);
-			//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-			TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+			Image* image = ImageManager::GetInstance()->FindImage("spr_psychboss_background_0");
+
+			if (i == 0)
+				MoveBackGrounds[i]->SetPos({ MoveBackGrounds[2]->GetPos().x,MoveBackGrounds[2]->GetPos().y - image->GetHeight() * ScrollManager::GetInstance()->GetScale() });
+			else if (i == 1)
+				MoveBackGrounds[i]->SetPos({ MoveBackGrounds[0]->GetPos().x,MoveBackGrounds[0]->GetPos().y - image->GetHeight() * ScrollManager::GetInstance()->GetScale() });
+			else
+				MoveBackGrounds[i]->SetPos({ MoveBackGrounds[1]->GetPos().x,MoveBackGrounds[1]->GetPos().y - image->GetHeight() * ScrollManager::GetInstance()->GetScale() });
 		}
-		
-	}
-	else  // 슬로우 풀기
-	{
-		ui->UpdateSlow(false);
-		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+		else
+			MoveBackGrounds[i]->SetPos({ 0.f,Y });		
 	}
 
 	TestCode();
 }
 
-void Stage1Scene::Render(HDC hdc)
+void HiddenScene::Render(HDC hdc)
 {
 	RenderManager->Render(hdc);
 	CollisionManager->Render(hdc);
@@ -336,7 +288,7 @@ void Stage1Scene::Render(HDC hdc)
 	LineManager->Render(hdc);
 }
 
-void Stage1Scene::Release()
+void HiddenScene::Release()
 {
 	if (ObjectManager != nullptr)
 		ObjectManager->Release();
@@ -354,8 +306,8 @@ void Stage1Scene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
-	if (gpImageManager != nullptr)
-		gpImageManager->Release();
+	//if (gpImageManager != nullptr)
+	//	gpImageManager->Release();
 
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;

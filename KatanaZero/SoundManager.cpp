@@ -124,6 +124,10 @@ void SoundManager::PlaySounds(string InSoundKey, EChannelType InChannelType)
 		return;
 
 	FMOD_System_PlaySound(System, iter->second, nullptr, FALSE, &ChannelArr[(int)InChannelType]);
+
+	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::Broken1], 0.01f);
+	FMOD_Channel_SetVolume(ChannelArr[(int)EChannelType::Broken2], EffectVolume);
+
 	FMOD_System_Update(System);
 }
 

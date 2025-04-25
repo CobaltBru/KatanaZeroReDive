@@ -1,25 +1,21 @@
 #pragma once
 #include "Scene.h"
 
-class HeadHunter;
 class ObjectManager;
 class RenderManager;
 class CollisionManager;
 class SnapShotManager;
 class ScrollManager;
 class LineManager;
-class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
-class Player;
 class GPImageManager;
-class UIGame;
-class Stage1Scene : public Scene
+class Background;
+class HiddenScene : public Scene
 {
 public:
-
-	Stage1Scene();
-	virtual ~Stage1Scene() = default;
+	HiddenScene();
+	virtual ~HiddenScene() = default;
 
 	virtual HRESULT Init() override;
 	virtual void Release() override;
@@ -34,33 +30,20 @@ protected:
 private:
 	void TestCode();
 
-	void InitBackgroundImage();
 	void LoadBackground();
 	void LoadObject();
-	void LoadFloor();
-
-	void InitTile();
 private:
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;
 	CollisionManager* CollisionManager;
 	SnapShotManager* snapShotManager;
-	float elapsedTime;
 	ScrollManager* ScrollManager;
 	LineManager* LineManager;
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
-	ChatManager* chatManager;
 	GPImageManager* gpImageManager;
 
-	UIGame* ui;
-	bool slowStart;
-	float batteryMax;
-	float batteryGage;
-	float batteryTimer;
-	
-	float timerBarMax;
-	float timerBarTimer;
-	float currentTimer;
+	vector<Background*> MoveBackGrounds;
+
 };
 

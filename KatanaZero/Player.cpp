@@ -151,7 +151,7 @@ void Player::Release()
 {
 	if (playerInput)
 	{		
-		delete playerInput;
+		//delete playerInput;
 		playerInput = nullptr;
 	}
 	/*if (playerAnim)

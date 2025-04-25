@@ -9,18 +9,19 @@ Background::Background()
 {
 }
 
-HRESULT Background::Init(string InImageKey, float InScrollPercent, float InScale)
+HRESULT Background::Init(string InImageKey, float InScrollPercent, float InScale, ERenderGroup InRenderGroup)
 {	
 	ImageName = InImageKey;
 	ScrollPercent = InScrollPercent;
 	Scale = InScale;
+	RenderGroup = InRenderGroup;
 	Image = ImageManager::GetInstance()->FindImage(InImageKey);
 	return S_OK;
 }
 
 void Background::Update()
 {
-	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::BackGround, this);
+	RenderManager::GetInstance()->AddRenderGroup(RenderGroup, this);
 }
 
 void Background::Render(HDC hdc)

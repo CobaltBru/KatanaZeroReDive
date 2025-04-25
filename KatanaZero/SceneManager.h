@@ -8,7 +8,7 @@ class SceneManager : public Singleton<SceneManager>
 private:
 	map<string, GameObject*> mapScenes;
 	map<string, GameObject*> mapLoadingScenes;
-
+	string currKey;
 public:
 	static GameObject* currentScene;
 	static GameObject* loadingScene;
@@ -21,6 +21,8 @@ public:
 
 	HRESULT ChangeScene(string key);
 	HRESULT ChangeScene(string key, string loadingKey);
+
+	HRESULT RestartCurrentScene();
 
 	GameObject* AddScene(string key, GameObject* scene);
 	GameObject* AddLoadingScene(string key, GameObject* scene);

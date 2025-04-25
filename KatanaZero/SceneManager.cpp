@@ -82,6 +82,7 @@ HRESULT SceneManager::ChangeScene(string key)
 			currentScene->Release();
 		}
 		currentScene = iter->second;
+		currKey = key;
 		return S_OK;
 	}
 	return E_FAIL;
@@ -116,6 +117,7 @@ HRESULT SceneManager::ChangeScene(string key, string loadingKey)
 			currentScene->Release();
 		}
 		currentScene = iterLoading->second;
+		currKey = key;
 		nextScene = iter->second;
 		loadingScene = iterLoading->second;
 
@@ -133,6 +135,14 @@ HRESULT SceneManager::ChangeScene(string key, string loadingKey)
 		return S_OK;
 	}
 	return E_FAIL;
+}
+
+HRESULT SceneManager::RestartCurrentScene()
+{
+	if (!currentScene || currKey.empty())
+		return E_FAIL;
+	currentScene->Release();
+	return currentScene->Init();
 }
 
 GameObject* SceneManager::AddScene(string key, GameObject* scene)
