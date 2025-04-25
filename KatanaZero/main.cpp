@@ -31,6 +31,7 @@ POINT g_ptMouse;	// 마우스 좌표
 random_device rd;
 default_random_engine dre{ rd()};
 uniform_int_distribution<int> uid;
+uniform_real_distribution<float> urd;
 
 //// DirectX
 // Forward declarations of helper functions
@@ -65,7 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// 누수 난 메모리 블럭 추적
-	//_CrtSetBreakAlloc(799);
+	//_CrtSetBreakAlloc(853);
 #endif
 	SetProcessDPIAware();
 	g_hInstance = hInstance;

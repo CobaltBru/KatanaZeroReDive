@@ -31,5 +31,6 @@ public:
 	void CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip = false);
 	void CreateBGBlood(FPOINT pos, float angle, FPOINT size);
 	void EmitBlood(FPOINT pos, int count);
+	list<Effect*> GetCurrFx() { return activeFx; }
 };
 

@@ -67,6 +67,10 @@ HRESULT Stage1Scene::Init()
 	gpImageManager = GPImageManager::GetInstance();
 	gpImageManager->Init();
 
+	slowStart = false;
+
+	
+
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -90,8 +94,8 @@ HRESULT Stage1Scene::Init()
 		return E_FAIL;
 	}
 
-	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
-
+	//SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
+	SoundManager::GetInstance()->PlayBGM("pyshroom");
 	return S_OK;
 }
 
@@ -102,7 +106,15 @@ HRESULT Stage1Scene::InitImage()
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
-
+	ImageManager::GetInstance()->AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.bmp", 96, 27, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.bmp", 145, 29, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_right3", L"Image/fx/BGBlood_right3.bmp", 294, 32, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop1", L"Image/fx/BGBlood_righttop1.bmp", 54, 70, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop2", L"Image/fx/BGBlood_righttop2.bmp", 92, 121, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_righttop3", L"Image/fx/BGBlood_righttop3.bmp", 125, 142, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom1", L"Image/fx/BGBlood_rightbottom1.bmp", 54, 70, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom2", L"Image/fx/BGBlood_rightbottom2.bmp", 92, 121, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("BGBlood_rightbottom3", L"Image/fx/BGBlood_rightbottom3.bmp", 125, 142, 1, 1, true, RGB(255, 0, 255));
 	InitBackgroundImage();
 	InitTile();
 
@@ -211,10 +223,10 @@ void Stage1Scene::LoadBackground()
 
 void Stage1Scene::LoadObject()
 {
-	UIGame* ui = new UIGame();
+	ui = new UIGame();
 	ui->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-
+	ui->setInfo(300.f);
 	ArrowUI* ArrowUIObj = new ArrowUI();
 	ArrowUIObj->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
@@ -327,12 +339,30 @@ void Stage1Scene::InitTile()
 
 void Stage1Scene::Update()
 {
+	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	ScrollManager->Update();
+
+	//슬로우
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	{
+		if (ui->getBattery() > 0.0001f)
+		{
+			ui->UpdateSlow(true);
+			//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+			TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+		}
+		
+	}
+	else  // 슬로우 풀기
+	{
+		ui->UpdateSlow(false);
+		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+	}
 
 	TestCode();
 }

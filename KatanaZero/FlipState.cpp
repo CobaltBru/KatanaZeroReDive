@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "RigidBody.h"
 #include "Image.h"
-
+#include "SoundManager.h"
 
 PlayerState* FlipState::GetInput(Player* player)
 {
@@ -24,8 +24,11 @@ void FlipState::Enter(Player* player)
     player->GetInfo()->bIsFlip = true;
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroflip"));
+    player->SetAnimKey("zeroflip");
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -100.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 100.f, 0.f });
+
+    SoundManager::GetInstance()->PlaySounds("zeroroll", EChannelType::Effect);
 }
 
 void FlipState::Update(Player* player)

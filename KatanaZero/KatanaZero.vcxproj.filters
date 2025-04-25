@@ -464,6 +464,7 @@
     <ClCompile Include="BossWeak.cpp">
       <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClCompile>
+    <ClCompile Include="DeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -773,5 +774,6 @@
     <ClInclude Include="BossWeak.h">
       <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClInclude>
+    <ClInclude Include="DeadState.h" />
   </ItemGroup>
 </Project>

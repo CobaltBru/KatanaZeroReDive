@@ -5,6 +5,9 @@
 
 PlayerState* IdleState::GetInput(Player* player)
 {
+    if (player->GetInfo()->bIsDead)
+        return player->GetStates()->Dead;
+
     if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyDown('A') || KeyManager::GetInstance()->IsStayKeyDown('A'))
@@ -23,7 +26,10 @@ PlayerState* IdleState::GetInput(Player* player)
         player->GetInfo()->bIsWall = true;
     
     if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround())
+    {
+        player->GetInfo()->prevState = "";
         return player->GetStates()->Jump;
+    }
 
     if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
     {
@@ -38,6 +44,7 @@ void IdleState::Enter(Player* player)
 {
 	player->SetEState(EPlayerState::Idle);	
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidle"));
+    player->SetAnimKey("zeroidle");
 }
 
 void IdleState::Update(Player* player)

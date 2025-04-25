@@ -32,6 +32,8 @@ struct playerInfo
 	bool bIsShiftChanged;
 	bool bIsWall;
 	bool bCanAttack;
+	bool bGameStart;
+	bool bIsDead;
 	float attackCoolTime;
 	string prevState;
 };
@@ -45,6 +47,7 @@ struct playerStates
 	PlayerState* Jump;
 	PlayerState* Flip;
 	PlayerState* WallSlide;
+	PlayerState* Dead;
 };
 
 class Player: public Pawn
@@ -65,6 +68,9 @@ private:
 	playerStates* states;
 	PlayerState* state;
 	EPlayerState EState;
+
+	// 리플레이용 키
+	string currAnimKey;
 
 	// player state에 따른 move function과 animation을 따로 관리
 	
@@ -88,6 +94,7 @@ public:
 	virtual ~Player();
 
 	HRESULT Init() override;
+	virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup) override;
 	void Release() override;
 	void Update() override;
 	void Render(HDC hdc) override;
@@ -119,6 +126,8 @@ public:
 
 	inline EPlayerState GetEState() { return EState; }
 	inline void SetEState(EPlayerState state) { this->EState = state; }
+	inline void SetAnimKey(string key) { this->currAnimKey = key; }
+	inline string GetAnimKey() { return currAnimKey; }
 
 	/*inline PlayerState* GetState() { return state; }
 	inline void SetState(PlayerState* state) { this->state = state; }*/

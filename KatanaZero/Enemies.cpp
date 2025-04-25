@@ -17,13 +17,18 @@ HRESULT Grunt::Init(FPOINT InPos)
 	Pos = InPos;
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, 30.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
+	
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 50.f;
+	Speed = 200.f;
 	detectRange = 400.f;
 	attackRange = 50.f;
-	attackDuration = 0.8f;
+	attackDuration = 0.5f;
 	eType = EType::Grunt;
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	AttackCollider->SetPivot({ attackRange / 2.f, 0.f });
+	AttackCollider->SetPos({ Pos.x, Pos.y });
 	InitRigidBodySetting();
 	return S_OK;
 }
@@ -33,12 +38,15 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	InitImages();
 	eState = new EIDLE();
 	Pos = InPos;
-	Speed = 50.f;
+	Speed = 200.f;
 	detectRange = 400.f;
 	attackRange = 50.f;
-	attackDuration = 0.8f;
+	attackDuration = 0.5f;
 	eType = EType::Grunt;
-
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	AttackCollider->SetPivot({ attackRange / 2.f, 0.f });
+	AttackCollider->SetPos({ Pos.x, Pos.y });
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
@@ -101,11 +109,15 @@ HRESULT Pomp::Init(FPOINT InPos)
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 70.f;
+	Speed = 250.f;
 	detectRange = 600.f;
 	attackRange = 60.f;
-	attackDuration = 0.5f;
+	attackDuration = 0.3f;
 	eType = EType::Pomp;
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	AttackCollider->SetPivot({ attackRange / 2.f, 0.f });
+	AttackCollider->SetPos({ Pos.x, Pos.y });
 	InitRigidBodySetting();
 	return S_OK;
 }
@@ -115,11 +127,15 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 	InitImages();
 	eState = new EIDLE();
 	Pos = InPos;
-	Speed = 70.f;
+	Speed = 250.f;
 	detectRange = 600.f;
 	attackRange = 60.f;
-	attackDuration = 0.5f;
+	attackDuration = 0.3f;
 	eType = EType::Pomp;
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	AttackCollider->SetPivot({ attackRange / 2.f, 0.f });
+	AttackCollider->SetPos({ Pos.x, Pos.y });
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
@@ -182,10 +198,15 @@ HRESULT Gangster::Init(FPOINT InPos)
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
-	Speed = 40.f;
+	Speed = 150.f;
 	detectRange = 500.f;
 	attackRange = 400.f;
-	attackDuration = 0.2f;
+	meleeAttackRange = 50.f;
+	attackDuration = 1.2f;
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, meleeAttackRange, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	AttackCollider->SetPivot({ meleeAttackRange / 2.f, 0.f });
+	AttackCollider->SetPos({ Pos.x, Pos.y });
 	eType = EType::Gangster;
 	InitRigidBodySetting();
 	return S_OK;
@@ -196,12 +217,16 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 	InitImages();
 	eState = new EIDLE();
 	Pos = InPos;
-	Speed = 40.f;
+	Speed = 150.f;
 	detectRange = 500.f;
 	attackRange = 400.f;
-	attackDuration = 0.2f;
+	meleeAttackRange = 50.f;
+	attackDuration = 1.2f;
 	eType = EType::Gangster;
-
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, meleeAttackRange, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	AttackCollider->SetPivot({ meleeAttackRange / 2.f, 0.f });
+	AttackCollider->SetPos({ Pos.x, Pos.y });
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);

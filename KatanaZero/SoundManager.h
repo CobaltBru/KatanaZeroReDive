@@ -30,6 +30,8 @@ public:
 	void PlayBGM(string InSoundKey);
 	void PlayEnv(string InSoundKey);
 
+	void PitchDown(EChannelType InChannelType);
+	void PitchOrigin(EChannelType InChannelType);
 	void StopSound(EChannelType InChannelType);
 	void StopAll();
 private:
@@ -52,5 +54,8 @@ private:
 
 	float BGMDelay;
 	float EnvDelay;
+
+	float pitch;
+	float timer;
 };
 

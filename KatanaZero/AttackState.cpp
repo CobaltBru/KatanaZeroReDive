@@ -4,6 +4,8 @@
 #include "Image.h"
 #include "CommonFunction.h"
 #include "EffectManager.h"
+#include "SoundManager.h"
+#include <random>
 
 
 PlayerState* AttackState::GetInput(Player* player)
@@ -34,7 +36,7 @@ PlayerState* AttackState::GetInput(Player* player)
 			}
 		}
 	}
-	
+
 	return nullptr;
 }
 
@@ -48,6 +50,7 @@ void AttackState::Enter(Player* player)
 	
 	player->SetImage(ImageManager::GetInstance()->FindImage("zeroattack"));
 	player->SetEffectImage(ImageManager::GetInstance()->FindImage("normalslash"));
+	player->SetAnimKey("zeroattack");
 	
 	player->SetEState(EPlayerState::Attack);
 	player->GetInfo()->bIsAttack = true;
@@ -65,10 +68,20 @@ void AttackState::Enter(Player* player)
 
 	player->GetRigidBody()->AddVelocity(attackDir * 300.f);
 
+	// effect
 	float fxAngle = atan2f(attackDir.y, attackDir.x) * (180.f / 3.14159265f);
 	float speed = sqrt(player->GetRigidBody()->GetVelocity().x * player->GetRigidBody()->GetVelocity().x + 
 		player->GetRigidBody()->GetVelocity().y * player->GetRigidBody()->GetVelocity().y);
 	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, SnapShotManager::GetInstance()->GetPlayer(), player->GetFlip());
+
+	// sound
+	int  randSound = rand() % 10;
+	if (randSound > 3)
+		SoundManager::GetInstance()->PlaySounds("zeroattack1", EChannelType::Effect);
+	else if (randSound > 1)
+		SoundManager::GetInstance()->PlaySounds("zeroattack2", EChannelType::Effect);
+	else
+		SoundManager::GetInstance()->PlaySounds("zeroattack3", EChannelType::Effect);
 }
 
 void AttackState::Update(Player* player)
