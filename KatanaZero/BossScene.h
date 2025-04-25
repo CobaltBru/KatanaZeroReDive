@@ -11,6 +11,7 @@ class LineManager;
 class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
+class GPImageManager;
 class Player;
 class BossScene : public Scene
 {
@@ -49,5 +50,6 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
+	GPImageManager* gpImageManager;
 };
 
