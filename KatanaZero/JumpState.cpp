@@ -73,6 +73,7 @@ void JumpState::Enter(Player* player)
     player->SetSwitchTime(0.02f * 10.f);
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zerojump"));
+    player->SetAnimKey("zerojump");
     
     // effect
     if (player->GetInfo()->prevState != "wallslide")

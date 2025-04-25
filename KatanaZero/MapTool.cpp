@@ -182,16 +182,13 @@ HRESULT MapTool::InitImage()
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("rocket", L"Image/rocket.bmp", 52, 64, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("headhunter", L"Image/HeadHunter/headhunter_idle_init.bmp", 25, 50, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("Player", L"Image/TestPlayer.bmp", 25, 50, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("Grunt", L"Image/Enemy/Grunt/Grunt.bmp", 30, 36, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("Pomp", L"Image/Enemy/Pomp/Pomp.bmp", 33, 42, 1, 1, true, RGB(255, 255, 255));
-	ImageManager::GetInstance()->AddImage("Gangster", L"Image/Enemy/Gangster/Gangster.bmp", 49, 50, 1, 1, true, RGB(255, 255, 255));
+	ImageManager::GetInstance()->AddImage("Grunt", L"Image/Enemy/Grunt/Grunt.bmp", 30, 36, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("Pomp", L"Image/Enemy/Pomp/Pomp.bmp", 33, 42, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("Gangster", L"Image/Enemy/Gangster/Gangster.bmp", 49, 50, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
-
-
+	ImageManager::GetInstance()->AddImage("Player", L"Image/zero_maptool.bmp", 29, 35, 1, 1, true, RGB(255, 0, 255));
 	return S_OK;
 }
 

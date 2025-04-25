@@ -29,6 +29,9 @@
 #include "DefaultObject.h"
 #include "Factory.h"
 
+#include "Tile.h"
+#include "ArrowUI.h"
+
 HYScene::HYScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
 {
@@ -62,10 +65,7 @@ HRESULT HYScene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	gpImageManager = GPImageManager::GetInstance();
-	gpImageManager->Init();
-
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/HY1Line.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/ClubLine.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("HYScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -97,7 +97,9 @@ HRESULT HYScene::InitImage()
 {
 	// 해당 씬에 필요한 모든 이미지 추가
 	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
-	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 
 	ImageManager::GetInstance()->AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.bmp", 96, 27, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.bmp", 145, 29, 1, 1, true, RGB(255, 0, 255));
@@ -111,6 +113,7 @@ HRESULT HYScene::InitImage()
 
 
 	InitBackgroundImage();
+	InitTile();
 
 	return S_OK;
 }
@@ -118,13 +121,22 @@ HRESULT HYScene::InitImage()
 HRESULT HYScene::InitObject()
 {
 	Background* background = new Background();
-	background->Init("black",0.f);
+	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	LoadBackground();
+	//LoadBackground();
 	LoadObject();
 	LoadFloor();
 
+	Tile* tile = new Tile();
+	if (FAILED(tile->Init(L"Data/Stage1/ClubTile.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("실패"), MB_OK);
+		return E_FAIL;
+	}
+	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
+
+	return S_OK;
 	return S_OK;
 }
 
@@ -207,8 +219,17 @@ void HYScene::LoadBackground()
 
 void HYScene::LoadObject()
 {
+	UIGame* ui = new UIGame();
+	ui->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
+
+	ArrowUI* ArrowUIObj = new ArrowUI();
+	ArrowUIObj->Init();
+	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
+
+
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/HY1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/ClubObject.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -234,6 +255,7 @@ void HYScene::LoadObject()
 		ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
+		ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 		ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -249,9 +271,14 @@ void HYScene::LoadObject()
 
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
+		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
 
-		
+		if (ClassName == "StartPoint")
+		{
+			static_cast<SimpleObject*>(Obj)->SetUI(ui);
+			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
+		}
 	}
 
 	CloseHandle(hFile);
@@ -288,6 +315,25 @@ void HYScene::LoadFloor()
 	CloseHandle(hFile);
 }
 
+void HYScene::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255), 32, 32);
+	}
+}
+
 void HYScene::Update()
 {
 	ObjectManager->Update();
@@ -297,7 +343,11 @@ void HYScene::Update()
 	fxManager->Update();
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(82))
+	{
+		snapShotManager->Save();
+		snapShotManager->SaveEffects();
 		snapShotManager->StartReplay();
+	}
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	ScrollManager->Update();

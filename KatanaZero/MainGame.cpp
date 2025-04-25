@@ -20,6 +20,7 @@
 #include "RenderManager.h"
 #include "CollisionManager.h"
 #include "EffectManager.h"
+#include "GPImageManager.h"
 
 
 
@@ -30,6 +31,7 @@ HRESULT MainGame::Init()
 	KeyManager::GetInstance()->Init();
 	SceneManager::GetInstance()->Init();
 	SoundManager::GetInstance()->Init();
+	GPImageManager::GetInstance()->Init();
 	
 	if (FAILED(InitSound()))
 	{
@@ -49,7 +51,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("HY","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -105,7 +107,7 @@ void MainGame::Release()
 	//CollisionManager::GetInstance()->Release();
 	//EffectManager::GetInstance()->Release();
 
-
+	GPImageManager::GetInstance()->Release();
 	SceneManager::GetInstance()->Release();
 	KeyManager::GetInstance()->Release();
 	ImageManager::GetInstance()->Release();
