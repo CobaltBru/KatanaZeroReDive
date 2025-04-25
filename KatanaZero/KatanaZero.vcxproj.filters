@@ -438,6 +438,7 @@
     <ClCompile Include="ArrowUI.cpp">
       <Filter>MainGame\UI\Arrow</Filter>
     </ClCompile>
+    <ClCompile Include="DeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -735,5 +736,6 @@
     <ClInclude Include="ArrowUI.h">
       <Filter>MainGame\UI\Arrow</Filter>
     </ClInclude>
+    <ClInclude Include="DeadState.h" />
   </ItemGroup>
 </Project>

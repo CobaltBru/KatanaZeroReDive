@@ -32,6 +32,8 @@ struct playerInfo
 	bool bIsShiftChanged;
 	bool bIsWall;
 	bool bCanAttack;
+	bool bGameStart;
+	bool bIsDead;
 	float attackCoolTime;
 	string prevState;
 };
@@ -45,6 +47,7 @@ struct playerStates
 	PlayerState* Jump;
 	PlayerState* Flip;
 	PlayerState* WallSlide;
+	PlayerState* Dead;
 };
 
 class Player: public Pawn

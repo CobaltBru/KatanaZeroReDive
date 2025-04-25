@@ -5,6 +5,9 @@
 
 PlayerState* IdleState::GetInput(Player* player)
 {
+    if (player->GetInfo()->bIsDead)
+        return player->GetStates()->Dead;
+
     if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyDown('A') || KeyManager::GetInstance()->IsStayKeyDown('A'))

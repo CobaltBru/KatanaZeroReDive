@@ -16,10 +16,11 @@
 #include "RunState.h"
 #include "JumpState.h"
 #include "FlipState.h"
+#include "DeadState.h"
 #include "WallSlideState.h"
 #include "CommonFunction.h"
 #include "Bullet.h"
-
+#include "SoundManager.h"
 #include "SnapShotManager.h"
 
 
@@ -50,8 +51,8 @@ HRESULT Player::Init()
 	InitPlayerInfo();
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.8f, 
-		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 1.0f },
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.1f, 
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
 		true, 1.f);
 
 	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
@@ -60,7 +61,7 @@ HRESULT Player::Init()
 	true, 1.f);*/
 
 	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
 		false, 1.f);
 	
@@ -181,6 +182,9 @@ void Player::Update()
 
 	// scroll offset
 	Offset();
+
+	if (!info->bGameStart)
+		if (GetRigidBody()->IsGround()) info->bGameStart = true;
 }
 
 void Player::Render(HDC hdc)
@@ -227,6 +231,7 @@ void Player::InitPlayerStates()
 	states->Jump = new JumpState;
 	states->Flip = new FlipState;
 	states->WallSlide = new WallSlideState;
+	states->Dead = new DeadState;
 }
 
 void Player::InitPlayerInfo()
@@ -238,6 +243,8 @@ void Player::InitPlayerInfo()
 	info->bIsShift = false;
 	info->bIsShiftChanged = false;
 	info->bIsWall = false;
+	info->bGameStart = false;
+	info->bIsDead = false;
 	info->attackCoolTime = .7f;
 	info->prevState = "";
 }
@@ -304,27 +311,13 @@ void Player::UpdateRigidBody()
 {
 	ObjectRigidBody->Update();
 
-	//const FLineResult lineResult = ObjectRigidBody->GetResult();
-	//if (lineResult.LineType == ELineType::Wall)
-	//{
-	//	if (lineResult.IsLeft) dir = EDirection::Left;
-
-	//	ObjectRigidBody->SetVelocity({ 0.f , 10.f });
-	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 500.f });
-	//	info->bIsWall = true;
-	//	bIsLeft = lineResult.IsLeft;
-	//}
-	//else
-	//{
-	//	ObjectRigidBody->SetAccelerationAlpha({ 0.f , 800.f });
-	//	info->bIsWall = false;
-	//}
 }
 
 void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	
+	if (!info->bGameStart) return;
 	if (info->bIsFlip) return;
 
 	// player die
@@ -337,9 +330,9 @@ void Player::UpdateCollision()
 		// direction from player to enemy
 		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
 
-		//// die
-		//if (HitResult.HitCollision->GetOwner()->GetRigidBody())
-		//	ObjectRigidBody->AddVelocity(-PEDir * 100.f);
+		info->bIsDead = true;
+
+		SoundManager::GetInstance()->PlaySounds("zerodie", EChannelType::Effect);
 	}
 
 	// player attack enemy
@@ -377,7 +370,8 @@ void Player::UpdateCollision()
 				bullet->SetAngle(angle);
 			}
 		}
-			
+
+		SoundManager::GetInstance()->PlaySounds("zeroslicebullet", EChannelType::Effect);
 	}
 }
 
@@ -396,6 +390,7 @@ void Player::InitImage()
 	ImageManager::GetInstance()->AddImage("zerodrawsword", L"Image/zero_drawsword.bmp", 1843, 61, 19, 1, true, RGB(255, 255, 255));		
 	ImageManager::GetInstance()->AddImage("zerowallslide", L"Image/zero_wallslide.bmp", 46, 42, 1, 1, true, RGB(255, 255, 255));
 	ImageManager::GetInstance()->AddImage("zeroidletorun", L"Image/zero_idle_to_run.bmp", 184, 33, 4, 1, true, RGB(255, 255, 255));	
+	ImageManager::GetInstance()->AddImage("zerodead", L"Image/zero_dead.bmp", 671, 59, 12, 1, true, RGB(255, 255, 255));
 
 	// shadow
 	ImageManager::GetInstance()->AddImage("zeroidleshadow", L"Image/zero_idle_shadow.bmp", 420, 39, 11, 1, true, RGB(255, 0, 255));	
