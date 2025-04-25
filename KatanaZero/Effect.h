@@ -10,6 +10,8 @@
 class Effect : public GameObject
 {
 private:
+	int id;
+	static int nextID;
 	GPImage* fxImage;
 	GameObject* owner;
 	FPOINT start;
@@ -27,6 +29,7 @@ private:
 	bool bMove;
 	float alpha;
 	float frameduration;
+	string currAnimKey;
 
 	//sour 테스트용
 	int offset = 0;
@@ -48,9 +51,10 @@ public:
 	void Activefx(FPOINT pos, FPOINT dest, float speed, bool bFlip = false);
 	void Activefx(FPOINT pos, float angle, float speed, float scale, bool bFlip = false);
 	inline bool IsActive() { return bActive; }
+	inline int GetID() { return id; }
 
 	Effect(const Effect& other);
-	Effect() {};
+	Effect() : id(nextID++) {};
 	virtual ~Effect() {};
 };
 
@@ -78,7 +82,7 @@ struct BackgroundBloodfx : public GameObject
 	{
 		if (image)
 		{
-			image->FrameRender(hdc, Pos.x, Pos.y, 0, 0, bFlip, false, ScrollManager::GetInstance()->GetScale());
+			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + +ScrollManager::GetInstance()->GetScroll().y, 0, 0, bFlip, false, ScrollManager::GetInstance()->GetScale());
 		}
 	}
 };

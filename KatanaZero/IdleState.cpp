@@ -44,6 +44,7 @@ void IdleState::Enter(Player* player)
 {
 	player->SetEState(EPlayerState::Idle);	
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidle"));
+    player->SetAnimKey("zeroidle");
 }
 
 void IdleState::Update(Player* player)

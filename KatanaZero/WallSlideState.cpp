@@ -46,6 +46,7 @@ void WallSlideState::Enter(Player* player)
 	updateCount = 0;
 	
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
+	player->SetAnimKey("zerowallslide");
 
 	const FLineResult lineResult = player->GetRigidBody()->GetResult();
 	if (lineResult.IsLeft) player->SetDirection(EDirection::Left);

@@ -26,6 +26,7 @@ PlayerState* FallState::GetInput(Player* player)
 void FallState::Enter(Player* player)
 {
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerofall"));
+	player->SetAnimKey("zerofall");
 	player->SetEState(EPlayerState::Fall);	
 }
 

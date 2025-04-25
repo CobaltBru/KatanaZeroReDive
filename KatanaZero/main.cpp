@@ -31,6 +31,7 @@ POINT g_ptMouse;	// 마우스 좌표
 random_device rd;
 default_random_engine dre{ rd()};
 uniform_int_distribution<int> uid;
+uniform_real_distribution<float> urd;
 
 //// DirectX
 // Forward declarations of helper functions

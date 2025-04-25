@@ -20,6 +20,7 @@ static unordered_map<string, function<GameObject* ()>> ObjectInfo = {
 	{"Gangster", []() {return new Gangster(); }},
 	{"Bottle1", []() {return new PickUp(); } },
 	{"Bottle2", []() {return new PickUp(); } },
+	{"Player", []() {return new Player(); }}
 };
 
 inline GameObject* CreateObject(string ClassName)

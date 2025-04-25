@@ -34,6 +34,7 @@ void RunState::Enter(Player* player)
     player->SetSwitchTime(0.02f);
     player->SetFrameIndex(0);
     player->SetImage(ImageManager::GetInstance()->FindImage("zeroidletorun"));
+    player->SetAnimKey("zeroidletorun");
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -100.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 100.f, 0.f });
 
@@ -44,9 +45,17 @@ void RunState::Enter(Player* player)
 void RunState::Update(Player* player)
 {
     if (player->GetInfo()->bIsShift)
+    {
         player->SetImage(ImageManager::GetInstance()->FindImage("zerorunshadow"));
+        player->SetAnimKey("zerorun");
+    }
+        
     else
+    {
         player->SetImage(ImageManager::GetInstance()->FindImage("zerorun"));
+        player->SetAnimKey("zerorun");
+    }
+        
 
     if (player->GetDirection() == EDirection::Left)    player->GetRigidBody()->AddVelocity({ -300.f, 0.f });
     if (player->GetDirection() == EDirection::Right)    player->GetRigidBody()->AddVelocity({ 300.f, 0.f });
