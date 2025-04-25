@@ -61,10 +61,11 @@ HRESULT BossScene::Init()
 	LineManager = LineManager::GetInstance();
 	LineManager->Init();
 
-	fxManager = EffectManager::GetInstance();
-	fxManager->Init();
 	gpImageManager = GPImageManager::GetInstance();
 	gpImageManager->Init();
+
+	fxManager = EffectManager::GetInstance();
+	fxManager->Init();
 	Player* player = new Player();
 	player->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);

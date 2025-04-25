@@ -65,7 +65,7 @@ HRESULT Bomb::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
     image = ImageManager::GetInstance()->FindImage("wBomb");
 
 
-    ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 10.f,10.f }, true, 1.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 10.f,10.f }, false, 1.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Bullet);
     ObjectCollider->SetPos(Pos);
 

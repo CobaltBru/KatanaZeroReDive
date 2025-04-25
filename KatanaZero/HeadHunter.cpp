@@ -89,7 +89,7 @@ HRESULT HeadHunter::Init(FPOINT InPos)
 
         image = ImageManager::GetInstance()->FindImage("Idle");
     }
-    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f   ,40.f   }, true, 10.f);
+    ObjectCollider = new Collider(this, EColliderType::Rect, {0,10.f}, { 20.f   ,40.f   }, false, 10.f);
     CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
     ObjectCollider->SetPos(Pos);
 
