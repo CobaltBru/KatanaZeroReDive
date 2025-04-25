@@ -157,6 +157,15 @@
     <Filter Include="MainGame\Enemy\Hidden">
       <UniqueIdentifier>{6c9a8958-825b-4fcd-a2c9-6f0b77ecb89c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy\Hidden\Portal">
+      <UniqueIdentifier>{48a833af-25c7-486f-8191-44677bb4fa84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Hidden\Syringe">
+      <UniqueIdentifier>{827639fc-8ec5-4080-ae3e-f46d4574cfb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Hidden\Weak">
+      <UniqueIdentifier>{65b9da7f-2e56-4e73-8e2e-dd01c300e8ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -445,6 +454,15 @@
     </ClCompile>
     <ClCompile Include="ArmAttack.cpp">
       <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>MainGame\Enemy\Hidden\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="Syringe.cpp">
+      <Filter>MainGame\Enemy\Hidden\Syringe</Filter>
+    </ClCompile>
+    <ClCompile Include="BossWeak.cpp">
+      <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -745,6 +763,15 @@
     </ClInclude>
     <ClInclude Include="ArmAttack.h">
       <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>MainGame\Enemy\Hidden\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Syringe.h">
+      <Filter>MainGame\Enemy\Hidden\Syringe</Filter>
+    </ClInclude>
+    <ClInclude Include="BossWeak.h">
+      <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -225,6 +225,13 @@ HRESULT MainGame::InitSound()
 			return E_FAIL;
 		if (FAILED(SoundManager::GetInstance()->AddSound("sound_clatter_glass1", "Sound/PickUp/sound_clatter_glass1.wav")))
 			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("BossBossBoss", "Sound/BossBossBoss.mp3")))
+			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("sound_cutblack", "Sound/sound_cutblack.wav")))
+			return E_FAIL;
+		
 	}
 
 	return S_OK;
@@ -247,10 +254,11 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_psychboss_giant_tentacle_stab_end", L"Image/Hidden/spr_psychboss_giant_tentacle_stab_end.bmp", 276, 216, 4, 1, true, RGB(255, 0, 255));
 
 	ImageManager::GetInstance()->AddImage("spr_psychboss_stabber_0", L"Image/Hidden/spr_psychboss_stabber_0.bmp", 36, 450, 1, 1, true, RGB(255, 0, 255));
-
-
-	InitBackground();
 	
+	ImageManager::GetInstance()->AddImage("spr_psychboss_tentacle_hurt_", L"Image/Hidden/spr_psychboss_tentacle_hurt_.bmp", 204, 105, 6, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("spr_psychboss_tentacle_idle_", L"Image/Hidden/spr_psychboss_tentacle_idle_.bmp", 210, 96, 7, 1, true, RGB(255, 0, 255));
+
+	InitBackground();	
 
 	return S_OK;
 }

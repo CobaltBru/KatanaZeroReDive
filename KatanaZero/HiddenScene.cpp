@@ -90,7 +90,7 @@ HRESULT HiddenScene::Init()
 		return E_FAIL;
 	}
 
-	//SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
+	SoundManager::GetInstance()->PlayBGM("BossBossBoss");
 
 	return S_OK;
 }

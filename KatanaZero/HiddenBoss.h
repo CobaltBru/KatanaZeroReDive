@@ -13,12 +13,16 @@ struct FPartInfo
 enum class EState
 {
 	Idle,
-	ArmAttack,
+	ArmAttack,	
+	PortalAttack1,
+	PortalAttack2,
+	Weak,
 	End
 };
 
 class NormalParts;
 class ArmAttack;
+class BossWeak;
 class HiddenBoss : public GameObject
 {
 public:
@@ -33,8 +37,10 @@ public:
 private:
 	void Idle();
 	void ArmAttackState();
+	void PortalAttack1();
+	void PortalAttack2();
 
-
+	void Weak();
 private:
 	float CurrentTime;
 	NormalParts* Face;
@@ -48,5 +54,17 @@ private:
 	EState PreState;
 
 	ArmAttack* armAttack;
+
+	int PortalCount;
+	int MaxPortalCount;
+
+	FPOINT NextPos;
+
+	int Index;
+	BossWeak* bossWeak;
+
+	int Hp;
+	float CurrentHitTime;
+	float FaceHitTime;
 };
 

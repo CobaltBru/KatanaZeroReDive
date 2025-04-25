@@ -250,3 +250,12 @@ inline OPENFILENAME GetLoadInfo(TCHAR* lpstrFile, TCHAR* filter)
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
 	return ofn;
 }
+
+static bool OutOfScreen(FPOINT pt, int width, int height)
+{
+	if (pt.x + (width / 2) <= 0 || pt.x - (width / 2) >= WINSIZE_X ||
+		pt.y + (height / 2) <= 0 || pt.y - (height / 2) >= WINSIZE_Y)
+		return true;
+
+	return false;
+}
