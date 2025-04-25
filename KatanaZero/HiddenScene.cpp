@@ -277,6 +277,12 @@ void HiddenScene::Update()
 	}
 
 	TestCode();
+	if (SceneManager::GetInstance()->GetChange())
+	{
+		SceneManager::GetInstance()->ChangeScene(SceneManager::GetInstance()->GetNextScene(), SceneManager::GetInstance()->GetNextLoading());
+	}
+
+	
 }
 
 void HiddenScene::Render(HDC hdc)

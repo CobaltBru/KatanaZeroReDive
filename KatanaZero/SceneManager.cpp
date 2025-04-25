@@ -20,6 +20,7 @@ DWORD CALLBACK LoadingThread(LPVOID pvParam)
 
 void SceneManager::Init()
 {
+	bChange = false;
 }
 
 void SceneManager::Release()
@@ -72,6 +73,8 @@ HRESULT SceneManager::ChangeScene(string key)
 
 	if (iter->second == currentScene)
 	{
+		bChange = false;
+
 		return S_OK;
 	}
 
@@ -82,6 +85,8 @@ HRESULT SceneManager::ChangeScene(string key)
 			currentScene->Release();
 		}
 		currentScene = iter->second;
+		bChange = false;
+
 		return S_OK;
 	}
 	return E_FAIL;
@@ -97,6 +102,8 @@ HRESULT SceneManager::ChangeScene(string key, string loadingKey)
 
 	if (iter->second == currentScene)
 	{
+		bChange = false;
+
 		return S_OK;
 	}
 
@@ -129,6 +136,7 @@ HRESULT SceneManager::ChangeScene(string key, string loadingKey)
 		{
 			CloseHandle(hThread);
 		}
+		bChange = false;
 
 		return S_OK;
 	}
