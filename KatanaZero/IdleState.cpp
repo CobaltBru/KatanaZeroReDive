@@ -26,7 +26,10 @@ PlayerState* IdleState::GetInput(Player* player)
         player->GetInfo()->bIsWall = true;
     
     if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround())
+    {
+        player->GetInfo()->prevState = "";
         return player->GetStates()->Jump;
+    }
 
     if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
     {

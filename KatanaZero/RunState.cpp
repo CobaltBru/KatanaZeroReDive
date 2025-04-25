@@ -12,9 +12,17 @@ PlayerState* RunState::GetInput(Player* player)
     if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON) && player->GetInfo()->bCanAttack)
         return player->GetStates()->Attack;
     if (KeyManager::GetInstance()->IsOnceKeyUp('A') || KeyManager::GetInstance()->IsOnceKeyUp('D'))
+    {
+        if (player->GetDirection() == EDirection::Left) player->GetRigidBody()->AddVelocity(FPOINT{300.f, 0.f });
+        else player->GetRigidBody()->AddVelocity(FPOINT{ -300.f, 0.f });
         return player->GetStates()->Idle;
+    }
+
     if (KeyManager::GetInstance()->IsOnceKeyDown('W') && player->GetRigidBody()->IsGround())
+    {
+        player->GetInfo()->prevState = "";
         return player->GetStates()->Jump;
+    }
     if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
         return player->GetStates()->Flip;
 
