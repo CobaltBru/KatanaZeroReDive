@@ -7,6 +7,7 @@
 #include "TestScene.h"
 #include "MapTool.h"
 
+#include "BossScene.h"
 #include "TalkScene.h"
 #include "HomeScene.h"
 #include "LoadingScene.h"
@@ -38,6 +39,10 @@ HRESULT MainGame::Init()
 		MessageBox(g_hWnd, L"InitSound Failed.", TEXT("경고"), MB_OK);
 		return E_FAIL;
 	}
+
+	
+
+	
 	SceneManager::GetInstance()->AddScene("Talk", new TalkScene());
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
@@ -45,6 +50,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
+	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
 	SceneManager::GetInstance()->ChangeScene("Hidden","로딩_1");
 
