@@ -239,6 +239,16 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0_broke", L"Image/Bottle/spr_beer_bottle_3_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0_broke", L"Image/Bottle/spr_beer_bottle_4_0_broke.bmp", 4, 4, 1, 1, false);
 	ImageManager::GetInstance()->AddImage("spr_pickuparrow_anim", L"Image/UI/spr_pickuparrow_anim.bmp", 144, 21, 8, 1, true,RGB(255,0,255));
+
+	ImageManager::GetInstance()->AddImage("bg_cathedral", L"Image/Tile/bg_cathedral_foreground_0.bmp", 128, 64, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_motel_background", L"Image/Tile/bg_motel_background_0.bmp", 448, 448, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_motel_foreground", L"Image/Tile/bg_motel_foreground_0.bmp", 448, 448, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_penthouse", L"Image/Tile/bg_penthouse_0.bmp", 1280, 832, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_sewer_foreground", L"Image/Tile/bg_sewer_foreground_0.bmp", 544, 160, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_vents", L"Image/Tile/bg_vents_0.bmp", 192, 192, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_warehouse_foreground", L"Image/Tile/bg_warehouse_foreground_0.bmp", 832, 288, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_outside", L"Image/Tile/bg_outside_0.bmp", 414, 448, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_government_foreground", L"Image/Tile/bg_government_foreground_0.bmp", 800, 320, 1, 1, true, RGB(255, 0, 255));
 	return S_OK;
 }
 
