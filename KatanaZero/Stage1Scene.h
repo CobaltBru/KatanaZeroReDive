@@ -12,6 +12,7 @@ class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
 class Player;
+class UIGame;
 class Stage1Scene : public Scene
 {
 public:
@@ -49,5 +50,14 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
+	UIGame* ui;
+	bool slowStart;
+	float batteryMax;
+	float batteryGage;
+	float batteryTimer;
+	
+	float timerBarMax;
+	float timerBarTimer;
+	float currentTimer;
 };
 

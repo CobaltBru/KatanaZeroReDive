@@ -62,6 +62,10 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
+	slowStart = false;
+
+	
+
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -206,10 +210,10 @@ void Stage1Scene::LoadBackground()
 
 void Stage1Scene::LoadObject()
 {
-	UIGame* ui = new UIGame();
+	ui = new UIGame();
 	ui->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
-
+	ui->setInfo(300.f);
 	ArrowUI* ArrowUIObj = new ArrowUI();
 	ArrowUIObj->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ArrowUIObj);
@@ -322,12 +326,30 @@ void Stage1Scene::InitTile()
 
 void Stage1Scene::Update()
 {
+	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();
 	snapShotManager->Update(snapShotManager->IsReplaying());
 
 	ScrollManager->Update();
+
+	//슬로우
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	{
+		if (ui->getBattery() > 0.0001f)
+		{
+			ui->UpdateSlow(true);
+			//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+			TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+		}
+		
+	}
+	else  // 슬로우 풀기
+	{
+		ui->UpdateSlow(false);
+		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+	}
 
 	TestCode();
 }
