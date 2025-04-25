@@ -85,8 +85,8 @@ HRESULT Stage1Scene::Init()
 		return E_FAIL;
 	}
 
-	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
-
+	//SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
+	SoundManager::GetInstance()->PlayBGM("pyshroom");
 	return S_OK;
 }
 

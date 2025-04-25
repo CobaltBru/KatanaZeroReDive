@@ -47,5 +47,6 @@ private:
 	FPOINT testPlayerPos;
 	FPOINT testDestPos;
 
+	bool slowStart;
 };
 

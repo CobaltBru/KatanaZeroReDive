@@ -245,7 +245,7 @@ void Player::InitPlayerInfo()
 	info->bIsWall = false;
 	info->bGameStart = false;
 	info->bIsDead = false;
-	info->attackCoolTime = .7f;
+	info->attackCoolTime = .34f;
 	info->prevState = "";
 }
 

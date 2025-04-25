@@ -2,6 +2,8 @@
 #include "Image.h"
 #include "RenderManager.h"
 #include "ParticleEffect.h"
+#include "SoundManager.h"
+
 HRESULT UIGame::Init()
 {
 	
@@ -122,9 +124,10 @@ HRESULT UIGame::Init()
 
 void UIGame::Update()
 {
-	timer += TimerManager::GetInstance()->GetDeltaTime();
+	timer += TimerManager::GetInstance()->GetDeltaTime(false);
 	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 	{
+		
 		shiftButton.setFrame(TWO);
 		if (timer >= 0.1f)
 		{
@@ -138,6 +141,7 @@ void UIGame::Update()
 	}
 	else
 	{
+		
 		shiftButton.setFrame(ONE);
 		if (timer >= 0.1f)
 		{
@@ -149,6 +153,7 @@ void UIGame::Update()
 		}
 		isSlow = false;
 	}
+	
 	battery.Update();
 	if (isSlow)
 	{

@@ -72,7 +72,7 @@ HRESULT TestScene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-
+	slowStart = false;
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/playerLine.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -233,14 +233,26 @@ void TestScene::TestCode()
 	{
 		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
 		// TimerManager::GetInstance()->GetDeltaTime();
-		 
-		
+		if (slowStart == false)
+		{
+			SoundManager::GetInstance()->PlaySounds("slowon", EChannelType::Effect);
+			slowStart = true;
+		}
+		SoundManager::GetInstance()->PitchDown(EChannelType::BGM);
 		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
 		TimerManager::GetInstance()->SetSlow(0.1f,0.2f);
 	}
 	else  // 슬로우 풀기
-		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
-	
+	{
+		if (slowStart == true)
+		{
+			SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
+			slowStart = false;
+		}
+		SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
+		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+	}
+		
 	//// 라인 트레이스
 	//FHitResult HitResult;
 	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))

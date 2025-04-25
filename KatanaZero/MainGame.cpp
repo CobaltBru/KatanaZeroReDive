@@ -222,6 +222,11 @@ HRESULT MainGame::InitSound()
 			return E_FAIL;
 		if (FAILED(SoundManager::GetInstance()->AddSound("flicker5", "Sound/sound_object_neon_flicker_05.wav")))
 			return E_FAIL;
+
+		if (FAILED(SoundManager::GetInstance()->AddSound("slowon", "Sound/sound_slomo_engage.ogg")))
+			return E_FAIL;
+		if (FAILED(SoundManager::GetInstance()->AddSound("slowoff", "Sound/sound_slomo_disengage.wav")))
+			return E_FAIL;
 	}
 	//home
 	{
