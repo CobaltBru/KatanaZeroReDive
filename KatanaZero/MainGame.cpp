@@ -49,7 +49,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Home","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("MapTool","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
@@ -298,6 +298,7 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("bg_warehouse_foreground", L"Image/Tile/bg_warehouse_foreground_0.bmp", 832, 288, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("bg_outside", L"Image/Tile/bg_outside_0.bmp", 414, 448, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("bg_government_foreground", L"Image/Tile/bg_government_foreground_0.bmp", 800, 320, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("bg_government_background", L"Image/Tile/bg_government_background_0.bmp", 832, 928, 1, 1, true, RGB(255, 0, 255));
 	
 	ImageManager::GetInstance()->AddImage("BGBlood_right1", L"Image/fx/BGBlood_right1.bmp", 96, 27, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("BGBlood_right2", L"Image/fx/BGBlood_right2.bmp", 145, 29, 1, 1, true, RGB(255, 0, 255));

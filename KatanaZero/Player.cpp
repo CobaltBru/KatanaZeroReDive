@@ -353,7 +353,8 @@ void Player::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus()) return;
 
-	scrollSpeed = fabs(ObjectRigidBody->GetVelocity().x);
+	float newScrollSpeed = max(ObjectRigidBody->GetVelocity().x, ObjectRigidBody->GetVelocity().y);
+	scrollSpeed = newScrollSpeed;
 
 	const float OffsetMinX = 200.f;
 	const float OffsetMaxX = WINSIZE_X - 200.f;

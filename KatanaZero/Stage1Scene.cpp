@@ -107,6 +107,7 @@ HRESULT Stage1Scene::InitImage()
 
 
 	InitBackgroundImage();
+	InitTile();
 
 	return S_OK;
 }
@@ -117,9 +118,17 @@ HRESULT Stage1Scene::InitObject()
 	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	LoadBackground();
+	//LoadBackground();
 	LoadObject();
 	LoadFloor();
+
+	Tile* tile = new Tile();
+	if (FAILED(tile->Init(L"Data/Stage1/Stage1Tile.dat")))
+	{
+		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		return E_FAIL;
+	}
+	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
 
 	return S_OK;
 }
@@ -295,6 +304,25 @@ void Stage1Scene::LoadFloor()
 	}
 
 	CloseHandle(hFile);
+}
+
+void Stage1Scene::InitTile()
+{
+	vector<string> Tiles = GetFileNames("Image/Tile/*.bmp");
+
+	if (Tiles.empty())
+		return;
+
+	for (int i = 0; i < Tiles.size(); ++i)
+	{
+		int dotPos = Tiles[i].find_last_of('.');
+		string nameOnly = dotPos != string::npos ? Tiles[i].substr(0, dotPos) : Tiles[i];
+
+		wstring wsPath = L"Image/Tile/";
+		wsPath += wstring(Tiles[i].begin(), Tiles[i].end());
+
+		ImageManager::GetInstance()->AddImage(nameOnly, wsPath.c_str(), true, RGB(255, 0, 255), 32, 32);
+	}
 }
 
 void Stage1Scene::Update()

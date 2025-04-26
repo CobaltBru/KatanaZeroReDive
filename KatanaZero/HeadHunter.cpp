@@ -999,7 +999,7 @@ void HeadHunter::Die()
         break;
     case 2:
         image = ImageManager::GetInstance()->FindImage("Dead"); // 기어가는 동작
-        if (frameIndex < image->GetMaxFrameX() - 1)
+        if (frameIndex <= image->GetMaxFrameX() - 1)
         {
             if (timer > 0.3f)
             {

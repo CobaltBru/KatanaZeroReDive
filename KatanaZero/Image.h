@@ -101,4 +101,3 @@ public:
 
 	void SetTransparent(bool InTransparent) { isTransparent = InTransparent; }
 };
-
