@@ -6,6 +6,9 @@
 
 PlayerState* WallSlideState::GetInput(Player* player)
 {
+	if (player->GetInfo()->bIsDead)
+		return player->GetStates()->Dead;
+
 	const FLineResult lineResult = player->GetRigidBody()->GetResult();
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
@@ -56,6 +59,7 @@ void WallSlideState::Update(Player* player)
 	player->SetImage(ImageManager::GetInstance()->FindImage("zerowallslide"));
 	//player->GetRigidBody()->AddVelocity({ 0.f, 50.f });
 
+	// effect
 	if (updateCount > (player->GetImage()->GetMaxFrameX() * 100))
 	{
 		const FLineResult lineResult = player->GetRigidBody()->GetResult();

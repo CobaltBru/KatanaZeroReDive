@@ -446,6 +446,7 @@
     <ClCompile Include="ArmAttack.cpp">
       <Filter>MainGame\Enemy\Hidden</Filter>
     </ClCompile>
+    <ClCompile Include="DeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -746,5 +747,6 @@
     <ClInclude Include="ArmAttack.h">
       <Filter>MainGame\Enemy\Hidden</Filter>
     </ClInclude>
+    <ClInclude Include="DeadState.h" />
   </ItemGroup>
 </Project>

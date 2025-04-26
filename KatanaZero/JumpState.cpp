@@ -3,12 +3,16 @@
 #include "RigidBody.h"
 #include "Image.h"
 #include "EffectManager.h"
-
+#include "SoundManager.h"
 
 PlayerState* JumpState::GetInput(Player* player)
 {
+    if (player->GetInfo()->bIsDead)
+        return player->GetStates()->Dead;
+
     if (player->GetRigidBody()->IsGround() == true)
     {        
+        SoundManager::GetInstance()->PlaySounds("zeroland", EChannelType::Effect);
         EffectManager::GetInstance()->Activefx("landcloud", player->GetPos() + FPOINT{ 0.f, player->GetHalfHeight() * 1.75f }, 0.0f, false);
         return player->GetStates()->Idle;
     }
@@ -58,6 +62,7 @@ PlayerState* JumpState::GetInput(Player* player)
     //    player->SetSwitchTime(0.02f);
     //    return player->GetStates()->Idle;
     //}
+
     return nullptr;
 }
 
@@ -69,9 +74,14 @@ void JumpState::Enter(Player* player)
 
     player->SetImage(ImageManager::GetInstance()->FindImage("zerojump"));
     
-    EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ 0.f, -player->GetHalfHeight()}, 0.0f, false);
+    // effect
+    if (player->GetInfo()->prevState != "wallslide")
+        EffectManager::GetInstance()->Activefx("jumpcloud", player->GetPos() + FPOINT{ 0.f, -player->GetHalfHeight()}, 0.0f, false);
         
     player->GetRigidBody()->AddVelocity({ 0.f, -600.f });
+
+    // sound
+    SoundManager::GetInstance()->PlaySounds("zerojump", EChannelType::Effect);
 }
 
 void JumpState::Update(Player* player)

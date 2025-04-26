@@ -87,7 +87,9 @@ void MapTool::Update()
 	LineManager->Update();
 
 	string tileName = ImGuiManager::GetInstance()->GetTileName();
-	if (tileName != "" && KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+	if (tileName != "" && 
+		(KeyManager::GetInstance()->IsStayKeyDown(VK_RBUTTON) ||
+			KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE)))
 	{
 		//기본을 무조건 32x32로 한다는 뜻
 		const float TILEX = 32 * (ScrollManager::GetInstance()->GetScale() / 2);
@@ -142,8 +144,6 @@ void MapTool::Update()
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
-		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 }
 
 void MapTool::Render(HDC hdc)
