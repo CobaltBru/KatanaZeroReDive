@@ -42,7 +42,10 @@ private:
 	int Item2FrameX;
 	float Item2Scale;
 	bool isSlow;
+	float batteryTimer;
 	float batteryGage;
+	float timeTimer;
+	float timeMax;
 	float timeGage;
 	string leftItem, rightItem;
 
@@ -59,5 +62,18 @@ public:
 	virtual void TimerUIEvent(const float t) override;
 
 	void SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, float InScale);
+	
+	void UpdateSlow(bool buttonDown);
+	inline void setInfo(float timer)
+	{
+		batteryTimer = 0.f;
+		batteryGage = 1.0f;
+		timeTimer = 0.f;
+		timeMax = timer;
+		timeGage = 1.0f;
+	}
+	inline void setTimebar(float percent) { timeGage = percent; }
+	inline float getBattery() { return batteryGage; }
+	inline float getTimer() { return timeGage; }
 };
 

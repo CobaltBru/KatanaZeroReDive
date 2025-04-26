@@ -38,22 +38,23 @@ HRESULT Player::Init()
 
 	image = ImageManager::GetInstance()->FindImage("zeroidle");
 	effectImage = nullptr;
+	currAnimKey = "zeroidle";
 
-	Pos = FPOINT{ 1200, 700 };
+	Pos = FPOINT{ 400, 700 };
 	switchTime = 0.02f;
 
 	halfWidth = image->GetFrameWidth() * 0.5f;	
 	halfHeight = image->GetFrameHeight() * 0.5f;
-	
+	attackTimer = 0.f;
 	InitPlayerStates();
 	state = states->Idle;
 
 	InitPlayerInfo();
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.1f, 
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
-		true, 1.f);
+		false, 1.f);
 
 	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
 	(float)image->GetFrameWidth(),
@@ -88,12 +89,71 @@ HRESULT Player::Init()
 	return S_OK;
 }
 
+HRESULT Player::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImage();
+
+	image = ImageManager::GetInstance()->FindImage("zeroidle");
+	effectImage = nullptr;
+	currAnimKey = "zeroidle";
+
+	Pos = InPos;
+	switchTime = 0.02f;
+	bFlip = InFlip;
+	RenderGroup = InRenderGroup;
+
+	halfWidth = image->GetFrameWidth() * 0.5f;
+	halfHeight = image->GetFrameHeight() * 0.5f;
+
+	InitPlayerStates();
+	state = states->Idle;
+
+	InitPlayerInfo();
+
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize,
+		true, 1.f);
+
+	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
+	(float)image->GetFrameWidth(),
+	(float)image->GetFrameHeight()},
+	true, 1.f);*/
+
+	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
+		false, 1.f);
+
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
+
+	ObjectCollider->SetPos(Pos);
+
+	ObjectRigidBody = new RigidBody(this);
+	InitRigidBody();
+
+	InitScrollOffset();
+	scrollSpeed = 300.f;
+
+	// set player input key
+	playerInput = new PlayerInput();
+	//playerInput->Init();
+
+	dir = EDirection::Right;
+
+	//playerAnim = new PlayerAnim;
+	//playerAnim->Init();
+
+	info->bIsWall = false;
+
+	return S_OK;
+}
+
 
 void Player::Release()
 {
 	if (playerInput)
 	{		
-		delete playerInput;
+		//delete playerInput;
 		playerInput = nullptr;
 	}
 	/*if (playerAnim)
@@ -109,6 +169,7 @@ void Player::Release()
 	}
 	if (states)
 	{
+		delete states->Dead;
 		delete states->Attack;
 		delete states->Fall;
 		delete states->Idle;
@@ -191,10 +252,11 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{		
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		if (dir == EDirection::Left)		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
+			image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());
 		else		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+			image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
 		//if (dir == EDirection::Left)
 		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
@@ -219,6 +281,9 @@ void Player::MakeSnapShot(void* out)
 {
 	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
 	pSnapShot->animFrame = this->FrameIndex;
+	pSnapShot->bFlip = this->bFlip;
+	pSnapShot->pos = this->Pos;
+	pSnapShot->animKey = this->currAnimKey;
 }
 
 void Player::InitPlayerStates()
@@ -245,7 +310,7 @@ void Player::InitPlayerInfo()
 	info->bIsWall = false;
 	info->bGameStart = false;
 	info->bIsDead = false;
-	info->attackCoolTime = .7f;
+	info->attackCoolTime = .34f;
 	info->prevState = "";
 }
 

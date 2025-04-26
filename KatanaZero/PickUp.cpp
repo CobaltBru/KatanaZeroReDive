@@ -25,7 +25,7 @@ HRESULT PickUp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, F
 	wstring str = Utf8ToWstring("Image/Bottle/" + InImageKey + ".png");
 	gpImage = new GPImage();
 	gpImage->AddImage(str.c_str(),1,1);
-
+	
 	Image = ImageManager::GetInstance()->FindImage(InImageKey);
 	Pos = InPos;
 

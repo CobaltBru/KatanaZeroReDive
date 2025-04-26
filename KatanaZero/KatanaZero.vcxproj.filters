@@ -157,6 +157,15 @@
     <Filter Include="MainGame\Enemy\Hidden">
       <UniqueIdentifier>{6c9a8958-825b-4fcd-a2c9-6f0b77ecb89c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainGame\Enemy\Hidden\Portal">
+      <UniqueIdentifier>{48a833af-25c7-486f-8191-44677bb4fa84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Hidden\Syringe">
+      <UniqueIdentifier>{827639fc-8ec5-4080-ae3e-f46d4574cfb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainGame\Enemy\Hidden\Weak">
+      <UniqueIdentifier>{65b9da7f-2e56-4e73-8e2e-dd01c300e8ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -416,6 +425,16 @@
     <ClCompile Include="ScenePlayer.cpp">
       <Filter>MainGame\Scene</Filter>
     </ClCompile>
+
+    <ClCompile Include="BossScene.cpp">
+      <Filter>?Üå?ä§ ?åå?ùº</Filter>
+    </ClCompile>
+    <ClCompile Include="PickUp.cpp">
+      <Filter>?Üå?ä§ ?åå?ùº</Filter>
+    </ClCompile>
+    <ClCompile Include="Turret.cpp">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClCompile>
     <ClCompile Include="PickUp.cpp">
       <Filter>MainGame\PickUp</Filter>
     </ClCompile>
@@ -445,6 +464,16 @@
     </ClCompile>
     <ClCompile Include="ArmAttack.cpp">
       <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClCompile>
+    <ClCompile Include="DeadState.cpp" />
+    <ClCompile Include="Portal.cpp">
+      <Filter>MainGame\Enemy\Hidden\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="Syringe.cpp">
+      <Filter>MainGame\Enemy\Hidden\Syringe</Filter>
+    </ClCompile>
+    <ClCompile Include="BossWeak.cpp">
+      <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClCompile>
     <ClCompile Include="DeadState.cpp" />
   </ItemGroup>
@@ -715,6 +744,15 @@
     <ClInclude Include="ScenePlayer.h">
       <Filter>MainGame\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="BossScene.h">
+      <Filter>?ó§?çî ?åå?ùº</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUp.h">
+      <Filter>?ó§?çî ?åå?ùº</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>MainGame\Enemy\Weapon</Filter>
+    </ClInclude>
     <ClInclude Include="PickUp.h">
       <Filter>MainGame\PickUp</Filter>
     </ClInclude>
@@ -746,6 +784,16 @@
     </ClInclude>
     <ClInclude Include="ArmAttack.h">
       <Filter>MainGame\Enemy\Hidden</Filter>
+    </ClInclude>
+    <ClInclude Include="DeadState.h" />
+    <ClInclude Include="Portal.h">
+      <Filter>MainGame\Enemy\Hidden\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Syringe.h">
+      <Filter>MainGame\Enemy\Hidden\Syringe</Filter>
+    </ClInclude>
+    <ClInclude Include="BossWeak.h">
+      <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClInclude>
     <ClInclude Include="DeadState.h" />
   </ItemGroup>

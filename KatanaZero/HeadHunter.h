@@ -7,37 +7,41 @@ enum class State
     GroundLazer,
     GroundGun,
     Bullet,
-    Teleport,
+    //Teleport,
     VerticalLazer,
     RoundLazer,
     Dash,
     DashDown,
-    Machine,
     Faint,
-    Die
+    Die,
+    NeckSlice
 };
 
-class RigidBody;
+
+class Player;
 class Bomb;
 class Lazer;
+class Turret;
 class Image;
 class Bullet1;
+class Collider;
 class HeadHunter : public GameObject
 {
 private:
    
     FPOINT firePos;
-    FPOINT wallPos;
 
     bool isFlip;
     bool isAttacked;
     bool isDead;
     bool isLeft;
     bool bCanSpawnBomb;
+    bool faintStart;
+    bool isFired;
+    bool isFlipLocked;
+    bool turretSpawned;
 
-    FPOINT jumpDist1;
-    FPOINT jumpDist2;
-    FPOINT jumpDist3;
+
     float angle;
     float weaponAngle; // 레이저 각도
     float dAngle; // 
@@ -45,7 +49,7 @@ private:
     float moveTimer;
     float bulletTimer;
 
-
+    float dir;
     int hp;
     int wave;
     int bulletWave;
@@ -55,15 +59,22 @@ private:
     int gunCount;
     int loop;
     int lazerLoop;
-
+    int deadCount;
+    int dieIndex;
+    int random;
     int frameIndex;
+    int hitDir;
     Image* image;
     State state;
     Lazer* lazer;
+    Turret* turret;
+  
+    Collider* dashCollider;
+
+    GameObject* player;
     std::vector<Bullet1*> bullets;
     std::vector<Bomb*> bombs;
     
-    RigidBody* ObjectRigidBody;
 
     // test // 삭제 혹은 교체 예정
     FPOINT playerPos;
@@ -73,6 +84,7 @@ public:
     virtual ~HeadHunter();
 
     virtual HRESULT Init(FPOINT InPos);
+    virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend);
     virtual void Release();
     virtual void Update();
     virtual void Render(HDC hdc);
@@ -81,26 +93,32 @@ public:
 
     void Collision();
 
+    //상태 관련
     void Idle();
     void GroundLazer();
     void GroundGun();
     void Bullet();
-    void Teleport();
+    //void Teleport();
     void VerticalLazer();
     void RoundLazer();
     void Dash();
     void DashDown();
     void Faint();
-    void Machine();
     void Die();
+    void NeckSlice();
 
+    // 무기 소환
     void SpawnBullet(FPOINT firePos, float angle);
-    void SpawnBomb(FPOINT firePos, float angle);
+    void SpawnBomb(FPOINT firePos, float speed, float speed2);
 
+    // 기타,,,
     void ChangeState(State newState);
     void CheckPlayerPos();
     void RandomLoop();
     void IsLeft();
     void IsAttacked();
+    void RoundLazerCollision();
+    void FuckWall();
+
 };
 

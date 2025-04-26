@@ -28,10 +28,12 @@ protected:
 	float attackRange;
 	float meleeAttackRange;
 	float attackDuration;
+	float attackTimer;
 	EType eType;
 	int targetFloor;
 	bool bReachedTargetFloor;
 	float HitAngle;
+	bool canHit;
 
 	// Jump
 	float Gravity;
@@ -40,7 +42,9 @@ protected:
 	bool bFalling;
 	bool bDown;
 	bool bDead{ false };
+	bool bCanAttack;
 	
+	Collider* AttackCollider;
 public:
 	Enemy();
 	virtual ~Enemy();
@@ -76,8 +80,12 @@ public:
 	virtual bool IsInMeleeAttackRange();
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
+	void AddATimer(float dt) { attackTimer += dt; }
+	float GetATimer() { return attackTimer; }
+	void SetATimer(float t) { attackTimer = t; }
+	float GetADuration() { return attackDuration; }
+	void SetCanAttack(bool bAttack) { bCanAttack = bAttack; }
+	bool CanAttack() { return bCanAttack; }
 	bool IsHitted();
-
-
-	virtual void Attack() {};
+	void Collision();
 };

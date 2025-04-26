@@ -13,6 +13,7 @@ class ScreenEffectManager;
 class EffectManager;
 class Player;
 class GPImageManager;
+class UIGame;
 class Stage1Scene : public Scene
 {
 public:
@@ -52,5 +53,14 @@ private:
 	ChatManager* chatManager;
 	GPImageManager* gpImageManager;
 
+	UIGame* ui;
+	bool slowStart;
+	float batteryMax;
+	float batteryGage;
+	float batteryTimer;
+	
+	float timerBarMax;
+	float timerBarTimer;
+	float currentTimer;
 };
 

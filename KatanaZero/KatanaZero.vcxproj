@@ -141,6 +141,8 @@
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="BossWeak.cpp" />
+    <ClCompile Include="BossScene.cpp" />
     <ClCompile Include="Broken.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -190,6 +192,7 @@
     <ClCompile Include="PlayerAnim.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PopUpManager.cpp" />
+    <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_demo.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui_draw.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StageClear.cpp" />
     <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="Syringe.cpp" />
     <ClCompile Include="TaeKyungObject.cpp" />
     <ClCompile Include="TalkScene.cpp" />
     <ClCompile Include="TestObject.cpp" />
@@ -226,6 +230,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="ScreenEffectManager.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="UIGame.cpp" />
     <ClCompile Include="WallSlideState.cpp" />
     <ClCompile Include="WorldBackground.cpp" />
@@ -237,6 +242,8 @@
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Bomb.h" />
+    <ClInclude Include="BossWeak.h" />
+    <ClInclude Include="BossScene.h" />
     <ClInclude Include="Broken.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
@@ -289,6 +296,7 @@
     <ClInclude Include="PlayerAnim.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PopUpManager.h" />
+    <ClInclude Include="Portal.h" />
     <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui.h" />
     <ClInclude Include="Reference\Headers\Imgui\imgui_impl_dx11.h" />
@@ -321,6 +329,7 @@
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="StageClear.h" />
     <ClInclude Include="Subject.h" />
+    <ClInclude Include="Syringe.h" />
     <ClInclude Include="TaeKyungObject.h" />
     <ClInclude Include="TalkScene.h" />
     <ClInclude Include="TestObject.h" />
@@ -330,6 +339,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="ScreenEffectManager.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="UIGame.h" />
     <ClInclude Include="WallSlideState.h" />
     <ClInclude Include="WorldBackground.h" />

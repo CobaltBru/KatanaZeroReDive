@@ -2,6 +2,8 @@
 #include "Image.h"
 #include "RenderManager.h"
 #include "ParticleEffect.h"
+#include "SoundManager.h"
+
 HRESULT UIGame::Init()
 {
 	
@@ -122,9 +124,11 @@ HRESULT UIGame::Init()
 
 void UIGame::Update()
 {
-	timer += TimerManager::GetInstance()->GetDeltaTime();
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
+	timer += dt;
+	/*if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 	{
+		
 		shiftButton.setFrame(TWO);
 		if (timer >= 0.1f)
 		{
@@ -138,6 +142,7 @@ void UIGame::Update()
 	}
 	else
 	{
+		
 		shiftButton.setFrame(ONE);
 		if (timer >= 0.1f)
 		{
@@ -148,7 +153,8 @@ void UIGame::Update()
 			timeGage = min(timeGage, 1.0f);
 		}
 		isSlow = false;
-	}
+	}*/
+	
 	battery.Update();
 	if (isSlow)
 	{
@@ -161,6 +167,8 @@ void UIGame::Update()
 		batteryCellBlue[i].Update();
 		batteryCellRed[i].Update();
 	}
+	timeGage -= dt * (1.f / timeMax);
+	timeGage = max(timeGage, 0.0f);
 	timerBarUI.setSour(0.0f, timeGage);
 	timerUI.Update();
 	
@@ -257,4 +265,45 @@ void UIGame::SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, fl
 	Item2FrameX = InFrameX;
 	Item2Scale = InScale;
 	item2Pos = { slotPos.x + 82.5f + InOffset.x, slotPos.y + 4.f + InOffset.y};
+}
+
+void UIGame::UpdateSlow(bool buttonDown)
+{
+	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
+
+	if (buttonDown && batteryGage > 0.0f)
+	{
+		// 버튼 처음 눌렸을 때 한 번만 피치 다운
+		if (!isSlow) {
+			isSlow = true;
+			SoundManager::GetInstance()->PlaySounds("slowon", EChannelType::Effect);
+			SoundManager::GetInstance()->PitchDown(EChannelType::BGM);
+		}
+
+		// 게이지 감소
+		batteryGage -= dt * (1.f/6.f);
+		if (batteryGage <= 0.0f) {
+			batteryGage = 0.0f;
+			// 게이지가 바닥나면 자동으로 슬로우 해제
+			isSlow = false;
+			SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
+			SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
+		}
+	}
+	else
+	{
+		// 버튼 떼이거나 게이지가 0일 때
+		if (isSlow) {
+			isSlow = false;
+			SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
+			SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
+		}
+
+		// 게이지 충전
+		batteryGage += dt * (1.f / 5.f);
+		if (batteryGage >= 1.0f)
+			batteryGage = 1.0f;
+	}
+
+	// batteryGage 값으로 UI 그리기...
 }

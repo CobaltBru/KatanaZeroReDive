@@ -26,10 +26,12 @@ public:
 
 	HRESULT AddSound(string InSoundKey, const char* InSoundPath);
 
-	void PlaySounds(string InSoundKey, EChannelType InChannelType);
-	void PlayBGM(string InSoundKey);
-	void PlayEnv(string InSoundKey);
+	void PlaySounds(string InSoundKey, EChannelType InChannelType);	
+	void PlayBGM(string InSoundKey);	//배경
+	void PlayEnv(string InSoundKey);	//환경음?
 
+	void PitchDown(EChannelType InChannelType);
+	void PitchOrigin(EChannelType InChannelType);
 	void StopSound(EChannelType InChannelType);
 	void StopAll();
 private:
@@ -52,5 +54,8 @@ private:
 
 	float BGMDelay;
 	float EnvDelay;
+
+	float pitch;
+	float timer;
 };
 

@@ -38,13 +38,13 @@
 TestScene::TestScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
 {
-	
+
 }
 
 HRESULT TestScene::Init()
 {
 	SetClientRect(g_hWndParent, WINSIZE_X, WINSIZE_Y);
-	
+
 	srand(time(NULL));
 	ObjectManager = ObjectManager::GetInstance();
 	ObjectManager->Init();
@@ -72,7 +72,7 @@ HRESULT TestScene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-
+	slowStart = false;
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/playerLine.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("TestScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
@@ -95,7 +95,7 @@ HRESULT TestScene::Init()
 		MessageBox(g_hWnd, TEXT("TestScene InitEffect Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-	
+
 	SoundManager::GetInstance()->PlayBGM("Katana ZeroTest");
 
 	return S_OK;
@@ -144,9 +144,9 @@ HRESULT TestScene::InitObject()
 	// 테스트 코드 태경
 	{
 		Background* background = new Background();
-		background->Init("black",0.f);
+		background->Init("black", 0.f);
 		ObjectManager->AddGameObject(EObjectType::GameObject, background);
-		
+
 		/*TaeKyungObject* taekyung = new TaeKyungObject();
 		taekyung->Init({ 500.f,550.f });
 		ObjectManager->AddGameObject(EObjectType::GameObject, taekyung);*/
@@ -170,7 +170,7 @@ HRESULT TestScene::InitObject()
 			ObjectManager->AddGameObject(EObjectType::GameObject, pomp);
 			ObjectManager->AddGameObject(EObjectType::GameObject, gangster);
 
-			
+
 		}
 
 		// 지수 테스트
@@ -195,12 +195,12 @@ HRESULT TestScene::InitObject()
 		ui->Init();
 		ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
-		GoPopUp* goPopUp = new GoPopUp();		
+		GoPopUp* goPopUp = new GoPopUp();
 		goPopUp->Init();
 		goPopUp->On(player->GetPPos(), &testDestPos);
 		ObjectManager->AddGameObject(EObjectType::GameObject, goPopUp);
 
-		
+
 	}
 	return S_OK;
 }
@@ -214,13 +214,16 @@ void TestScene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F3))
 		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
 		SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
-	
+
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown('C'))
 	{
@@ -233,14 +236,29 @@ void TestScene::TestCode()
 	{
 		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
 		// TimerManager::GetInstance()->GetDeltaTime();
-		 
-		
+
+		if (slowStart == false)
+		{
+			SoundManager::GetInstance()->PlaySounds("slowon", EChannelType::Effect);
+			slowStart = true;
+		}
+		SoundManager::GetInstance()->PitchDown(EChannelType::BGM);
+
 		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-		TimerManager::GetInstance()->SetSlow(0.1f,0.2f);
+		TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
 	}
 	else  // 슬로우 풀기
-		TimerManager::GetInstance()->SetSlow(1.f,0.2f);
-	
+
+	{
+		if (slowStart == true)
+		{
+			SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
+			slowStart = false;
+		}
+		SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
+		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+	}
+		
 	//// 라인 트레이스
 	//FHitResult HitResult;
 	//if (CollisionManager->LineTraceByObject(HitResult, ECollisionGroup::Player, { 0.f,0.f }, { (float)g_ptMouse.x,(float)g_ptMouse.y }, true, 0.f))

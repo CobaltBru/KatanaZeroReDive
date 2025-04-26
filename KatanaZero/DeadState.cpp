@@ -11,7 +11,6 @@ PlayerState* DeadState::GetInput(Player* player)
         // set player pos
         player->GetInfo()->bGameStart = false;
         player->GetInfo()->bIsDead = false;
-        player->SetPos(FPOINT{ 300.0f, WINSIZE_Y - 200.0f });
         return player->GetStates()->Idle;
     }
     return nullptr;
