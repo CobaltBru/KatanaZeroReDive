@@ -299,6 +299,12 @@ void BossScene::LoadFloor()
 
 void BossScene::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("Home", "·Îµù_1");
+		return;
+	}
+
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();

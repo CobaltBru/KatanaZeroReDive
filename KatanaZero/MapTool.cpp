@@ -81,6 +81,12 @@ HRESULT MapTool::Init()
 
 void MapTool::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("Home", "·Îµù_1");
+		return;
+	}
+
 	ObjectManager->Update();
 	CollisionManager->Update();
 	ScrollManager->Update();

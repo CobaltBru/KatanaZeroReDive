@@ -12,6 +12,7 @@ Line::Line(const FPOINT& InLeftPoint, const FPOINT& InRightPoint, const ELineTyp
 
 void Line::Render(HDC hdc)
 {
+#ifdef _DEBUG
 	HPEN hPen = nullptr;
 
 	switch (LineType)
@@ -42,6 +43,7 @@ void Line::Render(HDC hdc)
 
 	// 펜 메모리 해제
 	DeleteObject(hPen);
+#endif _DEBUG
 }
 
 int Line::GetFloorIndex(vector<FloorZone> fz, FPOINT linePoint) const

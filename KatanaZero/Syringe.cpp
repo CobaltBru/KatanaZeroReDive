@@ -33,6 +33,12 @@ void Syringe::Update()
 	Pos.x += cosf(DEG_TO_RAD(Angle)) * 900.f * TimerManager::GetInstance()->GetDeltaTime();
 	Pos.y += sinf(DEG_TO_RAD(Angle)) * 900.f * TimerManager::GetInstance()->GetDeltaTime();
 
+	/*FHitResult HitResult;
+	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Player))
+	{
+		HitResult.HitCollision->GetOwner()->SetDead(true);
+	}*/
+
 	if (OutOfScreen(Pos, gpImage->getWidth() * 2.f, gpImage->getHeight() * 2.f))
 		bDead = true;
 

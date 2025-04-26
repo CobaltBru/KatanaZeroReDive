@@ -40,9 +40,6 @@ HRESULT MainGame::Init()
 		return E_FAIL;
 	}
 
-	
-
-	
 	SceneManager::GetInstance()->AddScene("Talk", new TalkScene());
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
@@ -52,7 +49,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Hidden","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("Home","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();

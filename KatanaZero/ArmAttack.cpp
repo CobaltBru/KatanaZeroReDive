@@ -43,6 +43,14 @@ void ArmAttack::Update()
 		break;
 	case EArmState::Attack:
 		Pos.y += 2000 * TimerManager::GetInstance()->GetDeltaTime();
+		
+		FHitResult HitResult;
+		/*if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Player))
+		{
+			HitResult.HitCollision->GetOwner()->SetDead(true);
+		}*/
+
+		
 		FLineResult Result;
 		if (LineManager::GetInstance()->CollisionLine(Pos, LastPos, Result, false, ObjectCollider->GetSize().y, true))
 		{

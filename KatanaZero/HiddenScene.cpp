@@ -234,8 +234,11 @@ void HiddenScene::LoadObject()
 		if (dwByte == 0)
 			break;
 
+		Player* player = new Player();
+		//player->Init(,ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend)
+
 		GameObject* Obj = CreateObject(ClassName);
-		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
+		Obj->Init("TestPlayer", ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
 		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
 
@@ -250,6 +253,12 @@ void HiddenScene::LoadObject()
 }
 void HiddenScene::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("Home", "·Îµù_1");
+		return;
+	}
+
 	ObjectManager->Update();
 	CollisionManager->Update();
 	fxManager->Update();

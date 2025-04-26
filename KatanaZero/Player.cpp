@@ -127,6 +127,8 @@ HRESULT Player::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, F
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
 
+	ObjectCollider->SetPos(Pos);
+
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
 
@@ -238,7 +240,7 @@ void Player::Update()
 	UpdateRigidBody();
 
 	// collision
-	//UpdateCollision();
+	UpdateCollision();
 
 	// scroll offset
 	Offset();
@@ -251,6 +253,7 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{		
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		if (dir == EDirection::Left)		
 			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
 		else		
