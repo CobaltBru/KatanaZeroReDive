@@ -72,6 +72,7 @@ HRESULT Player::Init()
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
 
+
 	InitScrollOffset();
 	scrollSpeed = 300.f;
 
@@ -251,9 +252,9 @@ void Player::Render(HDC hdc)
 	if (image != nullptr)
 	{		
 		if (dir == EDirection::Left)		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
+			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
 		else		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
 		//if (dir == EDirection::Left)
 		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
@@ -348,6 +349,8 @@ void Player::InitScrollOffset()
 void Player::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus()) return;
+
+	scrollSpeed = fabs(ObjectRigidBody->GetVelocity().x);
 
 	const float OffsetMinX = 200.f;
 	const float OffsetMaxX = WINSIZE_X - 200.f;

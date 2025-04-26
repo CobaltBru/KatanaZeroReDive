@@ -116,6 +116,8 @@ public:
 	void Offset();
 
 
+
+
 	inline playerStates* GetStates() { return states; }
 	inline playerInfo* GetInfo() { return info; }
 
