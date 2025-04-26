@@ -240,7 +240,7 @@ void TalkScene::Render(HDC hdc)
 {
 	
 	RenderManager->Render(hdc);
-	LineManager->Render(hdc);
+	//LineManager->Render(hdc);
 	CollisionManager->Render(hdc);
 	chatManager->Render(hdc);
 	RECT rect = { 0,0,WINSIZE_X,WINSIZE_Y };

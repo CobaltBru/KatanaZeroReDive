@@ -44,7 +44,7 @@ HRESULT ScenePlayer::Init()
 		});
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { (float)tmp->GetFrameWidth() * 2.5f,
-		(float)tmp->GetFrameHeight() * 2.5f }, true, 1.f);
+		(float)tmp->GetFrameHeight() * 2.5f }, false, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	ObjectCollider->SetPos(Pos);
 	ObjectRigidBody = new RigidBody(this);
