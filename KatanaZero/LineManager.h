@@ -23,6 +23,12 @@ public:
 	void Release();
 
 	ELineEditState GetCurrentEditState() const { return CurrentEditState; }
+	Line* GetLineFront(ELineType InLineType) const { 
+		if (LineList[(int)InLineType].empty())
+			return nullptr;
+
+		return LineList[(int)InLineType].front(); 	
+	}
 
 	void SetLineType(ELineType InLineType) { CurrentLineType = InLineType; }
 	void SetLineEditState(ELineEditState InLineEditState) { CurrentEditState = InLineEditState; }

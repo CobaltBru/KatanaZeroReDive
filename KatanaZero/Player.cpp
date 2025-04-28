@@ -40,12 +40,12 @@ HRESULT Player::Init()
 	effectImage = nullptr;
 	currAnimKey = "zeroidle";
 
-	Pos = FPOINT{ 1200, 700 };
+	Pos = FPOINT{ 400, 700 };
 	switchTime = 0.02f;
 
 	halfWidth = image->GetFrameWidth() * 0.5f;	
 	halfHeight = image->GetFrameHeight() * 0.5f;
-	
+	attackTimer = 0.f;
 	InitPlayerStates();
 	state = states->Idle;
 
@@ -54,7 +54,7 @@ HRESULT Player::Init()
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
-		true, 1.f);
+		false, 1.f);
 
 	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
 	(float)image->GetFrameWidth(),
@@ -71,6 +71,7 @@ HRESULT Player::Init()
 
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
+
 
 	InitScrollOffset();
 	scrollSpeed = 300.f;
@@ -126,6 +127,8 @@ HRESULT Player::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, F
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
 
+	ObjectCollider->SetPos(Pos);
+
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
 
@@ -151,7 +154,7 @@ void Player::Release()
 {
 	if (playerInput)
 	{		
-		delete playerInput;
+		//delete playerInput;
 		playerInput = nullptr;
 	}
 	/*if (playerAnim)
@@ -250,10 +253,11 @@ void Player::Render(HDC hdc)
 {
 	if (image != nullptr)
 	{		
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		if (dir == EDirection::Left)		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true,true,ScrollManager::GetInstance()->GetScale());	
+			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, FrameIndex, 0, true, true, ScrollManager::GetInstance()->GetScale());
 		else		
-			image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
+			image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, FrameIndex, 0, false, true, ScrollManager::GetInstance()->GetScale());
 
 		//if (dir == EDirection::Left)
 		//	image->FrameRender(hdc, Pos.x, Pos.y, FrameIndex, 0, true, true);
@@ -348,6 +352,9 @@ void Player::InitScrollOffset()
 void Player::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus()) return;
+
+	float newScrollSpeed = max(ObjectRigidBody->GetVelocity().x, ObjectRigidBody->GetVelocity().y);
+	scrollSpeed = newScrollSpeed;
 
 	const float OffsetMinX = 200.f;
 	const float OffsetMaxX = WINSIZE_X - 200.f;

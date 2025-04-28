@@ -29,9 +29,11 @@
 #include "Factory.h"
 #include "Tile.h"
 #include "ArrowUI.h"
+#include "GPImageManager.h"
 
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
+	, gpImageManager(nullptr)
 {
 }
 
@@ -62,30 +64,33 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
+	gpImageManager = GPImageManager::GetInstance();
+	gpImageManager->Init();
+
 	slowStart = false;
 
 	
 
 	if (FAILED(LineManager->LoadFile(L"Data/Stage1/Stage1Line.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		MessageBox(g_hWnd, TEXT("Stage1Scene LineManager LoadFile Failed."), TEXT("ï¿½ï¿½ï¿½ï¿½"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitImage()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		MessageBox(g_hWnd, TEXT("Stage1Scene InitImage Failed."), TEXT("ï¿½ï¿½ï¿½ï¿½"), MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(InitObject()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		MessageBox(g_hWnd, TEXT("Stage1Scene InitObject Failed."), TEXT("ï¿½ï¿½ï¿½ï¿½"), MB_OK);
 		return E_FAIL;
 	}
 	if (FAILED(InitEffects()))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		MessageBox(g_hWnd, TEXT("Stage1Scene InitEffect Failed."), TEXT("ï¿½ï¿½ï¿½ï¿½"), MB_OK);
 		return E_FAIL;
 	}
 
@@ -96,7 +101,11 @@ HRESULT Stage1Scene::Init()
 
 HRESULT Stage1Scene::InitImage()
 {
-	// ÇØ´ç ¾À¿¡ ÇÊ¿äÇÑ ¸ðµç ÀÌ¹ÌÁö Ãß°¡
+	// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
+	ImageManager::GetInstance()->AddImage("black", L"Image/Background/blackBg.bmp", 1920, 1080, 1, 1, true, RGB(255, 0, 255));
+	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/headhunter_jump.bmp", 27, 44, 1, 1, true, RGB(255, 0, 255));
+
+
 	InitBackgroundImage();
 	InitTile();
 
@@ -109,14 +118,14 @@ HRESULT Stage1Scene::InitObject()
 	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	LoadBackground();
+	//LoadBackground();
 	LoadObject();
 	LoadFloor();
 
 	Tile* tile = new Tile();
 	if (FAILED(tile->Init(L"Data/Stage1/Stage1Tile.dat")))
 	{
-		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("½ÇÆÐ"), MB_OK);
+		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("ï¿½ï¿½ï¿½ï¿½"), MB_OK);
 		return E_FAIL;
 	}
 	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
@@ -132,11 +141,13 @@ HRESULT Stage1Scene::InitEffects()
 void Stage1Scene::TestCode()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
-		SceneManager::GetInstance()->ChangeScene("Test", "·Îµù_1");
+		SceneManager::GetInstance()->ChangeScene("Test", "ï¿½Îµï¿½_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
-		SceneManager::GetInstance()->ChangeScene("MapTool", "·Îµù_1");
+		SceneManager::GetInstance()->ChangeScene("MapTool", "ï¿½Îµï¿½_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
-		SceneManager::GetInstance()->ChangeScene("Home", "·Îµù_1");
+		SceneManager::GetInstance()->ChangeScene("Home", "ï¿½Îµï¿½_1");
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
+		SceneManager::GetInstance()->ChangeScene("Boss", "ï¿½Îµï¿½_1");
 }
 
 void Stage1Scene::InitBackgroundImage()
@@ -165,7 +176,7 @@ void Stage1Scene::LoadBackground()
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("°æ°í"), MB_OK);
+		MessageBox(g_hWnd, L"LoadBackGround Failed.", TEXT("ï¿½ï¿½ï¿½"), MB_OK);
 		return;
 	}
 
@@ -176,7 +187,6 @@ void Stage1Scene::LoadBackground()
 		int Size;
 		float ScrollPer;
 		FPOINT Pos;
-		bool bTransparent;
 		ReadFile(hFile, &ScrollPer, sizeof(float), &dwByte, NULL);
 		ReadFile(hFile, &Size, sizeof(int), &dwByte, NULL);
 
@@ -184,7 +194,6 @@ void Stage1Scene::LoadBackground()
 		ReadFile(hFile, buffer, Size, &dwByte, NULL);
 		buffer[Size] = '\0';
 		ReadFile(hFile, &Pos, sizeof(FPOINT), &dwByte, NULL);
-		ReadFile(hFile, &bTransparent, sizeof(bool), &dwByte, NULL);
 
 		string BackgroundName = buffer;
 
@@ -194,9 +203,8 @@ void Stage1Scene::LoadBackground()
 			break;
 
 		Background* BackgroundObj = new Background();
-		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale()+ 0.5f);
+		BackgroundObj->Init(BackgroundName, ScrollPer, ScrollManager::GetInstance()->GetScale());
 		BackgroundObj->SetPos(Pos);
-		BackgroundObj->GetImage()->SetTransparent(bTransparent);
 		ObjectManager::GetInstance()->AddGameObject(EObjectType::GameObject, BackgroundObj);
 	}
 
@@ -219,7 +227,7 @@ void Stage1Scene::LoadObject()
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("°æ°í"), MB_OK);
+		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("ï¿½ï¿½ï¿½"), MB_OK);
 		return;
 	}
 
@@ -241,7 +249,6 @@ void Stage1Scene::LoadObject()
 		ReadFile(hFile, &ObjData.Offset, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.Size, sizeof(FPOINT), &dwByte, NULL);
 		ReadFile(hFile, &ObjData.bLeft, sizeof(bool), &dwByte, NULL);
-		ReadFile(hFile, &ObjData.Scale, sizeof(float), &dwByte, NULL);
 
 		ObjData.ClassName[ObjData.ClsasNameSize] = '\0';
 		ObjData.ImageName[ObjData.ImageNameSize] = '\0';
@@ -257,7 +264,6 @@ void Stage1Scene::LoadObject()
 
 		GameObject* Obj = CreateObject(ClassName);
 		Obj->Init(ImageName, ObjData.Pos, ObjData.Offset, ObjData.Size, ObjData.bLeft, ERenderGroup::NonAlphaBlend);
-		Obj->SetScale(ObjData.Scale);
 		ObjectManager->AddGameObject(EObjectType::GameObject, Obj);
 
 		if (ClassName == "StartPoint")
@@ -277,7 +283,7 @@ void Stage1Scene::LoadFloor()
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("°æ°í"), MB_OK);
+		MessageBox(g_hWnd, L"LoadObject Failed.", TEXT("ï¿½ï¿½ï¿½"), MB_OK);
 		return;
 	}
 
@@ -321,6 +327,12 @@ void Stage1Scene::InitTile()
 
 void Stage1Scene::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("Home", "ï¿½Îµï¿½_1");
+		return;
+	}
+
 	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
 	CollisionManager->Update();
@@ -329,18 +341,18 @@ void Stage1Scene::Update()
 
 	ScrollManager->Update();
 
-	//½½·Î¿ì
+	//ï¿½ï¿½ï¿½Î¿ï¿½
 	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 	{
 		if (ui->getBattery() > 0.0001f)
 		{
 			ui->UpdateSlow(true);
-			//½½·Î¿ì ÁÖ±â                  //½½·Î¿ì°è¼ö 0 ~ 1 / ÇØ´ç °è¼ö±îÁö °¡´Âµ¥ ¸îÃÊµ¿¾È º¸°£ÇÒ°Å³Ä
+			//ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ö±ï¿½                  //ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ 0 ~ 1 / ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Âµï¿½ ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò°Å³ï¿½
 			TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
 		}
 		
 	}
-	else  // ½½·Î¿ì Ç®±â
+	else  // ï¿½ï¿½ï¿½Î¿ï¿½ Ç®ï¿½ï¿½
 	{
 		ui->UpdateSlow(false);
 		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
@@ -376,6 +388,9 @@ void Stage1Scene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
+	if (gpImageManager != nullptr)
+		gpImageManager->Release();
+
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
@@ -384,4 +399,5 @@ void Stage1Scene::Release()
 	screenEffectManager = nullptr;
 	snapShotManager = nullptr;
 	fxManager = nullptr;
+	gpImageManager = nullptr;
 }

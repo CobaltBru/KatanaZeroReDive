@@ -12,6 +12,7 @@ class ChatManager;
 class ScreenEffectManager;
 class EffectManager;
 class Player;
+class GPImageManager;
 class UIGame;
 class Stage1Scene : public Scene
 {
@@ -50,6 +51,8 @@ private:
 	ScreenEffectManager* screenEffectManager;
 	EffectManager* fxManager;
 	ChatManager* chatManager;
+	GPImageManager* gpImageManager;
+
 	UIGame* ui;
 	bool slowStart;
 	float batteryMax;

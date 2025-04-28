@@ -6,7 +6,7 @@ public:
 	Background();
 	virtual ~Background() = default;
 
-	HRESULT Init(string InImageKey, float InScrollPercent = 1.f, float InScale = 1.f);
+	HRESULT Init(string InImageKey, float InScrollPercent = 1.f, float InScale = 1.f, ERenderGroup InRenderGroup = ERenderGroup::BackGround);
 	virtual void Release();
 	virtual void Update();
 	virtual void Render(HDC hdc);
@@ -22,5 +22,6 @@ private:
 	float ScrollPercent;
 	float Scale;
 	string ImageName;
+	
 };
 

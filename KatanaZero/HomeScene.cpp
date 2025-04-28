@@ -59,6 +59,35 @@ void HomeScene::Release()
 
 void HomeScene::Update()
 {
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	{
+		SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
+		return;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F6))
+	{
+		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
+		return;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F7))
+	{
+		SceneManager::GetInstance()->ChangeScene("Stage1", "로딩_1");
+		return;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F8))
+	{
+		SceneManager::GetInstance()->ChangeScene("Hidden", "로딩_1");
+		return;
+	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F9))
+	{
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
+		return;
+	}
+
+	
+
+
 	ObjectManager->Update();
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SPACE))
 	{
