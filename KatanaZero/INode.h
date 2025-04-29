@@ -57,7 +57,7 @@ public:
     NodeStatus tick() override {
         for (auto& child : children) {
             NodeStatus status = child->tick();
-            if (status != NodeStatus::Success) {
+            if (status == NodeStatus::Failure) {
                 return status;
             }
         }
@@ -80,8 +80,19 @@ public:
         }
         return NodeStatus::Success;
     }
-
 private:
     std::vector<Node*> children;
+};
+
+class ConditionNode : public Node
+{
+public:
+    ConditionNode(std::function<bool()> pred) : predicate(pred) {}
+    NodeStatus tick() override
+    {
+        return predicate() ? NodeStatus::Success : NodeStatus::Failure;
+    }
+private:
+    std::function<bool()> predicate;
 };
 

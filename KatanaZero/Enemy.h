@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "config.h"
 #include "EnemyState.h"
+#include "INode.h"
 
 enum class EType
 {
@@ -34,6 +35,9 @@ protected:
 	bool bReachedTargetFloor;
 	float HitAngle;
 	bool canHit;
+
+
+
 
 	// Jump
 	float Gravity;

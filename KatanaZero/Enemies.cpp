@@ -36,7 +36,6 @@ HRESULT Grunt::Init(FPOINT InPos)
 HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
 {
 	InitImages();
-	eState = new EIDLE();
 	Pos = InPos;
 	Speed = 200.f;
 	detectRange = 400.f;
@@ -57,6 +56,49 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	ObjectRigidBody = new RigidBody(this);
 	
 	InitRigidBodySetting();
+
+	// BT 세팅
+	auto idleaction = bind(&Grunt::IDLEAction, this);
+	auto patrolaction = bind(&Grunt::PatrolAction, this);
+	auto deadaction = bind(&Grunt::DeadAction, this);
+	auto meleeAttackaction = bind(&Grunt::MeleeAttackAction, this);
+	auto chaseaction = bind(&Grunt::ChaseAction, this);
+	auto findpathaction = bind(&Grunt::FindPathAction, this);
+	auto watingaction = bind(&Grunt::WatingAction, this);
+	Selector* Root = new Selector();
+	Sequence* Dead = new Sequence();
+	Sequence* MeleeAttack = new Sequence();
+	Selector* Chase = new Selector();
+	Sequence* Patrol = new Sequence();
+	ActionNode* IDLE = new ActionNode(idleaction);
+	Root->addChild(Dead);
+	Root->addChild(MeleeAttack);
+	Root->addChild(Chase);
+	Root->addChild(Patrol);
+	Root->addChild(IDLE);
+
+	ConditionNode* isDead = new ConditionNode([this]() {
+		return this->bDead;
+		});
+	ActionNode* DeadAction = new ActionNode(deadaction);
+	Dead->addChild(isDead);
+	Dead->addChild(DeadAction);
+
+	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
+		// 내부 구현 필요. 탐지 가능한지 로직
+		return true;
+		});
+	ConditionNode* CanAttack = new ConditionNode([this]() {
+		return this->attackTimer == 0.f;
+		});
+	ActionNode* MeleeAttackAction = new ActionNode(meleeAttackaction);
+	MeleeAttack->addChild(IsInAttackRange);
+	MeleeAttack->addChild(CanAttack);
+	MeleeAttack->addChild(MeleeAttackAction);
+
+
+
+
 	return S_OK;
 }
 

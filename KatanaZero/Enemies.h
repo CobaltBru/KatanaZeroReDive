@@ -9,6 +9,14 @@ public:
 	virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup) override;
 	virtual void InitImages() override;
 	virtual void SetAnimKey(EImageType newImage) override;
+
+	NodeStatus IDLEAction();
+	NodeStatus PatrolAction();
+	NodeStatus DeadAction();
+	NodeStatus MeleeAttackAction();
+	NodeStatus ChaseAction();
+	NodeStatus FindPathAction();
+	NodeStatus WatingAction();
 };
 
 class Pomp : public Enemy
