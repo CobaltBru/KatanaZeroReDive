@@ -444,6 +444,9 @@
     <ClCompile Include="INode.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerGroundState.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -728,6 +731,9 @@
     <ClInclude Include="BossScene.h" />
     <ClInclude Include="PickUp.h" />
     <ClInclude Include="INode.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGroundState.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>

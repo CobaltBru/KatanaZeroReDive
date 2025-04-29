@@ -4,11 +4,10 @@
 #include <functional>
 #include <stack>
 #include "GameObject.h"
+#include "INode.h"
 
-
-
-
-
+class Image;
+class Collider;
 class Player : public GameObject
 {
 private:
@@ -23,7 +22,7 @@ private:
 	Image* image;
 	Image* effectImage;
 
-	Collider* AttackCollider;
+	Collider* ObjectCollider;
 
 public:
 	Player();
@@ -44,27 +43,18 @@ public:
 	void InitScrollOffset();
 	void Offset();
 
-	inline Image* GetImage() { return image; }
-	inline void SetImage(Image* image) { this->image = image; }
+	//ground
+	NodeStatus isGround();
+	NodeStatus isInput();
+	NodeStatus isRoll();
+	NodeStatus isKeyDown();
+	NodeStatus isKeyLeftRight();
+
+	NodeStatus actionIdle();
+	NodeStatus actionRoll();
+	NodeStatus actionDown();
+	NodeStatus actionMove();
+
+
 
 };
-
-
-	//typedef std::function<void(Player&)> stateFunction;
-	/*
-	typedef std::function<void(Player&, EDirection)> stateFunction;
-
-	// FSM: input, function binding
-	std::unordered_map<EInputAction, stateFunction> inputStateMap;
-
-	std::unordered_map<EInputAction, EPlayerState> ipActionPlayerStateMap;
-	std::unordered_map<EPlayerState, stateAnimFunc> playerStateFunctionMap;	
-
-	stateAnimFunc IdleAnimFunc;
-	stateAnimFunc IdleToRunAnimFunc;
-	stateAnimFunc RunToIdleAnimFunc;	
-	stateAnimFunc RunAnimFunc;
-	stateAnimFunc FlipAnimFunc;
-	stateAnimFunc JumpAnimFunc;
-	stateAnimFunc AttackAnimFunc;
-	*/

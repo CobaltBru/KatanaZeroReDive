@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "RenderManager.h"
 #include "ScrollManager.h"
+#include "LineManager.h"
 #include "RigidBody.h"
 #include "CommonFunction.h"
 #include "Bullet.h"
@@ -27,19 +28,11 @@ HRESULT Player::Init()
 	
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 0.4f, 
-		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() * 0.9f },
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() },
 		false, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 
-	/*ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
-	(float)image->GetFrameWidth(),
-	(float)image->GetFrameHeight()},
-	true, 1.f);*/
-
-	AttackCollider = new Collider(this, EColliderType::Sphere, {}, {
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
-		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
-		false, 1.f);
 	
 
 	ObjectRigidBody = new RigidBody(this);
@@ -153,6 +146,55 @@ void Player::Offset()
 	const FPOINT scroll = ScrollManager::GetInstance()->GetScrollOffset();
 
 	
+}
+
+NodeStatus Player::isGround()
+{
+	if (GetRigidBody()->GetResult().LineType == ELineType::DownLine ||
+		GetRigidBody()->GetResult().LineType == ELineType::Normal)
+		return NodeStatus::Success;
+	else
+		return NodeStatus::Failure;
+}
+
+NodeStatus Player::isInput()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::isRoll()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::isKeyDown()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::isKeyLeftRight()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::actionIdle()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::actionRoll()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::actionDown()
+{
+	return NodeStatus();
+}
+
+NodeStatus Player::actionMove()
+{
+	return NodeStatus();
 }
 
 void Player::UpdateRigidBody()

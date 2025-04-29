@@ -185,6 +185,7 @@
     <ClCompile Include="MapTool.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="PlayerGroundState.cpp" />
     <ClCompile Include="PopUpManager.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="MapTool.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Pawn.h" />
+    <ClInclude Include="PlayerGroundState.h" />
     <ClInclude Include="PopUpManager.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />

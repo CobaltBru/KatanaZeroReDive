@@ -57,7 +57,7 @@ public:
     NodeStatus tick() override {
         for (auto& child : children) {
             NodeStatus status = child->tick();
-            if (status != NodeStatus::Success) {
+            if (status == NodeStatus::Failure) {
                 return status;
             }
         }
