@@ -10,6 +10,7 @@ void PlayerWalkAction::onEnter()
 	
 	way = 0;
 	speed = 500.f;
+	jumpForce = -1000.f;
 }
 
 void PlayerWalkAction::Update()
@@ -37,7 +38,8 @@ void PlayerWalkAction::Update()
 	//점프
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
-		player->changeState(STATE::JUMP);
+		player->GetRigidBody()->AddVelocity({ 0,jumpForce });
+		player->changeState(STATE::AIR);
 	}
 	//구르기
 	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))

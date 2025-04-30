@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "INode.h"
 
-enum STATE { IDLE, WALK, LOW, JUMP, FALL, WALL, ATTACK, ROLL, DEAD, END };
+enum STATE { IDLE, WALK, LOW, AIR, WALL, ATTACK, ROLL, DEAD, END };
 
 class Image;
 class Collider;

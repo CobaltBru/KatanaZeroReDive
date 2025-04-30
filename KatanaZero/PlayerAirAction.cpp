@@ -1,19 +1,19 @@
-#include "PlayerFallAction.h"
+#include "PlayerAirAction.h"
 #include "Player.h"
 #include "RigidBody.h"
 
-PlayerFallAction::PlayerFallAction(Player* player)
+
+PlayerAirAction::PlayerAirAction(Player* player)
 {
 	this->player = player;
 }
 
-void PlayerFallAction::onEnter()
+void PlayerAirAction::onEnter()
 {
-	way = 0;
 	speed = 500.f;
 }
 
-void PlayerFallAction::Update()
+void PlayerAirAction::Update()
 {
 	FPOINT currentV = player->GetRigidBody()->GetVelocity();
 	//ÁÂ¿ìÀÌµ¿,¸ØÃã
@@ -27,6 +27,13 @@ void PlayerFallAction::Update()
 		way = 1;
 		player->GetRigidBody()->AddVelocity({ way * speed,0 });
 	}
+
+	//Á¡ÇÁ³¡
+	if (KeyManager::GetInstance()->IsOnceKeyUp('W'))
+	{
+		player->GetRigidBody()->AddVelocity({ 0,400.f });
+	}
+	
 	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
 	{
 		player->GetRigidBody()->AddVelocity({ 0,300.f });
@@ -36,9 +43,12 @@ void PlayerFallAction::Update()
 	{
 		player->changeState(STATE::IDLE);
 	}
-
+	if (currentV.y >= 0)
+	{
+		//animation
+	}
 }
 
-void PlayerFallAction::onExit()
+void PlayerAirAction::onExit()
 {
 }

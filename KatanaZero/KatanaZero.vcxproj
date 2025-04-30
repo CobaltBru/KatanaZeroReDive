@@ -185,11 +185,10 @@
     <ClCompile Include="MapTool.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="PlayerAirAction.cpp" />
     <ClCompile Include="PlayerAttackAction.cpp" />
     <ClCompile Include="PlayerDeadAction.cpp" />
-    <ClCompile Include="PlayerFallAction.cpp" />
     <ClCompile Include="PlayerIdleAction.cpp" />
-    <ClCompile Include="PlayerJumpAction.cpp" />
     <ClCompile Include="PlayerLowAction.cpp" />
     <ClCompile Include="PlayerRollAction.cpp" />
     <ClCompile Include="PlayerWalkAction.cpp" />
@@ -289,11 +288,10 @@
     <ClInclude Include="MapTool.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Pawn.h" />
+    <ClInclude Include="PlayerAirAction.h" />
     <ClInclude Include="PlayerAttackAction.h" />
     <ClInclude Include="PlayerDeadAction.h" />
-    <ClInclude Include="PlayerFallAction.h" />
     <ClInclude Include="PlayerIdleAction.h" />
-    <ClInclude Include="PlayerJumpAction.h" />
     <ClInclude Include="PlayerLowAction.h" />
     <ClInclude Include="PlayerRollAction.h" />
     <ClInclude Include="PlayerStateHeaders.h" />

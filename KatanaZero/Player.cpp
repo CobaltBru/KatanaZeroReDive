@@ -196,11 +196,8 @@ void Player::StateInit()
 	PlayerLowAction* playerLow = new PlayerLowAction(this);
 	stateMachine[(int)STATE::LOW] = playerLow;
 
-	PlayerJumpAction* playerJump = new PlayerJumpAction(this);
-	stateMachine[(int)STATE::JUMP] = playerJump;
-
-	PlayerFallAction* playerFall = new PlayerFallAction(this);
-	stateMachine[(int)STATE::FALL] = playerFall;
+	PlayerAirAction* playerAir = new PlayerAirAction(this);
+	stateMachine[(int)STATE::AIR] = playerAir;
 
 	PlayerWallAction* playerWall = new PlayerWallAction(this);
 	stateMachine[(int)STATE::WALL] = playerWall;
@@ -239,11 +236,8 @@ string Player::stateToString()
 	case STATE::LOW:
 		return "LOW";
 		break;
-	case STATE::JUMP:
-		return "JUMP";
-		break;
-	case STATE::FALL:
-		return "FALL";
+	case STATE::AIR:
+		return "AIR";
 		break;
 	case STATE::WALL:
 		return "WALL";

@@ -10,6 +10,7 @@ PlayerIdleAction::PlayerIdleAction(Player* player)
 void PlayerIdleAction::onEnter()
 {
 	FPOINT currentV = player->GetRigidBody()->GetVelocity();
+	jumpForce = -1000.f;
 	player->GetRigidBody()->AddVelocity({ -currentV.x * 0.8f,0 });
 }
 
@@ -29,7 +30,8 @@ void PlayerIdleAction::Update()
 	}
 	if (KeyManager::GetInstance()->IsStayKeyDown('W'))
 	{
-		player->changeState(STATE::JUMP);
+		player->GetRigidBody()->AddVelocity({ 0,jumpForce });
+		player->changeState(STATE::AIR);
 	}
 	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
 	{
