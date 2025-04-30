@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="ArmAttack.cpp" />
     <ClCompile Include="ArrowUI.cpp" />
@@ -145,7 +146,6 @@
     <ClCompile Include="Broken.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="Enemies.cpp" />
@@ -185,7 +185,15 @@
     <ClCompile Include="MapTool.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Pawn.cpp" />
-    <ClCompile Include="PlayerGroundState.cpp" />
+    <ClCompile Include="PlayerAttackAction.cpp" />
+    <ClCompile Include="PlayerDeadAction.cpp" />
+    <ClCompile Include="PlayerFallAction.cpp" />
+    <ClCompile Include="PlayerIdleAction.cpp" />
+    <ClCompile Include="PlayerJumpAction.cpp" />
+    <ClCompile Include="PlayerLowAction.cpp" />
+    <ClCompile Include="PlayerRollAction.cpp" />
+    <ClCompile Include="PlayerWalkAction.cpp" />
+    <ClCompile Include="PlayerWallAction.cpp" />
     <ClCompile Include="PopUpManager.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
@@ -228,6 +236,7 @@
     <ClCompile Include="WorldBackground.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="ArmAttack.h" />
     <ClInclude Include="ArrowUI.h" />
@@ -238,7 +247,6 @@
     <ClInclude Include="Broken.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="DeadState.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="Enemies.h" />
@@ -281,7 +289,16 @@
     <ClInclude Include="MapTool.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Pawn.h" />
-    <ClInclude Include="PlayerGroundState.h" />
+    <ClInclude Include="PlayerAttackAction.h" />
+    <ClInclude Include="PlayerDeadAction.h" />
+    <ClInclude Include="PlayerFallAction.h" />
+    <ClInclude Include="PlayerIdleAction.h" />
+    <ClInclude Include="PlayerJumpAction.h" />
+    <ClInclude Include="PlayerLowAction.h" />
+    <ClInclude Include="PlayerRollAction.h" />
+    <ClInclude Include="PlayerStateHeaders.h" />
+    <ClInclude Include="PlayerWalkAction.h" />
+    <ClInclude Include="PlayerWallAction.h" />
     <ClInclude Include="PopUpManager.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />

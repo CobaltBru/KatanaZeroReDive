@@ -428,7 +428,6 @@
     <ClCompile Include="ArmAttack.cpp">
       <Filter>MainGame\Enemy\Hidden</Filter>
     </ClCompile>
-    <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="Portal.cpp">
       <Filter>MainGame\Enemy\Hidden\Portal</Filter>
     </ClCompile>
@@ -444,7 +443,34 @@
     <ClCompile Include="INode.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerGroundState.cpp">
+    <ClCompile Include="Action.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIdleAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWalkAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerJumpAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerFallAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWallAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerLowAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRollAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttackAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerDeadAction.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>
@@ -717,7 +743,6 @@
     <ClInclude Include="ArmAttack.h">
       <Filter>MainGame\Enemy\Hidden</Filter>
     </ClInclude>
-    <ClInclude Include="DeadState.h" />
     <ClInclude Include="Portal.h">
       <Filter>MainGame\Enemy\Hidden\Portal</Filter>
     </ClInclude>
@@ -733,7 +758,37 @@
     <ClInclude Include="INode.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerGroundState.h">
+    <ClInclude Include="Action.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerIdleAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWalkAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerJumpAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerFallAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWallAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerLowAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRollAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateHeaders.h">
+      <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttackAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerDeadAction.h">
       <Filter>MainGame\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>

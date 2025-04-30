@@ -6,8 +6,11 @@
 #include "GameObject.h"
 #include "INode.h"
 
+enum STATE { IDLE, WALK, LOW, JUMP, FALL, WALL, ATTACK, ROLL, DEAD, END };
+
 class Image;
 class Collider;
+class Action;
 class Player : public GameObject
 {
 private:
@@ -22,7 +25,9 @@ private:
 	Image* image;
 	Image* effectImage;
 
-	Collider* ObjectCollider;
+
+	STATE currentState;
+	vector<Action*> stateMachine;
 
 public:
 	Player();
@@ -43,18 +48,9 @@ public:
 	void InitScrollOffset();
 	void Offset();
 
-	//ground
-	NodeStatus isGround();
-	NodeStatus isInput();
-	NodeStatus isRoll();
-	NodeStatus isKeyDown();
-	NodeStatus isKeyLeftRight();
-
-	NodeStatus actionIdle();
-	NodeStatus actionRoll();
-	NodeStatus actionDown();
-	NodeStatus actionMove();
+	void StateInit();
+	void changeState(STATE state);
 
 
-
+	string stateToString();
 };

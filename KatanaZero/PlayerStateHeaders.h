@@ -1,0 +1,10 @@
+#pragma once
+#include "PlayerFallAction.h"
+#include "PlayerIdleAction.h"
+#include "PlayerJumpAction.h"
+#include "PlayerLowAction.h"
+#include "PlayerRollAction.h"
+#include "PlayerWalkAction.h"
+#include "PlayerWallAction.h"
+#include "PlayerAttackAction.h"
+#include "PlayerDeadAction.h"

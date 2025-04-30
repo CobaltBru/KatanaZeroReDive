@@ -15,6 +15,7 @@
 #include "SimpleObject.h"
 #include "SimpleTestObject.h"
 #include "EffectManager.h"
+#include "EffectManager.h"
 
 // 해영 Enemy 테스트
 #include "Enemy.h"

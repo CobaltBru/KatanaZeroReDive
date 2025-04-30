@@ -11,6 +11,7 @@
 #include "CommonFunction.h"
 #include "Bullet.h"
 #include "SoundManager.h"
+#include "PlayerStateHeaders.h"
 
 
 Player::Player()
@@ -24,24 +25,28 @@ Player::~Player()
 HRESULT Player::Init()
 {
 	InitImage();
-
+	Pos = { 250.f,200.f };
 	
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
 		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() },
-		false, 1.f);
+		true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
-
-	
+	ObjectCollider->SetPos(Pos);
 
 	ObjectRigidBody = new RigidBody(this);
 	InitRigidBody();
-
+	
 
 	InitScrollOffset();
 	scrollSpeed = 300.f;
 
+
+	StateInit();
+	currentState = STATE::IDLE;
+	changeState(currentState);
+	
 	
 
 	return S_OK;
@@ -57,13 +62,22 @@ void Player::Release()
 		delete ObjectRigidBody;
 		ObjectRigidBody = nullptr;
 	}
+	for (int i = 0; i < (int)STATE::END; i++)
+	{
+		if (stateMachine[i])
+		{
+			delete stateMachine[i];
+			stateMachine[i] = nullptr;
+		}
+	}
+	stateMachine.clear();
 	
 }
 
 void Player::Update()
 {
 	LastPos = Pos;
-	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
+	
 	
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
 	
@@ -87,7 +101,7 @@ void Player::Update()
 		// 슬로우 풀기
 		//TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
 	}
-
+	stateMachine[(int)currentState]->Update();
 	
 	// apply acceleration including gravity
 	UpdateRigidBody();
@@ -96,13 +110,24 @@ void Player::Update()
 	
 	// scroll offset
 	Offset();
-
+	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
 }
 
 void Player::Render(HDC hdc)
 {
-	
+	if (image != nullptr)
+	{
+		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+		image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, 0, 0, false, true, ScrollManager::GetInstance()->GetScale());
+	}
+	WCHAR tch[5];
+	wsprintfW(tch, L"%d\0", (int)currentState);
+	TextOutW(hdc, Pos.x, Pos.y - 50.f, tch, lstrlen(tch));
+}
 
+void Player::InitImage()
+{
+	image = ImageManager::GetInstance()->FindImage("spr_beer_bottle_3_0");
 }
 
 
@@ -113,10 +138,20 @@ void Player::InitRigidBody()
 
 	ObjectRigidBody->SetElasticity(0.f);
 	ObjectRigidBody->SetGravityVisible(true);
-	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 800.f });
-	ObjectRigidBody->SetMass(10.f);
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 1400.f });
+	ObjectRigidBody->SetMass(15.f);
 	ObjectRigidBody->SetMaxVelocity({ 600.f, 1000.f });
-	ObjectRigidBody->SetFriction(600.f);
+	ObjectRigidBody->SetFriction(500.f);
+}
+
+void Player::UpdateRigidBody()
+{
+	ObjectRigidBody->Update();
+	FPOINT currentV = ObjectRigidBody->GetVelocity();
+	/*if (abs(currentV.x) < 5.f)
+	{
+		ObjectRigidBody->SetVelocity({ 0,currentV.y });
+	}*/
 }
 
 void Player::InitScrollOffset()
@@ -148,66 +183,81 @@ void Player::Offset()
 	
 }
 
-NodeStatus Player::isGround()
+void Player::StateInit()
 {
-	if (GetRigidBody()->GetResult().LineType == ELineType::DownLine ||
-		GetRigidBody()->GetResult().LineType == ELineType::Normal)
-		return NodeStatus::Success;
-	else
-		return NodeStatus::Failure;
-}
+	stateMachine.resize((int)STATE::END);
 
-NodeStatus Player::isInput()
-{
-	return NodeStatus();
-}
+	PlayerIdleAction* playerIdle = new PlayerIdleAction(this);
+	stateMachine[(int)STATE::IDLE] = playerIdle;
 
-NodeStatus Player::isRoll()
-{
-	return NodeStatus();
-}
+	PlayerWalkAction* playerWalk = new PlayerWalkAction(this);
+	stateMachine[(int)STATE::WALK] = playerWalk;
 
-NodeStatus Player::isKeyDown()
-{
-	return NodeStatus();
-}
+	PlayerLowAction* playerLow = new PlayerLowAction(this);
+	stateMachine[(int)STATE::LOW] = playerLow;
 
-NodeStatus Player::isKeyLeftRight()
-{
-	return NodeStatus();
-}
+	PlayerJumpAction* playerJump = new PlayerJumpAction(this);
+	stateMachine[(int)STATE::JUMP] = playerJump;
 
-NodeStatus Player::actionIdle()
-{
-	return NodeStatus();
-}
+	PlayerFallAction* playerFall = new PlayerFallAction(this);
+	stateMachine[(int)STATE::FALL] = playerFall;
 
-NodeStatus Player::actionRoll()
-{
-	return NodeStatus();
-}
+	PlayerWallAction* playerWall = new PlayerWallAction(this);
+	stateMachine[(int)STATE::WALL] = playerWall;
 
-NodeStatus Player::actionDown()
-{
-	return NodeStatus();
-}
+	PlayerAttackAction* playerAttack = new PlayerAttackAction(this);
+	stateMachine[(int)STATE::ATTACK] = playerAttack;
 
-NodeStatus Player::actionMove()
-{
-	return NodeStatus();
-}
+	PlayerRollAction* playerRoll = new PlayerRollAction(this);
+	stateMachine[(int)STATE::ROLL] = playerRoll;
 
-void Player::UpdateRigidBody()
-{
-	ObjectRigidBody->Update();
+	PlayerDeadAction* playerDead = new PlayerDeadAction(this);
+	stateMachine[(int)STATE::DEAD] = playerDead;
 
-}
-
-
-
-
-void Player::InitImage()
-{
+	
+	
 	
 }
+
+void Player::changeState(STATE state)
+{
+	stateMachine[(int)currentState]->onExit();
+	currentState = state;
+	stateMachine[(int)currentState]->onEnter();
+}
+
+string Player::stateToString()
+{
+	switch (currentState)
+	{
+	case STATE::IDLE:
+		return "IDLE";
+		break;
+	case STATE::WALK:
+		return "WALK";
+		break;
+	case STATE::LOW:
+		return "LOW";
+		break;
+	case STATE::JUMP:
+		return "JUMP";
+		break;
+	case STATE::FALL:
+		return "FALL";
+		break;
+	case STATE::WALL:
+		return "WALL";
+		break;
+	case STATE::ATTACK:
+		return "ATTACK";
+		break;
+	case STATE::ROLL:
+		return "ROLL";
+		break;
+	case STATE::DEAD:
+		return "DEAD";
+		break;
+	}
+}
+
 
