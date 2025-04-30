@@ -79,12 +79,18 @@ void Enemy::Release()
 		}
 	}
 	images.clear();
+
+	if (root)
+	{
+		delete root;
+		root = nullptr;
+	}
 }
 
 void Enemy::Update()
 {
 	LastPos = Pos;
-	switch (eType)
+	/*switch (eType)
 	{
 	case EType::Gangster:
 		AttackCollider->SetPivot({ meleeAttackRange / 2.f * dir, 0.f });
@@ -103,6 +109,10 @@ void Enemy::Update()
 		{
 			ChangeState(newState);
 		}
+	}*/
+	if (!bDead)
+	{
+		NodeStatus nodeStatus = root->tick();
 	}
 
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
@@ -175,8 +185,10 @@ void Enemy::ChangeState(EnemyState* newState)
 void Enemy::ChangeAnimation(EImageType newImage)
 {
 	if (image == nullptr) return;
-	currFrame = 0;
+	
 	if (image == images[(int)newImage]) return;
+	
+	currFrame = 0;
 	image = images[(int)newImage];
 	SetAnimKey(newImage);
 }

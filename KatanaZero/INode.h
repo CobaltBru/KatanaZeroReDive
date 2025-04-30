@@ -9,7 +9,6 @@ enum NodeStatus
     Running
 };
 
-
 class Node {
 public:
     virtual ~Node() {}
@@ -43,7 +42,12 @@ public:
         }
         return NodeStatus::Failure;
     }
-
+    virtual ~Selector() {
+        for (Node* c : children)
+        {
+            delete c;
+        }
+    }
 private:
     std::vector<Node*> children;
 };
@@ -57,13 +61,15 @@ public:
     NodeStatus tick() override {
         for (auto& child : children) {
             NodeStatus status = child->tick();
-            if (status == NodeStatus::Failure) {
+            if (status != NodeStatus::Success) {
                 return status;
             }
         }
         return NodeStatus::Success;
     }
-
+    virtual ~Sequence() {
+        
+    }
 private:
     std::vector<Node*> children;
 };
@@ -79,6 +85,12 @@ public:
             NodeStatus status = child->tick();
         }
         return NodeStatus::Success;
+    }
+    virtual ~Parallel() {
+        for (Node* c : children)
+        {
+            delete c;
+        }
     }
 private:
     std::vector<Node*> children;

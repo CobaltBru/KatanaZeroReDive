@@ -3,6 +3,7 @@
 #include "config.h"
 #include "EnemyState.h"
 #include "INode.h"
+#include <memory>
 
 enum class EType
 {
@@ -28,15 +29,22 @@ protected:
 	float detectRange;
 	float attackRange;
 	float meleeAttackRange;
-	float attackDuration;
-	float attackTimer;
+	
 	EType eType;
 	int targetFloor;
 	bool bReachedTargetFloor;
 	float HitAngle;
 	bool canHit;
 
-
+	// BT용 루트셀렉터
+	Selector* root;
+	float idleTimer{ 0.f };
+	float idleDuration{ 1.5f };
+	bool canPatrol{ false };
+	float patrolTimer{ 0.f };
+	float patrolDuration{ 3.f };
+	float attackDuration{ 0.8f };
+	float attackTimer{ 0.f };
 
 
 	// Jump

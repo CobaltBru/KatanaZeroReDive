@@ -428,7 +428,6 @@
     <ClCompile Include="ArmAttack.cpp">
       <Filter>MainGame\Enemy\Hidden</Filter>
     </ClCompile>
-    <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="Portal.cpp">
       <Filter>MainGame\Enemy\Hidden\Portal</Filter>
     </ClCompile>
@@ -714,7 +713,6 @@
     <ClInclude Include="ArmAttack.h">
       <Filter>MainGame\Enemy\Hidden</Filter>
     </ClInclude>
-    <ClInclude Include="DeadState.h" />
     <ClInclude Include="Portal.h">
       <Filter>MainGame\Enemy\Hidden\Portal</Filter>
     </ClInclude>

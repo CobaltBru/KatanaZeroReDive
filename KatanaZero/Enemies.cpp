@@ -30,6 +30,95 @@ HRESULT Grunt::Init(FPOINT InPos)
 	AttackCollider->SetPivot({ attackRange / 2.f, 0.f });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 	InitRigidBodySetting();
+
+	// BT 세팅
+	auto idleaction = bind(&Grunt::IDLEAction, this);
+	auto patrolaction = bind(&Grunt::PatrolAction, this);
+	auto deadaction = bind(&Grunt::DeadAction, this);
+	auto meleeAttackaction = bind(&Grunt::MeleeAttackAction, this);
+	auto chaseaction = bind(&Grunt::ChaseAction, this);
+	auto findpathaction = bind(&Grunt::FindPathAction, this);
+	auto watingaction = bind(&Grunt::WatingAction, this);
+	root = new Selector();
+	Sequence* Dead = new Sequence();
+	Sequence* MeleeAttack = new Sequence();
+	Selector* Chase = new Selector();
+	Sequence* Patrol = new Sequence();
+	Sequence* IDLE = new Sequence();
+	root->addChild(Dead);
+	root->addChild(MeleeAttack);
+	root->addChild(Chase);
+	root->addChild(Patrol);
+	root->addChild(IDLE);
+
+	ConditionNode* isDead = new ConditionNode([this]() {
+		return this->bDead;
+		});
+	ActionNode* changeDeadAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Dead);
+		return NodeStatus::Success; });
+	ActionNode* DeadAction = new ActionNode(deadaction);
+	Dead->addChild(isDead);
+	Dead->addChild(changeDeadAnim);
+	Dead->addChild(DeadAction);
+
+	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
+		// 내부 구현 필요. 탐지 가능한지 로직
+		return true;
+		});
+	ConditionNode* CanAttack = new ConditionNode([this]() {
+		return this->attackTimer == 0.f;
+		});
+	ActionNode* changeAttackAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Attack);
+		return NodeStatus::Success; });
+	ActionNode* MeleeAttackAction = new ActionNode(meleeAttackaction);
+	MeleeAttack->addChild(IsInAttackRange);
+	MeleeAttack->addChild(CanAttack);
+	MeleeAttack->addChild(changeAttackAnim);
+	MeleeAttack->addChild(MeleeAttackAction);
+
+	Sequence* DirectChase = new Sequence();
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return true; });
+	ActionNode* changeChaseAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Run);
+		return NodeStatus::Success; });
+	ActionNode* ChaseAction = new ActionNode(chaseaction);
+	DirectChase->addChild(IsInSameFloor);
+	DirectChase->addChild(changeChaseAnim);
+	DirectChase->addChild(ChaseAction);
+	Sequence* FindPath = new Sequence();
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return true; });
+	ActionNode* MoveToPath = new ActionNode(findpathaction);
+	FindPath->addChild(CanFindPath);
+	FindPath->addChild(changeChaseAnim);
+	FindPath->addChild(MoveToPath);
+	ActionNode* changeWaitingAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success; });
+	ActionNode* WaitingAction = new ActionNode(watingaction);
+	Chase->addChild(DirectChase);
+	Chase->addChild(FindPath);
+	Chase->addChild(changeWaitingAnim);
+	Chase->addChild(WaitingAction);
+
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol; });
+	ActionNode* changePatrolAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Walk);
+		return NodeStatus::Success; });
+	ActionNode* PatrolAction = new ActionNode(patrolaction);
+	Patrol->addChild(CanPatrol);
+	Patrol->addChild(changePatrolAnim);
+	Patrol->addChild(PatrolAction);
+
+	ActionNode* changeIDLEAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success;
+		});
+	ActionNode* IDLEaction = new ActionNode(idleaction);
+	IDLE->addChild(changeIDLEAnim);
+	IDLE->addChild(IDLEaction);
+	// BT 세팅 끝
 	return S_OK;
 }
 
@@ -65,39 +154,90 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	auto chaseaction = bind(&Grunt::ChaseAction, this);
 	auto findpathaction = bind(&Grunt::FindPathAction, this);
 	auto watingaction = bind(&Grunt::WatingAction, this);
-	Selector* Root = new Selector();
+	root = new Selector();
 	Sequence* Dead = new Sequence();
 	Sequence* MeleeAttack = new Sequence();
 	Selector* Chase = new Selector();
+	Sequence* Waiting = new Sequence();
 	Sequence* Patrol = new Sequence();
-	ActionNode* IDLE = new ActionNode(idleaction);
-	Root->addChild(Dead);
-	Root->addChild(MeleeAttack);
-	Root->addChild(Chase);
-	Root->addChild(Patrol);
-	Root->addChild(IDLE);
+	Sequence* IDLE = new Sequence();
+	root->addChild(Dead);
+	root->addChild(MeleeAttack);
+	root->addChild(Chase);
+	root->addChild(Waiting);
+	root->addChild(Patrol);
+	root->addChild(IDLE);
 
 	ConditionNode* isDead = new ConditionNode([this]() {
 		return this->bDead;
 		});
+	ActionNode* changeDeadAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Dead);
+		return NodeStatus::Success; });
 	ActionNode* DeadAction = new ActionNode(deadaction);
 	Dead->addChild(isDead);
+	Dead->addChild(changeDeadAnim);
 	Dead->addChild(DeadAction);
 
 	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
-		// 내부 구현 필요. 탐지 가능한지 로직
-		return true;
+		return this->IsInAttackRange();
 		});
 	ConditionNode* CanAttack = new ConditionNode([this]() {
 		return this->attackTimer == 0.f;
 		});
+	ActionNode* changeAttackAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Attack);
+		return NodeStatus::Success; });
 	ActionNode* MeleeAttackAction = new ActionNode(meleeAttackaction);
 	MeleeAttack->addChild(IsInAttackRange);
 	MeleeAttack->addChild(CanAttack);
+	MeleeAttack->addChild(changeAttackAnim);
 	MeleeAttack->addChild(MeleeAttackAction);
 
+	Sequence* DirectChase = new Sequence();
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return false; });
+	ActionNode* changeChaseAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Run);
+		return NodeStatus::Success; });
+	ActionNode* ChaseAction = new ActionNode(chaseaction);
+	DirectChase->addChild(IsInSameFloor);
+	DirectChase->addChild(changeChaseAnim);
+	DirectChase->addChild(ChaseAction);
+	Sequence* FindPath = new Sequence();
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return false; });
+	ActionNode* MoveToPath = new ActionNode(findpathaction);
+	FindPath->addChild(CanFindPath);
+	FindPath->addChild(changeChaseAnim);
+	FindPath->addChild(MoveToPath);
 
+	Chase->addChild(DirectChase);
+	Chase->addChild(FindPath);
 
+	
+	ActionNode* changeWaitingAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success; });
+	ActionNode* WaitingAction = new ActionNode(watingaction);
+	Waiting->addChild(changeWaitingAnim);
+	Waiting->addChild(WaitingAction);
+
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol; });
+	ActionNode* changePatrolAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::Walk);
+		return NodeStatus::Success; });
+	ActionNode* PatrolAction = new ActionNode(patrolaction);
+	Patrol->addChild(CanPatrol);
+	Patrol->addChild(changePatrolAnim);
+	Patrol->addChild(PatrolAction);
+
+	ActionNode* changeIDLEAnim = new ActionNode([this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success;
+		});
+	ActionNode* IDLEaction = new ActionNode(idleaction);
+	IDLE->addChild(changeIDLEAnim);
+	IDLE->addChild(IDLEaction);
+	// BT 세팅 끝
 
 	return S_OK;
 }
@@ -140,6 +280,105 @@ void Grunt::SetAnimKey(EImageType newImage)
 		currAnimKey = "Grunt_Dead";
 		break;
 	}
+}
+
+NodeStatus Grunt::IDLEAction()
+{
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	idleTimer += dt;
+	if (idleTimer >= idleDuration)
+	{
+		canPatrol = true;
+		idleTimer = 0.f;
+		return NodeStatus::Success;
+	}
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	return NodeStatus::Running;
+}
+
+NodeStatus Grunt::PatrolAction()
+{
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	patrolTimer += dt;
+	if (patrolTimer >= patrolDuration)
+	{
+		canPatrol = false;
+		patrolTimer = 0.f;
+		ObjectRigidBody->SetVelocity({ 0.f, 0.f });
+		SetDir(GetDir() * -1);
+		return NodeStatus::Success;
+	}
+	int dir = GetDir();
+	const float speed = GetSpeed();
+	ObjectRigidBody->AddVelocity({ dir * speed, 0.f });
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	return NodeStatus::Running;
+}
+
+NodeStatus Grunt::DeadAction()
+{
+	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
+	{
+		SetDead(true);
+		return NodeStatus::Success;
+	}
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	return NodeStatus::Running;
+}
+
+NodeStatus Grunt::MeleeAttackAction()
+{
+	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
+	{
+		return NodeStatus::Success;
+	}
+	Collision();
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	return NodeStatus::Running;
+}
+
+NodeStatus Grunt::ChaseAction()
+{
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return NodeStatus::Failure;
+	auto player = SnapShotManager::GetInstance()->GetPlayer();
+	FPOINT playerPos = player->GetPos();
+
+	float dx = playerPos.x - Pos.x;
+	int dir = (dx > 0) ? 1 : -1;
+	SetDir(dir);
+
+	const float chaseSpeed = GetSpeed() * 2.f;
+	ObjectRigidBody->AddVelocity({ dir * chaseSpeed, 0.f });
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	if (IsInAttackRange()) return NodeStatus::Success;
+	
+	return NodeStatus::Running;
+}
+
+NodeStatus Grunt::FindPathAction()
+{
+	// 이거 로직 바꿔야되는데...
+	// 추적 자체는 레이로 하는데
+	// 경로 탐색 로직 자체를 다 뜯어야된다
+
+	return NodeStatus::Success;
+}
+
+NodeStatus Grunt::WatingAction()
+{
+	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
+	{
+		return NodeStatus::Failure;
+	}
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	
+	return NodeStatus::Running;
 }
 
 HRESULT Pomp::Init(FPOINT InPos)
