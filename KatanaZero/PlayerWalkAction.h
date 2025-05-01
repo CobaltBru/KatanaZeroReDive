@@ -3,7 +3,7 @@
 class PlayerWalkAction : public Action
 {
 private:
-	int way;
+	int* way;
 	float speed;
 	float jumpForce;
 public:

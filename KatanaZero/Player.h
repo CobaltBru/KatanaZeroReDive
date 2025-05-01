@@ -14,11 +14,11 @@ class Action;
 class Player : public GameObject
 {
 private:
-	
-	
-	float scrollSpeed;
 
-	
+
+	float scrollSpeed;
+	int way;
+
 	// 리플레이용 키
 	string currAnimKey;
 
@@ -27,6 +27,7 @@ private:
 
 
 	STATE currentState;
+	STATE oldState;
 	vector<Action*> stateMachine;
 
 public:
@@ -39,7 +40,7 @@ public:
 	void Render(HDC hdc) override;
 
 	void InitImage();
-	
+
 	// rigid body
 	void InitRigidBody();
 	void UpdateRigidBody();
@@ -50,7 +51,7 @@ public:
 
 	void StateInit();
 	void changeState(STATE state);
-
-
+	inline STATE getOldState() { return oldState; }
+	inline int* GetWay() { return &way; }
 	string stateToString();
 };

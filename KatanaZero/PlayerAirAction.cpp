@@ -6,27 +6,42 @@
 PlayerAirAction::PlayerAirAction(Player* player)
 {
 	this->player = player;
+	way = player->GetWay();
 }
 
 void PlayerAirAction::onEnter()
 {
-	speed = 500.f;
+	speed = 11000.f;
 }
 
 void PlayerAirAction::Update()
 {
 	FPOINT currentV = player->GetRigidBody()->GetVelocity();
+	bool left = true;
+	bool right = true;
 	//ÁÂ¿ìÀÌµ¿,¸ØÃã
 	if (KeyManager::GetInstance()->IsStayKeyDown('A'))
 	{
-		way = -1;
-		player->GetRigidBody()->AddVelocity({ way * speed,0 });
+		left = true;
+		*way = -1;
+		player->GetRigidBody()->AddForce({ *way * speed,0 });
+		if (player->GetRigidBody()->IsGround())
+		{
+			player->changeState(STATE::WALK);
+		}
 	}
+	else left = false;
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 	{
-		way = 1;
-		player->GetRigidBody()->AddVelocity({ way * speed,0 });
+		right = true;
+		*way = 1;
+		player->GetRigidBody()->AddForce({ *way * speed,0 });
+		if (player->GetRigidBody()->IsGround())
+		{
+			player->changeState(STATE::WALK);
+		}
 	}
+	else right = false;
 
 	//Á¡ÇÁ³¡
 	if (KeyManager::GetInstance()->IsOnceKeyUp('W'))
@@ -38,14 +53,19 @@ void PlayerAirAction::Update()
 	{
 		player->GetRigidBody()->AddVelocity({ 0,300.f });
 	}
-
-	if (player->GetRigidBody()->IsGround())
+	if (!left && !right)
 	{
-		player->changeState(STATE::IDLE);
+		if (player->GetRigidBody()->IsGround())
+		{
+			player->GetRigidBody()->SetVelocity({ currentV.x * 0.2f,0.f });
+			player->changeState(STATE::IDLE);
+		}
 	}
-	if (currentV.y >= 0)
+	
+	if (player->GetRigidBody()->GetResult().LineType == ELineType::Wall)
 	{
-		//animation
+		player->GetRigidBody()->SetVelocity({ 0.f,currentV.y * 0.2f });
+		player->changeState(STATE::WALL);
 	}
 }
 

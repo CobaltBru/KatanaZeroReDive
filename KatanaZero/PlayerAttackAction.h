@@ -3,6 +3,10 @@
 
 class PlayerAttackAction : public Action
 {
+
+	float delay;
+	float timer;
+
 public:
 	PlayerAttackAction(Player* player);
 	virtual void onEnter() override;

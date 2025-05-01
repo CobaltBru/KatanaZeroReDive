@@ -3,7 +3,7 @@
 
 class PlayerAirAction : public Action
 {
-	int way;
+	int* way;
 	float speed;
 public:
 	PlayerAirAction(Player* player);

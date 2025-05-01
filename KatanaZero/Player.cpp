@@ -26,7 +26,7 @@ HRESULT Player::Init()
 {
 	InitImage();
 	Pos = { 250.f,200.f };
-	
+	way = 1;
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
@@ -101,6 +101,13 @@ void Player::Update()
 		// 슬로우 풀기
 		//TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
 	}
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+	{
+		if(currentState != STATE::ATTACK)
+			changeState(STATE::ATTACK);
+	}
+
 	stateMachine[(int)currentState]->Update();
 	
 	// apply acceleration including gravity
@@ -138,10 +145,10 @@ void Player::InitRigidBody()
 
 	ObjectRigidBody->SetElasticity(0.f);
 	ObjectRigidBody->SetGravityVisible(true);
-	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 1400.f });
-	ObjectRigidBody->SetMass(15.f);
-	ObjectRigidBody->SetMaxVelocity({ 600.f, 1000.f });
-	ObjectRigidBody->SetFriction(500.f);
+	ObjectRigidBody->SetAccelerationAlpha({ 0.f, 1500.f });
+	ObjectRigidBody->SetMass(5.f);
+	ObjectRigidBody->SetMaxVelocity({ 800.f, 1000.f });
+	ObjectRigidBody->SetFriction(300.f);
 }
 
 void Player::UpdateRigidBody()
@@ -219,6 +226,7 @@ void Player::StateInit()
 void Player::changeState(STATE state)
 {
 	stateMachine[(int)currentState]->onExit();
+	oldState = currentState;
 	currentState = state;
 	stateMachine[(int)currentState]->onEnter();
 }
