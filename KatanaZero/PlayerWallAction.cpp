@@ -1,6 +1,8 @@
 #include "PlayerWallAction.h"
 #include "Player.h"
 #include "RigidBody.h"
+#include "SpriteAnimation.h"
+#include "Animator.h"
 
 PlayerWallAction::PlayerWallAction(Player* player)
 {
@@ -21,6 +23,7 @@ void PlayerWallAction::Update()
 		if (*way == 1)
 		{
 			*way = -1;
+			player->GetAnimator()->startAnimation("fall");
 			player->GetRigidBody()->AddVelocity({ -50.f,0 });
 			player->changeState(STATE::AIR);
 		}
@@ -30,6 +33,7 @@ void PlayerWallAction::Update()
 		if (*way == -1)
 		{
 			*way = 1;
+			player->GetAnimator()->startAnimation("fall");
 			player->GetRigidBody()->AddVelocity({ 50.f,0 });
 			player->changeState(STATE::AIR);
 		}
@@ -39,12 +43,14 @@ void PlayerWallAction::Update()
 		if (*way == 1)
 		{
 			*way = -1;
+			player->GetAnimator()->startAnimation("jump");
 			player->GetRigidBody()->AddVelocity({ -700.f,-1000.f });
 			player->changeState(STATE::AIR);
 		}
 		else
 		{
 			*way = 1;
+			player->GetAnimator()->startAnimation("jump");
 			player->GetRigidBody()->AddVelocity({ 700.f,-1000.f });
 			player->changeState(STATE::AIR);
 		}
@@ -56,6 +62,11 @@ void PlayerWallAction::Update()
 	if (player->GetRigidBody()->GetResult().LineType != ELineType::Wall)
 	{
 		player->changeState(STATE::AIR);
+	}
+	if (player->GetRigidBody()->IsGround())
+	{
+		player->GetAnimator()->startAnimation("idle");
+		player->changeState(STATE::IDLE);
 	}
 }
 

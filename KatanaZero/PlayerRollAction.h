@@ -4,6 +4,12 @@
 
 class PlayerRollAction : public Action
 {
+	int* way;
+	float rollSpeed;
+	float delay;
+	float timer;
+
+	float jumpForce;
 public:
 	PlayerRollAction(Player* player);
 	virtual void onEnter() override;

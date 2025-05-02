@@ -56,6 +56,8 @@ public:
 
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
+	inline int getFrameWidth() { return frameWidth; }
+	inline int getFrameHeight() { return frameHeight; }
 	inline int getMaxFrame() { return maxFrameX; }
 	
 	void Release();

@@ -11,6 +11,7 @@ enum STATE { IDLE, WALK, LOW, AIR, WALL, ATTACK, ROLL, DEAD, END };
 class Image;
 class Collider;
 class Action;
+class Animator;
 class Player : public GameObject
 {
 private:
@@ -18,13 +19,14 @@ private:
 
 	float scrollSpeed;
 	int way;
-
+	bool isEffect;
 	// 리플레이용 키
 	string currAnimKey;
 
 	Image* image;
 	Image* effectImage;
 
+	Animator* animator;
 
 	STATE currentState;
 	STATE oldState;
@@ -40,7 +42,7 @@ public:
 	void Render(HDC hdc) override;
 
 	void InitImage();
-
+	void InitAnimator();
 	// rigid body
 	void InitRigidBody();
 	void UpdateRigidBody();
@@ -53,5 +55,6 @@ public:
 	void changeState(STATE state);
 	inline STATE getOldState() { return oldState; }
 	inline int* GetWay() { return &way; }
+	inline Animator* GetAnimator() { return animator; }
 	string stateToString();
 };

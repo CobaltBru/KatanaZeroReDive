@@ -3,6 +3,7 @@
 
 class PlayerDeadAction : public Action
 {
+	bool toGround;
 public:
 	PlayerDeadAction(Player* player);
 	virtual void onEnter() override;

@@ -5,6 +5,7 @@ class PlayerAirAction : public Action
 {
 	int* way;
 	float speed;
+	bool isfall;
 public:
 	PlayerAirAction(Player* player);
 	virtual void onEnter() override;

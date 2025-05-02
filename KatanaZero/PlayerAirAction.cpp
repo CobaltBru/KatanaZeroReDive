@@ -1,17 +1,20 @@
 #include "PlayerAirAction.h"
 #include "Player.h"
 #include "RigidBody.h"
-
+#include "SpriteAnimation.h"
+#include "Animator.h"
 
 PlayerAirAction::PlayerAirAction(Player* player)
 {
 	this->player = player;
 	way = player->GetWay();
+	isfall = false;
 }
 
 void PlayerAirAction::onEnter()
 {
 	speed = 11000.f;
+	isfall = false;
 }
 
 void PlayerAirAction::Update()
@@ -27,6 +30,7 @@ void PlayerAirAction::Update()
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
 		if (player->GetRigidBody()->IsGround())
 		{
+			player->GetAnimator()->startAnimation("run");
 			player->changeState(STATE::WALK);
 		}
 	}
@@ -38,6 +42,7 @@ void PlayerAirAction::Update()
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
 		if (player->GetRigidBody()->IsGround())
 		{
+			player->GetAnimator()->startAnimation("run");
 			player->changeState(STATE::WALK);
 		}
 	}
@@ -57,6 +62,7 @@ void PlayerAirAction::Update()
 	{
 		if (player->GetRigidBody()->IsGround())
 		{
+			player->GetAnimator()->startAnimation("idle");
 			player->GetRigidBody()->SetVelocity({ currentV.x * 0.2f,0.f });
 			player->changeState(STATE::IDLE);
 		}
@@ -64,8 +70,17 @@ void PlayerAirAction::Update()
 	
 	if (player->GetRigidBody()->GetResult().LineType == ELineType::Wall)
 	{
-		player->GetRigidBody()->SetVelocity({ 0.f,currentV.y * 0.2f });
+		player->GetAnimator()->startAnimation("wall");
+		player->GetRigidBody()->SetVelocity({ 0.f,currentV.y * 0.8f });
 		player->changeState(STATE::WALL);
+	}
+	if (!isfall)
+	{
+		if (currentV.y >= 0)
+		{
+			isfall = true;
+			player->GetAnimator()->startAnimation("fall");
+		}
 	}
 }
 

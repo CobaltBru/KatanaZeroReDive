@@ -38,6 +38,16 @@ void SpriteAnimation::Update(FPOINT pos,bool flip, bool isEffect)
 	this->pos = pos;
 	this->flip = flip;
 	this->isEffect = isEffect;
+	/*if (ImageType)
+	{
+		this->pos.x -= gpImage->getFrameWidth() / 2.0f;
+		this->pos.y -= gpImage->getFrameHeight() / 2.0f;
+	}
+	else
+	{
+		this->pos.x -= image->GetFrameWidth() / 2.0f;
+		this->pos.y -= image->GetFrameHeight() / 2.0f;
+	}*/
 	timer += TimerManager::GetInstance()->GetDeltaTime();
 	if (timer >= frameTime)
 	{
@@ -65,11 +75,11 @@ void SpriteAnimation::Render(HDC hdc)
 		Gdiplus::Graphics* pGraphics = Gdiplus::Graphics::FromHDC(hdc);
 		if (isEffect)
 		{
-			gpImage->RenderAll(pGraphics, pos, currentFrame, 0.f, flip, 1.0f, 1.0f, 1.0f, 2.0f, scale, scale);
+			gpImage->Middle_RenderAll(pGraphics, pos, currentFrame, 0.f, flip, 1.0f, 2.f, 2.f, 5.0f, scale, scale);
 		}
 		else
 		{
-			gpImage->RenderFrameScale(pGraphics, pos, currentFrame, flip, 1.0f, scale, scale);
+			gpImage->Middle_RenderFrameScale(pGraphics, pos, currentFrame, flip, 1.0f, scale, scale);
 		}
 		
 		

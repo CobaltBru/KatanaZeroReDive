@@ -3,6 +3,8 @@
 #include "Collider.h"
 #include "ImageManager.h"
 #include "Image.h"
+#include "GPImage.h"
+#include "GPImageManager.h"
 #include "CollisionManager.h"
 #include "RenderManager.h"
 #include "ScrollManager.h"
@@ -12,7 +14,8 @@
 #include "Bullet.h"
 #include "SoundManager.h"
 #include "PlayerStateHeaders.h"
-
+#include "SpriteAnimation.h"
+#include "Animator.h"
 
 Player::Player()
 {	
@@ -27,10 +30,10 @@ HRESULT Player::Init()
 	InitImage();
 	Pos = { 250.f,200.f };
 	way = 1;
-
+	isEffect = false;
 	ObjectCollider = new Collider(this, EColliderType::Rect, {}, { 
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(), 
-		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() },
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() - 20.f },
 		true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	ObjectCollider->SetPos(Pos);
@@ -42,11 +45,13 @@ HRESULT Player::Init()
 	InitScrollOffset();
 	scrollSpeed = 300.f;
 
+	
 
 	StateInit();
 	currentState = STATE::IDLE;
 	changeState(currentState);
-	
+	InitAnimator();
+	animator->startAnimation("idle");
 	
 
 	return S_OK;
@@ -72,6 +77,13 @@ void Player::Release()
 	}
 	stateMachine.clear();
 	
+	if (animator != nullptr)
+	{
+		animator->Release();
+		delete animator;
+		animator = nullptr;
+	}
+
 }
 
 void Player::Update()
@@ -84,7 +96,7 @@ void Player::Update()
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SHIFT))	
 	{
-		
+		isEffect = true;
 		// slow motion
 		//슬로우
 		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
@@ -97,7 +109,7 @@ void Player::Update()
 	}
 	else if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SHIFT))
 	{
-		
+		isEffect = false;
 		// 슬로우 풀기
 		//TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
 	}
@@ -107,9 +119,19 @@ void Player::Update()
 		if(currentState != STATE::ATTACK)
 			changeState(STATE::ATTACK);
 	}
+	if (KeyManager::GetInstance()->IsOnceKeyDown('K'))
+	{
+		if (currentState != STATE::DEAD)
+		{
+			ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 41,
+				ScrollManager::GetInstance()->GetScale() * 29 });
+			changeState(STATE::DEAD);
+		}
+			
+	}
 
 	stateMachine[(int)currentState]->Update();
-	
+	animator->Update(Pos, way > 0 ? false : true, isEffect);
 	// apply acceleration including gravity
 	UpdateRigidBody();
 
@@ -122,19 +144,94 @@ void Player::Update()
 
 void Player::Render(HDC hdc)
 {
-	if (image != nullptr)
+	/*if (image != nullptr)
 	{
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 		image->FrameRender(hdc, Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y, 0, 0, false, true, ScrollManager::GetInstance()->GetScale());
-	}
+	}*/
+	animator->Render(hdc);
 	WCHAR tch[5];
 	wsprintfW(tch, L"%d\0", (int)currentState);
-	TextOutW(hdc, Pos.x, Pos.y - 50.f, tch, lstrlen(tch));
+	TextOutW(hdc, Pos.x, Pos.y - 70.f, tch, lstrlen(tch));
 }
 
 void Player::InitImage()
 {
 	image = ImageManager::GetInstance()->FindImage("spr_beer_bottle_3_0");
+}
+
+void Player::InitAnimator()
+{
+	animator = new Animator();
+	SpriteAnimation* tmpAnimation;
+	GPImage* tmpImage;
+
+	//idle
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_idle");
+	tmpAnimation->Init(tmpImage, 0.08f, true);
+	animator->pushAnimation("idle", tmpAnimation);
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_run");
+	tmpAnimation->Init(tmpImage, 0.08f, true);
+	animator->pushAnimation("run", tmpAnimation);
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_idle_to_run");
+	tmpAnimation->Init(tmpImage, 0.1f, false);
+	animator->pushAnimation("idle_to_run", tmpAnimation, "run");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_run_to_idle");
+	tmpAnimation->Init(tmpImage, 0.1f, false);
+	animator->pushAnimation("run_to_idle", tmpAnimation, "idle");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_jump");
+	tmpAnimation->Init(tmpImage, 0.08f, true);
+	animator->pushAnimation("jump", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_fall");
+	tmpAnimation->Init(tmpImage, 0.08f, true);
+	animator->pushAnimation("fall", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_roll");
+	tmpAnimation->Init(tmpImage, 0.04f, false);
+	animator->pushAnimation("roll", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_crouch");
+	tmpAnimation->Init(tmpImage, 0.1f, false);
+	animator->pushAnimation("crouch", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_wallslide");
+	tmpAnimation->Init(tmpImage, 0.1f, false);
+	animator->pushAnimation("wall", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_attack");
+	tmpAnimation->Init(tmpImage, 0.05f, false);
+	animator->pushAnimation("attack", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_hurtfly_begin");
+	tmpAnimation->Init(tmpImage, 0.08f, false);
+	animator->pushAnimation("hurtfly_begin", tmpAnimation, "hurtfly");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_hurtfly");
+	tmpAnimation->Init(tmpImage, 0.08f, true);
+	animator->pushAnimation("hurtfly", tmpAnimation, "NONE");
+
+	tmpAnimation = new SpriteAnimation();
+	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_hurtground");
+	tmpAnimation->Init(tmpImage, 0.12f, false);
+	animator->pushAnimation("hurtground", tmpAnimation, "NONE");
+
 }
 
 

@@ -1,6 +1,9 @@
 #include "PlayerWalkAction.h"
 #include "Player.h"
 #include "RigidBody.h"
+#include "SpriteAnimation.h"
+#include "Animator.h"
+
 PlayerWalkAction::PlayerWalkAction(Player* player)
 {
 	this->player = player;
@@ -29,6 +32,8 @@ void PlayerWalkAction::Update()
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyUp('A'))
 	{
+		player->GetAnimator()->startAnimation("run_to_idle");
+
 		player->GetRigidBody()->SetVelocity({ currentV.x * 0.2f,0.f });
 		player->changeState(STATE::IDLE);
 	}
@@ -44,6 +49,7 @@ void PlayerWalkAction::Update()
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyUp('D'))
 	{
+		player->GetAnimator()->startAnimation("run_to_idle");
 		player->GetRigidBody()->SetVelocity({ currentV.x * 0.2f,0.f });
 		player->changeState(STATE::IDLE);
 	}
@@ -51,6 +57,7 @@ void PlayerWalkAction::Update()
 	//มกวม
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
+		player->GetAnimator()->startAnimation("jump");
 		player->GetRigidBody()->AddVelocity({ 0,jumpForce });
 		player->changeState(STATE::AIR);
 	}
