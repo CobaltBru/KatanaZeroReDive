@@ -29,5 +29,6 @@ public:
 	void Update(FPOINT pos,bool flip, bool isEffect);
 	void Render(HDC hdc);
 	bool isFinish();
+	void reset();
 };
 

@@ -83,12 +83,19 @@ void SpriteAnimation::Render(HDC hdc)
 
 bool SpriteAnimation::isFinish()
 {
-	if (currentFrame >= maxFrameX - 1)
+	if (!isLoop)
 	{
-		return true;
+		if (currentFrame >= maxFrameX - 1)
+		{
+			return true;
+		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
+}
+
+void SpriteAnimation::reset()
+{
+	currentFrame = 0;
+	timer = 0.f;
+	isEffect = false;
 }
