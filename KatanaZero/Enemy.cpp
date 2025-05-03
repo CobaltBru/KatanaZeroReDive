@@ -49,7 +49,7 @@ void Enemy::InitRigidBodySetting()
 	//무게
 	ObjectRigidBody->SetMass(1.f);
 	//최대 속도
-	ObjectRigidBody->SetMaxVelocity({ Speed , 400.f });
+	ObjectRigidBody->SetMaxVelocity({ Speed * 2.f , 400.f });
 	
 	//마찰
 	ObjectRigidBody->SetFriction(50.f);
@@ -112,6 +112,14 @@ void Enemy::Update()
 	}*/
 	if (!bDead)
 	{
+		ObjectRigidBody->SetVelocity({ 0.f, 0.f });
+		AttackCollider->SetPivot({ AttackCollider->GetPivot().x * dir, AttackCollider->GetPivot().y });
+		float dt = TimerManager::GetInstance()->GetDeltaTime();
+		attackTimer -= dt;
+		if (attackTimer <= 0.f)
+		{
+			attackTimer = 0.f;
+		}
 		NodeStatus nodeStatus = root->tick();
 	}
 

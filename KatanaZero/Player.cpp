@@ -57,6 +57,38 @@ HRESULT Player::Init()
 	return S_OK;
 }
 
+HRESULT Player::Init(FPOINT InPos)
+{
+	InitImage();
+	Pos = InPos;
+	way = 1;
+	isEffect = false;
+	ObjectCollider = new Collider(this, EColliderType::Rect, {}, {
+		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale(),
+		(float)image->GetFrameHeight() * ScrollManager::GetInstance()->GetScale() - 20.f },
+		true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+	ObjectCollider->SetPos(Pos);
+
+	ObjectRigidBody = new RigidBody(this);
+	InitRigidBody();
+
+
+	InitScrollOffset();
+	scrollSpeed = 300.f;
+
+
+
+	StateInit();
+	currentState = STATE::IDLE;
+	changeState(currentState);
+	InitAnimator();
+	animator->startAnimation("idle");
+
+
+	return S_OK;
+}
+
 
 
 void Player::Release()

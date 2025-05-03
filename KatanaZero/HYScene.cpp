@@ -124,7 +124,10 @@ HRESULT HYScene::InitObject()
 	}
 	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
 
-	return S_OK;
+	Player* player = new Player();
+	player->Init({ 200.f, 0.f });
+	ObjectManager->AddGameObject(EObjectType::GameObject, player);
+	
 	return S_OK;
 }
 

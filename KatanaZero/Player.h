@@ -37,6 +37,7 @@ public:
 	virtual ~Player();
 
 	HRESULT Init() override;
+	HRESULT Init(FPOINT InPos);
 	void Release() override;
 	void Update() override;
 	void Render(HDC hdc) override;

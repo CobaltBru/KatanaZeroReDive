@@ -11,6 +11,12 @@ enum class ELineEditState : uint8_t
 	End
 };
 
+struct Edge
+{
+	int to;
+	float cost;
+};
+
 class Line;
 class LineManager : public Singleton<LineManager>
 {
@@ -54,6 +60,10 @@ public:
 	pair<FPOINT, FPOINT> FindNearestSlope(const FPOINT& targetPos, int fromFloor, int toFloor) const;
 private:
 	list<Line*> LineList[(int)ELineType::End];
+	vector<FPOINT> nodes;
+	vector<vector<Edge>> graph;
+	map<pair<int, int>, int> nodeIndex;
+
 	FPOINT LinePoint[END];
 	ELineType CurrentLineType;
 	bool bStraight;

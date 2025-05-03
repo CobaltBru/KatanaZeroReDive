@@ -46,6 +46,7 @@ protected:
 	float attackDuration{ 0.8f };
 	float attackTimer{ 0.f };
 	bool bChasing{ false };
+	bool bAttacking{ false };
 
 	// Jump
 	float Gravity;

@@ -17,6 +17,7 @@ public:
 	NodeStatus ChaseAction();
 	NodeStatus FindPathAction();
 	NodeStatus WatingAction();
+	NodeStatus AttackIDLEAction();
 };
 
 class Pomp : public Enemy

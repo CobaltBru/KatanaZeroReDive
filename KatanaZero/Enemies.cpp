@@ -79,7 +79,7 @@ HRESULT Grunt::Init(FPOINT InPos)
 	MeleeAttack->addChild(MeleeAttackAction);
 
 	Sequence* DirectChase = new Sequence();
-	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return false; });
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return Detecting(); });
 	ActionNode* changeChaseAnim = new ActionNode("changeChase", [this]() {
 		this->ChangeAnimation(EImageType::Run);
 		return NodeStatus::Success; });
@@ -132,12 +132,12 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	Pos = InPos;
 	Speed = 200.f;
 	detectRange = 400.f;
-	attackRange = 50.f;
+	attackRange = 60.f;
 	attackDuration = 0.5f;
 	eType = EType::Grunt;
-	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange, true, 1.f);
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange * 2.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
-	AttackCollider->SetPivot({ attackRange / 2.f, 0.f });
+	AttackCollider->SetPivot({ attackRange / 2.f * dir, 0.f });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
@@ -155,6 +155,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	auto patrolaction = bind(&Grunt::PatrolAction, this);
 	auto deadaction = bind(&Grunt::DeadAction, this);
 	auto meleeAttackaction = bind(&Grunt::MeleeAttackAction, this);
+	auto attackIDLEaction = bind(&Grunt::AttackIDLEAction, this);
 	auto chaseaction = bind(&Grunt::ChaseAction, this);
 	auto findpathaction = bind(&Grunt::FindPathAction, this);
 	auto watingaction = bind(&Grunt::WatingAction, this);
@@ -182,23 +183,41 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	Dead->addChild(changeDeadAnim);
 	Dead->addChild(DeadAction);
 
+
 	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
-		return this->IsInAttackRange();
+		return this->IsInAttackRange() || this->bAttacking;
 		});
+	MeleeAttack->addChild(IsInAttackRange);
 	ConditionNode* CanAttack = new ConditionNode([this]() {
 		return this->attackTimer == 0.f;
 		});
 	ActionNode* changeAttackAnim = new ActionNode("changeAttack", [this]() {
 		this->ChangeAnimation(EImageType::Attack);
+		
+		bAttacking = true;
 		return NodeStatus::Success; });
 	ActionNode* MeleeAttackAction = new ActionNode("Attack", meleeAttackaction);
-	MeleeAttack->addChild(IsInAttackRange);
-	MeleeAttack->addChild(CanAttack);
-	MeleeAttack->addChild(changeAttackAnim);
-	MeleeAttack->addChild(MeleeAttackAction);
+	ActionNode* changeAttackIDLEAnim = new ActionNode("changeAttackIDLE", [this]() { this->ChangeAnimation(EImageType::IDLE);
+	return NodeStatus::Success; });
+	ActionNode* AttackIDLEAction = new ActionNode("AttackIDLE", attackIDLEaction);
+
+	Selector* AttackBehavior = new Selector();
+	Sequence* DoAttack = new Sequence();
+	DoAttack->addChild(CanAttack);
+	DoAttack->addChild(changeAttackAnim);
+	DoAttack->addChild(MeleeAttackAction);
+
+	Sequence* DoAttackIDLE = new Sequence();
+	DoAttackIDLE->addChild(changeAttackIDLEAnim);
+	DoAttackIDLE->addChild(AttackIDLEAction);
+
+	AttackBehavior->addChild(DoAttack);
+	AttackBehavior->addChild(DoAttackIDLE);
+
+	MeleeAttack->addChild(AttackBehavior);
 
 	Sequence* DirectChase = new Sequence();
-	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return false; });
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return Detecting(); });
 	ActionNode* changeChaseAnim = new ActionNode("changeChase", [this]() {
 		this->ChangeAnimation(EImageType::Run);
 		return NodeStatus::Success; });
@@ -339,6 +358,8 @@ NodeStatus Grunt::MeleeAttackAction()
 {
 	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
 	{
+		attackTimer = attackDuration;
+		bAttacking = false;
 		return NodeStatus::Success;
 	}
 	Collision();
@@ -371,8 +392,8 @@ NodeStatus Grunt::FindPathAction()
 	// 이거 로직 바꿔야되는데...
 	// 추적 자체는 레이로 하는데
 	// 경로 탐색 로직 자체를 다 뜯어야된다
-
-	return NodeStatus::Success;
+	
+	return NodeStatus::Running;
 }
 
 NodeStatus Grunt::WatingAction()
@@ -384,6 +405,17 @@ NodeStatus Grunt::WatingAction()
 	ObjectRigidBody->Update();
 	UpdateAnimation();
 	
+	return NodeStatus::Running;
+}
+
+NodeStatus Grunt::AttackIDLEAction()
+{
+	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
+	{
+		return NodeStatus::Success;
+	}
+	ObjectRigidBody->Update();
+	UpdateAnimation();
 	return NodeStatus::Running;
 }
 
