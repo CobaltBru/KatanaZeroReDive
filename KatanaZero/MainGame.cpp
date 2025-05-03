@@ -40,7 +40,7 @@ HRESULT MainGame::Init()
 		return E_FAIL;
 	}
 
-	SceneManager::GetInstance()->AddScene("Talk", new TalkScene());
+	//SceneManager::GetInstance()->AddScene("Talk", new TalkScene());
 	SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
@@ -314,6 +314,22 @@ HRESULT MainGame::InitImage()
 	ImageManager::GetInstance()->AddImage("TestPlayer", L"Image/TestPlayer.bmp", 25, 35, 1, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_3_0", L"Image/Bottle/spr_beer_bottle_3_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
 	ImageManager::GetInstance()->AddImage("spr_beer_bottle_4_0", L"Image/Bottle/spr_beer_bottle_4_0.bmp", 48, 48, 2, 1, true, RGB(255, 0, 255));
+
+	//dragon
+	GPImageManager::GetInstance()->AddImage("dragon_attack", L"Image/Dragon/spr_dragon_attack.png", 7, 1);
+	GPImageManager::GetInstance()->AddImage("dragon_crouch", L"Image/Dragon/spr_dragon_crouch.png", 1, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_fall", L"Image/Dragon/spr_dragon_fall.png", 4, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_hurtfly", L"Image/Dragon/spr_dragon_hurtfly.png", 4, 1);
+	GPImageManager::GetInstance()->AddImage("dragon_hurtfly_begin", L"Image/Dragon/spr_dragon_hurtfly_begin.png", 2, 1);
+	GPImageManager::GetInstance()->AddImage("dragon_hurtground", L"Image/Dragon/spr_dragon_hurtground.png", 6, 1);
+	GPImageManager::GetInstance()->AddImage("dragon_idle", L"Image/Dragon/spr_dragon_idle.png", 12, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_idle_to_run", L"Image/Dragon/spr_dragon_idle_to_run.png", 3, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_jump", L"Image/Dragon/spr_dragon_jump.png", 4, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_roll", L"Image/Dragon/spr_dragon_roll.png", 7, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_run", L"Image/Dragon/spr_dragon_run.png", 10, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_run_to_idle", L"Image/Dragon/spr_dragon_run_to_idle.png", 4, 1);//0
+	GPImageManager::GetInstance()->AddImage("dragon_wallslide", L"Image/Dragon/spr_dragon_wallslide.png", 1, 1);//0
+
 
 	return S_OK;
 }

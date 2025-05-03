@@ -4,26 +4,33 @@
 #include <functional>
 #include <stack>
 #include "GameObject.h"
+#include "INode.h"
 
+enum STATE { IDLE, WALK, LOW, AIR, WALL, ATTACK, ROLL, DEAD, END };
 
-
-
-
+class Image;
+class Collider;
+class Action;
+class Animator;
 class Player : public GameObject
 {
 private:
-	
-	
-	float scrollSpeed;
 
-	
+
+	float scrollSpeed;
+	int way;
+	bool isEffect;
 	// 리플레이용 키
 	string currAnimKey;
 
 	Image* image;
 	Image* effectImage;
 
-	Collider* AttackCollider;
+	Animator* animator;
+
+	STATE currentState;
+	STATE oldState;
+	vector<Action*> stateMachine;
 
 public:
 	Player();
@@ -35,7 +42,7 @@ public:
 	void Render(HDC hdc) override;
 
 	void InitImage();
-	
+	void InitAnimator();
 	// rigid body
 	void InitRigidBody();
 	void UpdateRigidBody();
@@ -44,27 +51,10 @@ public:
 	void InitScrollOffset();
 	void Offset();
 
-	inline Image* GetImage() { return image; }
-	inline void SetImage(Image* image) { this->image = image; }
-
+	void StateInit();
+	void changeState(STATE state);
+	inline STATE getOldState() { return oldState; }
+	inline int* GetWay() { return &way; }
+	inline Animator* GetAnimator() { return animator; }
+	string stateToString();
 };
-
-
-	//typedef std::function<void(Player&)> stateFunction;
-	/*
-	typedef std::function<void(Player&, EDirection)> stateFunction;
-
-	// FSM: input, function binding
-	std::unordered_map<EInputAction, stateFunction> inputStateMap;
-
-	std::unordered_map<EInputAction, EPlayerState> ipActionPlayerStateMap;
-	std::unordered_map<EPlayerState, stateAnimFunc> playerStateFunctionMap;	
-
-	stateAnimFunc IdleAnimFunc;
-	stateAnimFunc IdleToRunAnimFunc;
-	stateAnimFunc RunToIdleAnimFunc;	
-	stateAnimFunc RunAnimFunc;
-	stateAnimFunc FlipAnimFunc;
-	stateAnimFunc JumpAnimFunc;
-	stateAnimFunc AttackAnimFunc;
-	*/

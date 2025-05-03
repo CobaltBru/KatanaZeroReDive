@@ -1,0 +1,9 @@
+#pragma once
+#include "PlayerAirAction.h"
+#include "PlayerIdleAction.h"
+#include "PlayerLowAction.h"
+#include "PlayerRollAction.h"
+#include "PlayerWalkAction.h"
+#include "PlayerWallAction.h"
+#include "PlayerAttackAction.h"
+#include "PlayerDeadAction.h"

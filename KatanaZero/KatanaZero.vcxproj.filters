@@ -345,9 +345,6 @@
     <ClCompile Include="SimpleObject.cpp">
       <Filter>MainGame\TaeKyung\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteAnimator.cpp">
-      <Filter>2D Framework\Animator</Filter>
-    </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>MainGame\Scene\Stage\Test</Filter>
     </ClCompile>
@@ -437,11 +434,43 @@
     <ClCompile Include="BossWeak.cpp">
       <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClCompile>
-    <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="BossScene.cpp" />
     <ClCompile Include="PickUp.cpp" />
     <ClCompile Include="INode.cpp">
       <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Action.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIdleAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWalkAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWallAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerLowAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRollAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttackAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerDeadAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAirAction.cpp">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnimation.cpp">
+      <Filter>2D Framework\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>2D Framework\Animator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -595,9 +624,6 @@
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteAnimator.h">
-      <Filter>2D Framework\Animator</Filter>
-    </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>2D Framework\UI</Filter>
     </ClInclude>
@@ -722,11 +748,46 @@
     <ClInclude Include="BossWeak.h">
       <Filter>MainGame\Enemy\Hidden\Weak</Filter>
     </ClInclude>
-    <ClInclude Include="DeadState.h" />
     <ClInclude Include="BossScene.h" />
     <ClInclude Include="PickUp.h" />
     <ClInclude Include="INode.h">
       <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerIdleAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWalkAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWallAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerLowAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRollAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateHeaders.h">
+      <Filter>MainGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttackAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerDeadAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAirAction.h">
+      <Filter>MainGame\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteAnimation.h">
+      <Filter>2D Framework\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>2D Framework\Animator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

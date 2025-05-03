@@ -135,7 +135,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Animator.cpp" />
     <ClCompile Include="ArmAttack.cpp" />
     <ClCompile Include="ArrowUI.cpp" />
     <ClCompile Include="Background.cpp" />
@@ -184,6 +186,14 @@
     <ClCompile Include="MapTool.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="PlayerAirAction.cpp" />
+    <ClCompile Include="PlayerAttackAction.cpp" />
+    <ClCompile Include="PlayerDeadAction.cpp" />
+    <ClCompile Include="PlayerIdleAction.cpp" />
+    <ClCompile Include="PlayerLowAction.cpp" />
+    <ClCompile Include="PlayerRollAction.cpp" />
+    <ClCompile Include="PlayerWalkAction.cpp" />
+    <ClCompile Include="PlayerWallAction.cpp" />
     <ClCompile Include="PopUpManager.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Reference\Headers\Imgui\imgui.cpp" />
@@ -205,9 +215,9 @@
     <ClCompile Include="SimpleTestObject.cpp" />
     <ClCompile Include="SnapShotManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
-    <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="HYScene.cpp" />
     <ClCompile Include="GPImage.cpp" />
+    <ClCompile Include="SpriteAnimation.cpp" />
     <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StageClear.cpp" />
     <ClCompile Include="Subject.cpp" />
@@ -226,7 +236,9 @@
     <ClCompile Include="WorldBackground.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Animator.h" />
     <ClInclude Include="ArmAttack.h" />
     <ClInclude Include="ArrowUI.h" />
     <ClInclude Include="Background.h" />
@@ -278,6 +290,15 @@
     <ClInclude Include="MapTool.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Pawn.h" />
+    <ClInclude Include="PlayerAirAction.h" />
+    <ClInclude Include="PlayerAttackAction.h" />
+    <ClInclude Include="PlayerDeadAction.h" />
+    <ClInclude Include="PlayerIdleAction.h" />
+    <ClInclude Include="PlayerLowAction.h" />
+    <ClInclude Include="PlayerRollAction.h" />
+    <ClInclude Include="PlayerStateHeaders.h" />
+    <ClInclude Include="PlayerWalkAction.h" />
+    <ClInclude Include="PlayerWallAction.h" />
     <ClInclude Include="PopUpManager.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Reference\Headers\Imgui\imconfig.h" />
@@ -303,9 +324,9 @@
     <ClInclude Include="SnapShot.h" />
     <ClInclude Include="SnapShotManager.h" />
     <ClInclude Include="SoundManager.h" />
-    <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="HYScene.h" />
     <ClInclude Include="GPImage.h" />
+    <ClInclude Include="SpriteAnimation.h" />
     <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="StageClear.h" />
     <ClInclude Include="Subject.h" />

@@ -159,7 +159,7 @@ HRESULT TestScene::InitObject()
 
 		//해영 테스트
 		{
-			Grunt* grunt = new Grunt();
+			/*Grunt* grunt = new Grunt();
 			grunt->Init({ 800.f, 300.f });
 			Pomp* pomp = new Pomp();
 			pomp->Init({ 500.f, 300.f });
@@ -169,7 +169,7 @@ HRESULT TestScene::InitObject()
 			ObjectManager->AddGameObject(EObjectType::GameObject, grunt);
 			ObjectManager->AddGameObject(EObjectType::GameObject, pomp);
 			ObjectManager->AddGameObject(EObjectType::GameObject, gangster);
-
+*/
 
 		}
 
@@ -318,8 +318,6 @@ void TestScene::Release()
 		snapShotManager->Release();
 	if (fxManager != nullptr)
 		fxManager->Release();
-	if (gpImageManager != nullptr)
-		gpImageManager->Release();
 	ObjectManager = nullptr;
 	CollisionManager = nullptr;
 	RenderManager = nullptr;
