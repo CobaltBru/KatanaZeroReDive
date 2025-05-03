@@ -162,6 +162,7 @@
     <ClCompile Include="NormalParts.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
+    <ClCompile Include="PathFinder.cpp" />
     <ClCompile Include="PickUp.cpp" />
     <ClCompile Include="PickUpHand.cpp" />
     <ClCompile Include="PickUpUI.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="NormalParts.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="ParticleEffect.h" />
+    <ClInclude Include="PathFinder.h" />
     <ClInclude Include="PickUp.h" />
     <ClInclude Include="PickUpHand.h" />
     <ClInclude Include="PickUpUI.h" />

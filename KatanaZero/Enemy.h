@@ -14,6 +14,7 @@ enum class EType
 };
 
 class GPImage;
+class PathFinder;
 class Enemy : public GameObject
 {
 protected:
@@ -47,6 +48,9 @@ protected:
 	float attackTimer{ 0.f };
 	bool bChasing{ false };
 	bool bAttacking{ false };
+
+	// °æ·Î Å½»ö ¿ë pathFinder °´Ã¼
+	PathFinder* pathFinder;
 
 	// Jump
 	float Gravity;

@@ -2,6 +2,7 @@
 #include "Line.h"
 #include "ScrollManager.h"
 #include "KeyManager.h"
+#include "CommonFunction.h"
 
 void LineManager::Init()
 {
@@ -595,6 +596,8 @@ HRESULT LineManager::LoadFile(LPCWSTR InLoadPath)
 
 	CloseHandle(hFile);
 
+	MakeGraphFromLines();
+
 	return S_OK;
 }
 
@@ -745,6 +748,44 @@ pair<FPOINT, FPOINT> LineManager::FindNearestSlope(const FPOINT& targetPos, int 
 		}
 	}
 	return make_pair(nearestEntry, nearestExit);
+}
+
+int LineManager::GetNodeIdx(const FPOINT& p)
+{
+	auto key = make_pair((int)round(p.x * 1000), (int)p.y * 1000);
+	auto it = nodeIndex.find(key);
+	if (it != nodeIndex.end()) return it->second;
+
+	int newIdx = (int)nodes.size();
+	nodes.push_back(p);
+	nodeIndex[key] = newIdx;
+	graph.emplace_back();
+	return newIdx;
+}
+
+void LineManager::MakeGraphFromLines()
+{
+	nodes.clear();
+	graph.clear();
+	nodeIndex.clear();
+
+	// 2) 적이 걸어다닐 수 있는 라인 타입: Normal + Down
+	for (int type = (int)ELineType::Normal; type <= (int)ELineType::DownLine; ++type)
+	{
+		for (Line* L : LineList[type])
+		{
+			// 좌표별 노드 인덱스 확보 (없으면 생성)
+			int idxA = GetNodeIdx(L->GetLine().LeftPoint);
+			int idxB = GetNodeIdx(L->GetLine().RightPoint);
+
+			// 두 점 간 거리 계산
+			float dist = Distance(L->GetLine().LeftPoint, L->GetLine().RightPoint);
+
+			// 양방향 이동 허용
+			graph[idxA].push_back({ idxB, dist });
+			graph[idxB].push_back({ idxA, dist });
+		}
+	}
 }
 
 void LineManager::Render(HDC hdc)

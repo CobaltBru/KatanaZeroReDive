@@ -58,6 +58,11 @@ public:
 
 	// 적 AI용 비탈길 찾기
 	pair<FPOINT, FPOINT> FindNearestSlope(const FPOINT& targetPos, int fromFloor, int toFloor) const;
+
+	int GetNodeIdx(const FPOINT& p);
+	void MakeGraphFromLines();
+	vector<FPOINT>& GetNodes() { return nodes; }
+	vector<vector<Edge>>& GetGraph() { return graph; }
 private:
 	list<Line*> LineList[(int)ELineType::End];
 	vector<FPOINT> nodes;

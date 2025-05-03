@@ -472,6 +472,9 @@
     <ClCompile Include="Animator.cpp">
       <Filter>2D Framework\Animator</Filter>
     </ClCompile>
+    <ClCompile Include="PathFinder.cpp">
+      <Filter>MainGame\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -788,6 +791,9 @@
     </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>2D Framework\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFinder.h">
+      <Filter>MainGame\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

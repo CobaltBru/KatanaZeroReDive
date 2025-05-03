@@ -9,6 +9,8 @@
 #include "EnemyState.h"
 #include "ScrollManager.h"
 #include "GPImageManager.h"
+#include "LineManager.h"
+#include "PathFinder.h"
 
 HRESULT Grunt::Init(FPOINT InPos)
 {
@@ -150,6 +152,9 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	
 	InitRigidBodySetting();
 
+	pathFinder = new PathFinder(LineManager::GetInstance()->GetNodes(), LineManager::GetInstance()->GetGraph());
+
+
 	// BT 세팅
 	auto idleaction = bind(&Grunt::IDLEAction, this);
 	auto patrolaction = bind(&Grunt::PatrolAction, this);
@@ -157,6 +162,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	auto meleeAttackaction = bind(&Grunt::MeleeAttackAction, this);
 	auto attackIDLEaction = bind(&Grunt::AttackIDLEAction, this);
 	auto chaseaction = bind(&Grunt::ChaseAction, this);
+	auto calcpathaction = bind(&Grunt::CalcPathAction, this);
 	auto findpathaction = bind(&Grunt::FindPathAction, this);
 	auto watingaction = bind(&Grunt::WatingAction, this);
 	root = new Selector();
@@ -226,8 +232,10 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	DirectChase->addChild(changeChaseAnim);
 	DirectChase->addChild(ChaseAction);
 	Sequence* FindPath = new Sequence();
-	ConditionNode* CanFindPath = new ConditionNode([this]() { return false; });
+	ActionNode* CalcPath = new ActionNode("CalcPath", calcpathaction);
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return (bChasing && false); });
 	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
+	FindPath->addChild(CalcPath);
 	FindPath->addChild(CanFindPath);
 	FindPath->addChild(changeChaseAnim);
 	FindPath->addChild(MoveToPath);
@@ -387,12 +395,20 @@ NodeStatus Grunt::ChaseAction()
 	return NodeStatus::Running;
 }
 
+NodeStatus Grunt::CalcPathAction()
+{
+	if (SnapShotManager::GetInstance()->GetPlayer() == nullptr) return NodeStatus::Failure;
+	auto player = SnapShotManager::GetInstance()->GetPlayer();
+	int startIdx = pathFinder->findClosestNode(this->Pos);
+	int goalIdx = pathFinder->findClosestNode(player->GetPos());
+	auto newPath = pathFinder->FindPath(startIdx, goalIdx);
+	pathFinder->SetPath(newPath);
+	return NodeStatus::Success;
+}
+
 NodeStatus Grunt::FindPathAction()
 {
-	// 이거 로직 바꿔야되는데...
-	// 추적 자체는 레이로 하는데
-	// 경로 탐색 로직 자체를 다 뜯어야된다
-	
+	// 와... 예외가 너무많네 이거 어떻게 처리하냐... ㅅㅂ...
 	return NodeStatus::Running;
 }
 

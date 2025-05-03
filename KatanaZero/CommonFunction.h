@@ -13,6 +13,7 @@
 */
 #pragma once
 #include "config.h"
+#include <math.h>
 
 inline RECT GetRect(int left, int top, int width, int height)
 {
@@ -258,4 +259,9 @@ static bool OutOfScreen(FPOINT pt, int width, int height)
 		return true;
 
 	return false;
+}
+
+inline float Distance(const FPOINT& a, const FPOINT& b)
+{
+	return std::hypot(b.x - a.x, b.y - a.y);
 }

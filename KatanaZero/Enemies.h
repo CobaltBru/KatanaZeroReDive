@@ -15,6 +15,7 @@ public:
 	NodeStatus DeadAction();
 	NodeStatus MeleeAttackAction();
 	NodeStatus ChaseAction();
+	NodeStatus CalcPathAction();
 	NodeStatus FindPathAction();
 	NodeStatus WatingAction();
 	NodeStatus AttackIDLEAction();

@@ -8,11 +8,12 @@
 #include "RenderManager.h"
 #include "ScrollManager.h"
 #include "CommonFunction.h"
+#include "PathFinder.h"
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
 	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
-	bReachedTargetFloor(false), attackDuration(0.f), meleeAttackRange(0.f), currAnimKey(""), HitAngle(0.f)
+	bReachedTargetFloor(false), attackDuration(0.f), meleeAttackRange(0.f), currAnimKey(""), HitAngle(0.f), pathFinder(nullptr)
 {
 }
 
@@ -79,6 +80,12 @@ void Enemy::Release()
 		}
 	}
 	images.clear();
+
+	if (pathFinder)
+	{
+		delete pathFinder;
+		pathFinder = nullptr;
+	}
 
 	if (root)
 	{
