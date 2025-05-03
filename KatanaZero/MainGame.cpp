@@ -44,12 +44,12 @@ HRESULT MainGame::Init()
 	//SceneManager::GetInstance()->AddScene("Test", new TestScene());
 	//SceneManager::GetInstance()->AddScene("Home", new HomeScene());
 	SceneManager::GetInstance()->AddScene("Stage1", new Stage1Scene());
-	//SceneManager::GetInstance()->AddScene("HY", new HYScene());
+	SceneManager::GetInstance()->AddScene("HY", new HYScene());
 	SceneManager::GetInstance()->AddScene("MapTool", new MapTool());
 	//SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
 	//SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("Stage1","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("HY","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();

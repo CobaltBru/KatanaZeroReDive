@@ -24,24 +24,43 @@ void PlayerIdleAction::Update()
 	{
 		player->GetAnimator()->startAnimation("idle_to_run");
 		player->changeState(STATE::WALK);
+		return;
 	}
 	if (KeyManager::GetInstance()->IsStayKeyDown('D'))
 	{
 		player->GetAnimator()->startAnimation("idle_to_run");
 		player->changeState(STATE::WALK);
+		return;
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
 		player->GetAnimator()->startAnimation("jump");
 		player->GetRigidBody()->AddVelocity({ 0,jumpForce });
 		player->changeState(STATE::AIR);
+		return;
 	}
 	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
 	{
-		player->GetAnimator()->startAnimation("crouch");
-		player->changeState(STATE::LOW);
+		if (player->GetRigidBody()->GetResult().LineType == ELineType::DownLine)
+		{
+			player->GetRigidBody()->SetDown(true);
+			player->GetAnimator()->startAnimation("fall");
+			player->changeState(STATE::AIR);
+			return;
+		}
+		else
+		{
+			player->GetAnimator()->startAnimation("crouch");
+			player->changeState(STATE::LOW);
+			return;
+		}
+		
 	}
-
+	if (!player->GetRigidBody()->IsGround())
+	{
+		player->changeState(STATE::AIR);
+		return;
+	}
 
 }
 

@@ -37,7 +37,7 @@ void PlayerAttackAction::onEnter()
 	float speed = sqrt(player->GetRigidBody()->GetVelocity().x * player->GetRigidBody()->GetVelocity().x +
 		player->GetRigidBody()->GetVelocity().y * player->GetRigidBody()->GetVelocity().y);
 	bool fllip = player->GetFlip();
-	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, SnapShotManager::GetInstance()->GetPlayer(), player->GetFlip());
+	EffectManager::GetInstance()->Activefx("normalslash", player->GetPos(), fxAngle, SnapShotManager::GetInstance()->GetPlayer(), false);
 
 }
 

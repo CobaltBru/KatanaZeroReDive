@@ -9,6 +9,7 @@
 enum STATE { IDLE, WALK, LOW, AIR, WALL, ATTACK, ROLL, DEAD, END };
 
 class Image;
+class GPImage;
 class Collider;
 class Action;
 class Animator;
@@ -18,7 +19,7 @@ class PickUpHand;
 class Player : public GameObject
 {
 private:
-
+	Collider* AttackCollider;
 
 	float scrollSpeed;
 	int way;
@@ -28,7 +29,7 @@ private:
 
 	Image* image;
 	Image* effectImage;
-
+	GPImage* skillImage;
 	Animator* animator;
 
 	STATE currentState;
@@ -43,7 +44,13 @@ private:
 	ArrowUI* ArrowUIObj;
 
 	bool canUseSkill1;
-
+	bool skill1On;
+	float skill2On;
+	float skillDistance;
+	FPOINT goVec;
+	FPOINT skillVec;
+	float currentLen;
+	float skill2Timer;
 public:
 	Player();
 	virtual ~Player();
@@ -77,4 +84,9 @@ public:
 	void SetArrowUI(ArrowUI* InArrowUI) { ArrowUIObj = InArrowUI; }
 	void PickUpUpdate();
 	void Shoot();
+
+	void UpdateCollision();
+
+	void dragonSkillUpdate();
+	void dragonSkillRender(HDC hdc);
 };

@@ -66,7 +66,11 @@ void PlayerWalkAction::Update()
 	//±¸¸£±â
 	if (KeyManager::GetInstance()->IsOnceKeyDown('S'))
 	{
-		player->changeState(STATE::ROLL);
+		if (player->GetRigidBody()->GetResult().LineType == ELineType::DownLine)
+		{
+			player->GetRigidBody()->SetDown(true);
+		}
+		else player->changeState(STATE::ROLL);
 	}
 	
 	if (!player->GetRigidBody()->IsGround())
