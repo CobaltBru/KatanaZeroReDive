@@ -8,7 +8,7 @@
 PlayerAttackAction::PlayerAttackAction(Player* player)
 {
 	this->player = player;
-	delay = 0.35f;
+	delay = 0.4f;
 	timer = 0;
 }
 void PlayerAttackAction::onEnter()
