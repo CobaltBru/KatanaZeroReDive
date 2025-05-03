@@ -43,6 +43,7 @@ HRESULT Grunt::Init(FPOINT InPos)
 	Sequence* Dead = new Sequence();
 	Sequence* MeleeAttack = new Sequence();
 	Selector* Chase = new Selector();
+	Sequence* Waiting = new Sequence();
 	Sequence* Patrol = new Sequence();
 	Sequence* IDLE = new Sequence();
 	root->addChild(Dead);
@@ -54,68 +55,71 @@ HRESULT Grunt::Init(FPOINT InPos)
 	ConditionNode* isDead = new ConditionNode([this]() {
 		return this->bDead;
 		});
-	ActionNode* changeDeadAnim = new ActionNode([this]() {
+	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
 		this->ChangeAnimation(EImageType::Dead);
 		return NodeStatus::Success; });
-	ActionNode* DeadAction = new ActionNode(deadaction);
+	ActionNode* DeadAction = new ActionNode("Dead", deadaction);
 	Dead->addChild(isDead);
 	Dead->addChild(changeDeadAnim);
 	Dead->addChild(DeadAction);
 
 	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
-		// 내부 구현 필요. 탐지 가능한지 로직
-		return true;
+		return this->IsInAttackRange();
 		});
 	ConditionNode* CanAttack = new ConditionNode([this]() {
 		return this->attackTimer == 0.f;
 		});
-	ActionNode* changeAttackAnim = new ActionNode([this]() {
+	ActionNode* changeAttackAnim = new ActionNode("changeAttack", [this]() {
 		this->ChangeAnimation(EImageType::Attack);
 		return NodeStatus::Success; });
-	ActionNode* MeleeAttackAction = new ActionNode(meleeAttackaction);
+	ActionNode* MeleeAttackAction = new ActionNode("Attack", meleeAttackaction);
 	MeleeAttack->addChild(IsInAttackRange);
 	MeleeAttack->addChild(CanAttack);
 	MeleeAttack->addChild(changeAttackAnim);
 	MeleeAttack->addChild(MeleeAttackAction);
 
 	Sequence* DirectChase = new Sequence();
-	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return true; });
-	ActionNode* changeChaseAnim = new ActionNode([this]() {
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return false; });
+	ActionNode* changeChaseAnim = new ActionNode("changeChase", [this]() {
 		this->ChangeAnimation(EImageType::Run);
 		return NodeStatus::Success; });
-	ActionNode* ChaseAction = new ActionNode(chaseaction);
+	ActionNode* ChaseAction = new ActionNode("Chase", chaseaction);
 	DirectChase->addChild(IsInSameFloor);
 	DirectChase->addChild(changeChaseAnim);
 	DirectChase->addChild(ChaseAction);
 	Sequence* FindPath = new Sequence();
-	ConditionNode* CanFindPath = new ConditionNode([this]() { return true; });
-	ActionNode* MoveToPath = new ActionNode(findpathaction);
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return false; });
+	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
 	FindPath->addChild(CanFindPath);
 	FindPath->addChild(changeChaseAnim);
 	FindPath->addChild(MoveToPath);
-	ActionNode* changeWaitingAnim = new ActionNode([this]() {
-		this->ChangeAnimation(EImageType::IDLE);
-		return NodeStatus::Success; });
-	ActionNode* WaitingAction = new ActionNode(watingaction);
+
 	Chase->addChild(DirectChase);
 	Chase->addChild(FindPath);
-	Chase->addChild(changeWaitingAnim);
-	Chase->addChild(WaitingAction);
+
+
+	ActionNode* changeWaitingAnim = new ActionNode("changeWait", [this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success; });
+	ActionNode* WaitingAction = new ActionNode("Waiting", watingaction);
+	Waiting->addChild(changeWaitingAnim);
+	Waiting->addChild(WaitingAction);
+	Chase->addChild(Waiting);
 
 	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol; });
-	ActionNode* changePatrolAnim = new ActionNode([this]() {
+	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		this->ChangeAnimation(EImageType::Walk);
 		return NodeStatus::Success; });
-	ActionNode* PatrolAction = new ActionNode(patrolaction);
+	ActionNode* PatrolAction = new ActionNode("Patrol", patrolaction);
 	Patrol->addChild(CanPatrol);
 	Patrol->addChild(changePatrolAnim);
 	Patrol->addChild(PatrolAction);
 
-	ActionNode* changeIDLEAnim = new ActionNode([this]() {
+	ActionNode* changeIDLEAnim = new ActionNode("changeIDLE", [this]() {
 		this->ChangeAnimation(EImageType::IDLE);
 		return NodeStatus::Success;
 		});
-	ActionNode* IDLEaction = new ActionNode(idleaction);
+	ActionNode* IDLEaction = new ActionNode("IDLE", idleaction);
 	IDLE->addChild(changeIDLEAnim);
 	IDLE->addChild(IDLEaction);
 	// BT 세팅 끝
@@ -164,17 +168,16 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	root->addChild(Dead);
 	root->addChild(MeleeAttack);
 	root->addChild(Chase);
-	root->addChild(Waiting);
 	root->addChild(Patrol);
 	root->addChild(IDLE);
 
 	ConditionNode* isDead = new ConditionNode([this]() {
 		return this->bDead;
 		});
-	ActionNode* changeDeadAnim = new ActionNode([this]() {
+	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
 		this->ChangeAnimation(EImageType::Dead);
 		return NodeStatus::Success; });
-	ActionNode* DeadAction = new ActionNode(deadaction);
+	ActionNode* DeadAction = new ActionNode("Dead", deadaction);
 	Dead->addChild(isDead);
 	Dead->addChild(changeDeadAnim);
 	Dead->addChild(DeadAction);
@@ -185,10 +188,10 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	ConditionNode* CanAttack = new ConditionNode([this]() {
 		return this->attackTimer == 0.f;
 		});
-	ActionNode* changeAttackAnim = new ActionNode([this]() {
+	ActionNode* changeAttackAnim = new ActionNode("changeAttack", [this]() {
 		this->ChangeAnimation(EImageType::Attack);
 		return NodeStatus::Success; });
-	ActionNode* MeleeAttackAction = new ActionNode(meleeAttackaction);
+	ActionNode* MeleeAttackAction = new ActionNode("Attack", meleeAttackaction);
 	MeleeAttack->addChild(IsInAttackRange);
 	MeleeAttack->addChild(CanAttack);
 	MeleeAttack->addChild(changeAttackAnim);
@@ -196,16 +199,16 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 
 	Sequence* DirectChase = new Sequence();
 	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return false; });
-	ActionNode* changeChaseAnim = new ActionNode([this]() {
+	ActionNode* changeChaseAnim = new ActionNode("changeChase", [this]() {
 		this->ChangeAnimation(EImageType::Run);
 		return NodeStatus::Success; });
-	ActionNode* ChaseAction = new ActionNode(chaseaction);
+	ActionNode* ChaseAction = new ActionNode("Chase", chaseaction);
 	DirectChase->addChild(IsInSameFloor);
 	DirectChase->addChild(changeChaseAnim);
 	DirectChase->addChild(ChaseAction);
 	Sequence* FindPath = new Sequence();
 	ConditionNode* CanFindPath = new ConditionNode([this]() { return false; });
-	ActionNode* MoveToPath = new ActionNode(findpathaction);
+	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
 	FindPath->addChild(CanFindPath);
 	FindPath->addChild(changeChaseAnim);
 	FindPath->addChild(MoveToPath);
@@ -213,28 +216,30 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	Chase->addChild(DirectChase);
 	Chase->addChild(FindPath);
 
-	
-	ActionNode* changeWaitingAnim = new ActionNode([this]() {
+	ConditionNode* IsChasing = new ConditionNode([this]() { return bChasing; });
+	ActionNode* changeWaitingAnim = new ActionNode("changeWait", [this]() {
 		this->ChangeAnimation(EImageType::IDLE);
 		return NodeStatus::Success; });
-	ActionNode* WaitingAction = new ActionNode(watingaction);
+	ActionNode* WaitingAction = new ActionNode("Waiting", watingaction);
+	Waiting->addChild(IsChasing);
 	Waiting->addChild(changeWaitingAnim);
 	Waiting->addChild(WaitingAction);
+	Chase->addChild(Waiting);
 
 	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol; });
-	ActionNode* changePatrolAnim = new ActionNode([this]() {
+	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		this->ChangeAnimation(EImageType::Walk);
 		return NodeStatus::Success; });
-	ActionNode* PatrolAction = new ActionNode(patrolaction);
+	ActionNode* PatrolAction = new ActionNode("Patrol", patrolaction);
 	Patrol->addChild(CanPatrol);
 	Patrol->addChild(changePatrolAnim);
 	Patrol->addChild(PatrolAction);
 
-	ActionNode* changeIDLEAnim = new ActionNode([this]() {
+	ActionNode* changeIDLEAnim = new ActionNode("changeIDLE", [this]() {
 		this->ChangeAnimation(EImageType::IDLE);
 		return NodeStatus::Success;
 		});
-	ActionNode* IDLEaction = new ActionNode(idleaction);
+	ActionNode* IDLEaction = new ActionNode("IDLE", idleaction);
 	IDLE->addChild(changeIDLEAnim);
 	IDLE->addChild(IDLEaction);
 	// BT 세팅 끝
@@ -294,6 +299,7 @@ NodeStatus Grunt::IDLEAction()
 	}
 	ObjectRigidBody->Update();
 	UpdateAnimation();
+
 	return NodeStatus::Running;
 }
 
@@ -373,7 +379,7 @@ NodeStatus Grunt::WatingAction()
 {
 	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
 	{
-		return NodeStatus::Failure;
+		return NodeStatus::Success;
 	}
 	ObjectRigidBody->Update();
 	UpdateAnimation();

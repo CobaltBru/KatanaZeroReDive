@@ -45,7 +45,7 @@ protected:
 	float patrolDuration{ 3.f };
 	float attackDuration{ 0.8f };
 	float attackTimer{ 0.f };
-
+	bool bChasing{ false };
 
 	// Jump
 	float Gravity;
@@ -100,4 +100,9 @@ public:
 	bool CanAttack() { return bCanAttack; }
 	bool IsHitted();
 	void Collision();
+
+	virtual void DebugDrawText(HDC hdc, int x, int y, const char* text)
+	{
+		TextOutA(hdc, x, y, text, (int)strlen(text));
+	}
 };

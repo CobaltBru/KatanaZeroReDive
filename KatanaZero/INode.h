@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <functional>
+#include <string>
+#include "config.h"
 
 enum NodeStatus
 {
@@ -17,14 +19,18 @@ public:
 
 class ActionNode : public Node {
 public:
-    ActionNode(std::function<NodeStatus()> action) : action(action) {}
+    ActionNode(std::string name, std::function<NodeStatus()> action) : name(name), action(action) {}
 
     NodeStatus tick() override {
+        char buf[256];
+        sprintf_s(buf, "[BT] %s::tick()\n", name.c_str());
+        OutputDebugStringA(buf);
         return action();
     }
 
 private:
     std::function<NodeStatus()> action;
+    std::string name;
 };
 
 class Selector : public Node {
