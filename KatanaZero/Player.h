@@ -12,6 +12,9 @@ class Image;
 class Collider;
 class Action;
 class Animator;
+class UIGame;
+class ArrowUI;
+class PickUpHand;
 class Player : public GameObject
 {
 private:
@@ -32,11 +35,22 @@ private:
 	STATE oldState;
 	vector<Action*> stateMachine;
 
+	float ScrollSpeed;
+	FPOINT scroll;
+
+	PickUpHand* RightHand;
+	UIGame* UIGameObj;
+	ArrowUI* ArrowUIObj;
+
+	bool canUseSkill1;
+
 public:
 	Player();
 	virtual ~Player();
 
 	HRESULT Init() override;
+	HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize,
+		bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend)override;
 	void Release() override;
 	void Update() override;
 	void Render(HDC hdc) override;
@@ -57,4 +71,10 @@ public:
 	inline int* GetWay() { return &way; }
 	inline Animator* GetAnimator() { return animator; }
 	string stateToString();
+
+	void SetUI(UIGame* InUIGame) { UIGameObj = InUIGame; }
+
+	void SetArrowUI(ArrowUI* InArrowUI) { ArrowUIObj = InArrowUI; }
+	void PickUpUpdate();
+	void Shoot();
 };

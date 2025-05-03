@@ -17,7 +17,12 @@
 #include "SpriteAnimation.h"
 #include "Animator.h"
 
-Player::Player()
+#include "ArrowUI.h"
+#include "PickUpHand.h"
+#include "PickUp.h"
+#include "UIGame.h"
+
+Player::Player(): ScrollSpeed(0.f), RightHand(nullptr), UIGameObj(nullptr), ArrowUIObj(nullptr)
 {	
 }
 
@@ -43,16 +48,45 @@ HRESULT Player::Init()
 	
 
 	InitScrollOffset();
-	scrollSpeed = 300.f;
+	scrollSpeed = 500.f;
 
-	
+	RightHand = new PickUpHand(this);
 
 	StateInit();
 	currentState = STATE::IDLE;
 	changeState(currentState);
 	InitAnimator();
 	animator->startAnimation("idle");
-	
+	canUseSkill1 = true;
+
+	return S_OK;
+}
+
+HRESULT Player::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup)
+{
+	InitImage();
+	Pos = InPos;
+	way = InFlip ? -1 : 1;
+	isEffect = false;
+	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
+	ObjectCollider->SetPos(Pos);
+
+	ObjectRigidBody = new RigidBody(this);
+	InitRigidBody();
+
+
+	InitScrollOffset();
+	scrollSpeed = 500.f;
+
+	RightHand = new PickUpHand(this);
+
+	StateInit();
+	currentState = STATE::IDLE;
+	changeState(currentState);
+	InitAnimator();
+	animator->startAnimation("idle");
+	canUseSkill1 = true;
 
 	return S_OK;
 }
@@ -94,24 +128,34 @@ void Player::Update()
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
 	
 
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_SHIFT))	
+	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 	{
-		isEffect = true;
-		// slow motion
-		//슬로우
-		// GetDeltaTime 인자에 false 넣으면 오리지날 DeltaTime가져오고 true넣으면 슬로우 계수 붙은 DeltaTime가져옵니다  디폴트 true임
-		// TimerManager::GetInstance()->GetDeltaTime();
-
-		// 여기서 안됨
-		//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-		//TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+		if (canUseSkill1)
+		{
+			if (UIGameObj->getBattery() > 0.0001f)
+			{
+				isEffect = true;
+				UIGameObj->UpdateSlow(true);
+				//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+				TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+			}
+			else
+			{
+				canUseSkill1 = false;
+				isEffect = false;
+				UIGameObj->UpdateSlow(false);
+				TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+			}
+		}
+		
 		
 	}
-	else if (KeyManager::GetInstance()->IsOnceKeyUp(VK_SHIFT))
+	else
 	{
+		canUseSkill1 = true;
 		isEffect = false;
-		// 슬로우 풀기
-		//TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+		UIGameObj->UpdateSlow(false);
+		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
 	}
 
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
@@ -131,10 +175,11 @@ void Player::Update()
 	}
 
 	stateMachine[(int)currentState]->Update();
-	animator->Update(Pos, way > 0 ? false : true, isEffect);
+	animator->Update({Pos.x + ScrollManager::GetInstance()->GetScroll().x,
+		Pos.y + ScrollManager::GetInstance()->GetScroll().y}, bFlip, isEffect);
 	// apply acceleration including gravity
 	UpdateRigidBody();
-
+	PickUpUpdate();
 	// collision
 	
 	// scroll offset
@@ -144,6 +189,7 @@ void Player::Update()
 
 void Player::Render(HDC hdc)
 {
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 	/*if (image != nullptr)
 	{
 		const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
@@ -152,7 +198,7 @@ void Player::Render(HDC hdc)
 	animator->Render(hdc);
 	WCHAR tch[5];
 	wsprintfW(tch, L"%d\0", (int)currentState);
-	TextOutW(hdc, Pos.x, Pos.y - 70.f, tch, lstrlen(tch));
+	TextOutW(hdc, Pos.x + Scroll.x, Pos.y - 70.f + Scroll.y, tch, lstrlen(tch));
 }
 
 void Player::InitImage()
@@ -260,16 +306,19 @@ void Player::UpdateRigidBody()
 
 void Player::InitScrollOffset()
 {
+	//포커스해야 오프셋할 수 있듬.
 	ScrollManager::GetInstance()->SetFocus(true);
-	FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
+
+	FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
 	while (true)
 	{
 		Offset();
 
-		const FPOINT newScroll = ScrollManager::GetInstance()->GetScroll();
+		const FPOINT NewScroll = ScrollManager::GetInstance()->GetScroll();
 
-		if (scroll.x != newScroll.x || scroll.y != newScroll.y)
-			scroll = newScroll;
+		if (Scroll.x != NewScroll.x || Scroll.y != NewScroll.y)
+			Scroll = NewScroll;
 		else
 			break;
 	}
@@ -282,9 +331,24 @@ void Player::Offset()
 	float newScrollSpeed = max(ObjectRigidBody->GetVelocity().x, ObjectRigidBody->GetVelocity().y);
 	scrollSpeed = newScrollSpeed;
 
+	const float OffsetMinX = 400.f;
+	const float OffsetMaxX = WINSIZE_X - 400.f;
+	const float OffsetMinY = 200.f;
+	const float OffsetMaxY = WINSIZE_Y - 200.f;
+
 	const FPOINT scroll = ScrollManager::GetInstance()->GetScrollOffset();
 
-	
+	FPOINT newScroll{};
+	if (OffsetMaxX < Pos.x + scroll.x)
+		newScroll.x = -scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMinX > Pos.x + scroll.x && OffsetMinX < Pos.x)
+		newScroll.x = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMaxY < Pos.y + scroll.y)
+		newScroll.y = -scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMinY > Pos.y + scroll.y && OffsetMinY < Pos.y)
+		newScroll.y = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+
+	ScrollManager::GetInstance()->SetScroll(newScroll);
 }
 
 void Player::StateInit()
@@ -357,6 +421,57 @@ string Player::stateToString()
 		return "DEAD";
 		break;
 	}
+}
+
+void Player::PickUpUpdate()
+{
+	FHitResult HitResult;
+	if (CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Item))
+	{
+		if (ArrowUIObj != nullptr)
+		{
+			ArrowUIObj->SetPos({ HitResult.HitCollision->GetOwner()->GetPos().x,HitResult.HitCollision->GetOwner()->GetPos().y - 80.f });
+			ArrowUIObj->SetVisible(true);
+		}
+
+
+		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+		{
+			if (RightHand != nullptr)
+			{
+				if (RightHand->GetPickUpItem() == nullptr)
+				{
+					RightHand->SetPickUpItem(static_cast<PickUp*>(HitResult.HitCollision->GetOwner()), FPOINT{ 0.f,(float)-animator->getGPImage()->getFrameHeight()});
+
+					if (UIGameObj != nullptr)
+						UIGameObj->SetRightItem(RightHand->GetPickUpItem()->GetImageKey(), { 12.f,-4.f }, 0, RightHand->GetPickUpItem()->GetScale() * ScrollManager::GetInstance()->GetScale());
+					SoundManager::GetInstance()->PlaySounds("sound_player_grabtea", EChannelType::Effect);
+				}
+				else
+					Shoot();
+			}
+		}
+	}
+	else
+	{
+		if (ArrowUIObj != nullptr)
+			ArrowUIObj->SetVisible(false);
+	}
+
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_RBUTTON))
+		Shoot();
+}
+
+void Player::Shoot()
+{
+	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
+
+	float Radian = atan2f((Pos.y + Scroll.y) - g_ptMouse.y, (Pos.x + Scroll.x) - g_ptMouse.x);
+	float Angle = (Radian * 180.f / 3.14) + 180.f;
+	RightHand->Shoot(Pos, Angle, 5.f);
+
+	if (UIGameObj != nullptr)
+		UIGameObj->SetRightItem("", {}, 0, 1);
 }
 
 

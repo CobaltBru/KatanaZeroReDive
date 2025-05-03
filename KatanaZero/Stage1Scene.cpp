@@ -114,6 +114,7 @@ HRESULT Stage1Scene::InitImage()
 
 HRESULT Stage1Scene::InitObject()
 {
+	
 	Background* background = new Background();
 	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
@@ -140,14 +141,14 @@ HRESULT Stage1Scene::InitEffects()
 
 void Stage1Scene::TestCode()
 {
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
+	/*if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F1))
 		SceneManager::GetInstance()->ChangeScene("Test", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F2))
 		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_ESCAPE))
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F4))
-		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");
+		SceneManager::GetInstance()->ChangeScene("Boss", "로딩_1");*/
 }
 
 void Stage1Scene::InitBackgroundImage()
@@ -268,8 +269,8 @@ void Stage1Scene::LoadObject()
 
 		if (ClassName == "StartPoint")
 		{
-			static_cast<SimpleObject*>(Obj)->SetUI(ui);
-			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
+			static_cast<Player*>(Obj)->SetUI(ui);
+			static_cast<Player*>(Obj)->SetArrowUI(ArrowUIObj);
 		}
 	}
 
@@ -327,11 +328,11 @@ void Stage1Scene::InitTile()
 
 void Stage1Scene::Update()
 {
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	/*if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
 	{
 		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
 		return;
-	}
+	}*/
 
 	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();
@@ -341,23 +342,7 @@ void Stage1Scene::Update()
 
 	ScrollManager->Update();
 
-	//슬로우
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
-	{
-		if (ui->getBattery() > 0.0001f)
-		{
-			ui->UpdateSlow(true);
-			//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-			TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
-		}
-
-	}
-	else  // 슬로우 풀기
-	{
-		ui->UpdateSlow(false);
-		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
-	}
-
+	
 	TestCode();
 }
 

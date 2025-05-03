@@ -26,6 +26,7 @@ void PlayerWalkAction::Update()
 		{
 			player->GetRigidBody()->SetVelocity({ 0.f,0.f });
 		}
+		player->SetFlip(true);
 		*way = -1;
 		//player->GetRigidBody()->AddVelocity({ way * speed,0 });
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
@@ -43,6 +44,7 @@ void PlayerWalkAction::Update()
 		{
 			player->GetRigidBody()->SetVelocity({ 0.f,0.f });
 		}
+		player->SetFlip(false);
 		*way = 1;
 		//player->GetRigidBody()->AddVelocity({ way * speed,0 });
 		player->GetRigidBody()->AddForce({ *way * speed,0 });

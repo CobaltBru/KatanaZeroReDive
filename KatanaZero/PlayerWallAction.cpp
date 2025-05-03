@@ -22,6 +22,7 @@ void PlayerWallAction::Update()
 	{
 		if (*way == 1)
 		{
+			player->SetFlip(true);
 			*way = -1;
 			player->GetAnimator()->startAnimation("fall");
 			player->GetRigidBody()->AddVelocity({ -50.f,0 });
@@ -32,6 +33,7 @@ void PlayerWallAction::Update()
 	{
 		if (*way == -1)
 		{
+			player->SetFlip(false);
 			*way = 1;
 			player->GetAnimator()->startAnimation("fall");
 			player->GetRigidBody()->AddVelocity({ 50.f,0 });
@@ -42,6 +44,7 @@ void PlayerWallAction::Update()
 	{
 		if (*way == 1)
 		{
+			player->SetFlip(true);
 			*way = -1;
 			player->GetAnimator()->startAnimation("jump");
 			player->GetRigidBody()->AddVelocity({ -700.f,-1000.f });
@@ -49,6 +52,7 @@ void PlayerWallAction::Update()
 		}
 		else
 		{
+			player->SetFlip(false);
 			*way = 1;
 			player->GetAnimator()->startAnimation("jump");
 			player->GetRigidBody()->AddVelocity({ 700.f,-1000.f });

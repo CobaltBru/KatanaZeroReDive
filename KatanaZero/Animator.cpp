@@ -3,7 +3,7 @@
 
 void Animator::pushAnimation(string key, SpriteAnimation* ani, string next)
 {
-	Animation tmp = { ani, next };
+	SAnimation tmp = { ani, next };
 	tree.insert({ key,tmp });
 }
 
@@ -48,7 +48,7 @@ void Animator::startAnimation(string key)
 	currentAnimation->ani->reset();
 }
 
-Animation* Animator::FindAnimation(string key)
+SAnimation* Animator::FindAnimation(string key)
 {
 	auto it = tree.find(key);
 	if (it != tree.end())
@@ -59,4 +59,14 @@ Animation* Animator::FindAnimation(string key)
 	{
 		return nullptr;
 	}
+}
+
+GPImage* Animator::getGPImage()
+{
+	return currentAnimation->ani->getGPImage();
+}
+
+Image* Animator::getImage()
+{
+	return currentAnimation->ani->getImage();
 }

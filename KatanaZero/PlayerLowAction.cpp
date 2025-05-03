@@ -23,11 +23,13 @@ void PlayerLowAction::Update()
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('A'))
 	{
+		player->SetFlip(true);
 		*player->GetWay() = -1;
 		player->changeState(STATE::ROLL);
 	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('D'))
 	{
+		player->SetFlip(false);
 		*player->GetWay() = 1;
 		player->changeState(STATE::ROLL);
 	}

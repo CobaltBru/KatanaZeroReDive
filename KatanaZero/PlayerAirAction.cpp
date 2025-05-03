@@ -27,6 +27,7 @@ void PlayerAirAction::Update()
 	{
 		left = true;
 		*way = -1;
+		player->SetFlip(true);
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
 		if (player->GetRigidBody()->IsGround())
 		{
@@ -39,6 +40,7 @@ void PlayerAirAction::Update()
 	{
 		right = true;
 		*way = 1;
+		player->SetFlip(false);
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
 		if (player->GetRigidBody()->IsGround())
 		{

@@ -87,5 +87,6 @@ public:
 	inline bool getAniComplete() { return isComplete; }
 	inline bool getMoveComplete() { return isMoveComplete; }
 	inline FPOINT getCurrentPos() { return { pos.x + moveTask.offset.x,pos.y + moveTask.offset.y }; }
+	
 };
 
