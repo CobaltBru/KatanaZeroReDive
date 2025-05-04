@@ -198,6 +198,7 @@ void Player::Update()
 			changeState(STATE::ATTACK);
 		if (skill2On)
 		{
+			dragonSkillCollider();
 			SetPos({ Pos.x  + skillVec.x ,
 				Pos.y + skillVec.y });
 			skill2On = false;
@@ -648,6 +649,25 @@ void Player::dragonSkillRender(HDC hdc)
 	DeleteObject(hPen2);
 
 	delete pGraphics;
+}
+
+void Player::dragonSkillCollider()
+{
+	FHitResult HitResult;
+
+	while(CollisionManager::GetInstance()->
+		LineTraceByObject(HitResult, ECollisionGroup::Enemy, {Pos.x + ScrollManager::GetInstance()->GetScroll().x,
+			Pos.y + ScrollManager::GetInstance()->GetScroll().y }, { Pos.x + skillVec.x ,Pos.y + skillVec.y },true))
+	{
+		ObjectCollider->SetHit(true);
+		HitResult.HitCollision->SetHit(true);	// opponent
+
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+
+		// knock enemy
+		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
+			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+	}
 }
 
 
