@@ -10,6 +10,7 @@ public:
     int findClosestNode(const FPOINT& pos) const;
     vector<int> FindPath(int start, int goal) const;
     void SetPath(vector<int> InPath) { path = InPath; }
+    vector<int> GetPath() { return path; }
 private:
     const vector<FPOINT>& nodes;
     const vector<vector<Edge>>& graph;

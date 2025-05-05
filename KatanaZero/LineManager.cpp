@@ -765,6 +765,7 @@ int LineManager::GetNodeIdx(const FPOINT& p)
 
 void LineManager::MakeGraphFromLines()
 {
+	float spacing = 10.f;
 	nodes.clear();
 	graph.clear();
 	nodeIndex.clear();
@@ -774,16 +775,34 @@ void LineManager::MakeGraphFromLines()
 	{
 		for (Line* L : LineList[type])
 		{
-			// 좌표별 노드 인덱스 확보 (없으면 생성)
-			int idxA = GetNodeIdx(L->GetLine().LeftPoint);
-			int idxB = GetNodeIdx(L->GetLine().RightPoint);
+			// 원래 두 끝점
+			FPOINT a = L->GetLine().LeftPoint;
+			FPOINT b = L->GetLine().RightPoint;
 
-			// 두 점 간 거리 계산
-			float dist = Distance(L->GetLine().LeftPoint, L->GetLine().RightPoint);
+			// 1) 길이 & 분할 개수 계산
+			float Llen = Distance(a, b);
+			int n = max(1, (int)ceil(Llen / spacing));
 
-			// 양방향 이동 허용
-			graph[idxA].push_back({ idxB, dist });
-			graph[idxB].push_back({ idxA, dist });
+			// 2) t=0..n까지 노드 인덱스 수집
+			vector<int> idxs;
+			idxs.reserve(n + 1);
+			for (int i = 0; i <= n; ++i)
+			{
+				float t = float(i) / float(n);
+				FPOINT p{ a.x + (b.x - a.x) * t,
+						  a.y + (b.y - a.y) * t };
+				int idx = GetNodeIdx(p);
+				idxs.push_back(idx);
+			}
+
+			// 3) 연속된 노드끼리만 간선 추가
+			for (int i = 1; i < idxs.size(); ++i)
+			{
+				int u = idxs[i - 1], v = idxs[i];
+				float cost = Distance(nodes[u], nodes[v]);
+				graph[u].push_back({ v, cost, L->GetLineType() });
+				graph[v].push_back({ u, cost, L->GetLineType() });
+			}
 		}
 	}
 }

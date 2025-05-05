@@ -154,7 +154,6 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 
 	pathFinder = new PathFinder(LineManager::GetInstance()->GetNodes(), LineManager::GetInstance()->GetGraph());
 
-
 	// BT 세팅
 	auto idleaction = bind(&Grunt::IDLEAction, this);
 	auto patrolaction = bind(&Grunt::PatrolAction, this);
@@ -169,7 +168,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	Sequence* Dead = new Sequence();
 	Sequence* MeleeAttack = new Sequence();
 	Selector* Chase = new Selector();
-	Sequence* Waiting = new Sequence();
+	
 	Sequence* Patrol = new Sequence();
 	Sequence* IDLE = new Sequence();
 	root->addChild(Dead);
@@ -231,19 +230,22 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	DirectChase->addChild(IsInSameFloor);
 	DirectChase->addChild(changeChaseAnim);
 	DirectChase->addChild(ChaseAction);
+
 	Sequence* FindPath = new Sequence();
-	ActionNode* CalcPath = new ActionNode("CalcPath", calcpathaction);
-	ConditionNode* CanFindPath = new ConditionNode([this]() { return (bChasing && false); });
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return !Detecting() && bChasing; });
+	Node* CalcPath = new CooldownNode(new ActionNode("CalcPath", calcpathaction), recalcDuration);
+	ConditionNode* HasPath = new ConditionNode([this]() { return !navPath.isEmpty(); });
 	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
-	FindPath->addChild(CalcPath);
 	FindPath->addChild(CanFindPath);
-	FindPath->addChild(changeChaseAnim);
+	FindPath->addChild(CalcPath);
+	FindPath->addChild(HasPath);
 	FindPath->addChild(MoveToPath);
 
 	Chase->addChild(DirectChase);
 	Chase->addChild(FindPath);
 
-	ConditionNode* IsChasing = new ConditionNode([this]() { return bChasing; });
+	Sequence* Waiting = new Sequence();
+	ConditionNode* IsChasing = new ConditionNode([this]() { return bChasing && !Detecting() && navPath.isEmpty(); });
 	ActionNode* changeWaitingAnim = new ActionNode("changeWait", [this]() {
 		this->ChangeAnimation(EImageType::IDLE);
 		return NodeStatus::Success; });
@@ -379,6 +381,7 @@ NodeStatus Grunt::MeleeAttackAction()
 NodeStatus Grunt::ChaseAction()
 {
 	if (!SnapShotManager::GetInstance()->GetPlayer()) return NodeStatus::Failure;
+	bChasing = true;
 	auto player = SnapShotManager::GetInstance()->GetPlayer();
 	FPOINT playerPos = player->GetPos();
 
@@ -391,6 +394,7 @@ NodeStatus Grunt::ChaseAction()
 	ObjectRigidBody->Update();
 	UpdateAnimation();
 	if (IsInAttackRange()) return NodeStatus::Success;
+	if (!Detecting()) return NodeStatus::Failure;
 	
 	return NodeStatus::Running;
 }
@@ -402,13 +406,86 @@ NodeStatus Grunt::CalcPathAction()
 	int startIdx = pathFinder->findClosestNode(this->Pos);
 	int goalIdx = pathFinder->findClosestNode(player->GetPos());
 	auto newPath = pathFinder->FindPath(startIdx, goalIdx);
-	pathFinder->SetPath(newPath);
+	if (newPath.empty())
+	{
+		navPath.clear();
+		return NodeStatus::Failure;
+	}
+	int oldTarget = navPath.isEmpty() ? startIdx : navPath.getCurrentNode();
+	size_t newIdx = 0;
+	for (size_t i = 0; i < newPath.size(); ++i)
+	{
+		if (newPath[i] == oldTarget)
+		{
+			newIdx = i;
+			break;
+		}
+	}
+	navPath.setPath(newPath);
+	navPath.setCurrentIdx(newIdx);
 	return NodeStatus::Success;
 }
 
 NodeStatus Grunt::FindPathAction()
 {
-	// 와... 예외가 너무많네 이거 어떻게 처리하냐... ㅅㅂ...
+	if (navPath.isEmpty()) {
+		bChasing = false;
+		ObjectRigidBody->SetVelocity({ 0,0 });
+		return NodeStatus::Failure;
+	}
+	int u = navPath.getCurrentNode();
+	int uNext = navPath.peekNextNode();
+	if (uNext != -1) {
+		bool nextIsDown = false;
+		for (auto& e : LineManager::GetInstance()->GetGraph()[u]) {
+			if (e.to == uNext) {
+				nextIsDown = (e.type == ELineType::DownLine);
+				break;
+			}
+		}
+
+		if (nextIsDown) {
+			// 내려가는 라인 진입
+			if (!bDown) {
+				bDown = true;
+				ObjectRigidBody->SetDown(true);
+			}
+		}
+		else {
+			// 일반 바닥(또는 올라가는 라인) 도착
+			if (bDown) {
+				bDown = false;
+				ObjectRigidBody->SetDown(false);
+			}
+		}
+	}
+
+	const auto& nodes = LineManager::GetInstance()->GetNodes();
+	FPOINT target = nodes[u];
+
+	float dx = target.x - Pos.x;
+
+	
+	const float arrivalX = 5.f;
+	if (fabsf(dx) < arrivalX) {
+		navPath.advance();
+		return NodeStatus::Running;
+	}
+
+	
+	float dirX = (dx > 0) ? 1.f : -1.f;
+
+	
+	float vx = dirX * Speed * 2.f;
+	ObjectRigidBody->SetVelocity({ 0, 0 });
+	ObjectRigidBody->AddVelocity({ vx, 0.f });
+
+	
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	ChangeAnimation(EImageType::Run);
+	SetDir(dirX > 0 ? 1 : -1);
+
 	return NodeStatus::Running;
 }
 
@@ -418,6 +495,7 @@ NodeStatus Grunt::WatingAction()
 	{
 		return NodeStatus::Success;
 	}
+	ObjectRigidBody->SetVelocity({ 0.f, 0.f });
 	ObjectRigidBody->Update();
 	UpdateAnimation();
 	

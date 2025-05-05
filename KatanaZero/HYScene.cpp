@@ -65,7 +65,7 @@ HRESULT HYScene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	if (FAILED(LineManager->LoadFile(L"Data/Stage1/ClubLine.dat")))
+	if (FAILED(LineManager->LoadFile(L"Data/Stage1/HY1Line.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("HYScene LineManager LoadFile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
@@ -112,20 +112,20 @@ HRESULT HYScene::InitObject()
 	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	//LoadBackground();
+	LoadBackground();
 	LoadObject();
 	LoadFloor();
 
-	Tile* tile = new Tile();
+	/*Tile* tile = new Tile();
 	if (FAILED(tile->Init(L"Data/Stage1/ClubTile.dat")))
 	{
 		MessageBox(g_hWnd, TEXT("Stage1Scene tile Failed."), TEXT("실패"), MB_OK);
 		return E_FAIL;
 	}
-	ObjectManager->AddGameObject(EObjectType::GameObject, tile);
+	ObjectManager->AddGameObject(EObjectType::GameObject, tile);*/
 
 	Player* player = new Player();
-	player->Init({ 200.f, 0.f });
+	player->Init({ 160.f, 700.f });
 	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 	
 	return S_OK;
@@ -220,7 +220,7 @@ void HYScene::LoadObject()
 
 
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/ClubObject.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1Object.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{

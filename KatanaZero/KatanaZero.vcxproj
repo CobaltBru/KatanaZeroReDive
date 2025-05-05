@@ -263,6 +263,7 @@
     <ClInclude Include="INode.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="NavigationPath.h" />
     <ClInclude Include="NormalParts.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="ParticleEffect.h" />

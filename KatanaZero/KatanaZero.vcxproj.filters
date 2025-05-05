@@ -795,5 +795,8 @@
     <ClInclude Include="PathFinder.h">
       <Filter>MainGame\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="NavigationPath.h">
+      <Filter>MainGame\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@ struct Edge
 {
 	int to;
 	float cost;
+	ELineType type;
 };
 
 class Line;

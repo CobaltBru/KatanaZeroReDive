@@ -4,6 +4,7 @@
 #include "EnemyState.h"
 #include "INode.h"
 #include <memory>
+#include "NavigationPath.h"
 
 enum class EType
 {
@@ -30,7 +31,7 @@ protected:
 	float detectRange;
 	float attackRange;
 	float meleeAttackRange;
-	
+
 	EType eType;
 	int targetFloor;
 	bool bReachedTargetFloor;
@@ -51,6 +52,9 @@ protected:
 
 	// °æ·Î Å½»ö ¿ë pathFinder °´Ã¼
 	PathFinder* pathFinder;
+	NavigationPath navPath;
+	float recalcDuration{ 0.3f };
+	float recalcTimer{ 0.f };
 
 	// Jump
 	float Gravity;
