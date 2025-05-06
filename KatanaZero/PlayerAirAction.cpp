@@ -27,11 +27,13 @@ void PlayerAirAction::Update()
 	{
 		left = true;
 		*way = -1;
+		player->SetFlip(true);
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
 		if (player->GetRigidBody()->IsGround())
 		{
 			player->GetAnimator()->startAnimation("run");
 			player->changeState(STATE::WALK);
+			return;
 		}
 	}
 	else left = false;
@@ -39,11 +41,13 @@ void PlayerAirAction::Update()
 	{
 		right = true;
 		*way = 1;
+		player->SetFlip(false);
 		player->GetRigidBody()->AddForce({ *way * speed,0 });
 		if (player->GetRigidBody()->IsGround())
 		{
 			player->GetAnimator()->startAnimation("run");
 			player->changeState(STATE::WALK);
+			return;
 		}
 	}
 	else right = false;
@@ -56,15 +60,22 @@ void PlayerAirAction::Update()
 	
 	if (KeyManager::GetInstance()->IsStayKeyDown('S'))
 	{
+		player->GetRigidBody()->SetDown(true);
 		player->GetRigidBody()->AddVelocity({ 0,300.f });
+	}
+	else
+	{
+		player->GetRigidBody()->SetDown(false);
 	}
 	if (!left && !right)
 	{
 		if (player->GetRigidBody()->IsGround())
 		{
+			player->GetRigidBody()->SetDown(false);
 			player->GetAnimator()->startAnimation("idle");
 			player->GetRigidBody()->SetVelocity({ currentV.x * 0.2f,0.f });
 			player->changeState(STATE::IDLE);
+			return;
 		}
 	}
 	
@@ -73,6 +84,7 @@ void PlayerAirAction::Update()
 		player->GetAnimator()->startAnimation("wall");
 		player->GetRigidBody()->SetVelocity({ 0.f,currentV.y * 0.8f });
 		player->changeState(STATE::WALL);
+		return;
 	}
 	if (!isfall)
 	{

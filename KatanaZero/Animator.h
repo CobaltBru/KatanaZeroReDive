@@ -2,7 +2,9 @@
 #include "config.h"
 
 class SpriteAnimation;
-struct Animation
+class GPImage;
+class Image;
+struct SAnimation
 {
 	SpriteAnimation* ani;
 	string next;
@@ -11,13 +13,13 @@ struct Animation
 class Animator
 {
 private:
-	map<string, Animation> tree;
+	map<string, SAnimation> tree;
 
 	FPOINT pos;
 	bool flip;
 	bool isEffect;
 
-	Animation* currentAnimation;
+	SAnimation* currentAnimation;
 
 public:
 	void pushAnimation(string key, SpriteAnimation* ani, string next = "NONE");
@@ -26,6 +28,8 @@ public:
 	void Release();
 
 	void startAnimation(string key);
-	Animation* FindAnimation(string key);
+	SAnimation* FindAnimation(string key);
+	GPImage* getGPImage();
+	Image* getImage();
 };
 

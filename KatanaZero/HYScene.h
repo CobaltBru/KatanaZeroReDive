@@ -13,6 +13,7 @@ class ScreenEffectManager;
 class EffectManager;
 class Player;
 class GPImageManager;
+class UIGame;
 class HYScene : public Scene
 {
 public:
@@ -40,6 +41,7 @@ private:
 
 	void InitTile();
 private:
+	UIGame* ui;
 	ObjectManager* ObjectManager;
 	RenderManager* RenderManager;
 	CollisionManager* CollisionManager;

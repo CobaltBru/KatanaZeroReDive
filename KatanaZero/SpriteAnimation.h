@@ -30,5 +30,7 @@ public:
 	void Render(HDC hdc);
 	bool isFinish();
 	void reset();
+	inline GPImage* getGPImage() { return gpImage; }
+	inline Image* getImage() { return image; }
 };
 

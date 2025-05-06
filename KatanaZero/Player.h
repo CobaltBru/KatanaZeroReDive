@@ -9,13 +9,17 @@
 enum STATE { IDLE, WALK, LOW, AIR, WALL, ATTACK, ROLL, DEAD, END };
 
 class Image;
+class GPImage;
 class Collider;
 class Action;
 class Animator;
+class UIGame;
+class ArrowUI;
+class PickUpHand;
 class Player : public GameObject
 {
 private:
-
+	Collider* AttackCollider;
 
 	float scrollSpeed;
 	int way;
@@ -25,19 +29,36 @@ private:
 
 	Image* image;
 	Image* effectImage;
-
+	GPImage* skillImage;
 	Animator* animator;
 
 	STATE currentState;
 	STATE oldState;
 	vector<Action*> stateMachine;
 
+	float ScrollSpeed;
+	FPOINT scroll;
+
+	PickUpHand* RightHand;
+	UIGame* UIGameObj;
+	ArrowUI* ArrowUIObj;
+
+	bool canUseSkill1;
+	bool skill1On;
+	float skill2On;
+	float skillDistance;
+	FPOINT goVec;
+	FPOINT skillVec;
+	float currentLen;
+	float skill2Timer;
 public:
 	Player();
 	virtual ~Player();
 
 	HRESULT Init() override;
 	HRESULT Init(FPOINT InPos);
+	HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize,
+		bool InFlip, ERenderGroup InRenderGroup = ERenderGroup::NonAlphaBlend)override;
 	void Release() override;
 	void Update() override;
 	void Render(HDC hdc) override;
@@ -58,4 +79,16 @@ public:
 	inline int* GetWay() { return &way; }
 	inline Animator* GetAnimator() { return animator; }
 	string stateToString();
+
+	void SetUI(UIGame* InUIGame) { UIGameObj = InUIGame; }
+
+	void SetArrowUI(ArrowUI* InArrowUI) { ArrowUIObj = InArrowUI; }
+	void PickUpUpdate();
+	void Shoot();
+
+	void UpdateCollision();
+
+	void dragonSkillUpdate();
+	void dragonSkillRender(HDC hdc);
+	void dragonSkillCollider();
 };

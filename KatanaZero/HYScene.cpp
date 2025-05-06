@@ -210,7 +210,7 @@ void HYScene::LoadBackground()
 
 void HYScene::LoadObject()
 {
-	UIGame* ui = new UIGame();
+	ui = new UIGame();
 	ui->Init();
 	ObjectManager->AddGameObject(EObjectType::GameObject, ui);
 
@@ -267,8 +267,8 @@ void HYScene::LoadObject()
 
 		if (ClassName == "StartPoint")
 		{
-			static_cast<SimpleObject*>(Obj)->SetUI(ui);
-			static_cast<SimpleObject*>(Obj)->SetArrowUI(ArrowUIObj);
+			static_cast<Player*>(Obj)->SetUI(ui);
+			static_cast<Player*>(Obj)->SetArrowUI(ArrowUIObj);
 		}
 	}
 

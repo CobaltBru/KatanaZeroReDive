@@ -18,6 +18,7 @@ void PlayerDeadAction::onEnter()
 	}
 	else
 	{
+		player->SetFlip((*player->GetWay()) == 1? true:false);
 		toGround = false;
 		player->GetAnimator()->startAnimation("hurtfly_begin");
 	}

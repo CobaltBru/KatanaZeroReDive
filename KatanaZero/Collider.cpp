@@ -55,11 +55,13 @@ void Collider::Render(HDC hdc)
 	HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // 현재 DC에 펜을 설정
 
 	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
-
+	HBRUSH hOldBrush;
 	switch (ColliderType)
 	{
 	case EColliderType::Sphere:
+		hOldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
 		Ellipse(hdc, (int)(Pos.x - HalfSize.x) + Scroll.x, (int)(Pos.y - HalfSize.y) + Scroll.y, (int)(Pos.x + HalfSize.x) + Scroll.x, (int)(Pos.y + HalfSize.y) + Scroll.y);
+		SelectObject(hdc, hOldBrush);
 		break;
 	case EColliderType::Rect:
 		DrawRectLine(hdc, HalfSize);
