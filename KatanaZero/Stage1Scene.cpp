@@ -119,7 +119,7 @@ HRESULT Stage1Scene::InitObject()
 	background->Init("black", 0.f);
 	ObjectManager->AddGameObject(EObjectType::GameObject, background);
 
-	//LoadBackground();
+	LoadBackground();
 	LoadObject();
 	LoadFloor();
 

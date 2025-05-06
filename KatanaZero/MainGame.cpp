@@ -49,7 +49,7 @@ HRESULT MainGame::Init()
 	SceneManager::GetInstance()->AddScene("Hidden", new HiddenScene());	
 	SceneManager::GetInstance()->AddScene("Boss", new BossScene());
 	SceneManager::GetInstance()->AddLoadingScene("로딩_1", new LoadingScene());
-	SceneManager::GetInstance()->ChangeScene("MapTool","로딩_1");
+	SceneManager::GetInstance()->ChangeScene("HY","로딩_1");
 
 	hdc = GetDC(g_hWnd);
 	backBuffer = new Image();
