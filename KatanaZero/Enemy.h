@@ -60,6 +60,9 @@ protected:
 	float baseAttackPivotX;
 	float baseAttackPivotY;
 
+	// 죽음 상태 돌입 판단
+	bool bHitted{ false };
+
 	// Jump
 	float Gravity;
 	float dY;
@@ -118,4 +121,15 @@ public:
 	{
 		TextOutA(hdc, x, y, text, (int)strlen(text));
 	}
+
+	// 행동트리 내부 메서드
+	virtual NodeStatus IDLEAction();
+	virtual NodeStatus PatrolAction();
+	virtual NodeStatus DeadAction();
+	virtual NodeStatus MeleeAttackAction();
+	virtual NodeStatus ChaseAction();
+	virtual NodeStatus CalcPathAction();
+	virtual NodeStatus FindPathAction();
+	virtual NodeStatus WatingAction();
+	virtual NodeStatus AttackIDLEAction();
 };

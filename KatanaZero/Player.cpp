@@ -584,20 +584,20 @@ void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	if (currentState == STATE::ROLL) return;
-	if ((currentState != STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy) ||
-		(currentState != STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Bullet))
-	{
-		ObjectCollider->SetHit(true);
-		HitResult.HitCollision->SetHit(true);	// opponent
+	//if ((currentState != STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy) ||
+	//	(currentState != STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Bullet))
+	//{
+	//	ObjectCollider->SetHit(true);
+	//	HitResult.HitCollision->SetHit(true);	// opponent
 
-		// direction from player to enemy
-		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
-		ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 41,
-				ScrollManager::GetInstance()->GetScale() * 29 });
-		changeState(STATE::DEAD);
+	//	// direction from player to enemy
+	//	FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+	//	ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 41,
+	//			ScrollManager::GetInstance()->GetScale() * 29 });
+	//	changeState(STATE::DEAD);
 
-		SoundManager::GetInstance()->PlaySounds("zerodie", EChannelType::Effect);
-	}
+	//	SoundManager::GetInstance()->PlaySounds("zerodie", EChannelType::Effect);
+	//}
 
 	// player attack enemy
 	if ((currentState == STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Enemy))

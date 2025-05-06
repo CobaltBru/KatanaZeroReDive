@@ -10,15 +10,7 @@ public:
 	virtual void InitImages() override;
 	virtual void SetAnimKey(EImageType newImage) override;
 
-	NodeStatus IDLEAction();
-	NodeStatus PatrolAction();
-	NodeStatus DeadAction();
-	NodeStatus MeleeAttackAction();
-	NodeStatus ChaseAction();
-	NodeStatus CalcPathAction();
-	NodeStatus FindPathAction();
-	NodeStatus WatingAction();
-	NodeStatus AttackIDLEAction();
+	
 };
 
 class Pomp : public Enemy

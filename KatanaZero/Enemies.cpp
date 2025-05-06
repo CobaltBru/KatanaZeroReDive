@@ -34,18 +34,20 @@ HRESULT Grunt::Init(FPOINT InPos)
 	InitRigidBodySetting();
 
 	// BT 세팅
-	auto idleaction = bind(&Grunt::IDLEAction, this);
-	auto patrolaction = bind(&Grunt::PatrolAction, this);
-	auto deadaction = bind(&Grunt::DeadAction, this);
-	auto meleeAttackaction = bind(&Grunt::MeleeAttackAction, this);
-	auto chaseaction = bind(&Grunt::ChaseAction, this);
-	auto findpathaction = bind(&Grunt::FindPathAction, this);
-	auto watingaction = bind(&Grunt::WatingAction, this);
+	auto idleaction = bind(&Enemy::IDLEAction, this);
+	auto patrolaction = bind(&Enemy::PatrolAction, this);
+	auto deadaction = bind(&Enemy::DeadAction, this);
+	auto meleeAttackaction = bind(&Enemy::MeleeAttackAction, this);
+	auto attackIDLEaction = bind(&Enemy::AttackIDLEAction, this);
+	auto chaseaction = bind(&Enemy::ChaseAction, this);
+	auto calcpathaction = bind(&Enemy::CalcPathAction, this);
+	auto findpathaction = bind(&Enemy::FindPathAction, this);
+	auto watingaction = bind(&Enemy::WatingAction, this);
 	root = new Selector();
 	Sequence* Dead = new Sequence();
 	Sequence* MeleeAttack = new Sequence();
 	Selector* Chase = new Selector();
-	Sequence* Waiting = new Sequence();
+
 	Sequence* Patrol = new Sequence();
 	Sequence* IDLE = new Sequence();
 	root->addChild(Dead);
@@ -55,7 +57,7 @@ HRESULT Grunt::Init(FPOINT InPos)
 	root->addChild(IDLE);
 
 	ConditionNode* isDead = new ConditionNode([this]() {
-		return this->bDead;
+		return this->bHitted;
 		});
 	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
 		this->ChangeAnimation(EImageType::Dead);
@@ -65,20 +67,38 @@ HRESULT Grunt::Init(FPOINT InPos)
 	Dead->addChild(changeDeadAnim);
 	Dead->addChild(DeadAction);
 
+
 	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
-		return this->IsInAttackRange();
+		return (this->IsInAttackRange() || this->bAttacking) && !bHitted;
 		});
+	MeleeAttack->addChild(IsInAttackRange);
 	ConditionNode* CanAttack = new ConditionNode([this]() {
 		return this->attackTimer == 0.f;
 		});
 	ActionNode* changeAttackAnim = new ActionNode("changeAttack", [this]() {
 		this->ChangeAnimation(EImageType::Attack);
+
+		bAttacking = true;
 		return NodeStatus::Success; });
 	ActionNode* MeleeAttackAction = new ActionNode("Attack", meleeAttackaction);
-	MeleeAttack->addChild(IsInAttackRange);
-	MeleeAttack->addChild(CanAttack);
-	MeleeAttack->addChild(changeAttackAnim);
-	MeleeAttack->addChild(MeleeAttackAction);
+	ActionNode* changeAttackIDLEAnim = new ActionNode("changeAttackIDLE", [this]() { this->ChangeAnimation(EImageType::IDLE);
+	return NodeStatus::Success; });
+	ActionNode* AttackIDLEAction = new ActionNode("AttackIDLE", attackIDLEaction);
+
+	Selector* AttackBehavior = new Selector();
+	Sequence* DoAttack = new Sequence();
+	DoAttack->addChild(CanAttack);
+	DoAttack->addChild(changeAttackAnim);
+	DoAttack->addChild(MeleeAttackAction);
+
+	Sequence* DoAttackIDLE = new Sequence();
+	DoAttackIDLE->addChild(changeAttackIDLEAnim);
+	DoAttackIDLE->addChild(AttackIDLEAction);
+
+	AttackBehavior->addChild(DoAttack);
+	AttackBehavior->addChild(DoAttackIDLE);
+
+	MeleeAttack->addChild(AttackBehavior);
 
 	Sequence* DirectChase = new Sequence();
 	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return Detecting(); });
@@ -89,26 +109,32 @@ HRESULT Grunt::Init(FPOINT InPos)
 	DirectChase->addChild(IsInSameFloor);
 	DirectChase->addChild(changeChaseAnim);
 	DirectChase->addChild(ChaseAction);
+
 	Sequence* FindPath = new Sequence();
-	ConditionNode* CanFindPath = new ConditionNode([this]() { return false; });
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return !Detecting() && bChasing; });
+	Node* CalcPath = new CooldownNode(new ActionNode("CalcPath", calcpathaction), recalcDuration);
+	ConditionNode* HasPath = new ConditionNode([this]() { return !navPath.isEmpty(); });
 	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
 	FindPath->addChild(CanFindPath);
-	FindPath->addChild(changeChaseAnim);
+	FindPath->addChild(CalcPath);
+	FindPath->addChild(HasPath);
 	FindPath->addChild(MoveToPath);
 
 	Chase->addChild(DirectChase);
 	Chase->addChild(FindPath);
 
-
+	Sequence* Waiting = new Sequence();
+	ConditionNode* IsChasing = new ConditionNode([this]() { return bChasing && !Detecting() && navPath.isEmpty(); });
 	ActionNode* changeWaitingAnim = new ActionNode("changeWait", [this]() {
 		this->ChangeAnimation(EImageType::IDLE);
 		return NodeStatus::Success; });
 	ActionNode* WaitingAction = new ActionNode("Waiting", watingaction);
+	Waiting->addChild(IsChasing);
 	Waiting->addChild(changeWaitingAnim);
 	Waiting->addChild(WaitingAction);
 	Chase->addChild(Waiting);
 
-	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol; });
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted; });
 	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		this->ChangeAnimation(EImageType::Walk);
 		return NodeStatus::Success; });
@@ -157,15 +183,15 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	pathFinder = new PathFinder(LineManager::GetInstance()->GetNodes(), LineManager::GetInstance()->GetGraph());
 
 	// BT 세팅
-	auto idleaction = bind(&Grunt::IDLEAction, this);
-	auto patrolaction = bind(&Grunt::PatrolAction, this);
-	auto deadaction = bind(&Grunt::DeadAction, this);
-	auto meleeAttackaction = bind(&Grunt::MeleeAttackAction, this);
-	auto attackIDLEaction = bind(&Grunt::AttackIDLEAction, this);
-	auto chaseaction = bind(&Grunt::ChaseAction, this);
-	auto calcpathaction = bind(&Grunt::CalcPathAction, this);
-	auto findpathaction = bind(&Grunt::FindPathAction, this);
-	auto watingaction = bind(&Grunt::WatingAction, this);
+	auto idleaction = bind(&Enemy::IDLEAction, this);
+	auto patrolaction = bind(&Enemy::PatrolAction, this);
+	auto deadaction = bind(&Enemy::DeadAction, this);
+	auto meleeAttackaction = bind(&Enemy::MeleeAttackAction, this);
+	auto attackIDLEaction = bind(&Enemy::AttackIDLEAction, this);
+	auto chaseaction = bind(&Enemy::ChaseAction, this);
+	auto calcpathaction = bind(&Enemy::CalcPathAction, this);
+	auto findpathaction = bind(&Enemy::FindPathAction, this);
+	auto watingaction = bind(&Enemy::WatingAction, this);
 	root = new Selector();
 	Sequence* Dead = new Sequence();
 	Sequence* MeleeAttack = new Sequence();
@@ -180,7 +206,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	root->addChild(IDLE);
 
 	ConditionNode* isDead = new ConditionNode([this]() {
-		return this->bDead;
+		return this->bHitted;
 		});
 	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
 		this->ChangeAnimation(EImageType::Dead);
@@ -192,7 +218,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 
 
 	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
-		return this->IsInAttackRange() || this->bAttacking;
+		return (this->IsInAttackRange() || this->bAttacking) && !bHitted;
 		});
 	MeleeAttack->addChild(IsInAttackRange);
 	ConditionNode* CanAttack = new ConditionNode([this]() {
@@ -257,7 +283,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	Waiting->addChild(WaitingAction);
 	Chase->addChild(Waiting);
 
-	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol; });
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted; });
 	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		this->ChangeAnimation(EImageType::Walk);
 		return NodeStatus::Success; });
@@ -318,202 +344,7 @@ void Grunt::SetAnimKey(EImageType newImage)
 	}
 }
 
-NodeStatus Grunt::IDLEAction()
-{
-	float dt = TimerManager::GetInstance()->GetDeltaTime();
-	idleTimer += dt;
-	if (idleTimer >= idleDuration)
-	{
-		canPatrol = true;
-		idleTimer = 0.f;
-		return NodeStatus::Success;
-	}
-	ObjectRigidBody->Update();
-	UpdateAnimation();
 
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::PatrolAction()
-{
-	float dt = TimerManager::GetInstance()->GetDeltaTime();
-	patrolTimer += dt;
-	if (patrolTimer >= patrolDuration)
-	{
-		canPatrol = false;
-		patrolTimer = 0.f;
-		ObjectRigidBody->SetVelocity({ 0.f, 0.f });
-		SetDir(GetDir() * -1);
-		return NodeStatus::Success;
-	}
-	int dir = GetDir();
-	const float speed = GetSpeed();
-	ObjectRigidBody->AddVelocity({ dir * speed, 0.f });
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::DeadAction()
-{
-	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
-	{
-		SetDead(true);
-		return NodeStatus::Success;
-	}
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::MeleeAttackAction()
-{
-	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
-	{
-		attackTimer = attackDuration;
-		bAttacking = false;
-		return NodeStatus::Success;
-	}
-	Collision();
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::ChaseAction()
-{
-	if (!SnapShotManager::GetInstance()->GetPlayer()) return NodeStatus::Failure;
-	bChasing = true;
-	auto player = SnapShotManager::GetInstance()->GetPlayer();
-	FPOINT playerPos = player->GetPos();
-
-	float dx = playerPos.x - Pos.x;
-	int dir = (dx > 0) ? 1 : -1;
-	SetDir(dir);
-
-	const float chaseSpeed = GetSpeed() * 2.f;
-	ObjectRigidBody->AddVelocity({ dir * chaseSpeed, 0.f });
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	if (IsInAttackRange()) return NodeStatus::Success;
-	if (!Detecting()) return NodeStatus::Failure;
-	
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::CalcPathAction()
-{
-	if (SnapShotManager::GetInstance()->GetPlayer() == nullptr) return NodeStatus::Failure;
-	auto player = SnapShotManager::GetInstance()->GetPlayer();
-	int startIdx = pathFinder->findClosestNode(this->Pos);
-	int goalIdx = pathFinder->findClosestNode(player->GetPos());
-	auto newPath = pathFinder->FindPath(startIdx, goalIdx);
-	if (newPath.empty())
-	{
-		navPath.clear();
-		return NodeStatus::Failure;
-	}
-	int oldTarget = navPath.isEmpty() ? startIdx : navPath.getCurrentNode();
-	size_t newIdx = 0;
-	for (size_t i = 0; i < newPath.size(); ++i)
-	{
-		if (newPath[i] == oldTarget)
-		{
-			newIdx = i;
-			break;
-		}
-	}
-	navPath.setPath(newPath);
-	navPath.setCurrentIdx(newIdx);
-	return NodeStatus::Success;
-}
-
-NodeStatus Grunt::FindPathAction()
-{
-	if (navPath.isEmpty()) {
-		bChasing = false;
-		ObjectRigidBody->SetVelocity({ 0,0 });
-		return NodeStatus::Failure;
-	}
-	int u = navPath.getCurrentNode();
-	int uNext = navPath.peekNextNode();
-	if (uNext != -1) {
-		bool nextIsDown = false;
-		for (auto& e : LineManager::GetInstance()->GetGraph()[u]) {
-			if (e.to == uNext) {
-				nextIsDown = (e.type == ELineType::DownLine);
-				break;
-			}
-		}
-
-		if (nextIsDown) {
-			// 내려가는 라인 진입
-			if (!bDown) {
-				bDown = true;
-				ObjectRigidBody->SetDown(true);
-			}
-		}
-		else {
-			// 일반 바닥(또는 올라가는 라인) 도착
-			if (bDown) {
-				bDown = false;
-				ObjectRigidBody->SetDown(false);
-			}
-		}
-	}
-
-	const auto& nodes = LineManager::GetInstance()->GetNodes();
-	FPOINT target = nodes[u];
-
-	float dx = target.x - Pos.x;
-
-	
-	const float arrivalX = 5.f;
-	if (fabsf(dx) < arrivalX) {
-		navPath.advance();
-		return NodeStatus::Running;
-	}
-
-	
-	float dirX = (dx > 0) ? 1.f : -1.f;
-
-	
-	float vx = dirX * Speed * 2.f;
-	ObjectRigidBody->SetVelocity({ 0, 0 });
-	ObjectRigidBody->AddVelocity({ vx, 0.f });
-
-	
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	ChangeAnimation(EImageType::Run);
-	SetDir(dirX > 0 ? 1 : -1);
-
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::WatingAction()
-{
-	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
-	{
-		return NodeStatus::Success;
-	}
-	ObjectRigidBody->SetVelocity({ 0.f, 0.f });
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	
-	return NodeStatus::Running;
-}
-
-NodeStatus Grunt::AttackIDLEAction()
-{
-	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
-	{
-		return NodeStatus::Success;
-	}
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	return NodeStatus::Running;
-}
 
 HRESULT Pomp::Init(FPOINT InPos)
 {
