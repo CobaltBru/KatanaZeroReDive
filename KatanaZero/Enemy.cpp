@@ -461,10 +461,10 @@ NodeStatus Enemy::FindPathAction()
 
 NodeStatus Enemy::WatingAction()
 {
-	if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
+	/*if (GetCurrFrame() >= GetImage()->getMaxFrame() - 1)
 	{
 		return NodeStatus::Success;
-	}
+	}*/
 	ObjectRigidBody->SetVelocity({ 0.f, 0.f });
 	ObjectRigidBody->Update();
 	UpdateAnimation();
