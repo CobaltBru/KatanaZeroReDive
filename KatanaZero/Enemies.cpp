@@ -139,7 +139,9 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	eType = EType::Grunt;
 	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange * 2.f, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
-	AttackCollider->SetPivot({ attackRange / 2.f * dir, 0.f });
+	baseAttackPivotX = attackRange / 2.f * dir;
+	baseAttackPivotY = 0.f;
+	AttackCollider->SetPivot({ baseAttackPivotX, baseAttackPivotY });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);

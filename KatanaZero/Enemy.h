@@ -56,6 +56,10 @@ protected:
 	float recalcDuration{ 0.3f };
 	float recalcTimer{ 0.f };
 
+	// 공격 콜라이더 피봇
+	float baseAttackPivotX;
+	float baseAttackPivotY;
+
 	// Jump
 	float Gravity;
 	float dY;

@@ -120,7 +120,9 @@ void Enemy::Update()
 	if (!bDead)
 	{
 		ObjectRigidBody->SetVelocity({ 0.f, 0.f });
-		AttackCollider->SetPivot({ AttackCollider->GetPivot().x * dir, AttackCollider->GetPivot().y });
+		float px = baseAttackPivotX * dir;
+		float py = baseAttackPivotY;
+		AttackCollider->SetPivot({ px, py });
 		float dt = TimerManager::GetInstance()->GetDeltaTime();
 		attackTimer -= dt;
 		if (attackTimer <= 0.f)
@@ -265,8 +267,6 @@ bool Enemy::IsHitted()
 
 void Enemy::Collision()
 {
-	if (!bCanAttack) return;
-	
 	FHitResult HitResult;
 	if (CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Player))
 	{
