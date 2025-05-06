@@ -123,10 +123,6 @@ HRESULT HYScene::InitObject()
 		return E_FAIL;
 	}
 	ObjectManager->AddGameObject(EObjectType::GameObject, tile);*/
-
-	Player* player = new Player();
-	player->Init({ 160.f, 700.f });
-	ObjectManager->AddGameObject(EObjectType::GameObject, player);
 	
 	return S_OK;
 }
@@ -220,7 +216,7 @@ void HYScene::LoadObject()
 
 
 	HANDLE hFile = CreateFile(
-		L"Data/Stage1/HY1Object.dat", GENERIC_READ, 0, NULL,
+		L"Data/Stage1/HY1Object2.dat", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
