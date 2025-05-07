@@ -63,7 +63,7 @@ void PickUp::Render(HDC hdc)
 {
 	const FPOINT Scroll = ScrollManager::GetInstance()->GetScroll();
 	if (Angle < 0.f)
-		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip, true, Scale * ScrollManager::GetInstance()->GetScale());
+		Image->FrameRender(hdc, Pos.x + Scroll.x, Pos.y + Scroll.y, 0, 0, bFlip, true, Scale);
 	else
 	{
 		Gdiplus::Graphics graphics(hdc);

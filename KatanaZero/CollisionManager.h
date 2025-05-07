@@ -13,6 +13,7 @@ enum class ECollisionGroup : uint8_t
 	Bullet,
 	Item,
 	Projectile,
+	Detect,
 	End
 };
 

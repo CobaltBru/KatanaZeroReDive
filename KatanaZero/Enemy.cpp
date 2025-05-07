@@ -281,8 +281,8 @@ void Enemy::Collision()
 		pos.x = HitResult.HitCollision->GetPos().x - AttackCollider->GetPos().x;
 		pos.y = HitResult.HitCollision->GetPos().y - AttackCollider->GetPos().y;
 		Normalize(pos);
-		player->GetRigidBody()->AddVelocity(pos * 500.f);
-		player->changeState(STATE::DEAD);
+		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
+		static_cast<Player*> (HitResult.HitCollision->GetOwner())->changeState(STATE::DEAD);
 	}
 }
 

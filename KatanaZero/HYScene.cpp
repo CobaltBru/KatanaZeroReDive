@@ -31,6 +31,7 @@
 
 #include "Tile.h"
 #include "ArrowUI.h"
+#include "PickUp.h"
 
 HYScene::HYScene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), gpImageManager(nullptr), elapsedTime(0.0f)
@@ -325,7 +326,7 @@ void HYScene::Update()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
 	{
-		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+		SceneManager::GetInstance()->ChangeScene("MapTool", "로딩_1");
 		return;
 	}
 
