@@ -14,7 +14,7 @@
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
 	Gravity(0.1f), bFalling(true), bDown(false), dir(1), detectRange(0.f), attackRange(0.f), eType(EType::None), targetFloor(-1),
-	bReachedTargetFloor(false), attackDuration(0.f), meleeAttackRange(0.f), currAnimKey(""), HitAngle(0.f), pathFinder(nullptr)
+	bReachedTargetFloor(false), attackDuration(0.f), gunRange(0.f), currAnimKey(""), HitAngle(0.f), pathFinder(nullptr)
 {
 }
 
@@ -147,6 +147,34 @@ void Enemy::Render(HDC hdc)
 		Gdiplus::Graphics graphics(hdc);
 		image->Middle_RenderFrameScale(&graphics, { Pos.x + ScrollManager::GetInstance()->GetScroll().x, Pos.y + ScrollManager::GetInstance()->GetScroll().y }, currFrame, bFlip, 1.0f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 	}
+
+	// 경로 디버깅용
+	auto& nodes = LineManager::GetInstance()->GetNodes();
+	HPEN hOld = nullptr;
+	HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));  // 빨간색 디버그 선
+	hOld = (HPEN)SelectObject(hdc, hPen);
+
+	POINT prev;
+	bool first = true;
+	for (int idx : debugPath) {
+		FPOINT wp = nodes[idx];
+		// Scroll 보정
+		int sx = (int)(wp.x + ScrollManager::GetInstance()->GetScroll().x);
+		int sy = (int)(wp.y + ScrollManager::GetInstance()->GetScroll().y);
+		if (first) {
+			prev = { sx, sy };
+			first = false;
+		}
+		else {
+			MoveToEx(hdc, prev.x, prev.y, nullptr);
+			LineTo(hdc, sx, sy);
+			prev = { sx, sy };
+		}
+	}
+
+	// 복원
+	SelectObject(hdc, hOld);
+	DeleteObject(hPen);
 }
 
 void Enemy::MakeSnapShot(void* out)
@@ -235,16 +263,6 @@ bool Enemy::IsInAttackRange()
 		return true;
 	}
 		
-	return false;
-}
-
-bool Enemy::IsInMeleeAttackRange()
-{
-	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
-	FHitResult Result;
-	if (CollisionManager::GetInstance()->LineTraceByObject(Result, ECollisionGroup::Player, this->Pos, { Pos.x + meleeAttackRange * dir, Pos.y }))
-		return true;
-
 	return false;
 }
 
@@ -371,92 +389,155 @@ NodeStatus Enemy::ChaseAction()
 
 NodeStatus Enemy::CalcPathAction()
 {
-	if (SnapShotManager::GetInstance()->GetPlayer() == nullptr) return NodeStatus::Failure;
-	auto player = SnapShotManager::GetInstance()->GetPlayer();
+	auto* player = SnapShotManager::GetInstance()->GetPlayer();
+	if (!player) return NodeStatus::Failure;
+
+	// A* 경로 새로 계산
 	int startIdx = pathFinder->findClosestNode(this->Pos);
 	int goalIdx = pathFinder->findClosestNode(player->GetPos());
 	auto newPath = pathFinder->FindPath(startIdx, goalIdx);
-	if (newPath.empty())
-	{
+	if (newPath.empty()) {
 		navPath.clear();
 		return NodeStatus::Failure;
 	}
-	int oldTarget = navPath.isEmpty() ? startIdx : navPath.getCurrentNode();
-	size_t newIdx = 0;
-	for (size_t i = 0; i < newPath.size(); ++i)
-	{
-		if (newPath[i] == oldTarget)
-		{
-			newIdx = i;
-			break;
+
+	// 노드 위치 참조
+	const auto& nodes = LineManager::GetInstance()->GetNodes();
+
+	// 1) 적→플레이어 방향 벡터
+	FPOINT toPlayer{ player->GetPos().x - Pos.x,
+					 player->GetPos().y - Pos.y };
+	// 정규화
+	float lenP = sqrtf(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
+	if (lenP > 0.f) {
+		toPlayer.x /= lenP;
+		toPlayer.y /= lenP;
+	}
+
+	// 2) “플레이어 방향 후보”와 “그 외 후보” 분리
+	vector<size_t> forwardCandidates;
+	vector<size_t> otherCandidates;
+	forwardCandidates.reserve(newPath.size());
+	otherCandidates.reserve(newPath.size());
+
+	for (size_t i = 0; i < newPath.size(); ++i) {
+		FPOINT nodePos = nodes[newPath[i]];
+		// 적→노드 벡터
+		float dx = nodePos.x - Pos.x;
+		float dy = nodePos.y - Pos.y;
+		// 플레이어 방향과의 내적
+		float dot = dx * toPlayer.x + dy * toPlayer.y;
+		if (dot > 0.f) {
+			forwardCandidates.push_back(i);
+		}
+		else {
+			otherCandidates.push_back(i);
 		}
 	}
+
+	// 3) 우선순위: forwardCandidates, 없으면 otherCandidates
+	auto& pickList = forwardCandidates.empty()
+		? otherCandidates
+		: forwardCandidates;
+
+	// 4) 그중에서 적과 가장 가까운 노드를 고른다
+	float bestDist = FLT_MAX;
+	size_t bestI = pickList.front();
+	for (size_t idx : pickList) {
+		FPOINT nodePos = nodes[newPath[idx]];
+		float dx = nodePos.x - Pos.x;
+		float dy = nodePos.y - Pos.y;
+		float d = sqrtf(dx * dx + dy * dy);
+		if (d < bestDist) {
+			bestDist = d;
+			bestI = idx;
+		}
+	}
+	if (bestI == 0 && newPath.size() > 1) {
+		bestI = 1;  // 바로 다음 웨이포인트부터 시작
+	}
+
+	// 5) navPath 설정
 	navPath.setPath(newPath);
-	navPath.setCurrentIdx(newIdx);
+	debugPath = navPath.getFullPath();
+	navPath.setCurrentIdx(bestI);
+
 	return NodeStatus::Success;
 }
 
 NodeStatus Enemy::FindPathAction()
 {
+	// 1) 경로 비었으면 추적 종료
 	if (navPath.isEmpty()) {
-		bChasing = false;
 		ObjectRigidBody->SetVelocity({ 0,0 });
 		return NodeStatus::Failure;
 	}
+
+	// 2) 현재·다음 노드
 	int u = navPath.getCurrentNode();
 	int uNext = navPath.peekNextNode();
+
+	// 3) DownLine(위→아래 통과) 처리
 	if (uNext != -1) {
-		bool nextIsDown = false;
+		// u→uNext 에 해당하는 엣지 타입 찾기
+		bool isDownLineEdge = false;
 		for (auto& e : LineManager::GetInstance()->GetGraph()[u]) {
 			if (e.to == uNext) {
-				nextIsDown = (e.type == ELineType::DownLine);
+				isDownLineEdge = (e.type == ELineType::DownLine);
 				break;
 			}
 		}
 
-		if (nextIsDown) {
-			// 내려가는 라인 진입
-			if (!bDown) {
+		// 두 점의 y 비교 (게임 좌표계에서 y 증가가 아래 방향)
+		float yCur = LineManager::GetInstance()->GetNodes()[u].y;
+		float yNext = LineManager::GetInstance()->GetNodes()[uNext].y;
+		bool goingDown = (yNext > yCur);
+
+		if (isDownLineEdge) {
+			// DownLine: 위→아래일 때만 bDown 허용
+			if (goingDown && !bDown) {
 				bDown = true;
 				ObjectRigidBody->SetDown(true);
 			}
+			else if (!goingDown && bDown) {
+				// 위로 올라올 때는 항상 해제
+				bDown = false;
+				ObjectRigidBody->SetDown(false);
+			}
 		}
 		else {
-			// 일반 바닥(또는 올라가는 라인) 도착
+			// Normal 라인(수평 또는 slope): 
+			// - 위→아래 slope(=기울기 Normal)은 always collide, bDown 모드 안 씀  
+			// - 수평은 무조건 collide  
 			if (bDown) {
+				// 이전에 DownLine 모드였다면 되돌리기
 				bDown = false;
 				ObjectRigidBody->SetDown(false);
 			}
 		}
 	}
 
+	// 4) 이동
 	const auto& nodes = LineManager::GetInstance()->GetNodes();
-	FPOINT target = nodes[u];
+	FPOINT target = (uNext != -1)
+		? nodes[uNext]
+		: nodes[u];
 
-	float dx = target.x - Pos.x;
+		float dx = target.x - Pos.x;
+		if (fabsf(dx) < 2.f) {
+			// 웨이포인트 도착
+			navPath.advance();
+			return NodeStatus::Running;
+		}
 
+		float dirX = dx > 0.f ? +1.f : -1.f;
+		const float chaseSpeed = GetSpeed() * 2.f;
+		ObjectRigidBody->AddVelocity({ dirX * chaseSpeed, 0.f });
+		SetDir((int)dirX);
 
-	const float arrivalX = 5.f;
-	if (fabsf(dx) < arrivalX) {
-		navPath.advance();
+		ObjectRigidBody->Update();
+		UpdateAnimation();
 		return NodeStatus::Running;
-	}
-
-
-	float dirX = (dx > 0) ? 1.f : -1.f;
-
-
-	float vx = dirX * Speed * 2.f;
-	ObjectRigidBody->SetVelocity({ 0, 0 });
-	ObjectRigidBody->AddVelocity({ vx, 0.f });
-
-
-	ObjectRigidBody->Update();
-	UpdateAnimation();
-	ChangeAnimation(EImageType::Run);
-	SetDir(dirX > 0 ? 1 : -1);
-
-	return NodeStatus::Running;
 }
 
 NodeStatus Enemy::WatingAction()

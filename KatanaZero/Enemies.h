@@ -33,4 +33,11 @@ public:
 	virtual HRESULT Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPOINT InColliderSize, bool InFlip, ERenderGroup InRenderGroup) override;
 	virtual void InitImages() override;
 	virtual void SetAnimKey(EImageType newImage) override;
+
+	bool IsInGunRange();
+	void Fire();
+	NodeStatus GunAttackAction();
+
+private:
+	float gunRange{ 0.f };
 };

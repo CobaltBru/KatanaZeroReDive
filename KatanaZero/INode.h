@@ -159,7 +159,7 @@ public:
         float dt = TimerManager::GetInstance()->GetDeltaTime();
         if (timer > 0.f) {
             timer -= dt;
-            return NodeStatus::Success; // Äð´Ù¿î Áß¿£ ÀÏ´Ü Success
+            return NodeStatus::Success;  // Success ´ë½Å RunningÀ¸·Î ¹Ù²ã¾ß ½ÃÄö½º°¡ ¿©±â¼­ ¸ØÃã
         }
         NodeStatus s = child->tick();
         if (s == NodeStatus::Success) {

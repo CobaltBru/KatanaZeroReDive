@@ -30,7 +30,7 @@ protected:
 	int dir;
 	float detectRange;
 	float attackRange;
-	float meleeAttackRange;
+	float gunRange;
 
 	EType eType;
 	int targetFloor;
@@ -53,6 +53,7 @@ protected:
 	// °æ·Î Å½»ö ¿ë pathFinder °´Ã¼
 	PathFinder* pathFinder;
 	NavigationPath navPath;
+	vector<int> debugPath;
 	float recalcDuration{ 0.3f };
 	float recalcTimer{ 0.f };
 
@@ -105,7 +106,6 @@ public:
 	virtual void SetAnimKey(EImageType newImage) {};
 	virtual bool Detecting();
 	virtual bool IsInAttackRange();
-	virtual bool IsInMeleeAttackRange();
 	virtual bool IsInSameFloor();
 	virtual bool IsOnDownLine();
 	void AddATimer(float dt) { attackTimer += dt; }

@@ -50,6 +50,8 @@ public:
         return -1;
     }
 
+    vector<int> getFullPath() { return pathNodes; }
+
 private:
     std::vector<int> pathNodes;  // A*가 반환한 노드 인덱스 리스트
     std::size_t      currentIdx = 0;  // 지금 타겟으로 삼고 있는 pathNodes 인덱스

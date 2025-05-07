@@ -149,10 +149,10 @@ EnemyState* ERun::CheckTransition(Enemy* enemy)
 			return new PompAttack();
 			break;
 		case EType::Gangster:
-			if (enemy->IsInMeleeAttackRange())
-				return new GangsterMeleeAttack();	// melee
-			else
-				return new GangsterAttack();		// gun
+			//if (enemy->IsInMeleeAttackRange())
+			//	return new GangsterMeleeAttack();	// melee
+			//else
+			//	return new GangsterAttack();		// gun
 			break;
 		}
 	}

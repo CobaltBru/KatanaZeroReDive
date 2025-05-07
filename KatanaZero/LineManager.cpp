@@ -765,43 +765,55 @@ int LineManager::GetNodeIdx(const FPOINT& p)
 
 void LineManager::MakeGraphFromLines()
 {
-	float spacing = 10.f;
+	float spacing = 30.f;               // 기존 라인 분할 기준
+	float maxLinkDist = spacing * 1.5f; // 이내 거리만 완전 연결
+
 	nodes.clear();
 	graph.clear();
 	nodeIndex.clear();
 
-	// 2) 적이 걸어다닐 수 있는 라인 타입: Normal + Down
+	// 1) 라인별 분할 & 라인 내 엣지 생성 (기존 코드)
 	for (int type = (int)ELineType::Normal; type <= (int)ELineType::DownLine; ++type)
 	{
 		for (Line* L : LineList[type])
 		{
-			// 원래 두 끝점
 			FPOINT a = L->GetLine().LeftPoint;
 			FPOINT b = L->GetLine().RightPoint;
+			float  Llen = Distance(a, b);
+			int    n = max(1, (int)ceil(Llen / spacing));
 
-			// 1) 길이 & 분할 개수 계산
-			float Llen = Distance(a, b);
-			int n = max(1, (int)ceil(Llen / spacing));
-
-			// 2) t=0..n까지 노드 인덱스 수집
-			vector<int> idxs;
-			idxs.reserve(n + 1);
+			vector<int> idxs; idxs.reserve(n + 1);
 			for (int i = 0; i <= n; ++i)
 			{
 				float t = float(i) / float(n);
 				FPOINT p{ a.x + (b.x - a.x) * t,
 						  a.y + (b.y - a.y) * t };
-				int idx = GetNodeIdx(p);
-				idxs.push_back(idx);
+				idxs.push_back(GetNodeIdx(p));
 			}
 
-			// 3) 연속된 노드끼리만 간선 추가
-			for (int i = 1; i < idxs.size(); ++i)
+			for (int i = 1; i < (int)idxs.size(); ++i)
 			{
 				int u = idxs[i - 1], v = idxs[i];
 				float cost = Distance(nodes[u], nodes[v]);
 				graph[u].push_back({ v, cost, L->GetLineType() });
 				graph[v].push_back({ u, cost, L->GetLineType() });
+			}
+		}
+	}
+
+	// ───────────────────────────────────────────────────────────
+	// 2) 인접 노드들만 추가 연결 (거리 <= maxLinkDist)
+	int N = (int)nodes.size();
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = i + 1; j < N; ++j)
+		{
+			float d = Distance(nodes[i], nodes[j]);
+			if (d <= maxLinkDist)
+			{
+				// 이건 “라인 접합”과 비슷한 범위만 연결하므로 타입은 Normal 로 처리
+				graph[i].push_back({ j, d, ELineType::Normal });
+				graph[j].push_back({ i, d, ELineType::Normal });
 			}
 		}
 	}
@@ -860,6 +872,30 @@ void LineManager::Render(HDC hdc)
 		for (auto& iter : LineList[i])
 			iter->Render(hdc);
 	}
+
+
+	// 노드 디버깅용
+	auto& nodes = this->nodes;
+	auto  scroll = ScrollManager::GetInstance()->GetScroll();
+
+	// 초록색 원 브러시/펜
+	HPEN   hPenDbg = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+	HBRUSH hBrushDbg = CreateSolidBrush(RGB(0, 255, 0));
+	HPEN   hOldPen = (HPEN)SelectObject(hdc, hPenDbg);
+	HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrushDbg);
+
+	const int R = 3;
+	for (auto& p : nodes) {
+		int x = int(p.x + scroll.x);
+		int y = int(p.y + scroll.y);
+		Ellipse(hdc, x - R, y - R, x + R, y + R);
+	}
+
+	// 복원 및 해제
+	SelectObject(hdc, hOldPen);
+	SelectObject(hdc, hOldBrush);
+	DeleteObject(hPenDbg);
+	DeleteObject(hBrushDbg);
 }
 
 void LineManager::Release()

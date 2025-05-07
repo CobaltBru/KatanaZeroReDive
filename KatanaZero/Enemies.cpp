@@ -11,6 +11,8 @@
 #include "GPImageManager.h"
 #include "LineManager.h"
 #include "PathFinder.h"
+#include "EffectManager.h"
+#include "Bullet.h"
 
 HRESULT Grunt::Init(FPOINT InPos)
 {
@@ -57,7 +59,7 @@ HRESULT Grunt::Init(FPOINT InPos)
 	root->addChild(IDLE);
 
 	ConditionNode* isDead = new ConditionNode([this]() {
-		return this->bHitted;
+		return !this->bHitted && ObjectCollider->IsHitted();
 		});
 	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
 		this->ChangeAnimation(EImageType::Dead);
@@ -159,18 +161,18 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	InitImages();
 	Pos = InPos;
 	Speed = 200.f;
-	detectRange = 400.f;
+	detectRange = 300.f;
 	attackRange = 60.f;
 	attackDuration = 0.5f;
 	eType = EType::Grunt;
 	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange * 2.f, true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Detect);
 	baseAttackPivotX = attackRange / 2.f * dir;
 	baseAttackPivotY = 0.f;
 	AttackCollider->SetPivot({ baseAttackPivotX, baseAttackPivotY });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Detect);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 
 	RenderGroup = InRenderGroup;
@@ -261,13 +263,17 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 
 	Sequence* FindPath = new Sequence();
 	ConditionNode* CanFindPath = new ConditionNode([this]() { return !Detecting() && bChasing; });
+	FindPath->addChild(CanFindPath);
+
+	Parallel* pathAndMove = new Parallel();
 	Node* CalcPath = new CooldownNode(new ActionNode("CalcPath", calcpathaction), recalcDuration);
 	ConditionNode* HasPath = new ConditionNode([this]() { return !navPath.isEmpty(); });
 	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
-	FindPath->addChild(CanFindPath);
-	FindPath->addChild(CalcPath);
-	FindPath->addChild(HasPath);
-	FindPath->addChild(MoveToPath);
+	pathAndMove->addChild(CalcPath);
+	pathAndMove->addChild(HasPath);
+	pathAndMove->addChild(MoveToPath);
+	
+	FindPath->addChild(pathAndMove);
 
 	Chase->addChild(DirectChase);
 	Chase->addChild(FindPath);
@@ -374,19 +380,19 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 	eState = new EIDLE();
 	Pos = InPos;
 	Speed = 250.f;
-	detectRange = 600.f;
+	detectRange = 400.f;
 	attackRange = 60.f;
 	attackDuration = 0.3f;
 	eType = EType::Pomp;
 	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange * 2.f, true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Detect);
 	baseAttackPivotX = attackRange / 2.f * dir;
 	baseAttackPivotY = 0.f;
 	AttackCollider->SetPivot({ baseAttackPivotX, baseAttackPivotY });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Detect);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 
 	RenderGroup = InRenderGroup;
@@ -445,7 +451,7 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 
 	// --- Dead 시퀀스 ---
 	ConditionNode* isDead = new ConditionNode([this]() {
-		return bHitted && !bParrying;
+		return this->bHitted && !bParrying;
 		});
 	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
 		this->ChangeAnimation(EImageType::Dead);
@@ -495,49 +501,38 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 
 	// --- Chase 시퀀스 ---
 	Sequence* DirectChase = new Sequence();
-	ConditionNode* IsInSameFloor = new ConditionNode([this]() {
-		return Detecting() && !bParrying;
-		});
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return Detecting() && !bParrying; });
 	ActionNode* changeChaseAnim = new ActionNode("changeChase", [this]() {
-		ChangeAnimation(EImageType::Run);
-		return NodeStatus::Success;
-		});
+		this->ChangeAnimation(EImageType::Run);
+		return NodeStatus::Success; });
 	ActionNode* ChaseAction = new ActionNode("Chase", chaseaction);
-
 	DirectChase->addChild(IsInSameFloor);
 	DirectChase->addChild(changeChaseAnim);
 	DirectChase->addChild(ChaseAction);
 
-	// 분할 추적 (optional CooldownNode 적용 전)
-	Sequence* FindPathSeq = new Sequence();
-	ConditionNode* CanFindPath = new ConditionNode([this]() {
-		return !Detecting() && bChasing && !bParrying;
-		});
-	ActionNode* CalcPath = new ActionNode("CalcPath", calcpathaction);
-	ConditionNode* HasPath = new ConditionNode([this]() {
-		return !navPath.isEmpty();
-		});
-	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
+	Sequence* FindPath = new Sequence();
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return !Detecting() && bChasing && !bParrying; });
+	FindPath->addChild(CanFindPath);
 
-	FindPathSeq->addChild(CanFindPath);
-	FindPathSeq->addChild(CalcPath);
-	FindPathSeq->addChild(HasPath);
-	FindPathSeq->addChild(MoveToPath);
+	Parallel* pathAndMove = new Parallel();
+	Node* CalcPath = new CooldownNode(new ActionNode("CalcPath", calcpathaction), recalcDuration);
+	ConditionNode* HasPath = new ConditionNode([this]() { return !navPath.isEmpty(); });
+	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
+	pathAndMove->addChild(CalcPath);
+	pathAndMove->addChild(HasPath);
+	pathAndMove->addChild(MoveToPath);
+
+	FindPath->addChild(pathAndMove);
 
 	Chase->addChild(DirectChase);
-	Chase->addChild(FindPathSeq);
+	Chase->addChild(FindPath);
 
-	// Waiting 상태: 추적 중 경로 없을 때
 	Sequence* Waiting = new Sequence();
-	ConditionNode* IsChasing = new ConditionNode([this]() {
-		return bChasing && !Detecting() && navPath.isEmpty() && !bParrying;
-		});
+	ConditionNode* IsChasing = new ConditionNode([this]() { return bChasing && !Detecting() && navPath.isEmpty() && !bParrying; });
 	ActionNode* changeWaitingAnim = new ActionNode("changeWait", [this]() {
-		ChangeAnimation(EImageType::IDLE);
-		return NodeStatus::Success;
-		});
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success; });
 	ActionNode* WaitingAction = new ActionNode("Waiting", watingaction);
-
 	Waiting->addChild(IsChasing);
 	Waiting->addChild(changeWaitingAnim);
 	Waiting->addChild(WaitingAction);
@@ -545,7 +540,7 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 
 	// --- Patrol & Idle ---
 	ConditionNode* CanPatrol = new ConditionNode([this]() {
-		return canPatrol && !bHitted;
+		return canPatrol && !bHitted && !bParrying;
 		});
 	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		ChangeAnimation(EImageType::Walk);
@@ -631,12 +626,14 @@ HRESULT Gangster::Init(FPOINT InPos)
 	ObjectRigidBody = new RigidBody(this);
 	Speed = 150.f;
 	detectRange = 500.f;
-	attackRange = 400.f;
-	meleeAttackRange = 50.f;
+	attackRange = 50.f;
+	gunRange = 400.f;
 	attackDuration = 1.2f;
-	AttackCollider = new Collider(this, EColliderType::Rect, {}, meleeAttackRange, true, 1.f);
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange, true, 1.f);
 	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Detect);
-	AttackCollider->SetPivot({ meleeAttackRange / 2.f, 0.f });
+	baseAttackPivotX = attackRange / 2.f * dir;
+	baseAttackPivotY = 0.f;
+	AttackCollider->SetPivot({ baseAttackPivotX, baseAttackPivotY });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 	eType = EType::Gangster;
 	InitRigidBodySetting();
@@ -650,16 +647,18 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 	Pos = InPos;
 	Speed = 150.f;
 	detectRange = 500.f;
-	attackRange = 400.f;
-	meleeAttackRange = 50.f;
+	attackRange = 50.f;
+	gunRange = 400.f;
 	attackDuration = 1.2f;
 	eType = EType::Gangster;
-	AttackCollider = new Collider(this, EColliderType::Rect, {}, meleeAttackRange, true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Enemy);
-	AttackCollider->SetPivot({ meleeAttackRange / 2.f, 0.f });
+	AttackCollider = new Collider(this, EColliderType::Rect, {}, attackRange * 2.f, true, 1.f);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Detect);
+	baseAttackPivotX = attackRange / 2.f * dir;
+	baseAttackPivotY = 0.f;
+	AttackCollider->SetPivot({ baseAttackPivotX, baseAttackPivotY });
 	AttackCollider->SetPos({ Pos.x, Pos.y });
 	ObjectCollider = new Collider(this, EColliderType::Rect, InColliderOffset, InColliderSize, true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Detect);
+	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Enemy);
 	ObjectCollider->SetPos(Pos);
 
 	RenderGroup = InRenderGroup;
@@ -668,6 +667,149 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 	ObjectRigidBody = new RigidBody(this);
 
 	InitRigidBodySetting();
+	pathFinder = new PathFinder(LineManager::GetInstance()->GetNodes(), LineManager::GetInstance()->GetGraph());
+
+	// BT 세팅
+	auto idleaction = bind(&Enemy::IDLEAction, this);
+	auto patrolaction = bind(&Enemy::PatrolAction, this);
+	auto deadaction = bind(&Enemy::DeadAction, this);
+	auto meleeAttackaction = bind(&Enemy::MeleeAttackAction, this);
+	auto attackIDLEaction = bind(&Enemy::AttackIDLEAction, this);
+	auto chaseaction = bind(&Enemy::ChaseAction, this);
+	auto calcpathaction = bind(&Enemy::CalcPathAction, this);
+	auto findpathaction = bind(&Enemy::FindPathAction, this);
+	auto watingaction = bind(&Enemy::WatingAction, this);
+	auto gunAttackaction = bind(&Gangster::GunAttackAction, this);
+	root = new Selector();
+	Sequence* Dead = new Sequence();
+	Sequence* MeleeAttack = new Sequence();
+	Sequence* GunAttack = new Sequence();
+	Selector* Chase = new Selector();
+
+	Sequence* Patrol = new Sequence();
+	Sequence* IDLE = new Sequence();
+	root->addChild(Dead);
+	root->addChild(MeleeAttack);
+	root->addChild(GunAttack);
+	root->addChild(Chase);
+	root->addChild(Patrol);
+	root->addChild(IDLE);
+
+	ConditionNode* isDead = new ConditionNode([this]() {
+		return this->bHitted;
+		});
+	ActionNode* changeDeadAnim = new ActionNode("changeDead", [this]() {
+		this->ChangeAnimation(EImageType::Dead);
+		return NodeStatus::Success; });
+	ActionNode* DeadAction = new ActionNode("Dead", deadaction);
+	Dead->addChild(isDead);
+	Dead->addChild(changeDeadAnim);
+	Dead->addChild(DeadAction);
+
+
+	ConditionNode* IsInAttackRange = new ConditionNode([this]() {
+		return (this->IsInAttackRange() || this->bAttacking) && !bHitted;
+		});
+	MeleeAttack->addChild(IsInAttackRange);
+	ConditionNode* CanAttack = new ConditionNode([this]() {
+		return this->attackTimer == 0.f;
+		});
+	ActionNode* changeAttackAnim = new ActionNode("changeAttack", [this]() {
+		this->ChangeAnimation(EImageType::Attack);
+		bAttacking = true;
+		return NodeStatus::Success; });
+	ActionNode* MeleeAttackAction = new ActionNode("Attack", meleeAttackaction);
+	ActionNode* changeAttackIDLEAnim = new ActionNode("changeAttackIDLE", [this]() { this->ChangeAnimation(EImageType::IDLE);
+	return NodeStatus::Success; });
+	ActionNode* AttackIDLEAction = new ActionNode("AttackIDLE", attackIDLEaction);
+
+	Selector* AttackBehavior = new Selector();
+	Sequence* DoAttack = new Sequence();
+	DoAttack->addChild(CanAttack);
+	DoAttack->addChild(changeAttackAnim);
+	DoAttack->addChild(MeleeAttackAction);
+
+	Sequence* DoAttackIDLE = new Sequence();
+	DoAttackIDLE->addChild(changeAttackIDLEAnim);
+	DoAttackIDLE->addChild(AttackIDLEAction);
+
+	AttackBehavior->addChild(DoAttack);
+	AttackBehavior->addChild(DoAttackIDLE);
+
+	MeleeAttack->addChild(AttackBehavior);
+
+	ConditionNode* IsInGunRange = new ConditionNode([this]() {
+		return (this->IsInGunRange() || bAttacking) && !bHitted;
+		});
+	GunAttack->addChild(IsInGunRange);
+	ConditionNode* CanGunAttack = new ConditionNode([this]() {
+		return this->attackTimer == 0.f;
+		});
+	ActionNode* changeGunAttackAnim = new ActionNode("changeGunAttack", [this]() {
+		this->ChangeAnimation(EImageType::GangsterAttack);
+
+		bAttacking = true;
+		return NodeStatus::Success; });
+	ActionNode* GunAttackAction = new ActionNode("GunAttack", gunAttackaction);
+	GunAttack->addChild(CanGunAttack);
+	GunAttack->addChild(changeGunAttackAnim);
+	GunAttack->addChild(GunAttackAction);
+
+	Sequence* DirectChase = new Sequence();
+	ConditionNode* IsInSameFloor = new ConditionNode([this]() { return Detecting(); });
+	ActionNode* changeChaseAnim = new ActionNode("changeChase", [this]() {
+		this->ChangeAnimation(EImageType::Run);
+		return NodeStatus::Success; });
+	ActionNode* ChaseAction = new ActionNode("Chase", chaseaction);
+	DirectChase->addChild(IsInSameFloor);
+	DirectChase->addChild(changeChaseAnim);
+	DirectChase->addChild(ChaseAction);
+
+	Sequence* FindPath = new Sequence();
+	ConditionNode* CanFindPath = new ConditionNode([this]() { return !Detecting() && bChasing; });
+	FindPath->addChild(CanFindPath);
+
+	Parallel* pathAndMove = new Parallel();
+	Node* CalcPath = new CooldownNode(new ActionNode("CalcPath", calcpathaction), recalcDuration);
+	ConditionNode* HasPath = new ConditionNode([this]() { return !navPath.isEmpty(); });
+	ActionNode* MoveToPath = new ActionNode("FindPath", findpathaction);
+	pathAndMove->addChild(CalcPath);
+	pathAndMove->addChild(HasPath);
+	pathAndMove->addChild(MoveToPath);
+
+	FindPath->addChild(pathAndMove);
+
+	Chase->addChild(DirectChase);
+	Chase->addChild(FindPath);
+
+	Sequence* Waiting = new Sequence();
+	ConditionNode* IsChasing = new ConditionNode([this]() { return bChasing && !Detecting() && navPath.isEmpty(); });
+	ActionNode* changeWaitingAnim = new ActionNode("changeWait", [this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success; });
+	ActionNode* WaitingAction = new ActionNode("Waiting", watingaction);
+	Waiting->addChild(IsChasing);
+	Waiting->addChild(changeWaitingAnim);
+	Waiting->addChild(WaitingAction);
+	Chase->addChild(Waiting);
+
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted; });
+	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
+		this->ChangeAnimation(EImageType::Walk);
+		return NodeStatus::Success; });
+	ActionNode* PatrolAction = new ActionNode("Patrol", patrolaction);
+	Patrol->addChild(CanPatrol);
+	Patrol->addChild(changePatrolAnim);
+	Patrol->addChild(PatrolAction);
+
+	ActionNode* changeIDLEAnim = new ActionNode("changeIDLE", [this]() {
+		this->ChangeAnimation(EImageType::IDLE);
+		return NodeStatus::Success;
+		});
+	ActionNode* IDLEaction = new ActionNode("IDLE", idleaction);
+	IDLE->addChild(changeIDLEAnim);
+	IDLE->addChild(IDLEaction);
+	// BT 세팅 끝
 	return S_OK;
 }
 
@@ -713,6 +855,48 @@ void Gangster::SetAnimKey(EImageType newImage)
 		currAnimKey = "Gangster_Dead";
 		break;
 	}
+}
+
+bool Gangster::IsInGunRange()
+{
+	if (!SnapShotManager::GetInstance()->GetPlayer()) return false;
+	FHitResult Result; // 충돌 대상
+	if (CollisionManager::GetInstance()->LineTraceByObject(Result, ECollisionGroup::Player, this->Pos, { Pos.x + gunRange * dir, Pos.y }))
+	{
+		return true;
+	}
+	return false;
+}
+
+void Gangster::Fire()
+{
+	float offset = (GetDir() == 1) ? 28.f : -28.f;
+	FPOINT firePoint = { GetPos().x + offset * ScrollManager::GetInstance()->GetScale(), GetPos().y - 1.f * ScrollManager::GetInstance()->GetScale() };
+	bool bFlip = (GetDir() == 1) ? false : true;
+	EffectManager::GetInstance()->Activefx("gangstergun", firePoint, 0.f, bFlip);
+	Bullet1* bullet = new Bullet1();
+	auto player = SnapShotManager::GetInstance()->GetPlayer();
+
+	int dir = GetDir();
+	float targetangle = atan2f(player->GetPos().y - GetPos().y, player->GetPos().x - GetPos().x);
+	bullet->Init(firePoint, -targetangle, 1000.f, dir);
+}
+
+NodeStatus Gangster::GunAttackAction()
+{
+	if (currFrame == 1)
+	{
+		Fire();
+	}
+	if (currFrame >= GetImage()->getMaxFrame() - 1)
+	{
+		attackTimer = attackDuration;
+		bAttacking = false;
+		return NodeStatus::Success;
+	}
+	ObjectRigidBody->Update();
+	UpdateAnimation();
+	return NodeStatus::Running;
 }
 
 
