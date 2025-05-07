@@ -9,6 +9,7 @@
 #include "ScrollManager.h"
 #include "CommonFunction.h"
 #include "PathFinder.h"
+#include "Player.h"
 
 Enemy::Enemy()
 	:image(nullptr), eState(nullptr), currFrame(0), Speed(0.f), frameTimer(0.f), bFlip(false), bJump(false), dY(-10.f), 
@@ -277,5 +278,6 @@ void Enemy::Collision()
 		pos.y = HitResult.HitCollision->GetPos().y - AttackCollider->GetPos().y;
 		Normalize(pos);
 		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
+		static_cast<Player*> (HitResult.HitCollision->GetOwner())->changeState(STATE::DEAD);
 	}
 }

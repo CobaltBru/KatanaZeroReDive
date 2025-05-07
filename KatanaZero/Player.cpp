@@ -21,6 +21,7 @@
 #include "PickUpHand.h"
 #include "PickUp.h"
 #include "UIGame.h"
+#include "Enemy.h"
 
 Player::Player(): ScrollSpeed(0.f), RightHand(nullptr), UIGameObj(nullptr), ArrowUIObj(nullptr)
 {	
@@ -44,7 +45,7 @@ HRESULT Player::Init()
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 2.0f,
 		(float)image->GetFrameWidth() * ScrollManager::GetInstance()->GetScale() * 1.5f },
 		true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Detect);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	ObjectCollider->SetPos(Pos);
 
@@ -83,7 +84,7 @@ HRESULT Player::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, F
 		30.f * ScrollManager::GetInstance()->GetScale() * 2.0f,
 		30.f * ScrollManager::GetInstance()->GetScale() * 2.0f },
 		true, 1.f);
-	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Player);
+	CollisionManager::GetInstance()->AddCollider(AttackCollider, ECollisionGroup::Detect);
 	CollisionManager::GetInstance()->AddCollider(ObjectCollider, ECollisionGroup::Player);
 	ObjectCollider->SetPos(Pos);
 
@@ -182,106 +183,114 @@ void Player::Update()
 	
 	
 	float deltaTime = TimerManager::GetInstance()->GetDeltaTime();
-	
-
-	if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
+	if (currentState != STATE::DEAD)
 	{
-		if (canUseSkill1)
+		if (KeyManager::GetInstance()->IsStayKeyDown(VK_SHIFT))
 		{
-			if (UIGameObj->getBattery() > 0.0001f)
+			if (canUseSkill1)
 			{
-				skill1On = true;
-				isEffect = true;
-				UIGameObj->UpdateSlow(true);
-				//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
-				TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+				if (UIGameObj->getBattery() > 0.0001f)
+				{
+					skill1On = true;
+					isEffect = true;
+					UIGameObj->UpdateSlow(true);
+					//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
+					TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+				}
+				else
+				{
+					skill1On = false;
+					canUseSkill1 = false;
+					isEffect = false;
+					UIGameObj->UpdateSlow(false);
+					TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+				}
 			}
-			else
+
+
+		}
+		else
+		{
+			skill1On = false;
+			canUseSkill1 = true;
+			isEffect = false;
+			UIGameObj->UpdateSlow(false);
+			TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+		}
+
+
+
+		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
+		{
+			FPOINT attackVec = { 0.f,0.f };
+			attackVec.x = g_ptMouse.x - (Pos.x + ScrollManager::GetInstance()->GetScroll().x);
+			attackVec.y = g_ptMouse.y - (Pos.y + ScrollManager::GetInstance()->GetScroll().y);
+			Normalize(attackVec);
+			AttackCollider->SetPivot(attackVec * 60.f);
+			if (currentState != STATE::ATTACK)
+				changeState(STATE::ATTACK);
+			if (skill2On)
 			{
-				skill1On = false;
-				canUseSkill1 = false;
-				isEffect = false;
-				UIGameObj->UpdateSlow(false);
-				TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
+				dragonSkillCollider();
+				SetPos({ Pos.x + skillVec.x ,
+					Pos.y + skillVec.y });
+				skill2On = false;
+				SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
+				SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
+				TimerManager::GetInstance()->SetSlow(1.f, 0.1f);
 			}
 		}
-		
-		
-	}
-	else
-	{
-		skill1On = false;
-		canUseSkill1 = true;
-		isEffect = false;
-		UIGameObj->UpdateSlow(false);
-		TimerManager::GetInstance()->SetSlow(1.f, 0.2f);
-	}
-
-
-
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_LBUTTON))
-	{
-		FPOINT attackVec = { 0.f,0.f };
-		attackVec.x = g_ptMouse.x - (Pos.x + ScrollManager::GetInstance()->GetScroll().x);
-		attackVec.y = g_ptMouse.y - (Pos.y + ScrollManager::GetInstance()->GetScroll().y);
-		Normalize(attackVec);
-		AttackCollider->SetPivot(attackVec * 60.f);
-		if(currentState != STATE::ATTACK)
-			changeState(STATE::ATTACK);
-		if (skill2On)
+		if (KeyManager::GetInstance()->IsOnceKeyDown('K'))
 		{
-			dragonSkillCollider();
-			SetPos({ Pos.x  + skillVec.x ,
-				Pos.y + skillVec.y });
+			if (currentState != STATE::DEAD)
+			{
+				ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 41,
+					ScrollManager::GetInstance()->GetScale() * 29 });
+				changeState(STATE::DEAD);
+			}
+
+		}
+		if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
+		{
+			skill2On = true;
+			currentLen = 0.f;
+			skill2Timer = 0.f;
+			SoundManager::GetInstance()->PlaySounds("slowon", EChannelType::Effect);
+			SoundManager::GetInstance()->PitchDown(EChannelType::BGM);
+
+		}
+		if (KeyManager::GetInstance()->IsOnceKeyUp(VK_CONTROL))
+		{
 			skill2On = false;
 			SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
 			SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
-			TimerManager::GetInstance()->SetSlow(1.f, 0.1f);
 		}
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown('K'))
-	{
-		if (currentState != STATE::DEAD)
+		if (skill2On)
 		{
-			ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 41,
-				ScrollManager::GetInstance()->GetScale() * 29 });
-			changeState(STATE::DEAD);
+			TimerManager::GetInstance()->SetSlow(0.01f, 0.1f);
+			dragonSkillUpdate();
 		}
-			
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_CONTROL))
-	{
-		skill2On = true;
-		currentLen = 0.f;
-		skill2Timer = 0.f;
-		SoundManager::GetInstance()->PlaySounds("slowon", EChannelType::Effect);
-		SoundManager::GetInstance()->PitchDown(EChannelType::BGM);
-		
-	}
-	if (KeyManager::GetInstance()->IsOnceKeyUp(VK_CONTROL))
-	{
-		skill2On = false;
-		SoundManager::GetInstance()->PlaySounds("slowoff", EChannelType::Effect);
-		SoundManager::GetInstance()->PitchOrigin(EChannelType::BGM);
-	}
-	if (skill2On)
-	{
-		TimerManager::GetInstance()->SetSlow(0.01f, 0.1f);
-		dragonSkillUpdate();
+		else
+		{
+			if (skill1On == false)
+				TimerManager::GetInstance()->SetSlow(1.f, 0.1f);
+		}
+		UpdateCollision();
+		PickUpUpdate();
 	}
 	else
 	{
-		if(skill1On ==false)
-			TimerManager::GetInstance()->SetSlow(1.f, 0.1f);
+
 	}
+
 	stateMachine[(int)currentState]->Update();
-	animator->Update({Pos.x + ScrollManager::GetInstance()->GetScroll().x,
-		Pos.y + ScrollManager::GetInstance()->GetScroll().y}, bFlip, isEffect);
+	animator->Update({ Pos.x + ScrollManager::GetInstance()->GetScroll().x,
+		Pos.y + ScrollManager::GetInstance()->GetScroll().y }, bFlip, isEffect);
 	// apply acceleration including gravity
 	UpdateRigidBody();
-	PickUpUpdate();
+	
 	// collision
-	UpdateCollision();
+	
 	// scroll offset
 	Offset();
 	RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, this);
@@ -584,20 +593,7 @@ void Player::UpdateCollision()
 {
 	FHitResult HitResult;
 	if (currentState == STATE::ROLL) return;
-	if ((currentState != STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Enemy) ||
-		(currentState != STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(ObjectCollider, HitResult, ECollisionGroup::Bullet))
-	{
-		ObjectCollider->SetHit(true);
-		HitResult.HitCollision->SetHit(true);	// opponent
-
-		// direction from player to enemy
-		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
-		ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 41,
-				ScrollManager::GetInstance()->GetScale() * 29 });
-		changeState(STATE::DEAD);
-
-		SoundManager::GetInstance()->PlaySounds("zerodie", EChannelType::Effect);
-	}
+	
 
 	// player attack enemy
 	if ((currentState == STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Enemy))
@@ -610,6 +606,7 @@ void Player::UpdateCollision()
 		// knock enemy
 		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
 			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+		//static_cast<Enemy*> (HitResult.HitCollision->GetOwner())
 	}
 
 	// player attack bullet
