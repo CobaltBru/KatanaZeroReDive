@@ -280,7 +280,8 @@ void Player::Update()
 	}
 	else
 	{
-
+		ObjectCollider->SetSize({ ScrollManager::GetInstance()->GetScale() * 30.f,
+			ScrollManager::GetInstance()->GetScale() * 30.f });
 	}
 
 	stateMachine[(int)currentState]->Update();
@@ -583,7 +584,7 @@ void Player::Shoot()
 
 	float Radian = atan2f((Pos.y + Scroll.y) - g_ptMouse.y, (Pos.x + Scroll.x) - g_ptMouse.x);
 	float Angle = (Radian * 180.f / 3.14) + 180.f;
-	RightHand->Shoot(Pos, Angle, 5.f);
+	RightHand->Shoot(Pos, Angle, 20.f);
 
 	if (UIGameObj != nullptr)
 		UIGameObj->SetRightItem("", {}, 0, 1);
@@ -686,7 +687,7 @@ void Player::dragonSkillCollider()
 
 	while(CollisionManager::GetInstance()->
 		LineTraceByObject(HitResult, ECollisionGroup::Enemy, {Pos.x + ScrollManager::GetInstance()->GetScroll().x,
-			Pos.y + ScrollManager::GetInstance()->GetScroll().y }, { Pos.x + skillVec.x ,Pos.y + skillVec.y },true))
+			Pos.y + ScrollManager::GetInstance()->GetScroll().y }, { Pos.x + ScrollManager::GetInstance()->GetScroll().x + skillVec.x ,Pos.y + ScrollManager::GetInstance()->GetScroll().y + skillVec.y },true))
 	{
 		ObjectCollider->SetHit(true);
 		HitResult.HitCollision->SetHit(true);	// opponent

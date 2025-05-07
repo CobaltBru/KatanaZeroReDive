@@ -158,8 +158,13 @@ void UIGame::Update()
 	battery.Update();
 	if (isSlow)
 	{
+		shiftButton.setFrame(1);
 		part1->Update();
 		part2->Update();
+	}
+	else
+	{
+		shiftButton.setFrame(0);
 	}
 	
 	for (int i = 0; i < BCELLCNT; i++)
@@ -263,7 +268,7 @@ void UIGame::SetRightItem(string InImageKey, FPOINT InOffset, float InFrameX, fl
 
 	item2 = ImageManager::GetInstance()->FindImage(InImageKey);
 	Item2FrameX = InFrameX;
-	Item2Scale = InScale;
+	Item2Scale = 1;
 	item2Pos = { slotPos.x + 82.5f + InOffset.x, slotPos.y + 4.f + InOffset.y};
 }
 

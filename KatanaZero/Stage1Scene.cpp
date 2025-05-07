@@ -6,6 +6,7 @@
 #include "ImageManager.h"
 #include "CollisionManager.h"
 #include "ScrollManager.h"
+#include "GPImageManager.h"
 
 #include "TaeKyungObject.h"
 #include "Background.h"
@@ -27,10 +28,11 @@
 #include "Player.h"
 #include "DefaultObject.h"
 #include "Factory.h"
+
 #include "Tile.h"
 #include "ArrowUI.h"
-#include "GPImageManager.h"
-
+#include "PickUp.h"
+#include "Enemies.h"
 Stage1Scene::Stage1Scene()
 	:ObjectManager(nullptr), RenderManager(nullptr), CollisionManager(nullptr), snapShotManager(nullptr), ScrollManager(nullptr), LineManager(nullptr), screenEffectManager(nullptr), fxManager(nullptr), elapsedTime(0.0f)
 	, gpImageManager(nullptr)
@@ -64,8 +66,6 @@ HRESULT Stage1Scene::Init()
 	fxManager = EffectManager::GetInstance();
 	fxManager->Init();
 
-	gpImageManager = GPImageManager::GetInstance();
-	gpImageManager->Init();
 
 	slowStart = false;
 
@@ -328,11 +328,11 @@ void Stage1Scene::InitTile()
 
 void Stage1Scene::Update()
 {
-	/*if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
+	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
 	{
 		SceneManager::GetInstance()->ChangeScene("Home", "·Îµù_1");
 		return;
-	}*/
+	}
 
 	float dt = TimerManager::GetInstance()->GetDeltaTime(false);
 	ObjectManager->Update();

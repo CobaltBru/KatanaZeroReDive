@@ -84,7 +84,7 @@ void MapTool::Update()
 {
 	if (KeyManager::GetInstance()->IsOnceKeyDown(VK_F5))
 	{
-		SceneManager::GetInstance()->ChangeScene("Home", "로딩_1");
+		SceneManager::GetInstance()->ChangeScene("HY", "로딩_1");
 		return;
 	}
 
