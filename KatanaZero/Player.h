@@ -91,4 +91,6 @@ public:
 	void dragonSkillUpdate();
 	void dragonSkillRender(HDC hdc);
 	void dragonSkillCollider();
+
+	virtual void MakeSnapShot(void* out);
 };

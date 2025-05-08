@@ -739,7 +739,7 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 	MeleeAttack->addChild(AttackBehavior);
 
 	ConditionNode* IsInGunRange = new ConditionNode([this]() {
-		return (this->IsInGunRange() || bAttacking) && !bHitted;
+		return (this->IsInGunRange() || bGunAttacking) && !bHitted;
 		});
 	GunAttack->addChild(IsInGunRange);
 	ConditionNode* CanGunAttack = new ConditionNode([this]() {
@@ -747,8 +747,7 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 		});
 	ActionNode* changeGunAttackAnim = new ActionNode("changeGunAttack", [this]() {
 		this->ChangeAnimation(EImageType::GangsterAttack);
-
-		bAttacking = true;
+		bGunAttacking = true;
 		return NodeStatus::Success; });
 	ActionNode* GunAttackAction = new ActionNode("GunAttack", gunAttackaction);
 	GunAttack->addChild(CanGunAttack);
@@ -884,14 +883,16 @@ void Gangster::Fire()
 
 NodeStatus Gangster::GunAttackAction()
 {
-	if (currFrame == 1)
+	if (!bFire)
 	{
 		Fire();
+		bFire = true;
 	}
 	if (currFrame >= GetImage()->getMaxFrame() - 1)
 	{
 		attackTimer = attackDuration;
 		bAttacking = false;
+		bFire = false;
 		return NodeStatus::Success;
 	}
 	ObjectRigidBody->Update();

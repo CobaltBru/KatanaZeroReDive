@@ -20,6 +20,7 @@ private:
 	bool isEffect;
 
 	SAnimation* currentAnimation;
+	string currAnimKey;
 
 public:
 	void pushAnimation(string key, SpriteAnimation* ani, string next = "NONE");
@@ -31,5 +32,7 @@ public:
 	SAnimation* FindAnimation(string key);
 	GPImage* getGPImage();
 	Image* getImage();
+	int getCurrFrame();
+	string getCurrAnimKey() { return currAnimKey; }
 };
 

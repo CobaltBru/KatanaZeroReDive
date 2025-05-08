@@ -40,4 +40,6 @@ public:
 
 private:
 	float gunRange{ 0.f };
+	bool bGunAttacking{ false };
+	bool bFire{ false };
 };

@@ -16,6 +16,8 @@
 #include "PlayerStateHeaders.h"
 #include "SpriteAnimation.h"
 #include "Animator.h"
+#include "SnapShot.h"
+#include "SnapShotManager.h"
 
 #include "ArrowUI.h"
 #include "PickUpHand.h"
@@ -331,7 +333,7 @@ void Player::InitAnimator()
 	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_idle");
 	tmpAnimation->Init(tmpImage, 0.08f, true);
 	animator->pushAnimation("idle", tmpAnimation);
-
+	
 	tmpAnimation = new SpriteAnimation();
 	tmpImage = GPImageManager::GetInstance()->FindImage("dragon_run");
 	tmpAnimation->Init(tmpImage, 0.08f, true);
@@ -621,7 +623,7 @@ void Player::UpdateCollision()
 		// knock enemy
 		if (HitResult.HitCollision->GetOwner())
 		{
-			BulletTest* bullet = dynamic_cast<BulletTest*>(HitResult.HitCollision->GetOwner());
+			Bullet1* bullet = dynamic_cast<Bullet1*>(HitResult.HitCollision->GetOwner());
 			if (bullet)
 			{
 				/*float angle;
@@ -630,6 +632,7 @@ void Player::UpdateCollision()
 				float angle = bullet->GetAngle() + 180.f;
 				if (angle >= 360.f) angle -= 360.f;
 				bullet->SetAngle(angle);
+				bullet->SetTargetType(ECollisionGroup::Enemy);
 			}
 		}
 
@@ -698,6 +701,15 @@ void Player::dragonSkillCollider()
 		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
 			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
 	}
+}
+
+void Player::MakeSnapShot(void* out)
+{
+	PlayerSnapShot* pSnapShot = static_cast<PlayerSnapShot*>(out);
+	pSnapShot->pos = this->GetPos();
+	pSnapShot->animKey = animator->getCurrAnimKey();
+	pSnapShot->animFrame = animator->getCurrFrame();
+	pSnapShot->bFlip = this->bFlip;
 }
 
 

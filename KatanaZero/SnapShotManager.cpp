@@ -137,17 +137,7 @@ void SnapShotManager::StartReplay()
 		clone->SetID(id);        // ReplayEffect에 SetID 메서드 추가
 		fxCloneMap[id] = clone;
 	}
-	const auto& frame = snapShots.GetFrame(0);
-	{
-		auto* rp = new ReplayPlayer();
-		rp->ApplySnapShot(frame.player);
-		replayClones.push_back(rp);
-	}
-	for (const auto& eSnap : frame.enemies) {
-		auto* re = new ReplayEnemy();
-		re->ApplySnapShot(eSnap);
-		replayClones.push_back(re);
-	}
+	
 
 	ScreenEffectManager::GetInstance()->StartDistortion();
 }
@@ -165,7 +155,19 @@ void SnapShotManager::Replay()
 	}
 	size_t eIdx = 0;
 	const auto& frame = snapShots.GetFrame(replayIndex);
-	for (auto* clone : replayClones) {
+	{
+		auto* rp = new ReplayPlayer();
+		rp->ApplySnapShot(frame.player);
+		replayClones.push_back(rp);
+		RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, rp);
+	}
+	for (const auto& eSnap : frame.enemies) {
+		auto* re = new ReplayEnemy();
+		re->ApplySnapShot(eSnap);
+		replayClones.push_back(re);
+		RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, re);
+	}
+	/*for (auto* clone : replayClones) {
 		if (auto* rp = dynamic_cast<ReplayPlayer*>(clone)) {
 			rp->ApplySnapShot(frame.player);
 		}
@@ -174,7 +176,7 @@ void SnapShotManager::Replay()
 		}
 		
 		RenderManager::GetInstance()->AddRenderGroup(ERenderGroup::NonAlphaBlend, clone);
-	}
+	}*/
 	ScrollManager::GetInstance()->ReplayScroll(frame.scroll.scroll);
 	--replayIndex;
 }

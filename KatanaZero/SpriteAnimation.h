@@ -32,5 +32,6 @@ public:
 	void reset();
 	inline GPImage* getGPImage() { return gpImage; }
 	inline Image* getImage() { return image; }
+	int getCurrFrame() { return currentFrame; }
 };
 

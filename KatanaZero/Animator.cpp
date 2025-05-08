@@ -53,6 +53,7 @@ SAnimation* Animator::FindAnimation(string key)
 	auto it = tree.find(key);
 	if (it != tree.end())
 	{
+		currAnimKey = key;
 		return &(it->second);
 	}
 	else
@@ -69,4 +70,9 @@ GPImage* Animator::getGPImage()
 Image* Animator::getImage()
 {
 	return currentAnimation->ani->getImage();
+}
+
+int Animator::getCurrFrame()
+{
+	return currentAnimation->ani->getCurrFrame();
 }

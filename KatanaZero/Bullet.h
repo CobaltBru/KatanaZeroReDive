@@ -33,6 +33,7 @@ public:
     void SetIsActive(bool isActive) { this->isActive = isActive; }
     void SetPos(FPOINT pos) { this->Pos = pos; }
     void SetAngle(float angle) { this->angle = angle; }
+    void SetTargetType(ECollisionGroup InCollision) { targetType = InCollision; }
 
     void Collision();
 };

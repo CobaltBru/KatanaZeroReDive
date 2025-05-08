@@ -28,10 +28,11 @@ public:
 	}
 	void Render(HDC hdc) override
 	{
-		Image* image = ImageManager::GetInstance()->FindImage(snap.animKey);
+		GPImage* image = GPImageManager::GetInstance()->FindImage(snap.animKey);
 		if (image)
 		{
-			image->FrameRender(hdc, (int)snap.pos.x, (int)snap.pos.y, snap.animFrame, snap.bFlip, snap.bFlip, true, ScrollManager::GetInstance()->GetScale());
+			Gdiplus::Graphics graphics(hdc);
+			image->Middle_RenderFrameScale(&graphics, snap.pos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 		}
 		
 	}
