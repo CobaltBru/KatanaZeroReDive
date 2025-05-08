@@ -74,7 +74,7 @@ void EffectManager::Update()
         }
     }
 
-    float dt = TimerManager::GetInstance()->GetDeltaTime();
+    float dt = TimerManager::GetInstance()->GetDeltaTime(false);
     for (auto& riter : remainFx)
     {
         riter.lifetime -= dt;

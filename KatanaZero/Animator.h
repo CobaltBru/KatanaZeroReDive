@@ -33,6 +33,7 @@ public:
 	GPImage* getGPImage();
 	Image* getImage();
 	int getCurrFrame();
+	void FindAnimKey(string key);
 	string getCurrAnimKey() { return currAnimKey; }
 };
 

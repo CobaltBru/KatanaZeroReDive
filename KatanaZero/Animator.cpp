@@ -53,7 +53,7 @@ SAnimation* Animator::FindAnimation(string key)
 	auto it = tree.find(key);
 	if (it != tree.end())
 	{
-		currAnimKey = key;
+		FindAnimKey(key);
 		return &(it->second);
 	}
 	else
@@ -75,4 +75,19 @@ Image* Animator::getImage()
 int Animator::getCurrFrame()
 {
 	return currentAnimation->ani->getCurrFrame();
+}
+
+void Animator::FindAnimKey(string key)
+{
+	if (key == "idle") currAnimKey = "dragon_idle";
+	if (key == "run") currAnimKey = "dragon_run";
+	if (key == "idle_to_run") currAnimKey = "dragon_idle_to_run";
+	if (key == "run_to_idle") currAnimKey = "dragon_run_to_idle";
+	if (key == "jump") currAnimKey = "dragon_jump";
+	if (key == "fall") currAnimKey = "dragon_fall";
+	if (key == "roll") currAnimKey = "dragon_roll";
+	if (key == "crouch") currAnimKey = "dragon_crouch";
+	if (key == "attack") currAnimKey = "dragon_attack";
+	if (key == "hurtfly") currAnimKey = "dragon_hurtfly";
+	if (key == "hurtground") currAnimKey = "dragon_hurtground";
 }

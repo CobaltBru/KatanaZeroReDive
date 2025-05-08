@@ -289,7 +289,7 @@ HRESULT Grunt::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FP
 	Waiting->addChild(WaitingAction);
 	Chase->addChild(Waiting);
 
-	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted; });
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted && !bChasing; });
 	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		this->ChangeAnimation(EImageType::Walk);
 		return NodeStatus::Success; });
@@ -540,7 +540,7 @@ HRESULT Pomp::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset, FPO
 
 	// --- Patrol & Idle ---
 	ConditionNode* CanPatrol = new ConditionNode([this]() {
-		return canPatrol && !bHitted && !bParrying;
+		return canPatrol && !bHitted && !bParrying && !bChasing;
 		});
 	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		ChangeAnimation(EImageType::Walk);
@@ -792,7 +792,7 @@ HRESULT Gangster::Init(string InImageKey, FPOINT InPos, FPOINT InColliderOffset,
 	Waiting->addChild(WaitingAction);
 	Chase->addChild(Waiting);
 
-	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted; });
+	ConditionNode* CanPatrol = new ConditionNode([this]() { return this->canPatrol && !bHitted && !bChasing; });
 	ActionNode* changePatrolAnim = new ActionNode("changePatrol", [this]() {
 		this->ChangeAnimation(EImageType::Walk);
 		return NodeStatus::Success; });

@@ -360,7 +360,10 @@ NodeStatus Enemy::MeleeAttackAction()
 		bAttacking = false;
 		return NodeStatus::Success;
 	}
-	Collision();
+	if (GetCurrFrame() >= 3 && GetCurrFrame() < GetImage()->getMaxFrame() - 1)
+	{
+		Collision();
+	}
 	ObjectRigidBody->Update();
 	UpdateAnimation();
 	return NodeStatus::Running;

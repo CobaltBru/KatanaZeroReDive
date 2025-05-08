@@ -18,6 +18,7 @@
 #include "Animator.h"
 #include "SnapShot.h"
 #include "SnapShotManager.h"
+#include "EffectManager.h"
 
 #include "ArrowUI.h"
 #include "PickUpHand.h"
@@ -198,6 +199,8 @@ void Player::Update()
 					UIGameObj->UpdateSlow(true);
 					//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
 					TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
+					FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
+					EffectManager::GetInstance()->CreateRemainEffect(animator->getGPImage(), {Pos.x + scroll.x, Pos.y + scroll.y}, animator->getCurrFrame(), bFlip);
 				}
 				else
 				{
@@ -597,18 +600,21 @@ void Player::UpdateCollision()
 	FHitResult HitResult;
 	if (currentState == STATE::ROLL) return;
 	
-
 	// player attack enemy
 	if ((currentState == STATE::ATTACK) && CollisionManager::GetInstance()->CollisionAABB(AttackCollider, HitResult, ECollisionGroup::Enemy))
 	{
 		ObjectCollider->SetHit(true);
 		HitResult.HitCollision->SetHit(true);	// opponent
 
-		FPOINT PEDir = HitResult.HitCollision->GetPos() - ObjectCollider->GetPos();
+		FPOINT PEDir = HitResult.HitCollision->GetPos() - AttackCollider->GetPos();
 
 		// knock enemy
 		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
 			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+		Normalize(PEDir);
+		float bloodAngle = RAD_TO_DEG(atan2f(-PEDir.y, PEDir.x)); // ?? 왜 반대로 됨?
+		EffectManager::GetInstance()->CreateBGBlood(HitResult.HitCollision->GetPos(), bloodAngle, HitResult.HitCollision->GetOwner()->GetCollider()->GetSize());
+		
 		//static_cast<Enemy*> (HitResult.HitCollision->GetOwner())
 	}
 
