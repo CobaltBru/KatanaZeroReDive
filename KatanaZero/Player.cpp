@@ -454,25 +454,25 @@ void Player::Offset()
 {
 	if (!ScrollManager::GetInstance()->IsFocus()) return;
 
-	/*float newScrollSpeed = max(ObjectRigidBody->GetVelocity().x, ObjectRigidBody->GetVelocity().y);
-	scrollSpeed = newScrollSpeed;*/
+	float Scrollx = ObjectRigidBody->GetVelocity().x;
+	float Scrolly = ObjectRigidBody->GetVelocity().y;
 
-	const float OffsetMinX = 200.f;
-	const float OffsetMaxX = WINSIZE_X - 200.f;
-	const float OffsetMinY = 100.f;
+	const float OffsetMinX = 400.f;
+	const float OffsetMaxX = WINSIZE_X - 400.f;
+	const float OffsetMinY = 400.f;
 	const float OffsetMaxY = WINSIZE_Y - 100.f;
 
 	const FPOINT scroll = ScrollManager::GetInstance()->GetScrollOffset();
 
 	FPOINT newScroll{};
 	if (OffsetMaxX < Pos.x + scroll.x)
-		newScroll.x = -scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.x = -Scrollx * TimerManager::GetInstance()->GetDeltaTime();
 	if (OffsetMinX > Pos.x + scroll.x && OffsetMinX < Pos.x)
-		newScroll.x = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.x = -Scrollx * TimerManager::GetInstance()->GetDeltaTime();
 	if (OffsetMaxY < Pos.y + scroll.y)
-		newScroll.y = -scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.y = -Scrolly * TimerManager::GetInstance()->GetDeltaTime();
 	if (OffsetMinY > Pos.y + scroll.y && OffsetMinY < Pos.y)
-		newScroll.y = scrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+		newScroll.y = -Scrolly * TimerManager::GetInstance()->GetDeltaTime();
 
 	ScrollManager::GetInstance()->SetScroll(newScroll);
 }
