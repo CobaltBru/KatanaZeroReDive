@@ -49,9 +49,9 @@ void Enemy::InitRigidBodySetting()
 	// 저항 
 	ObjectRigidBody->SetAccelerationAlpha({ 0.f,800.f });
 	//무게
-	ObjectRigidBody->SetMass(1.f);
+	ObjectRigidBody->SetMass(15.f);
 	//최대 속도
-	ObjectRigidBody->SetMaxVelocity({ Speed * 2.f , 400.f });
+	ObjectRigidBody->SetMaxVelocity({ Speed * 2.f , 4000.f });
 	
 	//마찰
 	ObjectRigidBody->SetFriction(50.f);
@@ -300,7 +300,8 @@ void Enemy::Collision()
 		pos.y = HitResult.HitCollision->GetPos().y - AttackCollider->GetPos().y;
 		Normalize(pos);
 		HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(pos * 500.f);
-		static_cast<Player*> (HitResult.HitCollision->GetOwner())->changeState(STATE::DEAD);
+		if (player->getCurrentState() != STATE::DEAD)
+			player->changeState(STATE::DEAD);
 	}
 }
 
@@ -480,43 +481,30 @@ NodeStatus Enemy::FindPathAction()
 	int u = navPath.getCurrentNode();
 	int uNext = navPath.peekNextNode();
 
-	// 3) DownLine(위→아래 통과) 처리
 	if (uNext != -1) {
-		// u→uNext 에 해당하는 엣지 타입 찾기
-		bool isDownLineEdge = false;
-		for (auto& e : LineManager::GetInstance()->GetGraph()[u]) {
-			if (e.to == uNext) {
-				isDownLineEdge = (e.type == ELineType::DownLine);
-				break;
-			}
-		}
+		auto& edges = LineManager::GetInstance()->GetGraph()[u];
+		for (auto& e : edges) {
+			if (e.to != uNext) continue;      // 이 엣지가 지금 지나야 할 구간이 아니라면 skip
 
-		// 두 점의 y 비교 (게임 좌표계에서 y 증가가 아래 방향)
-		float yCur = LineManager::GetInstance()->GetNodes()[u].y;
-		float yNext = LineManager::GetInstance()->GetNodes()[uNext].y;
-		bool goingDown = (yNext > yCur);
+			bool goingDown =
+				LineManager::GetInstance()->GetNodes()[uNext].y
+		  > LineManager::GetInstance()->GetNodes()[u].y;
 
-		if (isDownLineEdge) {
-			// DownLine: 위→아래일 때만 bDown 허용
-			if (goingDown && !bDown) {
-				bDown = true;
-				ObjectRigidBody->SetDown(true);
-			}
-			else if (!goingDown && bDown) {
-				// 위로 올라올 때는 항상 해제
-				bDown = false;
-				ObjectRigidBody->SetDown(false);
-			}
-		}
-		else {
-			// Normal 라인(수평 또는 slope): 
-			// - 위→아래 slope(=기울기 Normal)은 always collide, bDown 모드 안 씀  
-			// - 수평은 무조건 collide  
-			if (bDown) {
-				// 이전에 DownLine 모드였다면 되돌리기
-				bDown = false;
-				ObjectRigidBody->SetDown(false);
-			}
+		  if (e.type == ELineType::DownLine && goingDown) {
+			  // 내려가는 DownLine 구간
+			  if (!bDown) {
+				  bDown = true;
+				  ObjectRigidBody->SetDown(true);
+			  }
+		  }
+		  else {
+			  // 그 외 (NormalLine 이건 물론, 올라가는 DownLine 이건 그냥 바닥 충돌)
+			  if (bDown) {
+				  bDown = false;
+				  ObjectRigidBody->SetDown(false);
+			  }
+		  }
+		  break;  // 한 번 검사했으면 루프 탈출
 		}
 	}
 

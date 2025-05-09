@@ -10,6 +10,9 @@ class PlayerRollAction : public Action
 	float timer;
 
 	float jumpForce;
+
+	float remainTimer{ 0.f };
+	float remainDuration{ 0.02f };
 public:
 	PlayerRollAction(Player* player);
 	virtual void onEnter() override;

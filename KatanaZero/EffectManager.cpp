@@ -80,7 +80,7 @@ void EffectManager::Update()
         riter.lifetime -= dt;
         if (riter.lifetime > 0.f)
         {
-            float gravity = 800.f;
+            /*float gravity = 800.f;
             float drag = 0.2f;
             if (riter.velocity.x != 0 || riter.velocity.y != 0)
             {
@@ -88,13 +88,13 @@ void EffectManager::Update()
                 riter.velocity.y += gravity * dt;
                 riter.velocity *= (1.f - drag * dt);
                 riter.pos.y += riter.velocity.y * dt;
-            }
-            
+            }*/
+            float t = riter.totalLife - riter.lifetime;
+            float f = t / riter.totalLife;
+            float n = 3.f;
+            riter.alpha = riter.alpha - pow(f, n);
         }
-        float t = riter.totalLife - riter.lifetime;
-        float f = t / riter.totalLife;
-        float n = 3.f;
-        riter.alpha = 1.f - pow(f, n);
+        
         //riter.alpha = riter.lifetime / riter.totalLife;
     }
     remainFx.erase(remove_if(remainFx.begin(), remainFx.end(), [](RemainEffect& e) { 
@@ -111,7 +111,7 @@ void EffectManager::Render(HDC hdc)
 
     for (auto& rIter : remainFx)
     {
-        rIter.image->Middle_RenderFrameScale(&graphics, rIter.pos, rIter.frame, rIter.bFlip, rIter.alpha, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+        rIter.image->Middle_RenderAll(&graphics, rIter.pos, rIter.frame, 0.f,rIter.bFlip, rIter.alpha, 2.f, 2.f, 5.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
     }
     
     for (auto& fx : activeFx)
@@ -183,12 +183,14 @@ void EffectManager::Activefx(string key, FPOINT pos, float angle, GameObject* ow
 void EffectManager::CreateRemainEffect(GPImage* image, FPOINT pos, int frame, bool bFlip)
 {
     RemainEffect rFx;
+    //FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
     rFx.image = image;
     rFx.pos = pos;
+    
     rFx.frame = frame;
     rFx.bFlip = bFlip;
-    rFx.totalLife = rFx.lifetime = 0.2f;
-    rFx.alpha = 1.0f;
+    rFx.totalLife = rFx.lifetime = 1.f;
+    rFx.alpha = 0.8f;
 
     remainFx.push_back(rFx);
 }

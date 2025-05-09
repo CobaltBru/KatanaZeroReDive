@@ -3,6 +3,7 @@
 #include "RigidBody.h"
 #include "SpriteAnimation.h"
 #include "Animator.h"
+#include "EffectManager.h"
 
 PlayerRollAction::PlayerRollAction(Player* player)
 {
@@ -23,8 +24,15 @@ void PlayerRollAction::onEnter()
 
 void PlayerRollAction::Update()
 {
-	timer += TimerManager::GetInstance()->GetDeltaTime();
+	float dt = TimerManager::GetInstance()->GetDeltaTime();
+	timer += dt;
 	FPOINT currentV = player->GetRigidBody()->GetVelocity();
+	FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
+	remainTimer += dt;
+	if (remainTimer >= remainDuration)
+	{
+		EffectManager::GetInstance()->CreateRemainEffect(player->GetAnimator()->getGPImage(), player->GetPos() + scroll, player->GetAnimator()->getCurrFrame(), player->GetFlip());
+	}
 	if (KeyManager::GetInstance()->IsOnceKeyDown('W'))
 	{
 		player->GetAnimator()->startAnimation("jump");

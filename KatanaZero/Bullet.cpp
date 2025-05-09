@@ -145,5 +145,8 @@ void Bullet1::Collision()
         HitResult.HitCollision->SetHit(true);// 상대방 콜라이더 충돌
 
         HitResult.HitCollision->GetOwner();  // 상대방 객체 접근
+        auto player = static_cast<Player*>(HitResult.HitCollision->GetOwner());
+        if (player->getCurrentState() != STATE::DEAD)
+            player->changeState(STATE::DEAD);
     }
 }

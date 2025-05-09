@@ -51,6 +51,9 @@ private:
 	FPOINT skillVec;
 	float currentLen;
 	float skill2Timer;
+
+	float remainTimer{ 0.f };
+	float remainDuration{ 0.02f };
 public:
 	Player();
 	virtual ~Player();
@@ -76,6 +79,7 @@ public:
 	void StateInit();
 	void changeState(STATE state);
 	inline STATE getOldState() { return oldState; }
+	inline STATE getCurrentState() { return currentState; }
 	inline int* GetWay() { return &way; }
 	inline Animator* GetAnimator() { return animator; }
 	string stateToString();

@@ -29,10 +29,11 @@ public:
 	void Render(HDC hdc) override
 	{
 		GPImage* image = GPImageManager::GetInstance()->FindImage(snap.animKey);
+		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
 		if (image)
 		{
 			Gdiplus::Graphics graphics(hdc);
-			image->Middle_RenderFrameScale(&graphics, snap.pos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+			image->Middle_RenderFrameScale(&graphics, snap.pos + scroll, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 		}
 		
 	}
@@ -49,10 +50,11 @@ public:
 	void Render(HDC hdc) override
 	{
 		GPImage* image = GPImageManager::GetInstance()->FindImage(snap.animKey);
+		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
 		if (image)
 		{
 			Gdiplus::Graphics graphics(hdc);
-			image->Middle_RenderFrameScale(&graphics, snap.pos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+			image->Middle_RenderFrameScale(&graphics, snap.pos + scroll, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 		}
 		
 	}
@@ -70,10 +72,11 @@ public:
 	void Render(HDC hdc) override
 	{
 		GPImage* image = GPImageManager::GetInstance()->FindImage(snap.effectKey);
+		FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
 		if (image)
 		{
 			Gdiplus::Graphics graphics(hdc);
-			image->Middle_RenderAll(&graphics, snap.pos, snap.animFrame, snap.angle, snap.bFlip, 1.f, 1.f, 1.f, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
+			image->Middle_RenderAll(&graphics, snap.pos + scroll, snap.animFrame, snap.angle, snap.bFlip, 1.f, 1.f, 1.f, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 			//image->Middle_RenderFrameScale(&graphics, snap.pos, snap.animFrame, snap.bFlip, 1.f, ScrollManager::GetInstance()->GetScale(), ScrollManager::GetInstance()->GetScale());
 		}
 	}

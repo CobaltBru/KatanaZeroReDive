@@ -200,7 +200,13 @@ void Player::Update()
 					//슬로우 주기                  //슬로우계수 0 ~ 1 / 해당 계수까지 가는데 몇초동안 보간할거냐
 					TimerManager::GetInstance()->SetSlow(0.1f, 0.2f);
 					FPOINT scroll = ScrollManager::GetInstance()->GetScroll();
-					EffectManager::GetInstance()->CreateRemainEffect(animator->getGPImage(), {Pos.x + scroll.x, Pos.y + scroll.y}, animator->getCurrFrame(), bFlip);
+
+					remainTimer += deltaTime;
+					if (remainTimer >= remainDuration)
+					{
+						EffectManager::GetInstance()->CreateRemainEffect(animator->getGPImage(), { Pos.x + scroll.x, Pos.y + scroll.y }, animator->getCurrFrame(), bFlip);
+						remainTimer = 0.f;
+					}
 				}
 				else
 				{
@@ -694,9 +700,9 @@ void Player::dragonSkillCollider()
 {
 	FHitResult HitResult;
 
-	while(CollisionManager::GetInstance()->
-		LineTraceByObject(HitResult, ECollisionGroup::Enemy, {Pos.x + ScrollManager::GetInstance()->GetScroll().x,
-			Pos.y + ScrollManager::GetInstance()->GetScroll().y }, { Pos.x + ScrollManager::GetInstance()->GetScroll().x + skillVec.x ,Pos.y + ScrollManager::GetInstance()->GetScroll().y + skillVec.y },true))
+	if(CollisionManager::GetInstance()->
+		LineTraceByObject(HitResult, ECollisionGroup::Enemy, {Pos.x ,
+			Pos.y}, { Pos.x + skillVec.x ,Pos.y + skillVec.y },true))
 	{
 		ObjectCollider->SetHit(true);
 		HitResult.HitCollision->SetHit(true);	// opponent
@@ -706,7 +712,11 @@ void Player::dragonSkillCollider()
 		// knock enemy
 		if (HitResult.HitCollision->GetOwner()->GetRigidBody())
 			HitResult.HitCollision->GetOwner()->GetRigidBody()->AddVelocity(PEDir * 400.f);
+		Normalize(PEDir);
+		float bloodAngle = RAD_TO_DEG(atan2f(-PEDir.y, PEDir.x)); // ?? 왜 반대로 됨?
+		EffectManager::GetInstance()->CreateBGBlood(HitResult.HitCollision->GetPos(), bloodAngle, HitResult.HitCollision->GetOwner()->GetCollider()->GetSize());
 	}
+	
 }
 
 void Player::MakeSnapShot(void* out)
