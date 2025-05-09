@@ -74,6 +74,7 @@ public:
 
 	// scroll
 	void InitScrollOffset();
+	void BaseOffset();
 	void Offset();
 
 	void StateInit();

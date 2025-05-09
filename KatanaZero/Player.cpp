@@ -439,7 +439,7 @@ void Player::InitScrollOffset()
 
 	while (true)
 	{
-		Offset();
+		BaseOffset();
 
 		const FPOINT NewScroll = ScrollManager::GetInstance()->GetScroll();
 
@@ -448,6 +448,31 @@ void Player::InitScrollOffset()
 		else
 			break;
 	}
+}
+
+void Player::BaseOffset()
+{
+	if (!ScrollManager::GetInstance()->IsFocus()) return;
+
+	const float OffsetMinX = 400.f;
+	const float OffsetMaxX = WINSIZE_X - 400.f;
+	const float OffsetMinY = 400.f;
+	const float OffsetMaxY = WINSIZE_Y - 100.f;
+
+	const FPOINT scroll = ScrollManager::GetInstance()->GetScrollOffset();
+
+	FPOINT newScroll{};
+	if (OffsetMaxX < Pos.x + scroll.x)
+		newScroll.x = -ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMinX > Pos.x + scroll.x && OffsetMinX < Pos.x)
+		newScroll.x = ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMaxY < Pos.y + scroll.y)
+		newScroll.y = ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+	if (OffsetMinY > Pos.y + scroll.y && OffsetMinY < Pos.y)
+		newScroll.y = -ScrollSpeed * TimerManager::GetInstance()->GetDeltaTime();
+
+	ScrollManager::GetInstance()->SetScroll(newScroll);
+
 }
 
 void Player::Offset()
