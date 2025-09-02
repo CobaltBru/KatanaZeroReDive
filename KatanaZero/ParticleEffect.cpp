@@ -53,17 +53,13 @@ void Particle::Render(HDC hdc)
 	HBRUSH hBrush = CreateSolidBrush(RGB(127 * percent, 212 * percent, 255 * percent));
 	HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
-	// 2) Å×µÎ¸® ¾ø¾Ö·Á¸é NULL_PEN ¼±ÅÃ (ÀÖ¾îµµ »ó°ü¾ø´Ù¸é »ý·« °¡´É)
 	HPEN hOldPen = (HPEN)SelectObject(hdc, GetStockObject(NULL_PEN));
 
-	// 3) »ç°¢Çü ±×¸®±â (RectangleÀº ³»ºÎ¸¦ ºê·¯½Ã·Î Ã¤¿ì°í Å×µÎ¸®¸¦ ÆæÀ¸·Î ±×¸²)
 	Rectangle(hdc, Pos.x, Pos.y, Pos.x + scale, Pos.y + scale);
 
-	// 4) ¿ø·¡ ºê·¯½Ã¡¤Ææ º¹±¸
 	SelectObject(hdc, hOldPen);
 	SelectObject(hdc, hOldBrush);
 
-	// 5) »ý¼ºÇÑ ºê·¯½Ã ÇØÁ¦
 	DeleteObject(hBrush);
 }
 
@@ -72,18 +68,18 @@ void Particle::InitRigidBodySetting()
 	if (ObjectRigidBody == nullptr)
 		return;
 
-	// Åº¼º Àû¿ë¾ÈÇÔ  0 ~ 1 »çÀÌ
+	// íƒ„ì„± ì ìš©ì•ˆí•¨  0 ~ 1 ì‚¬ì´
 	ObjectRigidBody->SetElasticity(0.3f);
 
-	// Áß·Â Àû¿ë
+	// ì¤‘ë ¥ ì ìš©
 	ObjectRigidBody->SetGravityVisible(true);
-	// ÀúÇ× 
+	// ì €í•­ 
 	ObjectRigidBody->SetAccelerationAlpha({ 0.f,500.f });
-	//¹«°Ô
+	//ë¬´ê²Œ
 	ObjectRigidBody->SetMass(3.f);
-	//ÃÖ´ë ¼Óµµ
+	//ìµœëŒ€ ì†ë„
 	ObjectRigidBody->SetMaxVelocity({ 1000.f,1000.f });
-	//¸¶Âû
+	//ë§ˆì°°
 	ObjectRigidBody->SetFriction(50.f);
 }
 
